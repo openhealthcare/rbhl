@@ -1,0 +1,25 @@
+{% extends 'patient_lists/static_patient_list_base.html' %}
+{% block static_content %}
+  <table class="table table-striped table-hover">
+    <tr>
+      <th>Hospital number</th>
+      <th>Name</th>
+      <th>Days since first attended</th>
+      <th>Seen by</th>
+    </tr>
+    {% for episode in object_list %}
+      <tr onclick=window.location="{{ episode.get_absolute_url }}" class="pointer">
+          <td>{{ episode.patient.demographics_set.get.hospital_number }}</td>
+          <td>{{ episode.patient.demographics_set.get.name }}</td>
+          {% with cliniclog=episode.cliniclog_set.get %}
+          <td>
+            {% if cliniclog.days_since_first_attended %}
+              {{ cliniclog.days_since_first_attended }}
+            {% endif %}
+          </td>
+          <td>{{ episode.cliniclog_set.get.seen_by }}</td>
+          {% endwith %}
+      </tr>
+    {% endfor %}
+  </table>
+{% endblock %}

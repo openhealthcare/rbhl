@@ -1,0 +1,38 @@
+<div class="row">
+  <div class="col-md-6">
+    <b>Referrer:</b>
+  </div>
+  <div class="col-md-6">
+    [[ item.referrer_title ]]     [[ item.referrer_name ]]
+  </div>
+</div>
+<div class="row" ng-show="item.date_of_referral">
+  <div class="col-md-6">
+    <b> Date of referral:</b>
+  </div>
+  <div class="col-md-6">
+    [[ item.date_of_referral | displayDate ]]
+  </div>
+</div>
+<div class="row" ng-show="item.date_refferal_received">
+  <div class="col-md-6">
+    <b>Referral received:</b>
+  </div>
+  <div class="col-md-6">
+    [[ item.date_refferal_received | displayDate ]]
+  </div>
+</div>
+<div class="row" ng-show="item.date_first_contact">
+  <div class="col-md-6">
+    <b>First Contact:</b>
+  </div>
+  <div class="col-md-6">
+    [[ item.date_first_contact | displayDate ]]
+  </div>
+</div>
+
+<span ng-show="item.comments">
+  <h4>Comments</h4>
+  <div markdown="comments"></div>
+  <br />
+</span>

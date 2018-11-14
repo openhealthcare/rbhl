@@ -1,0 +1,222 @@
+
+<div class="row"> <!-- 1 -->
+
+  <div class="col-md-2"> <!-- Top level column -->
+    <span ng-show="item.seen_by">
+      <b>Seen By:</b> [[ item.seen_by ]]
+    </span>
+  </div> <!-- Top level column -->
+
+  <div class="col-md-4"> <!-- Top level column -->
+    <span ng-show="item.clinicdate">
+      <b>First attended clinic:</b>
+    </span>
+    [[ item.clinicdate | displayDate ]]
+  </div> <!-- Top level column -->
+
+  <div class="col-md-2"> <!-- Top level column -->
+    <span ng-show="item.diagnosis_made">
+      <b>Diagnosis Made</b>
+    </span>
+  </div> <!-- Top level column -->
+
+  <div class="col-md-4"> <!-- Top level column -->
+    <span ng-show="item.follow_up_planned">
+      Follow Up Planned
+    </span>
+    <span ng-show="item.date_of_followup">
+      [[ item.date_of_followup | displayDate ]]
+    </span>
+  </div> <!-- Top level column -->
+
+</div>
+
+<hr />
+
+<div class="row"> <!-- 2 -->
+
+  <div class="col-md-4"> <!-- Top level column -->
+
+    <div class="row">
+      <div class="col-md-8">
+        <b>Lung Function:</b>
+      </div> <!-- Label column -->
+      <div class="col-md-4">
+        [[ item.lung_function | boxed]]
+      </div> <!-- value column -->
+    </div>
+
+  </div> <!-- Top level column -->
+
+  <div class="col-md-4"> <!-- Top level column -->
+    <div class="row">
+      <div class="col-md-8">
+        <span ng-show="item.lung_function_date">
+          <b>Lung Function date</b>
+        </span>
+      </div> <!-- Label column -->
+      <div class="col-md-4">
+        [[ item.lung_function_date | displayDate ]]
+      </div> <!-- value column -->
+    </div>
+  </div> <!-- Top level column -->
+
+  <div class="col-md-4"> <!-- Top level column -->
+    <div class="row">
+      <div class="col-md-8">
+        <span ng-show="item.lung_function">
+          <b>Lung Function Attendance:</b>
+        </span>
+      </div> <!-- Label column -->
+      <div class="col-md-4">
+        [[ item.lung_function_attendance | boxed]]
+      </div> <!-- value column -->
+    </div>
+  </div> <!-- Top level column -->
+
+</div>
+
+
+<div class="row"> <!-- 3 -->
+
+  <div class="col-md-4"> <!-- Top level column -->
+    <div class="row">
+      <div class="col-md-8">
+        <b>Histamine:</b>
+      </div> <!-- Label column -->
+      <div class="col-md-4">
+        [[ item.histamine | boxed]]
+      </div> <!-- value column -->
+    </div>
+
+  </div> <!-- Top level column -->
+
+  <div class="col-md-4"> <!-- Top level column -->
+    <div class="row">
+      <div class="col-md-8">
+        <span ng-show="item.histamine_date">
+          <b>Histamine Date</b>
+        </span>
+      </div> <!-- Label column -->
+      <div class="col-md-4">
+        [[ item.histamine_date | displayDate ]]
+      </div> <!-- value column -->
+    </div>
+  </div> <!-- Top level column -->
+
+  <div class="col-md-4"> <!-- Top level column -->
+    <div class="row">
+      <div class="col-md-8">
+        <span ng-show="item.histamine_date">
+          <b>Histamine Attendance:</b>
+        </span>
+      </div> <!-- Label column -->
+      <div class="col-md-4">
+        [[ item.histamine_attendance | boxed]]
+      </div> <!-- value column -->
+    </div>
+  </div> <!-- Top level column -->
+
+</div>
+
+
+<div class="row"> <!-- 4 -->
+
+  <div class="col-md-4"> <!-- Top level column -->
+
+    <div class="row">
+      <div class="col-md-8">
+        <b>Peak Flow:</b>
+      </div> <!-- Label column -->
+      <div class="col-md-4">
+        [[ item.peak_flow | boxed]]
+      </div> <!-- value column -->
+    </div>
+
+  </div> <!-- Top level column -->
+
+  <div class="col-md-4"> <!-- Top level column -->
+    <div class="row">
+      <div class="col-md-8">
+        <b>     Other Rbh Bloods:</b>
+      </div> <!-- Label column -->
+      <div class="col-md-4">
+        [[ item.other_rbh_bloods | boxed ]]
+      </div> <!-- value column -->
+    </div>
+  </div> <!-- Top level column -->
+
+  <div class="col-md-4"> <!-- Top level column -->
+    <div class="row">
+      <div class="col-md-8">
+        <b>Immunology Oem:</b>
+      </div> <!-- Label column -->
+      <div class="col-md-4">
+        [[item.immunology_oem | boxed]]
+      </div> <!-- value column -->
+    </div>
+  </div> <!-- Top level column -->
+
+  <div class="col-md-4"> <!-- Top level column -->
+    <div class="row">
+      <div class="col-md-8">
+        <b>     Other Hospital Info:</b>
+      </div> <!-- Label column -->
+      <div class="col-md-4">
+        [[ item.other_hospital_info | boxed ]]
+      </div> <!-- value column -->
+    </div>
+
+  </div> <!-- Top level column -->
+
+</div>
+
+
+
+<div class="row"> <!-- 5 -->
+
+  <div class="col-md-4"> <!-- Top level column -->
+    <div class="row">
+      <div class="col-md-8">
+        <b>     Other Oh Info:</b>
+      </div> <!-- Label column -->
+      <div class="col-md-4">
+        [[ item.other_oh_info | boxed ]]
+      </div> <!-- value column -->
+    </div>
+
+  </div> <!-- Top level column -->
+
+  <div class="col-md-4"> <!-- Top level column -->
+    <div class="row">
+      <div class="col-md-8">
+        <b>     Other Gp Info:</b>
+      </div> <!-- Label column -->
+      <div class="col-md-4">
+        [[ item.other_gp_info | boxed ]]
+      </div> <!-- value column -->
+    </div>
+  </div> <!-- Top level column -->
+
+  <div class="col-md-4"> <!-- Top level column -->
+    <div class="row">
+      <div class="col-md-8">
+        <b>     Work Samples:</b>
+      </div> <!-- Label column -->
+      <div class="col-md-4">
+        [[ item.work_samples | boxed ]]
+      </div> <!-- value column -->
+    </div>
+  </div> <!-- Top level column -->
+
+  <div class="col-md-4"> <!-- Top level column -->
+    <div class="row">
+      <div class="col-md-8">
+      </div> <!-- Label column -->
+      <div class="col-md-4">
+      </div> <!-- value column -->
+    </div>
+
+  </div> <!-- Top level column -->
+
+</div>

@@ -1,0 +1,3 @@
+recursive-include rbhl/static *
+recursive-include rbhl/assets *
+recursive-include rbhl/templates *

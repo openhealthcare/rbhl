@@ -1,0 +1,11 @@
+{% load panels %}
+<div class="row">
+  <div class="col-md-6">
+    {% record_panel models.Demographics %}
+    {% record_panel models.Occupation %}
+  </div>
+  <div class="col-md-6">
+   {% record_panel models.Diagnosis %}
+  </div>
+</div>
+{% include 'partials/peak_flow_table.html' %}

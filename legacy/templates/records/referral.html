@@ -1,0 +1,19 @@
+<b>Referrer:</b> [[ item.referrer_title ]]     [[ item.referrer_name ]]
+<br />
+<span ng-show="item.date_of_referral">
+  <b> Date of referral:</b> [[ item.date_of_referral | shortDate ]]
+   <br />
+</span>
+<span ng-show="item.date_refferal_received">
+  <b>Referral received:</b> [[ item.date_refferal_received | shortDate ]]
+   <br />
+</span>
+<span ng-show="item.date_first_contact">
+  <b>First Contact:</b> [[ item.date_first_contact | shortDate ]]
+   <br />
+</span>
+<span ng-show="item.comments">
+  <h4>Comments</h4>
+  <div markdown="comments"></div>
+   <br />
+</span>

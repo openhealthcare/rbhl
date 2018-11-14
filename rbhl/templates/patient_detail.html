@@ -1,0 +1,15 @@
+{% extends 'patient_detail_base.html' %}
+{% block content %}
+  <div ng-show="episode.category_name == 'Outpatient'">
+    {% include 'detail/outpatient.html' %}
+  </div>
+  <div ng-show="episode.category_name == 'Admin Database'">
+    {% include 'detail/admin_database.html' %}
+  </div>
+  <div ng-show="episode.category_name == 'Blood Book'">
+    {% include 'detail/blood_book.html' %}
+  </div>
+  <div ng-show="episode.category_name == 'OCLD'">
+    {% include 'detail/ocld.html' %}
+  </div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'app_layouts/layout_base.html' %}
+{% load forms %}
+{% load static %}
+{% load menus %}
+
+{% block navbar %}
+{% endblock %}
+
+{% block content %}
+  <div class="col-md-2 screen-only" id="left-col">
+    <h1>
+      <a href="/#/">
+        {{ OPAL_BRAND_NAME }} <small>{{ VERSION_NUMBER }}</small>
+      </a>
+    </h1>
+    <h2>
+      {% icon 'fa-circle' %}
+      {{ user.first_name }}
+    </h2>
+    {% menu %}
+    <!-- <h3> -->
+    <!--   PATIENT LISTS -->
+    <!-- </h3> -->
+
+
+  </div>
+
+  <div class="col-md-10" id="center-col">
+
+    <nav class="navbar navbar-default navbar-primary navbar-fixed-top screen-only top-navbar" role="navigation">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        {% include 'partials/_nav_search.html' %}
+
+      </div><!-- /.container-fluid -->
+    </nav>
+    {{ block.super }}
+  </div>
+{% endblock %}

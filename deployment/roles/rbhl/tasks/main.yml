@@ -1,0 +1,21 @@
+---
+# set up the PHMI project itself
+- name: Creates project dir
+  become: true
+  file:
+    path: "{{ PROJECT_PATH }}"
+    state: directory
+    mode: 0777
+
+- name: Setup the Git repo
+  git: repo={{ GIT_REPO }}
+       version={{ GIT_BRANCH }}
+       dest={{ PROJECT_PATH }}
+       accept_hostkey=yes
+       force=yes
+
+
+- name: Creates log dir
+  file:
+    path: "{{ LOG_DIR }}"
+    state: directory
