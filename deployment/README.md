@@ -22,6 +22,10 @@ Then run:
 ansible-playbook deploy.yml
 ```
 
+## Cheatsheat: Incantations you may not remember
+
+In this section we record various useful terminal incantations related to working
+with these deployment scripts that you may find helpful.
 
 ### Encrypting variables
 
@@ -35,4 +39,10 @@ Adjust the value of var= for the variable you want to view
 
 ```
 ansible localhost -m debug -a var='DB_USER' -e "@group_vars/all"
+```
+
+### Generating random strings
+
+```
+openssl rand -base64 32
 ```
