@@ -59,14 +59,15 @@
   args:
     executable: /bin/bash
 
-- name: Create the virtualenv project
-  shell: . /usr/share/virtualenvwrapper/virtualenvwrapper.sh && setvirtualenvproject
-  args:
-    executable: /bin/bash
-    chdir: "{{ PROJECT_PATH}}"
+- name: Set the virtualenv project
+  template:
+    src: templates/project.jinja2
+    dest: "{{ VIRTUALENV_PATH }}/.project"
+    mode: 0744
+    owner: ubuntu
 
 - name: Install packages required by the Django app inside virtualenv
-  pip: virtualenv={{ VIRTUALENV_PATH }} requirements={{ PROJECT_PATH }}/{{ REQUIREMENTS_FILE }}
+  pip: virtualenv="{{ VIRTUALENV_PATH }}" requirements="{{ PROJECT_PATH }}/{{ REQUIREMENTS_FILE }}"
 #  executable: pip3
 
 - name: Run Django database migrations
@@ -93,7 +94,7 @@
 - name: Symlink nginx
   become: true
   file:
-    src: "{{ PROJECT_PATH }}/vars/nginx_site.conf"
+    src: "{{ PROJECT_PATH }}/etc/nginx_site.conf"
     dest: "/etc/nginx/sites-available/default"
     owner: root
     group: root
@@ -109,4 +110,15 @@
 - name: Kill gunicorn
   sudo: yes
   command: "pkill gunicorn"
+  ignore_errors: True
+
+- name: Create circus config
+  become: yes
+  template:
+    src: "templates/circus.ini.jinja2"
+    dest: "/etc/circus/circusd.ini"
+
+- name: Restart circus
+  become: yes
+  command: "circusctl restart"
   ignore_errors: True

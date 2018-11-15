@@ -12,6 +12,7 @@ DATABASES = {
 
 ALLOWED_HOSTS = [
     'localhost',
+    '127.0.0.1',
 {% for key in hostvars.keys() %}
     '{{ key}}',
 {% endfor %}
