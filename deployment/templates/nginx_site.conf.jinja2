@@ -5,7 +5,18 @@ log_format timed_combined '$remote_addr - $remote_user [$time_local] '
 
 server {
     listen 443;
-    server_name "";
+    server_name {{ DOMAIN }};
+
+    ssl on;
+    ssl_certificate      /etc/letsencrypt/live/{{ DOMAIN }}/fullchain.pem;
+    ssl_certificate_key  /etc/letsencrypt/live/{{ DOMAIN }}/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+    ssl_session_cache    shared:SSL:10m;
+
+    keepalive_timeout    60;
+    client_max_body_size 100M;
+
     access_log {{ LOG_DIR }}/nginx.log timed_combined;
 
    location /static {

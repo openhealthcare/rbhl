@@ -93,12 +93,50 @@
 
 - name: Symlink nginx
   become: true
+  template:
+    src: "templates/nginx.blank.conf"
+    dest: "/etc/nginx/sites-available/default"
+    owner: root
+    group: root
+
+- name: add the Launchpad key ID
+  become: true
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: 14aa40ec0831756756d7f66c4f4ea0aae5267a6c
+
+- name: add certbot PPA
+  become: true
+  apt_repository:
+    repo: 'ppa:certbot/certbot'
+    update_cache: true
+
+- name: install certbot
+  become: true
+  apt:
+    pkg: python-certbot-nginx
+    state: present
+
+
+- name: generate cert with Lets Encrypt
+  become: true
+  command: "certbot certonly --nginx -n -d {{ DOMAIN }} --agree-tos -m support@openhealthcare.org.uk"
+
+- name: Remove old nginx default
+  become: true
+  file:
+    state: absent
+    path: "/etc/nginx/sites-available/default"
+
+- name: Symlink nginx
+  become: true
   file:
     src: "{{ PROJECT_PATH }}/etc/nginx_site.conf"
     dest: "/etc/nginx/sites-available/default"
     owner: root
     group: root
     state: link
+
 
 - name: Restart nginx
   become: true

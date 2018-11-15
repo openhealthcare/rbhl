@@ -28,3 +28,4 @@ SECRET_KEY: !vault |
           3834646133326266626134363863316330356130353162393165
 VIRTUALENV_PATH: /home/ubuntu/.virtualenvs/rbhl
 REQUIREMENTS_FILE: requirements.txt
+DOMAIN: rbh-occld-test.openhealthcare.org.uk
