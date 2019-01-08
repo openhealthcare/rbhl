@@ -6,10 +6,13 @@ import json
 from django.urls import reverse
 from django.views.generic import FormView, TemplateView
 from django.views.generic.base import RedirectView
-from opal.core import serialization, trade, match
-from opal.forms import ImportDataForm
+from opal.core import serialization
 
 from rbhl.patient_lists import StaticTableList
+
+from plugins.trade import match, trade
+from plugins.trade.forms import ImportDataForm
+
 
 class PeakFlowMatcher(match.Matcher):
     """
