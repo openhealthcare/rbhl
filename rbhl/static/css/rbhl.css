@@ -197,7 +197,8 @@ a {
   height: 56px; }
 
 .edit {
-  color: #ccc; }
+  color: #ccc;
+  display: none !important; }
 
 .no-touchevents .panel-heading i.edit, .list-group-item i.edit, .list-group-item i.delete {
   display: block; }

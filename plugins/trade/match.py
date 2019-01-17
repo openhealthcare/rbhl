@@ -4,7 +4,9 @@ Patient matching
 import collections
 
 from opal import models
-from opal.core import exceptions, subrecords
+from opal.core import subrecords
+
+from . import exceptions
 
 
 Demographics = subrecords.get_subrecord_from_model_name('Demographics')
