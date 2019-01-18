@@ -35,6 +35,7 @@ except ImportError:
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = [
     'localhost',
+    '127.0.0.1',
     '.herokuapp.com',
     '192.168.1.10'
 ]
@@ -111,7 +112,7 @@ else:
             )),
     )
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'opal.middleware.AngularCSRFRename',
