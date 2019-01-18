@@ -8,7 +8,6 @@ admin.autodiscover()
 from rbhl import views
 
 urlpatterns = [
-    # url(r'^admin/', include(admin.site.urls)),
     url(r'^import/', views.ImportView.as_view(), name='import'),
     url(r'^patient-lists/(?P<slug>[0-9a-z_\-]+)/?$',
         views.StaticTableListView.as_view(), name='static-list'),
