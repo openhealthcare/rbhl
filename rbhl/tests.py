@@ -5,10 +5,12 @@ from opal.core.test import OpalTestCase
 
 from rbhl import models, patient_lists
 
+
 class WeHaveSomeModelsTestCase(OpalTestCase):
     def test_there_is_a_model(self):
         demographics = models.Demographics(name='Larry')
         self.assertEqual('Larry', demographics.name)
+
 
 class PatientListTestCase(OpalTestCase):
     def test_queryset(self):

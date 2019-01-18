@@ -1,7 +1,7 @@
 """
 rbhl - Our Opal Application
 """
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from opal.core import application, menus
 
 from rbhl.episode_categories import OccupationalLungDiseaseEpisode

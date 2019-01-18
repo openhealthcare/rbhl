@@ -1,6 +1,6 @@
+from django.utils.deprecation import MiddlewareMixin
 
-
-class SecurityHeadersMiddleware:
+class SecurityHeadersMiddleware(MiddlewareMixin):
 
     def process_response(self, request, response):
         response['Strict-Transport-Security'] = "max-age=31536000; includeSubDomains"
