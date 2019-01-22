@@ -118,10 +118,16 @@ MIDDLEWARE = (
     'opal.middleware.AngularCSRFRename',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+
+    # for two factor authentication
+    'django_otp.middleware.OTPMiddleware',
+    'two_factor.middleware.threadlocals.ThreadLocals',
+    'rbhl.middleware.TwoStageAuthenticationRequired',
     'django.contrib.messages.middleware.MessageMiddleware',
     'opal.middleware.DjangoReversionWorkaround',
     'reversion.middleware.RevisionMiddleware',
     'rbhl.middleware.SecurityHeadersMiddleware',
+
 #    'axes.middleware.FailedLoginMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -171,9 +177,13 @@ INSTALLED_APPS = (
     'opal',
     'opal.core.search',
     'opal.core.pathway',
-    'rbhl',
     'legacy',
     'django.contrib.admin',
+    'django_otp',
+    'django_otp.plugins.otp_static',
+    'django_otp.plugins.otp_totp',
+    'two_factor',
+    'rbhl',
 )
 
 
@@ -222,7 +232,7 @@ LOGGING = {
             'handlers': ['mail_admins', 'console'],
             'level': 'ERROR',
             'propagate': True,
-        },
+        }
     }
 }
 
@@ -293,6 +303,19 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     )
 }
+
+# Django two factor auth settings
+LOGIN_URL = 'two_factor:login'
+LOGIN_REDIRECT_URL = 'change-password-check'
+LOGOUT_REDIRECT_URL = 'two_factor:login'
+TWO_FACTOR_SMS_GATEWAY = 'two_factor.gateways.fake.Fake'
+
+# Our two factor auth settings
+
+# should super users use two factor authentication
+TWO_FACTOR_FOR_SUPERUSERS = True
+
+
 
 # if you want sass, uncomment the below and gem install sass
 # COMPRESS_PRECOMPILERS = (

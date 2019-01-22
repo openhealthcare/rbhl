@@ -3,15 +3,25 @@ Custom views for Lungs@Work
 """
 import json
 
+from django.contrib.auth.models import User
 from django.urls import reverse
-from django.views.generic import FormView, TemplateView
-from django.views.generic.base import RedirectView
+from django.views.generic import FormView, TemplateView, RedirectView
+from django.contrib.auth import login, logout
+from django.contrib.admin.views.decorators import staff_member_required
+from django.utils.decorators import method_decorator
+from django.contrib.auth.mixins import LoginRequiredMixin
+from two_factor.views import core as two_factor_core_views
 from opal.core import serialization
-
+from opal import models as opal_models
 from rbhl.patient_lists import StaticTableList
-
 from plugins.trade import match, trade
 from plugins.trade.forms import ImportDataForm
+
+
+class StaffRequiredMixin(object):
+    @method_decorator(staff_member_required)
+    def dispatch(self, *args, **kwargs):
+        return super(StaffRequiredMixin, self).dispatch(*args, **kwargs)
 
 
 class PeakFlowMatcher(match.Matcher):
@@ -95,3 +105,37 @@ class FormSearchRedirectView(RedirectView):
     def get_redirect_url(self, *args, **kwargs):
         url = reverse('search_index')
         return url + '#/?query={}'.format(self.request.GET.get('query', ''))
+
+
+class TwoFactorRequired(TemplateView):
+    template_name = "two_factor_required.html"
+
+
+class OtpSetupRelogin(StaffRequiredMixin, RedirectView):
+    def get_redirect_url(self, *args, **kwargs):
+        return reverse("two-factor-setup")
+
+    def get_user(self):
+        return User.objects.get(username__iexact=self.kwargs["username"])
+
+    def get(self, request, *args, **kwargs):
+        logout(request)
+        login(request, self.get_user())
+        return super().get(request, *args, **kwargs)
+
+
+class ChangePasswordCheck(RedirectView):
+    def get_redirect_url(self):
+        profile, _ = opal_models.UserProfile.objects.get_or_create(
+            user=self.request.user
+        )
+        if profile.force_password_change:
+            return reverse('change-password')
+        else:
+            return reverse('home')
+
+
+class TwoFactorSetupView(two_factor_core_views.SetupView):
+    @property
+    def success_url(self):
+        return reverse('home')

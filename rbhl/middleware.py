@@ -1,7 +1,25 @@
+import logging
+from django.conf import settings
+from django.shortcuts import redirect
 from django.utils.deprecation import MiddlewareMixin
+from django.urls import resolve, reverse
+from django.contrib.auth import logout
+from two_factor import utils as two_factor_utils
+
+
+LOGIN_NOT_REQUIRED = {
+    "admin:login",
+    "login",
+    "two-factor-setup-redirect",
+    "two-factor-required",
+
+    # the name of the two factor auth setup urls
+    "two-factor-setup",
+    "qr"
+}
+
 
 class SecurityHeadersMiddleware(MiddlewareMixin):
-
     def process_response(self, request, response):
         response['Strict-Transport-Security'] = "max-age=31536000; includeSubDomains"
         response['Content-Security-Policy-Report-Only'] = "script-src self"
@@ -9,5 +27,48 @@ class SecurityHeadersMiddleware(MiddlewareMixin):
         response['X-XSS-Protection'] = "1; mode=block"
         response['X-Content-Type-Options'] = "nosniff"
         response['Referrer-Policy'] = 'same-origin'
-
         return response
+
+
+class TwoStageAuthenticationRequired(MiddlewareMixin):
+    def process_request(self, request):
+        """
+            Five possible outcomes
+
+            1. The view is not login required.
+               - just return, nothing to see here
+            2. The user is authenticated and verified,
+               - great you're good to go
+            3. The user is authenticated but does not have two factor auth set up
+               - log out the user and redirect them requesting them to contact us
+            4. The user is authenticated and is not verified
+               - redirect to do 2 step auth
+            5. The user is not authenticated
+               - redirect to log in
+
+            We don't use the the two factor auth inital log in, to put them
+            through the standard opal authentication first.
+        """
+        url_name = resolve(request.path_info).url_name
+        if url_name in LOGIN_NOT_REQUIRED:
+            return
+
+        if request.user.is_authenticated:
+            if not settings.TWO_FACTOR_FOR_SUPERUSERS and request.user.is_superuser:
+                return
+
+            if request.user.is_verified():
+                return
+
+            elif [i for i in two_factor_utils.devices_for_user(request.user)]:
+                return redirect("two-factor-login")
+            else:
+                logging.error(
+                    "user {} has not had two factor auth set up".format(
+                        request.user.username
+                    )
+                )
+                logout(request)
+                return redirect("two-factor-required")
+
+        return redirect(reverse("two_factor:login"))

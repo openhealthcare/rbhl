@@ -1,0 +1,21 @@
+{% extends 'static_page.html' %}
+
+{% block javascripts %}
+
+{% endblock %}
+{% block angularapp %}
+
+{% endblock %}
+{% block application_javascripts %}
+
+{% endblock %}
+
+{% block application %}
+<div class="content-offset container">
+    <div class="row content-centered">
+        <div class="col-md-6 col-md-offset-3">
+            {{ block.super}}
+        </div>
+    </div>
+</div>
+{% endblock %}
