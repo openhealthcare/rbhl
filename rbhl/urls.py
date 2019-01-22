@@ -21,9 +21,9 @@ urlpatterns = [
     url(r'^formsearch/', views.FormSearchRedirectView.as_view(),
         name='form-search'),
     url(r'^account/login/', views.TwoFactorRequired.as_view(), name="login"),
-    url(r'two-factor-required/', views.TwoFactorRequired.as_view(), name="two-factor-required"),
+    url(r'^two-factor-required/', views.TwoFactorRequired.as_view(), name="two-factor-required"),
     url(
-        r'two-factor-setup/',
+        r'^two-factor-setup/',
         views.TwoFactorSetupView.as_view(),
         name="two-factor-setup",
     ),

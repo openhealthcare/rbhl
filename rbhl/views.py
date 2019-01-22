@@ -108,7 +108,7 @@ class FormSearchRedirectView(RedirectView):
 
 
 class TwoFactorRequired(TemplateView):
-    template_name = "two_factor_required.html"
+    template_name = "two_factor/two_factor_required.html"
 
 
 class OtpSetupRelogin(StaffRequiredMixin, RedirectView):
