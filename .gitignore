@@ -19,3 +19,5 @@ libpeerconnection.log
 deployment/hosts.dev
 deployment/ansible.cfg
 *.csv
+
+.vscode
