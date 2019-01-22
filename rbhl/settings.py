@@ -304,6 +304,24 @@ REST_FRAMEWORK = {
     )
 }
 
+
+# which views do not require a log in
+# if they don't have a name space, its just a string
+# otherwise its a string and the name space they are from.
+LOGIN_NOT_REQUIRED = (
+    # admin login
+    ("login", "admin",),
+
+    # two factor core views
+    ("login", "two_factor",),
+    ("qr", "two_factor",),
+
+    # our two factor views
+    "two-factor-setup-redirect",
+    "two-factor-required",
+    "two-factor-setup",
+)
+
 # Django two factor auth settings
 LOGIN_URL = 'two_factor:login'
 LOGIN_REDIRECT_URL = 'change-password-check'

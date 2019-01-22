@@ -7,17 +7,6 @@ from django.contrib.auth import logout
 from two_factor import utils as two_factor_utils
 
 
-LOGIN_NOT_REQUIRED = {
-    "admin:login",
-    "login",
-    "two-factor-setup-redirect",
-    "two-factor-required",
-
-    # the name of the two factor auth setup urls
-    "two-factor-setup",
-    "qr"
-}
-
 
 class SecurityHeadersMiddleware(MiddlewareMixin):
     def process_response(self, request, response):
@@ -49,9 +38,17 @@ class TwoStageAuthenticationRequired(MiddlewareMixin):
             We don't use the the two factor auth inital log in, to put them
             through the standard opal authentication first.
         """
-        url_name = resolve(request.path_info).url_name
-        if url_name in LOGIN_NOT_REQUIRED:
-            return
+        resolved_match = resolve(request.path_info)
+        for url_name in settings.LOGIN_NOT_REQUIRED:
+            name_space = None
+            if isinstance(url_name, tuple):
+                url_name, name_space = url_name
+            if resolved_match.url_name == url_name:
+                if name_space:
+                    if name_space in resolved_match.namespaces:
+                        return
+                else:
+                    return
 
         if request.user.is_authenticated:
             if not settings.TWO_FACTOR_FOR_SUPERUSERS and request.user.is_superuser:

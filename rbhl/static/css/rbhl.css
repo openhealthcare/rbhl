@@ -239,6 +239,11 @@ a {
   text-align: center;
   font-weight: bold;
 }
+.panel.login .panel-body img {
+  float: none;
+  height: initial;
+  width: 100%;
+}
 .panel.login .btn.btn-primary {
   width: 100%;
 }

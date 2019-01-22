@@ -263,6 +263,12 @@ a {
         }
     }
 
+    .panel-body img{
+        float: none;
+        height: initial;
+        width: 100%;
+    }
+
     .btn.btn-primary {
         width: 100%;
     }
