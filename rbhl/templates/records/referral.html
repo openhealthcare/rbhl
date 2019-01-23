@@ -24,12 +24,37 @@
 </div>
 <div class="row" ng-show="item.date_first_contact">
   <div class="col-md-6">
-    <b>First Contact:</b>
+    <b>First contact:</b>
   </div>
   <div class="col-md-6">
     [[ item.date_first_contact | displayDate ]]
   </div>
 </div>
+<div class="row" ng-show="item.attendance">
+  <div class="col-md-6">
+    <b>Attendance:</b>
+  </div>
+  <div class="col-md-6">
+    [[ item.attendance | boxed ]]
+  </div>
+</div>
+<div class="row" ng-show="item.date_first_appointment">
+  <div class="col-md-6">
+    <b>First appointment:</b>
+  </div>
+  <div class="col-md-6">
+    [[ item.date_first_appointment | displayDate ]]
+  </div>
+</div>
+<div class="row" ng-show="item.firefighter">
+  <div class="col-md-6">
+    <b>Firefighter pre-employment:</b>
+  </div>
+  <div class="col-md-6">
+    [[ item.firefighter | boxed ]]
+  </div>
+</div>
+
 
 <span ng-show="item.comments">
   <h4>Comments</h4>

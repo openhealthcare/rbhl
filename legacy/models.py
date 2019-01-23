@@ -16,7 +16,7 @@ from opal.models import PatientSubrecord, EpisodeSubrecord
 
 class ActionLog(EpisodeSubrecord):
     class Meta:
-        verbose_name = '18 Week Database'
+        verbose_name = 'General Notes'
     # Now in rbhl.models.Employment
     # employer       = models.CharField(blank=True, null=True, max_length=100)
     # oh_provider    = models.CharField(blank=True, null=True, max_length=100)
@@ -46,13 +46,7 @@ class ActionLog(EpisodeSubrecord):
     #letters             = models.TextField(blank=True, null=True)
 
     # LHS
-    attendance = models.NullBooleanField()
-    date_first_appointment = models.DateField(blank=True, null=True)
 
-    #    AFAICT Not used
-    firefighter         = models.NullBooleanField()
-
-    active              = models.NullBooleanField()
     # First comment box RHS [Other]
     general_notes       = models.TextField(blank=True, null=True)
 

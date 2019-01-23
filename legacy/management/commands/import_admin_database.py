@@ -39,7 +39,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         Letter.objects.all().delete()
 
-        data = ffs.Path('~/Documents/RBHL/17.01.19/action.log.csv')
+        data = ffs.Path('~/Documents/ohc/Brompton-17-Jan/action.log.csv')
         self.patients_imported = 0
         self.patients_missed = 0
         self.no_hosp_num = 0
@@ -85,6 +85,9 @@ class Command(BaseCommand):
                 referral.date_refferal_received = str_to_date(row['DateRecdReferral'])
                 referral.date_first_contact     = str_to_date(row['DateFirstContact'])
                 referral.comments               = row['Commentscontact']
+                referral.date_first_appointment = str_to_date(row['DateFirstPatientAppt'])
+                referral.attendance = bol(row['Did patient attend?'])
+                referral.firefighter = bol(row['Firefighter- pre-employment'])
                 referral.save()
 
                 print('Creating Employment')
@@ -102,9 +105,24 @@ class Command(BaseCommand):
                 cliniclog.diagnosis_made    = bol(row['DiagnosisMade'])
                 cliniclog.follow_up_planned = bol(row['FollowUp'])
                 cliniclog.date_of_followup  = str_to_date(row['DateFollowUpAppt'])
+                cliniclog.lung_function = bol(row['LungFunction'])
+                cliniclog.lung_function_date = str_to_date(row['DateLungFunction'])
+                cliniclog.lung_function_attendance = bol(row['Did patient attend LF?'])
+                cliniclog.histamine = bol(row['Histamine'])
+                cliniclog.histamine_date = str_to_date(row['DateHistamine'])
+                cliniclog.histamine_attendance = bol(row['Did patient attend Histamine?'])
+                cliniclog.peak_flow = bol(row['PeakFlow'])
+                cliniclog.other_rbh_bloods = bol(row['BloodRBHlab'])
+                cliniclog.immunology_oem = bol(row['ImmunologyOEM'])
+                cliniclog.other_hostpital_info = bol(row['OtherHospitalInfo'])
+                cliniclog.other_oh_info = bol(row['OherOHInfo'])
+                cliniclog.other_gp_info = bol(row['OtherGPInfo'])
+                cliniclog.work_samples = bol(row['Samples(Work)'])
+                cliniclog.active = bol(row['Active'])
+
                 cliniclog.save()
 
-                print('Creting Letter')
+                print('Creating Letter')
                 letter = Letter(episode=episode)
                 letter.text = row['Comments1'].replace('\n', '\n\n')
                 letter.save()
@@ -114,23 +132,6 @@ class Command(BaseCommand):
 
                 print('Creating Action Log')
                 actionlog = ActionLog(episode=episode)
-                actionlog.datefirst_appointment = str_to_date(row['DateFirstPatientAppt'])
-                actionlog.attendance = bol(row['Did patient attend?'])
-                actionlog.peak_flow = bol(row['PeakFlow'])
-                actionlog.immunology_oem = bol(row['ImmunologyOEM'])
-                actionlog.histamine = bol(row['Histamine'])
-                actionlog.histamine_date = str_to_date(row['DateHistamine'])
-                actionlog.histamine_attendance = bol(row['Did patient attend Histamine?'])
-                actionlog.lung_function = bol(row['LungFunction'])
-                actionlog.lung_function_date = str_to_date(row['DateLungFunction'])
-                actionlog.lung_function_attendance = bol(row['Did patient attend LF?'])
-                actionlog.work_samples = bol(row['Samples(Work)'])
-                actionlog.other_hostpital_info = bol(row['OtherHospitalInfo'])
-                actionlog.other_oh_info = bol(row['OherOHInfo'])
-                actionlog.other_gp_info = bol(row['OtherGPInfo'])
-                actionlog.other_rbh_bloods = bol(row['BloodRBHlab'])
-                actionlog.firefighter = bol(row['Firefighter- pre-employment'])
-                actionlog.active = bol(row['Active'])
                 actionlog.general_notes = row['Other']
                 actionlog.finaldays = inty(row['Finaldays'])
 
