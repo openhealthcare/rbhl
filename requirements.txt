@@ -14,6 +14,8 @@ django-compressor==2.2
 python-dateutil==2.7.5
 django-celery==3.2.2
 celery==3.1.25
-#opal==0.9.0
+django_otp==0.5.1
+django-two-factor-auth==1.8.0
+django-formtools==2.1
 
 -e git+https://github.com/openhealthcare/opal.git@v0.13.0#egg=opal

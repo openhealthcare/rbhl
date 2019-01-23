@@ -1,0 +1,35 @@
+{% extends 'static_page.html' %}
+{% load static %}
+
+{% block javascripts %}
+
+{% endblock %}
+{% block angularapp %}
+
+{% endblock %}
+{% block application_javascripts %}
+
+{% endblock %}
+
+{% block application %}
+<div class="content-offset container">
+    <div class="row content-centered">
+        <div class="col-md-4 col-md-offset-4">
+            <div class="panel panel-primary login">
+                <div class="panel-heading">
+                    <h1>
+                        <img src="{% static 'img/ohc-trans.png' %}">
+                        {{ OPAL_BRAND_NAME }}
+                    </h1>
+                </div>
+                <div class="panel-body text-center">
+                     Please contact support@openhealthcare.org.uk
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+

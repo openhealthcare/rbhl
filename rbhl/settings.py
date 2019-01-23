@@ -1,6 +1,7 @@
 # Django settings for rbhl project.
 import os
 import sys
+import urllib
 
 PROJECT_PATH = os.path.realpath(os.path.dirname(__file__))
 
@@ -118,10 +119,16 @@ MIDDLEWARE = (
     'opal.middleware.AngularCSRFRename',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+
+    # for two factor authentication
+    'django_otp.middleware.OTPMiddleware',
+    'two_factor.middleware.threadlocals.ThreadLocals',
+    'rbhl.middleware.TwoStageAuthenticationRequired',
     'django.contrib.messages.middleware.MessageMiddleware',
     'opal.middleware.DjangoReversionWorkaround',
     'reversion.middleware.RevisionMiddleware',
     'rbhl.middleware.SecurityHeadersMiddleware',
+
 #    'axes.middleware.FailedLoginMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -171,9 +178,13 @@ INSTALLED_APPS = (
     'opal',
     'opal.core.search',
     'opal.core.pathway',
-    'rbhl',
     'legacy',
     'django.contrib.admin',
+    'django_otp',
+    'django_otp.plugins.otp_static',
+    'django_otp.plugins.otp_totp',
+    'two_factor',
+    'rbhl',
 )
 
 
@@ -222,7 +233,7 @@ LOGGING = {
             'handlers': ['mail_admins', 'console'],
             'level': 'ERROR',
             'propagate': True,
-        },
+        }
     }
 }
 
@@ -293,6 +304,40 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
     )
 }
+
+
+# which views do not require a log in
+# if they don't have a name space, its just a string
+# otherwise its a string and the name space they are from.
+LOGIN_NOT_REQUIRED = (
+    # admin login
+    ("login", "admin",),
+
+    # two factor core views
+    ("login", "two_factor",),
+    ("qr", "two_factor",),
+
+    # our two factor views
+    "two-factor-setup-redirect",
+    "two-factor-required",
+    "two-factor-setup",
+)
+
+# Django two factor auth settings
+LOGIN_URL = 'two_factor:login'
+LOGIN_REDIRECT_URL = 'change-password-check'
+LOGOUT_REDIRECT_URL = 'two_factor:login'
+TWO_FACTOR_SMS_GATEWAY = 'two_factor.gateways.fake.Fake'
+
+# the name as it appears in google authenticator
+OTP_TOTP_ISSUER = urllib.parse.quote(OPAL_BRAND_NAME)
+
+# Our two factor auth settings
+
+# should super users use two factor authentication
+TWO_FACTOR_FOR_SUPERUSERS = True
+
+
 
 # if you want sass, uncomment the below and gem install sass
 # COMPRESS_PRECOMPILERS = (

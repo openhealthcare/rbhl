@@ -10,3 +10,8 @@ To get started, run the following commands:
     python manage.py import_peak_flow # currently needs work
     python manage.py import_blood_book # currently needs work
 ```
+
+To recompile sass files to css in development:
+```
+sass --watch rbhl/static/css/rbhl.scss:rbhl/static/css/rbhl.css
+```
