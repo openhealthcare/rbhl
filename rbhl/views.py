@@ -116,7 +116,9 @@ class OtpSetupRelogin(StaffRequiredMixin, RedirectView):
         return reverse("two-factor-setup")
 
     def get_user(self):
-        return User.objects.get(username__iexact=self.kwargs["username"])
+        return User.objects.filter(is_superuser=False).filter(is_staff=False).get(
+            username__iexact=self.kwargs["username"]
+        )
 
     def get(self, request, *args, **kwargs):
         logout(request)

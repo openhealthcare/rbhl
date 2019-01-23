@@ -16,7 +16,12 @@ class RBHLUserAdmin(UserProfileAdmin):
             # we can't just user method.boolean = True, because we want a setup OTP link
             return format_html("<img src='/assets/admin/img/icon-yes.svg' alt='True'>")
         else:
-            url = reverse("two-factor-setup-redirect", kwargs={"username": obj.username})
+            if obj.is_staff or obj.is_superuser:
+                url = reverse("two-factor-setup")
+            else:
+                url = reverse(
+                    "two-factor-setup-redirect", kwargs={"username": obj.username}
+                )
             return format_html("<a href='{url}'>Set up OTP</a>", url=url)
 
 
