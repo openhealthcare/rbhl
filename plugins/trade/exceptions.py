@@ -1,4 +1,3 @@
-
 from opal.core.exceptions import Error
 
 

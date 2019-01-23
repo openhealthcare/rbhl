@@ -9,17 +9,15 @@ from opal.core import subrecords
 from . import exceptions
 
 
-Demographics = subrecords.get_subrecord_from_model_name('Demographics')
-Mapping      = collections.namedtuple(
-    'Mapping',
-    ('data_fieldname', 'demographics_fieldname')
+Demographics = subrecords.get_subrecord_from_model_name("Demographics")
+Mapping = collections.namedtuple(
+    "Mapping", ("data_fieldname", "demographics_fieldname")
 )
 
 
 class FieldConverter(object):
-
     def __init__(self, convert, target_fieldname):
-        self.convert          = convert
+        self.convert = convert
         self.target_fieldname = target_fieldname
 
     def get_value(self, raw_data):
@@ -27,9 +25,9 @@ class FieldConverter(object):
 
 
 class Matcher(object):
-    direct_match_field     = None
+    direct_match_field = None
     attribute_match_fields = []
-    demographics_fields    = []
+    demographics_fields = []
 
     def __init__(self, data):
         """
@@ -67,20 +65,16 @@ class Matcher(object):
         Raise PatientNotFoundError if a match is not found.
         """
         if isinstance(self.direct_match_field, Mapping):
-            key    = self.direct_match_field.demographics_fieldname
-            value  = self.data.get(
-                self.direct_match_field.data_fieldname, None
-            )
+            key = self.direct_match_field.demographics_fieldname
+            value = self.data.get(self.direct_match_field.data_fieldname, None)
             if not value:
                 raise exceptions.PatientNotFoundError(
-                    'Blank direct match attribute in data'
+                    "Blank direct match attribute in data"
                 )
             kwargs = {key: value}
         else:
             value = self.data.get(self.direct_match_field, None)
-            kwargs = {
-                self.direct_match_field: value
-            }
+            kwargs = {self.direct_match_field: value}
         return self._get_patient_from_demographics_kwargs(kwargs)
 
     def attribute_match(self):
@@ -92,8 +86,8 @@ class Matcher(object):
         kwargs = {}
         for demographics_field in self.attribute_match_fields:
             if isinstance(demographics_field, Mapping):
-                key         = demographics_field.demographics_fieldname
-                value       = self.data.get(demographics_field.data_fieldname)
+                key = demographics_field.demographics_fieldname
+                value = self.data.get(demographics_field.data_fieldname)
                 kwargs[key] = value
             else:
                 kwargs[demographics_field] = self.data.get(demographics_field)

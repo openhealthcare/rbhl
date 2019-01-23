@@ -12,34 +12,34 @@ from legacy.models import Referral, BloodBook, BloodBookResult
 
 
 class Matcher(match.Matcher):
-    direct_match_field = match.Mapping('hosp_no', 'hospital_number')
+    direct_match_field = match.Mapping("hosp_no", "hospital_number")
     attribute_match_fields = [
-        match.Mapping('firstname', 'first_name'),
-        'surname',
-        match.Mapping('birth', 'date_of_birth')
+        match.Mapping("firstname", "first_name"),
+        "surname",
+        match.Mapping("birth", "date_of_birth"),
     ]
     demographics_fields = [
-        match.Mapping('firstname', 'first_name'),
-        'surname',
-        match.Mapping('birth', 'date_of_birth'),
-        match.Mapping('hosp_no', 'hospital_number')
+        match.Mapping("firstname", "first_name"),
+        "surname",
+        match.Mapping("birth", "date_of_birth"),
+        match.Mapping("hosp_no", "hospital_number"),
     ]
 
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        data = ffs.Path('~/Documents/RBHL/bloods/bloodbook.csv')
+        data = ffs.Path("~/Documents/RBHL/bloods/bloodbook.csv")
         self.patients_imported = 0
 
-        print('Open CSV to read')
+        print("Open CSV to read")
         with data.csv(header=True) as csv:
 
             for row in csv:
-                print('Matching patient')
+                print("Matching patient")
 
                 data = row._asdict()
 
-                data['birth'] = str_to_date(data['birth'], no_future_dates=True)
+                data["birth"] = str_to_date(data["birth"], no_future_dates=True)
 
                 matcher = Matcher(data)
                 # print(matcher.get_demographic_dict())
@@ -48,21 +48,21 @@ class Command(BaseCommand):
 
                 if not created:
                     demographics = patient.demographics_set.get()
-                    demographics.date_of_birth = data['birth']
+                    demographics.date_of_birth = data["birth"]
                     demographics.save()
 
-                print('Creating episdoe')
+                print("Creating episdoe")
                 episode = patient.create_episode(
                     category_name=episode_categories.BloodBook.display_name
                 )
 
-                print('Creating referral')
+                print("Creating referral")
                 referral = Referral(episode=episode)
                 referral.referrer_name = row.referrername
                 referral.referrer_title = row.referrerttl
                 referral.save()
 
-                print('Creating blood book entry')
+                print("Creating blood book entry")
                 book = BloodBook(episode=episode)
                 book.reference_number = row.reference_no
                 book.blood_date = str_to_date(row.blooddat)
@@ -100,26 +100,37 @@ class Command(BaseCommand):
                 book.vials = row.vials
                 book.save()
 
-                print('Creating Blood results')
+                print("Creating Blood results")
 
                 fieldnames = [
-                    'result', 'allergen', 'antigenno', 'kul',
-                    'class', 'rast', 'precipitin', 'igg', 'iggclass'
+                    "result",
+                    "allergen",
+                    "antigenno",
+                    "kul",
+                    "class",
+                    "rast",
+                    "precipitin",
+                    "igg",
+                    "iggclass",
                 ]
 
                 for i in range(1, 11):
                     result_data = {}
                     for field in fieldnames:
-                        iterfield = '{}{}'.format(field, str(i))
+                        iterfield = "{}{}".format(field, str(i))
                         value = getattr(row, iterfield, "")
                         if value:
-                            if field == 'class':
-                                field = 'klass'
+                            if field == "class":
+                                field = "klass"
                             result_data[field] = value
 
                     if any(result_data.values()):
-                        result_data['episode'] = episode
+                        result_data["episode"] = episode
                         result = BloodBookResult(**result_data)
                         result.save()
                 self.patients_imported += 1
-                print('{} ({})'.format(patient.demographics_set.get().name, self.patients_imported))
+                print(
+                    "{} ({})".format(
+                        patient.demographics_set.get().name, self.patients_imported
+                    )
+                )

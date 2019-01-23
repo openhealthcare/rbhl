@@ -8,4 +8,5 @@ class LegacyPlugin(plugins.OpalPlugin):
     """
     Expose this plugin to our Opal application
     """
+
     pass

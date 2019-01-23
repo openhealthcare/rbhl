@@ -8,8 +8,9 @@ from opal.models import Patient, Episode
 from rbhl.models import Demographics, Referral, ClinicLog, ContactDetails
 from legacy.models import BloodBook, BloodBookResult, ActionLog
 
+
 def flush():
-    print('Deleting old episodes, referrals and actionlogs')
+    print("Deleting old episodes, referrals and actionlogs")
     Episode.objects.all().delete()
     Patient.objects.all().delete()
     Demographics.objects.all().delete()
@@ -18,7 +19,7 @@ def flush():
     ClinicLog.objects.all().delete()
     ActionLog.objects.all().delete()
     BloodBookResult.objects.all().delete()
-    BloodBookResult.objects.all().delete ()
+    BloodBookResult.objects.all().delete()
 
 
 class Command(BaseCommand):

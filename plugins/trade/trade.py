@@ -14,12 +14,9 @@ class OpalExportMatcher(match.Matcher):
     """
     Matcher for data in the Opal portable export format.
     """
-    direct_match_field     = 'nhs_number'
-    attribute_match_fields = [
-        'date_of_birth',
-        'first_name',
-        'surname',
-    ]
+
+    direct_match_field = "nhs_number"
+    attribute_match_fields = ["date_of_birth", "first_name", "surname"]
 
     def get_demographic_dict(self):
         return self.data
@@ -43,15 +40,15 @@ def validate_import_data(data):
     """
     categories = [c.display_name for c in episodes.EpisodeCategory.list()]
 
-    for k, v in data['episodes'].items():
+    for k, v in data["episodes"].items():
         try:
-            if v['category_name'] not in categories:
+            if v["category_name"] not in categories:
                 msg = "Sorry, we can't import episodes of the category {0}".format(
-                    v['category_name']
+                    v["category_name"]
                 )
                 raise exceptions.InvalidEpisodeCategoryError(msg)
         except KeyError:
-            msg = 'Episodes must have a category_name in order to be rendered'
+            msg = "Episodes must have a category_name in order to be rendered"
             raise exceptions.InvalidEpisodeCategoryError(msg)
 
 
@@ -100,20 +97,20 @@ def import_patient(data, user=None):
     """
     validate_import_data(data)
 
-    demographics = data['demographics'][0]
-    demographics['date_of_birth'] = serialization.deserialize_date(
-        demographics['date_of_birth']
+    demographics = data["demographics"][0]
+    demographics["date_of_birth"] = serialization.deserialize_date(
+        demographics["date_of_birth"]
     )
     matcher = OpalExportMatcher(demographics)
     patient, created = matcher.match_or_create(user=user)
 
-    episodes = data.pop('episodes')
+    episodes = data.pop("episodes")
 
     for episode in episodes.values():
         create_episode_for_patient(patient, episode, user=user)
 
     for key, value in data.items():
-        if key == 'demographics':
+        if key == "demographics":
             continue  # We already did that one.
         import_patient_subrecord_data(key, value, patient, user=user)
 
@@ -144,16 +141,21 @@ def patient_id_to_json(patient_id, user=None, excludes=None):
 
     # Remove all "id", and consistency data
     data = remove_keys(
-        data, 'id', 'patient_id', 'episode_id',
-        'consistency_token',
-        'created_by_id', 'updated_by_id',
-        'created', 'updated'
+        data,
+        "id",
+        "patient_id",
+        "episode_id",
+        "consistency_token",
+        "created_by_id",
+        "updated_by_id",
+        "created",
+        "updated",
     )
 
     # Only include patient subrecords once - at the patient subrecord level
     for subrecord in subrecords.patient_subrecords():
         name = subrecord.get_api_name()
-        for episode_id, episode in data['episodes'].items():
+        for episode_id, episode in data["episodes"].items():
             if name in episode:
                 del episode[name]
 
@@ -180,11 +182,8 @@ def episode_id_to_json(episode_id, user=None, excludes=None):
     If the episode does not exist raise Episode.DoesNotExist
     """
     episode = models.Episode.objects.get(pk=episode_id)
-    data, patient = patient_id_to_json(
-        episode.patient.id, user=user, excludes=excludes
-    )
-    data['episodes'] = {
-        k: v for k, v in data['episodes'].items()
-        if int(k) == int(episode_id)
+    data, patient = patient_id_to_json(episode.patient.id, user=user, excludes=excludes)
+    data["episodes"] = {
+        k: v for k, v in data["episodes"].items() if int(k) == int(episode_id)
     }
     return data, episode

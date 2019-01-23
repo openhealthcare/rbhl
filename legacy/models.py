@@ -5,8 +5,6 @@ from django.db import models
 from opal.models import PatientSubrecord, EpisodeSubrecord
 
 
-
-
 """
 
 18 WEEK DB
@@ -14,9 +12,11 @@ from opal.models import PatientSubrecord, EpisodeSubrecord
 
 """
 
+
 class ActionLog(EpisodeSubrecord):
     class Meta:
-        verbose_name = 'General Notes'
+        verbose_name = "General Notes"
+
     # Now in rbhl.models.Employment
     # employer       = models.CharField(blank=True, null=True, max_length=100)
     # oh_provider    = models.CharField(blank=True, null=True, max_length=100)
@@ -43,73 +43,65 @@ class ActionLog(EpisodeSubrecord):
 
     # Now in rbhl.models.Letter
     # Second comment box RHS [Comments1]
-    #letters             = models.TextField(blank=True, null=True)
+    # letters             = models.TextField(blank=True, null=True)
 
     # LHS
 
     # First comment box RHS [Other]
-    general_notes       = models.TextField(blank=True, null=True)
+    general_notes = models.TextField(blank=True, null=True)
 
-    finaldays           = models.IntegerField(blank=True, null=True)
+    finaldays = models.IntegerField(blank=True, null=True)
+
 
 """
 
 Blood Book
 
 """
+
+
 class BloodBook(EpisodeSubrecord):
-    reference_number   = models.CharField(blank=True, null=True,
-                                          max_length=200)
-    employer           = models.CharField(blank=True, null=True,
-                                          max_length=200)
-    oh_provider        = models.CharField(blank=True, null=True,
-                                          max_length=100)
-    blood_date         = models.DateField(blank=True, null=True)
-    blood_number       = models.CharField(blank=True, null=True,
-                                          max_length=200)
-    method             = models.CharField(blank=True, null=True,
-                                          max_length=200)
-    blood_collected    = models.CharField(
-        verbose_name='EDTA blood collected',
-        blank=True, null=True,
-        max_length=200)
-    date_dna_extracted = models.CharField(blank=True, null=True,
-                                          max_length=200)
-    information        = models.CharField(blank=True, null=True,
-                                          max_length=200)
-    assayno            = models.CharField(blank=True, null=True,
-                                          max_length=200)
-    assay_date         = models.DateField(blank=True, null=True)
-    blood_taken        = models.DateField(blank=True, null=True)
-    blood_tm           = models.DateField(blank=True, null=True)
-    report_dt          = models.DateField(blank=True, null=True)
-    report_st          = models.DateField(blank=True, null=True)
-    store              = models.CharField(blank=True, null=True,
-                                          max_length=200)
-    exposure           = models.CharField(blank=True, null=True,
-                                          max_length=200)
-    antigen_date       = models.DateField(blank=True, null=True)
-    antigen_type       = models.CharField(blank=True, null=True,
-                                          max_length=200)
-    comment            = models.TextField(blank=True, null=True)
-    batches            = models.TextField(blank=True, null=True)
-    room               = models.TextField(blank=True, null=True)
-    freezer            = models.TextField(blank=True, null=True)
-    shelf              = models.TextField(blank=True, null=True)
-    tray               = models.TextField(blank=True, null=True)
-    vials              = models.TextField(blank=True, null=True)
+    reference_number = models.CharField(blank=True, null=True, max_length=200)
+    employer = models.CharField(blank=True, null=True, max_length=200)
+    oh_provider = models.CharField(blank=True, null=True, max_length=100)
+    blood_date = models.DateField(blank=True, null=True)
+    blood_number = models.CharField(blank=True, null=True, max_length=200)
+    method = models.CharField(blank=True, null=True, max_length=200)
+    blood_collected = models.CharField(
+        verbose_name="EDTA blood collected", blank=True, null=True, max_length=200
+    )
+    date_dna_extracted = models.CharField(blank=True, null=True, max_length=200)
+    information = models.CharField(blank=True, null=True, max_length=200)
+    assayno = models.CharField(blank=True, null=True, max_length=200)
+    assay_date = models.DateField(blank=True, null=True)
+    blood_taken = models.DateField(blank=True, null=True)
+    blood_tm = models.DateField(blank=True, null=True)
+    report_dt = models.DateField(blank=True, null=True)
+    report_st = models.DateField(blank=True, null=True)
+    store = models.CharField(blank=True, null=True, max_length=200)
+    exposure = models.CharField(blank=True, null=True, max_length=200)
+    antigen_date = models.DateField(blank=True, null=True)
+    antigen_type = models.CharField(blank=True, null=True, max_length=200)
+    comment = models.TextField(blank=True, null=True)
+    batches = models.TextField(blank=True, null=True)
+    room = models.TextField(blank=True, null=True)
+    freezer = models.TextField(blank=True, null=True)
+    shelf = models.TextField(blank=True, null=True)
+    tray = models.TextField(blank=True, null=True)
+    vials = models.TextField(blank=True, null=True)
 
 
 class BloodBookResult(EpisodeSubrecord):
     result = models.CharField(blank=True, null=True, max_length=200)
-    allergen   = models.CharField(blank=True, null=True, max_length=200)
-    antigenno  = models.CharField(blank=True, null=True, max_length=200)
-    kul        = models.CharField(blank=True, null=True, max_length=200)
-    klass      = models.CharField(blank=True, null=True, max_length=200)
-    rast       = models.CharField(blank=True, null=True, max_length=200)
+    allergen = models.CharField(blank=True, null=True, max_length=200)
+    antigenno = models.CharField(blank=True, null=True, max_length=200)
+    kul = models.CharField(blank=True, null=True, max_length=200)
+    klass = models.CharField(blank=True, null=True, max_length=200)
+    rast = models.CharField(blank=True, null=True, max_length=200)
     precipitin = models.CharField(blank=True, null=True, max_length=200)
-    igg        = models.CharField(blank=True, null=True, max_length=200)
-    iggclass   = models.CharField(blank=True, null=True, max_length=200)
+    igg = models.CharField(blank=True, null=True, max_length=200)
+    iggclass = models.CharField(blank=True, null=True, max_length=200)
+
 
 """
 Existing form/fields:
@@ -168,6 +160,7 @@ Existing form/fields:
 Peak Flow DB
 
 """
+
 
 class PeakFlowIdentifier(PatientSubrecord):
     occmendo = models.IntegerField(blank=True, null=True)

@@ -5,25 +5,11 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('legacy', '0001_initial'),
-    ]
+    dependencies = [("legacy", "0001_initial")]
 
     operations = [
-        migrations.RemoveField(
-            model_name='actionlog',
-            name='active',
-        ),
-        migrations.RemoveField(
-            model_name='actionlog',
-            name='attendance',
-        ),
-        migrations.RemoveField(
-            model_name='actionlog',
-            name='date_first_appointment',
-        ),
-        migrations.RemoveField(
-            model_name='actionlog',
-            name='firefighter',
-        ),
+        migrations.RemoveField(model_name="actionlog", name="active"),
+        migrations.RemoveField(model_name="actionlog", name="attendance"),
+        migrations.RemoveField(model_name="actionlog", name="date_first_appointment"),
+        migrations.RemoveField(model_name="actionlog", name="firefighter"),
     ]

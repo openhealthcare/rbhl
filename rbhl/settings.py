@@ -18,38 +18,35 @@ try:
     import dj_database_url
 
     DATABASES = {
-        'default': dj_database_url.config(default='sqlite:///' + PROJECT_PATH + '/opal.sqlite')
+        "default": dj_database_url.config(
+            default="sqlite:///" + PROJECT_PATH + "/opal.sqlite"
+        )
     }
 except ImportError:
     DATABASES = {
-        'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(PROJECT_PATH, 'opal.sqlite'),
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': ''
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": os.path.join(PROJECT_PATH, "opal.sqlite"),
+            "USER": "",
+            "PASSWORD": "",
+            "HOST": "",
+            "PORT": "",
         }
     }
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    '.herokuapp.com',
-    '192.168.1.10'
-]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", ".herokuapp.com", "192.168.1.10"]
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
 # In a Windows environment this must be set to your system time zone.
-TIME_ZONE = 'UTC'
+TIME_ZONE = "UTC"
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'en-gb'
+LANGUAGE_CODE = "en-gb"
 
 SITE_ID = 1
 
@@ -66,131 +63,127 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"
-MEDIA_ROOT = ''
+MEDIA_ROOT = ""
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://example.com/media/", "http://media.example.com/"
-MEDIA_URL = ''
+MEDIA_URL = ""
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
-STATIC_ROOT = os.path.join(PROJECT_PATH, 'assets')
+STATIC_ROOT = os.path.join(PROJECT_PATH, "assets")
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
-STATIC_URL = '/assets/'
+STATIC_URL = "/assets/"
 
 # Additional locations of static files
-STATICFILES_DIRS = (
-    os.path.join(PROJECT_PATH, 'static'),
-)
+STATICFILES_DIRS = (os.path.join(PROJECT_PATH, "static"),)
 
 # List of finder classes that know how to find static files in
 # various locations.
 STATICFILES_FINDERS = (
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
-    'compressor.finders.CompressorFinder',
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+    #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    "compressor.finders.CompressorFinder",
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = '(o6_+tl&ba!!y99*fr4wz8m9ifm)&h2e+q5z-s^t6^oue2&aq3'
+SECRET_KEY = "(o6_+tl&ba!!y99*fr4wz8m9ifm)&h2e+q5z-s^t6^oue2&aq3"
 
 if DEBUG:
     TEMPLATE_LOADERS = (
-        'django.template.loaders.filesystem.Loader',
-        'django.template.loaders.app_directories.Loader',
+        "django.template.loaders.filesystem.Loader",
+        "django.template.loaders.app_directories.Loader",
     )
 else:
     TEMPLATE_LOADERS = (
-        ('django.template.loaders.cached.Loader', (
-            'django.template.loaders.filesystem.Loader',
-            'django.template.loaders.app_directories.Loader',
-            )),
+        (
+            "django.template.loaders.cached.Loader",
+            (
+                "django.template.loaders.filesystem.Loader",
+                "django.template.loaders.app_directories.Loader",
+            ),
+        ),
     )
 
 MIDDLEWARE = (
-    'django.middleware.common.CommonMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'opal.middleware.AngularCSRFRename',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-
+    "django.middleware.common.CommonMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "opal.middleware.AngularCSRFRename",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
     # for two factor authentication
-    'django_otp.middleware.OTPMiddleware',
-    'two_factor.middleware.threadlocals.ThreadLocals',
-    'rbhl.middleware.TwoStageAuthenticationRequired',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'opal.middleware.DjangoReversionWorkaround',
-    'reversion.middleware.RevisionMiddleware',
-    'rbhl.middleware.SecurityHeadersMiddleware',
-
-#    'axes.middleware.FailedLoginMiddleware',
+    "django_otp.middleware.OTPMiddleware",
+    "two_factor.middleware.threadlocals.ThreadLocals",
+    "rbhl.middleware.TwoStageAuthenticationRequired",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "opal.middleware.DjangoReversionWorkaround",
+    "reversion.middleware.RevisionMiddleware",
+    "rbhl.middleware.SecurityHeadersMiddleware",
+    #    'axes.middleware.FailedLoginMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'rbhl.urls'
+ROOT_URLCONF = "rbhl.urls"
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'rbhl.wsgi.application'
+WSGI_APPLICATION = "rbhl.wsgi.application"
 
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            os.path.join(PROJECT_PATH, 'templates'),
-        ],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.contrib.auth.context_processors.auth',
-                'django.template.context_processors.debug',
-                'django.template.context_processors.i18n',
-                'django.template.context_processors.media',
-                'django.template.context_processors.static',
-                'django.template.context_processors.tz',
-                'django.contrib.messages.context_processors.messages',
-                'opal.context_processors.settings',
-                'opal.context_processors.models',
-            ],
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [os.path.join(PROJECT_PATH, "templates")],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.contrib.auth.context_processors.auth",
+                "django.template.context_processors.debug",
+                "django.template.context_processors.i18n",
+                "django.template.context_processors.media",
+                "django.template.context_processors.static",
+                "django.template.context_processors.tz",
+                "django.contrib.messages.context_processors.messages",
+                "opal.context_processors.settings",
+                "opal.context_processors.models",
+            ]
         },
-    },
+    }
 ]
 
 INSTALLED_APPS = (
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.sites',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-#    'axes',
-    'reversion',
-    'rest_framework',
-    'rest_framework.authtoken',
-    'compressor',
-    'opal',
-    'opal.core.search',
-    'opal.core.pathway',
-    'legacy',
-    'django.contrib.admin',
-    'django_otp',
-    'django_otp.plugins.otp_static',
-    'django_otp.plugins.otp_totp',
-    'two_factor',
-    'rbhl',
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.sites",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    #    'axes',
+    "reversion",
+    "rest_framework",
+    "rest_framework.authtoken",
+    "compressor",
+    "opal",
+    "opal.core.search",
+    "opal.core.pathway",
+    "legacy",
+    "django.contrib.admin",
+    "django_otp",
+    "django_otp.plugins.otp_static",
+    "django_otp.plugins.otp_totp",
+    "two_factor",
+    "rbhl",
 )
 
 
-
-V_FORMAT = '%(asctime)s %(process)d %(thread)d %(filename)s %(funcName)s \
-%(levelname)s %(message)s'
+V_FORMAT = "%(asctime)s %(process)d %(thread)d %(filename)s %(funcName)s \
+%(levelname)s %(message)s"
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
@@ -198,81 +191,75 @@ V_FORMAT = '%(asctime)s %(process)d %(thread)d %(filename)s %(funcName)s \
 # See http://docs.djangoproject.com/en/dev/topics/logging for
 # more details on how to customize your logging configuration.
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse'
-        }
-    },
-    'formatters': {
-        'verbose': {
-            'format': V_FORMAT
-        }
-    },
-    'handlers': {
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
+    "version": 1,
+    "disable_existing_loggers": False,
+    "filters": {"require_debug_false": {"()": "django.utils.log.RequireDebugFalse"}},
+    "formatters": {"verbose": {"format": V_FORMAT}},
+    "handlers": {
+        "mail_admins": {
+            "level": "ERROR",
+            "filters": ["require_debug_false"],
+            "class": "django.utils.log.AdminEmailHandler",
         },
-        'console': {
-            'level': 'INFO',
-            'filters': [],
-            'class': 'logging.StreamHandler',
+        "console": {"level": "INFO", "filters": [], "class": "logging.StreamHandler"},
+        "console_detailed": {
+            "level": "INFO",
+            "filters": [],
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
         },
-        'console_detailed': {
-            'level': 'INFO',
-            'filters': [],
-            'class': 'logging.StreamHandler',
-            'formatter': 'verbose'
+    },
+    "loggers": {
+        "django.request": {
+            "handlers": ["mail_admins", "console"],
+            "level": "ERROR",
+            "propagate": True,
         }
     },
-    'loggers': {
-        'django.request': {
-            'handlers': ['mail_admins', 'console'],
-            'level': 'ERROR',
-            'propagate': True,
-        }
-    }
 }
 
 # Begins custom settings
 
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
-DATE_FORMAT = 'd/m/Y'
-DATE_INPUT_FORMATS = ['%d/%m/%Y']
-DATETIME_FORMAT = 'd/m/Y H:i:s'
-DATETIME_INPUT_FORMATS = ['%d/%m/%Y %H:%M:%S']
+DATE_FORMAT = "d/m/Y"
+DATE_INPUT_FORMATS = ["%d/%m/%Y"]
+DATETIME_FORMAT = "d/m/Y H:i:s"
+DATETIME_INPUT_FORMATS = ["%d/%m/%Y %H:%M:%S"]
 
-CSRF_COOKIE_NAME = 'XSRF-TOKEN'
+CSRF_COOKIE_NAME = "XSRF-TOKEN"
 APPEND_SLASH = False
 
 AXES_LOCK_OUT_AT_FAILURE = False
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
+EMAIL_BACKEND = os.environ.get(
+    "EMAIL_BACKEND", "django.core.mail.backends.smtp.EmailBackend"
+)
 if not DEBUG:
-    EMAIL_HOST_USER = os.environ.get('SENDGRID_USERNAME', '')
-    EMAIL_HOST= 'smtp.sendgrid.net'
+    EMAIL_HOST_USER = os.environ.get("SENDGRID_USERNAME", "")
+    EMAIL_HOST = "smtp.sendgrid.net"
     EMAIL_PORT = 587
     EMAIL_USE_TLS = True
-    EMAIL_HOST_PASSWORD = os.environ.get('SENDGRID_PASSWORD', '')
+    EMAIL_HOST_PASSWORD = os.environ.get("SENDGRID_PASSWORD", "")
 else:
     EMAIL_PORT = 1025
-    EMAIL_HOST = 'localhost'
+    EMAIL_HOST = "localhost"
 
-COVERAGE_EXCLUDE_MODULES = ('rbhl.migrations', 'rbhl.tests',
-                            'rbhl.local_settings',
-                            'opal.migrations', 'opal.tests',
-                            'opal.wsgi')
+COVERAGE_EXCLUDE_MODULES = (
+    "rbhl.migrations",
+    "rbhl.tests",
+    "rbhl.local_settings",
+    "opal.migrations",
+    "opal.tests",
+    "opal.wsgi",
+)
 
 
 # Begins OPAL Settings
 
 OPAL_LOG_OUT_MINUTES = 15
-OPAL_LOG_OUT_DURATION = OPAL_LOG_OUT_MINUTES*60*1000
+OPAL_LOG_OUT_DURATION = OPAL_LOG_OUT_MINUTES * 60 * 1000
 
 # Begins OPAL optional settings
 # OPAL_EXTRA_HEADER = ''
@@ -289,19 +276,19 @@ INTEGRATING = False
 # OPAL required Django settings you should edit
 
 CONTACT_EMAIL = []
-DEFAULT_FROM_EMAIL = 'hello@example.com'
-DEFAULT_DOMAIN = 'http://rbhl.com/'
+DEFAULT_FROM_EMAIL = "hello@example.com"
+DEFAULT_DOMAIN = "http://rbhl.com/"
 
 # Begins OPAL Settings you should edit !
 
 AUTOCOMPLETE_SEARCH = True
-OPAL_BRAND_NAME = 'Indigo'
-VERSION_NUMBER  = '1.0'
+OPAL_BRAND_NAME = "Indigo"
+VERSION_NUMBER = "1.0"
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework.authentication.TokenAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
     )
 }
 
@@ -311,12 +298,10 @@ REST_FRAMEWORK = {
 # otherwise its a string and the name space they are from.
 LOGIN_NOT_REQUIRED = (
     # admin login
-    ("login", "admin",),
-
+    ("login", "admin"),
     # two factor core views
-    ("login", "two_factor",),
-    ("qr", "two_factor",),
-
+    ("login", "two_factor"),
+    ("qr", "two_factor"),
     # our two factor views
     "two-factor-setup-redirect",
     "two-factor-required",
@@ -324,10 +309,10 @@ LOGIN_NOT_REQUIRED = (
 )
 
 # Django two factor auth settings
-LOGIN_URL = 'two_factor:login'
-LOGIN_REDIRECT_URL = 'change-password-check'
-LOGOUT_REDIRECT_URL = 'two_factor:login'
-TWO_FACTOR_SMS_GATEWAY = 'two_factor.gateways.fake.Fake'
+LOGIN_URL = "two_factor:login"
+LOGIN_REDIRECT_URL = "change-password-check"
+LOGOUT_REDIRECT_URL = "two_factor:login"
+TWO_FACTOR_SMS_GATEWAY = "two_factor.gateways.fake.Fake"
 
 # the name as it appears in google authenticator
 OTP_TOTP_ISSUER = urllib.parse.quote(OPAL_BRAND_NAME)
@@ -336,7 +321,6 @@ OTP_TOTP_ISSUER = urllib.parse.quote(OPAL_BRAND_NAME)
 
 # should super users use two factor authentication
 TWO_FACTOR_FOR_SUPERUSERS = True
-
 
 
 # if you want sass, uncomment the below and gem install sass

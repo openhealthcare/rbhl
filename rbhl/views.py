@@ -28,12 +28,9 @@ class PeakFlowMatcher(match.Matcher):
     """
     Matcher for data in the Opal portable export format.
     """
-    direct_match_field     = 'hospital_number'
-    attribute_match_fields = [
-        'date_of_birth',
-        'first_name',
-        'surname',
-    ]
+
+    direct_match_field = "hospital_number"
+    attribute_match_fields = ["date_of_birth", "first_name", "surname"]
 
     def get_demographic_dict(self):
         return self.data
@@ -41,18 +38,18 @@ class PeakFlowMatcher(match.Matcher):
 
 class ImportView(FormView):
     form_class = ImportDataForm
-    template_name = 'import.html'
+    template_name = "import.html"
 
     def get_success_url(self):
-        return '/#/patient/{0}'.format(self.patient.id)
+        return "/#/patient/{0}".format(self.patient.id)
 
     def form_valid(self, form):
-        raw_data = self.request.FILES['data_file'].read()
+        raw_data = self.request.FILES["data_file"].read()
         data = json.loads(raw_data)
 
-        demographics = data['demographics'][0]
-        demographics['date_of_birth'] = serialization.deserialize_date(
-            demographics['date_of_birth']
+        demographics = data["demographics"][0]
+        demographics["date_of_birth"] = serialization.deserialize_date(
+            demographics["date_of_birth"]
         )
 
         matcher = PeakFlowMatcher(demographics)
@@ -64,13 +61,11 @@ class ImportView(FormView):
         self.patient = patient
         self.episode = episode
 
-        peak_flow_days = data['episodes']['1']['peak_flow_day']
+        peak_flow_days = data["episodes"]["1"]["peak_flow_day"]
 
         for day_data in peak_flow_days:
-            day_data['date'] = serialization.deserialize_date(
-                day_data['date']
-            )
-            day, created = episode.peakflowday_set.get_or_create(date=day_data['date'])
+            day_data["date"] = serialization.deserialize_date(day_data["date"])
+            day, created = episode.peakflowday_set.get_or_create(date=day_data["date"])
             for key, value in day_data.items():
                 setattr(day, key, value)
             day.save()
@@ -82,11 +77,12 @@ class StaticTableListView(TemplateView):
     """
     View to render a Static HTML table list
     """
+
     def dispatch(self, *args, **kwargs):
         """
         Find the relevant PatientList class and attach it to self.patient_list
         """
-        self.patient_list = StaticTableList.get(kwargs['slug'])()
+        self.patient_list = StaticTableList.get(kwargs["slug"])()
         return super(StaticTableListView, self).dispatch(*args, **kwargs)
 
     def get_context_data(self, *args, **kwargs):
@@ -94,7 +90,7 @@ class StaticTableListView(TemplateView):
         Add the queryset to the patient list as {{ object_list }}
         """
         ctx = super(StaticTableListView, self).get_context_data(*args, **kwargs)
-        ctx['object_list'] = self.patient_list.get_queryset()
+        ctx["object_list"] = self.patient_list.get_queryset()
         return ctx
 
     def get_template_names(self, *args, **kwargs):
@@ -103,8 +99,8 @@ class StaticTableListView(TemplateView):
 
 class FormSearchRedirectView(RedirectView):
     def get_redirect_url(self, *args, **kwargs):
-        url = reverse('search_index')
-        return url + '#/?query={}'.format(self.request.GET.get('query', ''))
+        url = reverse("search_index")
+        return url + "#/?query={}".format(self.request.GET.get("query", ""))
 
 
 class TwoFactorRequired(TemplateView):
@@ -116,8 +112,10 @@ class OtpSetupRelogin(StaffRequiredMixin, RedirectView):
         return reverse("two-factor-setup")
 
     def get_user(self):
-        return User.objects.filter(is_superuser=False).filter(is_staff=False).get(
-            username__iexact=self.kwargs["username"]
+        return (
+            User.objects.filter(is_superuser=False)
+            .filter(is_staff=False)
+            .get(username__iexact=self.kwargs["username"])
         )
 
     def get(self, request, *args, **kwargs):
@@ -132,12 +130,12 @@ class ChangePasswordCheck(RedirectView):
             user=self.request.user
         )
         if profile.force_password_change:
-            return reverse('change-password')
+            return reverse("change-password")
         else:
-            return reverse('home')
+            return reverse("home")
 
 
 class TwoFactorSetupView(two_factor_core_views.SetupView):
     @property
     def success_url(self):
-        return reverse('home')
+        return reverse("home")
