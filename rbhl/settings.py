@@ -295,7 +295,7 @@ DEFAULT_DOMAIN = 'http://rbhl.com/'
 # Begins OPAL Settings you should edit !
 
 AUTOCOMPLETE_SEARCH = True
-OPAL_BRAND_NAME = 'Lungs@Work'
+OPAL_BRAND_NAME = 'Indigo'
 VERSION_NUMBER  = '1.0'
 
 REST_FRAMEWORK = {
