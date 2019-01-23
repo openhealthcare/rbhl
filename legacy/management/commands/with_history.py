@@ -61,7 +61,7 @@ def load_PAS_demographics():
     Load the demographics from the database that talks to the PAS.
     Use these as our basis for matching against.
     """
-    data = ffs.Path('~/Documents/RBHL/17.01.19/patient details.csv')
+    data = ffs.Path('~/Documents/ohc/Brompton-17-Jan/patient details.csv')
     patients_imported = 0
     print('Beginning PAS DB demographics import ')
     with open(data.abspath) as csvfile:

@@ -83,4 +83,4 @@ class ActivePatients(StaticTableList):
         """
         Only those patients who are active
         """
-        return Episode.objects.filter(actionlog__active=True)
+        return Episode.objects.filter(cliniclog__active=True).order_by("cliniclog__clinicdate")

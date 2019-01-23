@@ -60,6 +60,10 @@ class Referral(models.EpisodeSubrecord):
     # Used by admin staff
     comments               = fields.TextField(blank=True, null=True)
 
+    attendance = fields.NullBooleanField()
+    date_first_appointment = fields.DateField(blank=True, null=True)
+    firefighter         = fields.NullBooleanField()
+
 
 class Employment(models.EpisodeSubrecord):
     _icon         = 'fa fa-building-o'
@@ -96,6 +100,9 @@ class ClinicLog(models.EpisodeSubrecord):
     other_oh_info       = fields.NullBooleanField()
     other_gp_info       = fields.NullBooleanField()
     work_samples        = fields.NullBooleanField()
+
+    active              = fields.NullBooleanField()
+
 
     def days_since_first_attended(self):
         if not self.clinicdate:
