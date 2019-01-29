@@ -11,7 +11,7 @@
    <br />
 </span>
 <span ng-show="item.blood_date">
-  <b>Blood date</b> [[ item.blood_date | shortDate ]]
+  <b>Blood date</b> [[ item.blood_date | displayDate ]]
    <br />
 </span>
 <span ng-show="item.blood_number">
@@ -39,23 +39,23 @@
    <br />
 </span>
 <span ng-show="item.assay_date">
-  <b>Assay date</b>[[ item.assay_date | shortDate ]]
+  <b>Assay date</b>[[ item.assay_date | displayDate ]]
    <br />
 </span>
 <span ng-show="item.blood_taken">
-  <b>Blood taken</b>[[ item.blood_taken | shortDate ]]
+  <b>Blood taken</b>[[ item.blood_taken | displayDate ]]
    <br />
 </span>
 <span ng-show="item.blood_tm">
-  <b>Blood tm</b>[[ item.blood_tm | shortDate ]]
+  <b>Blood tm</b>[[ item.blood_tm | displayDate ]]
    <br />
 </span>
 <span ng-show="item.report_dt">
-  <b>Report dt</b>[[ item.report_dt | shortDate ]]
+  <b>Report dt</b>[[ item.report_dt | displayDate ]]
    <br />
 </span>
 <span ng-show="item.report_st">
-  <b>Report st</b>[[ item.report_st | shortDate ]]
+  <b>Report st</b>[[ item.report_st | displayDate ]]
    <br />
 </span>
 <span ng-show="item.store">
@@ -67,7 +67,7 @@
    <br />
 </span>
 <span ng-show="item.antigen_date">
-  <b>Antigen date</b> [[ item.antigen_date | shortDate ]]
+  <b>Antigen date</b> [[ item.antigen_date | displayDate ]]
    <br />
 </span>
 <span ng-show="item.antigen_type">

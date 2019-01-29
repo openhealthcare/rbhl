@@ -1,3 +1,4 @@
+{% load forms %}
 <div class="row">
   <div class="col-md-6">
     <b>Referrer:</b>
@@ -14,12 +15,12 @@
     [[ item.date_of_referral | displayDate ]]
   </div>
 </div>
-<div class="row" ng-show="item.date_refferal_received">
+<div class="row" ng-show="item.date_referral_received">
   <div class="col-md-6">
     <b>Referral received:</b>
   </div>
   <div class="col-md-6">
-    [[ item.date_refferal_received | displayDate ]]
+    [[ item.date_referral_received | displayDate ]]
   </div>
 </div>
 <div class="row" ng-show="item.date_first_contact">
@@ -34,8 +35,8 @@
   <div class="col-md-6">
     <b>Attendance:</b>
   </div>
-  <div class="col-md-6">
-    [[ item.attendance | boxed ]]
+  <div ng-show="item.attendance" class="col-md-6">
+    {% icon "fa-check" %}
   </div>
 </div>
 <div class="row" ng-show="item.date_first_appointment">
@@ -50,8 +51,8 @@
   <div class="col-md-6">
     <b>Firefighter pre-employment:</b>
   </div>
-  <div class="col-md-6">
-    [[ item.firefighter | boxed ]]
+  <div class="col-md-6" ng-show="item.firefighter">
+      {% icon "fa-check" %}
   </div>
 </div>
 
