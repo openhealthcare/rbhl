@@ -28,7 +28,7 @@ urlpatterns = [
         name="two-factor-setup",
     ),
     url(
-        r'^account/two_factor/(?P<username>[0-9A-Za-z_\-]+)/setup',
+        r'^account/two_factor/(?P<username>.+)/setup',
         views.OtpSetupRelogin.as_view(),
         name="two-factor-setup-redirect"
     ),
