@@ -328,3 +328,19 @@ a {
 .c3-region.workingday {
     fill: red;
 }
+
+.bottom-menu{
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    bottom: 30px;
+    display: block;
+    padding-top: 10px;
+
+    hr{
+        margin-left: 10px;
+        margin-right: 10px;
+        border-top: 2px solid white;
+        display: block;
+    }
+}
