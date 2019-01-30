@@ -96,7 +96,7 @@ class ClinicLog(models.EpisodeSubrecord):
     seen_by           = fields.CharField(
         blank=True, null=True, max_length=100, verbose_name="Seen by"
     )
-    clinicdate        = fields.DateField(blank=True, null=True)
+    clinic_date        = fields.DateField(blank=True, null=True)
     diagnosis_made    = fields.NullBooleanField(verbose_name="Diagnosis made")
     follow_up_planned = fields.NullBooleanField(verbose_name="Follow up planned")
     date_of_followup  = fields.DateField(
@@ -152,10 +152,10 @@ class ClinicLog(models.EpisodeSubrecord):
 
 
     def days_since_first_attended(self):
-        if not self.clinicdate:
+        if not self.clinic_date:
             return None
         today = datetime.date.today()
-        diff = today - self.clinicdate
+        diff = today - self.clinic_date
         return diff.days
 
 class Letter(models.EpisodeSubrecord):

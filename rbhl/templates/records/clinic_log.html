@@ -1,4 +1,4 @@
-
+{% load forms %}
 <div class="row"> <!-- 1 -->
 
   <div class="col-md-2"> <!-- Top level column -->
@@ -8,10 +8,10 @@
   </div> <!-- Top level column -->
 
   <div class="col-md-4"> <!-- Top level column -->
-    <span ng-show="item.clinicdate">
+    <span ng-show="item.clinic_date">
       <b>First attended clinic:</b>
     </span>
-    [[ item.clinicdate | displayDate ]]
+    [[ item.clinic_date | displayDate ]]
   </div> <!-- Top level column -->
 
   <div class="col-md-2"> <!-- Top level column -->
@@ -22,7 +22,7 @@
 
   <div class="col-md-4"> <!-- Top level column -->
     <span ng-show="item.follow_up_planned">
-      Follow up planned
+      <b>Follow up planned</b>
     </span>
     <span ng-show="item.date_of_followup">
       [[ item.date_of_followup | displayDate ]]
@@ -41,8 +41,8 @@
       <div class="col-md-8">
         <b>Lung function:</b>
       </div> <!-- Label column -->
-      <div class="col-md-4">
-        [[ item.lung_function | boxed]]
+      <div class="col-md-4" ng-show="item.lung_function">
+          {% icon "fa-check" %}
       </div> <!-- value column -->
     </div>
 
@@ -68,8 +68,8 @@
           <b>Lung function attendance:</b>
         </span>
       </div> <!-- Label column -->
-      <div class="col-md-4">
-        [[ item.lung_function_attendance | boxed]]
+      <div class="col-md-4" ng-show="item.lung_function_attendance">
+          {% icon "fa-check" %}
       </div> <!-- value column -->
     </div>
   </div> <!-- Top level column -->
@@ -84,8 +84,8 @@
       <div class="col-md-8">
         <b>Histamine:</b>
       </div> <!-- Label column -->
-      <div class="col-md-4">
-        [[ item.histamine | boxed]]
+      <div class="col-md-4" ng-show="item.histamine">
+          {% icon "fa-check" %}
       </div> <!-- value column -->
     </div>
 
@@ -111,8 +111,8 @@
           <b>Histamine attendance:</b>
         </span>
       </div> <!-- Label column -->
-      <div class="col-md-4">
-        [[ item.histamine_attendance | boxed]]
+      <div class="col-md-4" ng-show="item.histamine_attendance">
+          {% icon "fa-check" %}
       </div> <!-- value column -->
     </div>
   </div> <!-- Top level column -->
@@ -128,8 +128,8 @@
       <div class="col-md-8">
         <b>Peak flow:</b>
       </div> <!-- Label column -->
-      <div class="col-md-4">
-        [[ item.peak_flow | boxed]]
+      <div class="col-md-4" ng-show="item.peak_flow">
+          {% icon "fa-check" %}
       </div> <!-- value column -->
     </div>
 
@@ -140,8 +140,8 @@
       <div class="col-md-8">
         <b>Other RBH bloods:</b>
       </div> <!-- Label column -->
-      <div class="col-md-4">
-        [[ item.other_rbh_bloods | boxed ]]
+      <div class="col-md-4" ng-show="item.other_rbh_bloods">
+          {% icon "fa-check" %}
       </div> <!-- value column -->
     </div>
   </div> <!-- Top level column -->
@@ -151,8 +151,8 @@
       <div class="col-md-8">
         <b>Immunology OEM:</b>
       </div> <!-- Label column -->
-      <div class="col-md-4">
-        [[item.immunology_oem | boxed]]
+      <div class="col-md-4" ng-show="item.immunology_oem">
+          {% icon "fa-check" %}
       </div> <!-- value column -->
     </div>
   </div> <!-- Top level column -->
@@ -162,8 +162,8 @@
       <div class="col-md-8">
         <b>Other hospital info:</b>
       </div> <!-- Label column -->
-      <div class="col-md-4">
-        [[ item.other_hospital_info | boxed ]]
+      <div class="col-md-4" ng-show="item.other_hospital_info">
+          {% icon "fa-check" %}
       </div> <!-- value column -->
     </div>
 
@@ -180,8 +180,8 @@
       <div class="col-md-8">
         <b>Other OH info:</b>
       </div> <!-- Label column -->
-      <div class="col-md-4">
-        [[ item.other_oh_info | boxed ]]
+      <div class="col-md-4" ng-show="item.other_oh_info">
+          {% icon "fa-check" %}
       </div> <!-- value column -->
     </div>
 
@@ -192,8 +192,8 @@
       <div class="col-md-8">
         <b>Other GP info:</b>
       </div> <!-- Label column -->
-      <div class="col-md-4">
-        [[ item.other_gp_info | boxed ]]
+      <div class="col-md-4" ng-show="item.other_gp_info">
+          {% icon "fa-check" %}
       </div> <!-- value column -->
     </div>
   </div> <!-- Top level column -->
@@ -203,8 +203,8 @@
       <div class="col-md-8">
         <b>Work samples:</b>
       </div> <!-- Label column -->
-      <div class="col-md-4">
-        [[ item.work_samples | boxed ]]
+      <div class="col-md-4" ng-show="item.work_samples">
+          {% icon "fa-check" %}
       </div> <!-- value column -->
     </div>
   </div> <!-- Top level column -->

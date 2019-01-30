@@ -215,17 +215,24 @@ a {
   padding-bottom: 18px;
 }
 
+.dropdown-menu .btn {
+  padding: 5px 10px;
+}
+
 .btn.btn-primary {
   background: #d01c17;
+  border: none;
 }
 
 .btn.btn-secondary {
   background: white;
   color: #2c2d30;
+  border: 1px solid #ccc;
 }
 
 .btn-cancel {
   margin-right: 20px;
+  border: 1px solid #ccc;
 }
 
 .panel.login {
@@ -328,6 +335,13 @@ a {
 .horizontal-form {
   padding-left: 20px;
   padding-right: 20px;
+}
+.horizontal-form .checkbox {
+  margin-top: 32px;
+}
+
+.form-row {
+  height: 59px;
 }
 
 /*# sourceMappingURL=rbhl.css.map */
