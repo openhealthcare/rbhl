@@ -217,6 +217,7 @@ a {
 
 .btn.btn-primary {
   background: #d01c17;
+  border: none;
 }
 
 .btn.btn-secondary {
