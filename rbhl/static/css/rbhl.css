@@ -207,12 +207,16 @@ a {
   border: none;
 }
 
-.btn:not(.dropdown-menu .btn) {
+.btn {
   box-shadow: none;
   border-color: #ccc;
   border-radius: 0.25rem;
   padding-top: 18px;
   padding-bottom: 18px;
+}
+
+.dropdown-menu .btn {
+  padding: 5px 10px;
 }
 
 .btn.btn-primary {

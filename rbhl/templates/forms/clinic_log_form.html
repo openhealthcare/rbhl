@@ -12,6 +12,108 @@
         </div>
     </div>
 </div>
+<hr>
+
+<div class="row form-row">
+    <div class="col-md-4">
+        <div class="row">
+            <div class="col-sm-9 col-sm-push-3">
+                {% checkbox field="ClinicLog.lung_function" style="vertical" %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="horizontal-form">
+            {% datepicker field="ClinicLog.lung_function_date" label="Date" %}
+        </div>
+    </div>
+    <div class="col-md-4">
+        {% checkbox field="ClinicLog.lung_function_attendance" style="vertical" label="Attended" %}
+    </div>
+</div>
+
+
+<div class="row form-row">
+    <div class="col-md-4">
+        <div class="row">
+            <div class="col-sm-9 col-sm-push-3">
+                {% checkbox field="ClinicLog.histamine" style="vertical" %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="horizontal-form">
+            {% datepicker field="ClinicLog.histamine_date" label="Date" %}
+        </div>
+    </div>
+    <div class="col-md-4">
+        {% checkbox field="ClinicLog.histamine_attendance" style="vertical" label="Attended" %}
+    </div>
+</div>
+
+<div class="row form-row">
+    <div class="col-md-4">
+        <div class="row">
+            <div class="col-sm-9 col-sm-push-3">
+                {% checkbox field="ClinicLog.peak_flow" style="vertical" %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr>
+
+<div class="row form-row">
+    <div class="col-md-4">
+        <div class="row">
+            <div class="col-sm-9 col-sm-push-3">
+                {% checkbox field="ClinicLog.other_rbh_bloods" style="vertical" %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="row">
+            <div class="col-sm-9 col-sm-push-3">
+                {% checkbox field="ClinicLog.immunology_oem" style="vertical" %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="row">
+            <div class="col-sm-9 col-sm-push-3">
+                {% checkbox field="ClinicLog.other_hospital_info" style="vertical" %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row form-row">
+    <div class="col-md-4">
+        <div class="row">
+            <div class="col-sm-9 col-sm-push-3">
+                {% checkbox field="ClinicLog.other_oh_info" style="vertical" %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="row">
+            <div class="col-sm-9 col-sm-push-3">
+                {% checkbox field="ClinicLog.other_gp_info" style="vertical" %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="row">
+            <div class="col-sm-9 col-sm-push-3">
+                {% checkbox field="ClinicLog.work_samples" style="vertical" %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr>
+
+
 <div class="row form-row">
     <div class="col-md-4">
         <div class="row">
@@ -21,8 +123,6 @@
         </div>
     </div>
 </div>
-
-
 
 <div class="row form-row">
     <div class="col-md-4">
@@ -35,116 +135,6 @@
     <div class="col-md-8" ng-show="editing.clinic_log.follow_up_planned">
         <div class="horizontal-form">
             {% datepicker field="ClinicLog.date_of_followup" label="Follow up date" %}
-        </div>
-    </div>
-</div>
-
-<div class="row form-row">
-    <div class="col-md-4">
-        <div class="row">
-            <div class="col-sm-9 col-sm-push-3">
-                {% checkbox field="ClinicLog.peak_flow" style="vertical" %}
-            </div>
-        </div>
-    </div>
-
-</div>
-<div class="row form-row">
-    <div class="col-md-4">
-        <div class="row">
-            <div class="col-sm-9 col-sm-push-3">
-                {% checkbox field="ClinicLog.immunology_oem" style="vertical" %}
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row form-row">
-    <div class="col-md-4">
-        <div class="row">
-            <div class="col-sm-9 col-sm-push-3">
-                {% checkbox field="ClinicLog.histamine" style="vertical" %}
-            </div>
-        </div>
-    </div>
-    <div class="col-md-8" ng-show="editing.clinic_log.histamine">
-        <div class="horizontal-form">
-            {% datepicker field="ClinicLog.histamine_date" %}
-        </div>
-    </div>
-</div>
-<div ng-show="editing.clinic_log.histamine" class="row">
-    <div class="col-md-8 col-md-push-4">
-        <div class="row">
-            <div class="col-sm-9 col-sm-push-3">
-                {% checkbox field="ClinicLog.histamine_attendance" style="vertical" %}
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row form-row">
-    <div class="col-md-4">
-        <div class="row">
-            <div class="col-sm-9 col-sm-push-3">
-                {% checkbox field="ClinicLog.lung_function" style="vertical" %}
-            </div>
-        </div>
-    </div>
-    <div class="col-md-8" ng-show="editing.clinic_log.lung_function">
-        <div class="horizontal-form">
-            {% datepicker field="ClinicLog.lung_function_date" %}
-        </div>
-    </div>
-</div>
-
-<div ng-show="editing.clinic_log.lung_function" class="row form-row">
-    <div class="col-md-8 col-md-push-4">
-        <div class="row ">
-            <div class="col-sm-9 col-sm-push-3">
-                {% checkbox field="ClinicLog.lung_function_attendance" style="vertical" %}
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row form-row">
-    <div class="col-md-4">
-        <div class="row">
-            <div class="col-sm-9 col-sm-push-3">
-                {% checkbox field="ClinicLog.work_samples" style="vertical" %}
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="row">
-            <div class="col-sm-9 col-sm-push-3">
-                {% checkbox field="ClinicLog.other_hospital_info" style="vertical" %}
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="row">
-            <div class="col-sm-9 col-sm-push-3">
-                {% checkbox field="ClinicLog.other_oh_info" style="vertical" %}
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row form-row">
-    <div class="col-md-4">
-        <div class="row">
-            <div class="col-sm-9 col-sm-push-3">
-                {% checkbox field="ClinicLog.other_gp_info" style="vertical" %}
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="row">
-            <div class="col-sm-9 col-sm-push-3">
-                {% checkbox field="ClinicLog.other_rbh_bloods" style="vertical" %}
-            </div>
         </div>
     </div>
 </div>

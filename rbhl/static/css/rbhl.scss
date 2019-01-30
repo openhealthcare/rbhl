@@ -232,8 +232,7 @@ a {
   border: none;
 }
 
-// drop drop down menus, these are date pickers
-.btn:not(.dropdown-menu .btn){
+.btn{
     box-shadow: none;
     border-color: $lightgrey;
     // border: none;
@@ -241,6 +240,12 @@ a {
     padding-top: 18px;
     padding-bottom: 18px;
 }
+
+// date picker btns
+.dropdown-menu .btn{
+    padding: 5px 10px;
+}
+
 .btn.btn-primary {
     background: $red;
     border: none;
