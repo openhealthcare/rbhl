@@ -43,25 +43,39 @@ class ContactDetails(models.PatientSubrecord):
     phone  = fields.CharField(blank=True, null=True, max_length=100)
     email  = fields.CharField(blank=True, null=True, max_length=100)
 
+    class Meta:
+        verbose_name = "Contact details"
+
 
 class Referral(models.EpisodeSubrecord):
     _icon         = 'fa fa-level-up'
     _is_singleton = True
 
-    referrer_title         = models.ForeignKeyOrFreeText(models.Title)
-    referrer_name          = fields.CharField(blank=True, null=True,
-                                              max_length=100)
-    date_of_referral       = fields.DateField(blank=True, null=True)
+    referrer_title         = models.ForeignKeyOrFreeText(
+        models.Title, verbose_name="Referrer title"
+    )
+    referrer_name          = fields.CharField(
+        blank=True, null=True, max_length=100, verbose_name="Referrer name"
+    )
+    date_of_referral       = fields.DateField(
+        blank=True, null=True, verbose_name="Date of referral"
+    )
 
     # Process tracking for admin staff
-    date_refferal_received = fields.DateField(blank=True, null=True)
+    date_referral_received = fields.DateField(
+        blank=True, null=True, verbose_name="Date referral received"
+    )
     # ??
-    date_first_contact     = fields.DateField(blank=True, null=True)
+    date_first_contact     = fields.DateField(
+        blank=True, null=True, verbose_name="Date first contact"
+    )
     # Used by admin staff
     comments               = fields.TextField(blank=True, null=True)
 
     attendance = fields.NullBooleanField()
-    date_first_appointment = fields.DateField(blank=True, null=True)
+    date_first_appointment = fields.DateField(
+        blank=True, null=True, verbose_name="Date first appointment"
+    )
     firefighter         = fields.NullBooleanField()
 
 
@@ -70,38 +84,71 @@ class Employment(models.EpisodeSubrecord):
     _is_singleton = True
 
     employer    = fields.CharField(blank=True, null=True, max_length=100)
-    oh_provider = fields.CharField(blank=True, null=True, max_length=100)
+    oh_provider = fields.CharField(
+        blank=True, null=True, max_length=100, verbose_name="OH provider"
+    )
 
 
 class ClinicLog(models.EpisodeSubrecord):
     _icon         = 'fa fa-hospital-o'
     _is_singleton = True
 
-    seen_by           = fields.CharField(blank=True, null=True, max_length=100)
+    seen_by           = fields.CharField(
+        blank=True, null=True, max_length=100, verbose_name="Seen by"
+    )
     clinicdate        = fields.DateField(blank=True, null=True)
-    diagnosis_made    = fields.NullBooleanField()
-    follow_up_planned = fields.NullBooleanField()
-    date_of_followup  = fields.DateField(blank=True, null=True)
+    diagnosis_made    = fields.NullBooleanField(verbose_name="Diagnosis made")
+    follow_up_planned = fields.NullBooleanField(verbose_name="Follow up planned")
+    date_of_followup  = fields.DateField(
+        blank=True, null=True, verbose_name="Date of follow up"
+    )
 
-    lung_function       = fields.NullBooleanField()
-    lung_function_date  = fields.DateField(blank=True, null=True)
-    lung_function_attendance = fields.NullBooleanField()
+    lung_function       = fields.NullBooleanField(
+        verbose_name="Lung function"
+    )
+    lung_function_date  = fields.DateField(
+        blank=True, null=True, verbose_name="Lung function date"
+    )
+    lung_function_attendance = fields.NullBooleanField(
+        verbose_name="Lung function attendance"
+    )
 
     histamine           = fields.NullBooleanField()
-    histamine_date      = fields.DateField(blank=True, null=True)
-    histamine_attendance = fields.NullBooleanField()
+    histamine_date      = fields.DateField(
+        blank=True, null=True, verbose_name="Histamine date"
+    )
+    histamine_attendance = fields.NullBooleanField(
+        verbose_name="Histamine attendance"
+    )
 
-    peak_flow           = fields.NullBooleanField()
+    peak_flow           = fields.NullBooleanField(
+        verbose_name="Peak flow"
+    )
 
-    other_rbh_bloods    = fields.NullBooleanField()
-    immunology_oem      = fields.NullBooleanField()
+    other_rbh_bloods    = fields.NullBooleanField(
+        verbose_name="Other RBH bloods"
+    )
+    immunology_oem      = fields.NullBooleanField(
+        verbose_name="Immunology OEM"
+    )
 
-    other_hospital_info = fields.NullBooleanField()
-    other_oh_info       = fields.NullBooleanField()
-    other_gp_info       = fields.NullBooleanField()
-    work_samples        = fields.NullBooleanField()
+    other_hospital_info = fields.NullBooleanField(
+        verbose_name="Other hospital info"
+    )
+    other_oh_info       = fields.NullBooleanField(
+        verbose_name="Other OH info"
+    )
+    other_gp_info       = fields.NullBooleanField(
+        verbose_name="Other GP info"
+    )
+    work_samples        = fields.NullBooleanField(
+        verbose_name="Work samples"
+    )
 
     active              = fields.NullBooleanField()
+
+    class Meta:
+        verbose_name = "Clinic log"
 
 
     def days_since_first_attended(self):

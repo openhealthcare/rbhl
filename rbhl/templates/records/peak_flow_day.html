@@ -1,5 +1,5 @@
 <span ng-show="item.date">
-    [[ item.date | shortDate ]]
+    [[ item.date | displayDate ]]
    <br />
 </span>
 <span ng-show="item.treatment_taken">
@@ -11,11 +11,11 @@
    <br />
 </span>
 <span ng-show="item.work_start">
-    [[ item.work_start | shortDateTime ]]
+    [[ item.work_start | displayDateTime ]]
    <br />
 </span>
 <span ng-show="item.work_end">
-    [[ item.work_end | shortDateTime ]]
+    [[ item.work_end | displayDateTime ]]
    <br />
 </span>
 <span ng-show="item.flow_0600">

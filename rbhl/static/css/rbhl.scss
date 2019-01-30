@@ -3,12 +3,14 @@ $blue: rgba(70, 118, 197, 1);
 $bluegreen: rgba(58, 138, 138, 1);
 $green: rgba(46, 153, 62, 1);
 $orange: rgba(225, 132, 0, 1);
+$indigo: #4123BF;
 
 $black: rgb(44, 45, 48);
 $slate: rgb(67, 76, 61);
 $lightgrey: #ccc;
 
 $twocolwidth: 16.6666666667%;
+
 
 /* Layout */
 #center-col {
@@ -231,13 +233,22 @@ a {
 }
 .btn{
     box-shadow: none;
-    border: none;
+    border-color: $lightgrey;
+    // border: none;
     border-radius: .25rem;
     padding-top: 18px;
     padding-bottom: 18px;
 }
 .btn.btn-primary {
     background: $red;
+}
+.btn.btn-secondary {
+    background: white;
+    color: $black;
+}
+
+.btn-cancel{
+    margin-right: 20px;
 }
 
 .panel.login{
@@ -289,13 +300,12 @@ a {
 
 .edit {
   color: $lightgrey;
-  display: none !important;;
 }
 .no-touchevents .panel-heading i.edit, .list-group-item i.edit, .list-group-item i.delete {
   display: block;
 }
 .modal-header{
-    background: $bluegreen;
+    background: $indigo;
 }
 .panel.panel-primary .panel-heading.patient-detail-heading,
 .patient-detail-heading {
@@ -327,4 +337,9 @@ a {
 
 .c3-region.workingday {
     fill: red;
+}
+
+.horizontal-form{
+    padding-left: 20px;
+    padding-right: 20px;
 }

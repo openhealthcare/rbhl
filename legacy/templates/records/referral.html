@@ -1,15 +1,15 @@
 <b>Referrer:</b> [[ item.referrer_title ]]     [[ item.referrer_name ]]
 <br />
 <span ng-show="item.date_of_referral">
-  <b> Date of referral:</b> [[ item.date_of_referral | shortDate ]]
+  <b> Date of referral:</b> [[ item.date_of_referral | displayDate ]]
    <br />
 </span>
 <span ng-show="item.date_refferal_received">
-  <b>Referral received:</b> [[ item.date_refferal_received | shortDate ]]
+  <b>Referral received:</b> [[ item.date_refferal_received | displayDate ]]
    <br />
 </span>
 <span ng-show="item.date_first_contact">
-  <b>First Contact:</b> [[ item.date_first_contact | shortDate ]]
+  <b>First Contact:</b> [[ item.date_first_contact | displayDate ]]
    <br />
 </span>
 <span ng-show="item.comments">
