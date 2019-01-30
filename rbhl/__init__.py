@@ -38,12 +38,6 @@ class Application(application.OpalApplication):
         items = [
             # AddPatient.as_menuitem(index=1),
             ActivePatients.as_menuitem(index=2),
-            menus.MenuItem(
-                href=reverse(logout_view),
-                display='Log out',
-                icon='fa-sign-out',
-                index=1000
-            )
             # menus.MenuItem(
             #     href='/pathway/#/add_patient',
             #     display='Add Patient',
