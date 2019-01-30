@@ -26,7 +26,7 @@ class Application(application.OpalApplication):
         from django.contrib.auth.views import logout as logout_view
 
         from rbhl.patient_lists import WithLetter, ActivePatients
-        from rbhl.pathways import AddPatient
+        from rbhl.pathways import NewReferral
 
         # upload = menus.MenuItem(
         #     href="/#/import",
@@ -36,7 +36,7 @@ class Application(application.OpalApplication):
         # )
 
         items = [
-            AddPatient.as_menuitem(index=1),
+            NewReferral.as_menuitem(index=1),
             ActivePatients.as_menuitem(index=2),
             menus.MenuItem(
                 href=reverse(logout_view),
