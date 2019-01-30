@@ -101,7 +101,7 @@ class Command(BaseCommand):
                 cliniclog = episode.cliniclog_set.get()
 
                 cliniclog.seen_by           = row['SeenBy']
-                cliniclog.clinicdate        = str_to_date(row['Clinicdate'])
+                cliniclog.clinic_date        = str_to_date(row['Clinicdate'])
                 cliniclog.diagnosis_made    = bol(row['DiagnosisMade'])
                 cliniclog.follow_up_planned = bol(row['FollowUp'])
                 cliniclog.date_of_followup  = str_to_date(row['DateFollowUpAppt'])
