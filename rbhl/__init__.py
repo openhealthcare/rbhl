@@ -36,7 +36,7 @@ class Application(application.OpalApplication):
         # )
 
         items = [
-            # AddPatient.as_menuitem(index=1),
+            AddPatient.as_menuitem(index=1),
             ActivePatients.as_menuitem(index=2),
             menus.MenuItem(
                 href=reverse(logout_view),
