@@ -2,14 +2,9 @@
 {# the additional row balances out the additional padding added by .horizontal-form #}
 <div class="row">
   <div class="row">
-    <div class="col-md-6 ">
-      <div class="horizontal-form">
-        {% input "autofocus" style="vertical" field="Demographics.hospital_number" label="Hospital number" %}
-      </div>
-    </div>
     <div class="col-md-6">
       <div class="horizontal-form">
-        {% datepicker field="Referral.date_first_appointment" style="vertical" %}
+        {% input "autofocus" style="vertical" field="Demographics.hospital_number" label="Hospital number" %}
       </div>
     </div>
   </div>
@@ -22,6 +17,13 @@
     <div class="col-md-6">
       <div class="horizontal-form">
         {% input field="Demographics.surname" style="vertical" %}
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="horizontal-form">
+        {% datepicker field="Referral.date_first_appointment" style="vertical" %}
       </div>
     </div>
   </div>

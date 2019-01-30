@@ -6,13 +6,13 @@ from opal.core.pathway import Step, WizardPathway, PagePathway
 from rbhl import models
 
 class NewReferral(WizardPathway):
-    display_name = 'New Referral'
+    display_name = 'New referral'
     icon = 'fa-plus'
     slug = 'new_referral'
     template = "pathway/base/rbhl_page_pathway_base.html"
     steps = [
         Step(
-            template="pathway/referral_form.html",
+            template="pathway/new_referral.html",
             display_name="Shut up Pathway",
             icon="fa fa-user",
             base_template="pathway/steps/step_base_without_display_name.html"
