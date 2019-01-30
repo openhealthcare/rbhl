@@ -9,6 +9,7 @@ class AddPatient(WizardPathway):
     display_name = 'Add Patient'
     icon = 'fa-plus'
     slug = 'add_patient'
+    template = "pathway/base/rbhl_page_pathway_base.html"
     steps = [
         Step(
             template="pathway/add_form.html",
