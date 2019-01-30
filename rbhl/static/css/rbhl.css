@@ -207,7 +207,7 @@ a {
   border: none;
 }
 
-.btn {
+.btn:not(.dropdown-menu .btn) {
   box-shadow: none;
   border-color: #ccc;
   border-radius: 0.25rem;
@@ -313,6 +313,10 @@ a {
 .horizontal-form {
   padding-left: 20px;
   padding-right: 20px;
+}
+
+.form-row {
+  height: 59px;
 }
 
 /*# sourceMappingURL=rbhl.css.map */
