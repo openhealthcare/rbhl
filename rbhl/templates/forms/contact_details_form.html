@@ -1,4 +1,6 @@
 {% load forms %}
-{% input field="ContactDetails.mobile" %}
-{% input field="ContactDetails.phone" %}
-{% input field="ContactDetails.email" %}
+<div class="horizontal-form">
+    {% input field="ContactDetails.mobile" style="vertical" %}
+    {% input field="ContactDetails.phone" style="vertical" %}
+    {% input field="ContactDetails.email" style="vertical" %}
+</div>

@@ -209,7 +209,7 @@ a {
 
 .btn {
   box-shadow: none;
-  border: none;
+  border-color: #ccc;
   border-radius: 0.25rem;
   padding-top: 18px;
   padding-bottom: 18px;
@@ -217,6 +217,15 @@ a {
 
 .btn.btn-primary {
   background: #d01c17;
+}
+
+.btn.btn-secondary {
+  background: white;
+  color: #2c2d30;
+}
+
+.btn-cancel {
+  margin-right: 20px;
 }
 
 .panel.login {
@@ -261,7 +270,6 @@ a {
 
 .edit {
   color: #ccc;
-  display: none !important;
 }
 
 .no-touchevents .panel-heading i.edit, .list-group-item i.edit, .list-group-item i.delete {
@@ -269,7 +277,7 @@ a {
 }
 
 .modal-header {
-  background: #3a8a8a;
+  background: #4123BF;
 }
 
 .panel.panel-primary .panel-heading.patient-detail-heading,
@@ -315,6 +323,11 @@ a {
   margin-right: 10px;
   border-top: 2px solid white;
   display: block;
+}
+
+.horizontal-form {
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 /*# sourceMappingURL=rbhl.css.map */

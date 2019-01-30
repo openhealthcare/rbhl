@@ -16,7 +16,7 @@ from opal.models import PatientSubrecord, EpisodeSubrecord
 
 class ActionLog(EpisodeSubrecord):
     class Meta:
-        verbose_name = 'General Notes'
+        verbose_name = 'General notes'
     # Now in rbhl.models.Employment
     # employer       = models.CharField(blank=True, null=True, max_length=100)
     # oh_provider    = models.CharField(blank=True, null=True, max_length=100)

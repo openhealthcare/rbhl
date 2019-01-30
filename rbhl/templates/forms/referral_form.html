@@ -1,13 +1,41 @@
 {% load forms %}
 <div class="row">
-  <div class="col-md-4">
-    {% input field="Referral.referrer_title" style="vertical" %}
+  <div class="col-md-6">
+    <div class="horizontal-form">
+      {% input field="Referral.referrer_title" style="vertical" %}
+    </div>
   </div>
-  <div class="col-md-7 col-md-offset-1">
-    {% input field="Referral.referrer_name" style="vertical" %}
+  <div class="col-md-6">
+    <div class="horizontal-form">
+      {% input field="Referral.referrer_name" style="vertical" %}
+    </div>
   </div>
 </div>
-{% datepicker field="Referral.date_of_referral" style="vertical" %}
-{% datepicker field="Referral.date_refferal_received" style="vertical" %}
-{% datepicker field="Referral.date_first_contact" style="vertical" %}
-{% textarea field="Referral.comments" style="vertical" %}
+<div class="row">
+  <div class="col-md-6">
+    <div class="horizontal-form">
+      {% datepicker field="Referral.date_of_referral" style="vertical" %}
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="horizontal-form">
+      {% datepicker field="Referral.date_referral_received" style="vertical" %}
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-6">
+    <div class="horizontal-form">
+      {% datepicker field="Referral.date_first_contact" style="vertical" %}
+    </div>
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="horizontal-form">
+      {% textarea field="Referral.comments" style="vertical" %}
+    </div>
+  </div>
+</div>

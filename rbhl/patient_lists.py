@@ -77,7 +77,7 @@ class ActivePatients(StaticTableList):
     As per the RBHL 18 week database
     """
     template_name = 'patient_lists/active_patients.html'
-    display_name  = 'Active Patients'
+    display_name  = 'Active patients'
 
     def get_queryset(self):
         """

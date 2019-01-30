@@ -82,7 +82,7 @@ class Command(BaseCommand):
                 referral.referrer_title         = row['Referrerttl']
                 referral.referrer_name          = row['Referrername']
                 referral.date_of_referral       = str_to_date(row['DateReferral'])
-                referral.date_refferal_received = str_to_date(row['DateRecdReferral'])
+                referral.date_referral_received = str_to_date(row['DateRecdReferral'])
                 referral.date_first_contact     = str_to_date(row['DateFirstContact'])
                 referral.comments               = row['Commentscontact']
                 referral.date_first_appointment = str_to_date(row['DateFirstPatientAppt'])
