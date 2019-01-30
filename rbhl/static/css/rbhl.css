@@ -222,10 +222,12 @@ a {
 .btn.btn-secondary {
   background: white;
   color: #2c2d30;
+  border: 1px solid #ccc;
 }
 
 .btn-cancel {
   margin-right: 20px;
+  border: 1px solid #ccc;
 }
 
 .panel.login {

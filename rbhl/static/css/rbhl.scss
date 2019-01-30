@@ -247,10 +247,12 @@ a {
 .btn.btn-secondary {
     background: white;
     color: $black;
+    border: 1px solid $lightgrey;
 }
 
 .btn-cancel{
     margin-right: 20px;
+    border: 1px solid $lightgrey;
 }
 
 .panel.login{
