@@ -2,7 +2,9 @@
 {% load i18n two_factor %}
 
 {% block content %}
-  {% if wizard.steps.current == 'token' %}
+  {% if wizard.steps.current == 'auth' %}
+  <p>Please enter your username and password.</p>
+  {% elif wizard.steps.current == 'token' %}
     {% if device.method == 'call' %}
       <p>{% blocktrans %}We are calling your phone right now, please enter the
         digits you hear.{% endblocktrans %}</p>
