@@ -1,0 +1,15 @@
+{% load forms %}
+<div class="row">
+    <div class="col-md-8">
+        <b>{{ label }}:</b>
+    </div>
+    <div class="col-md-4" ng-show="item.{{ field_name }}">
+        {% if is_boolean %}
+            {% icon "fa-check" %}
+        {% elif is_date %}
+            [[ item.{{ field_name }}|displayDate ]]
+        {% else %}
+            [[ item.{{ field_name }} ]]
+        {% endif %}
+    </div>
+</div>

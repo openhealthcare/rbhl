@@ -1,17 +1,10 @@
 {% load forms %}
+{% load rbhl_panels %}
 <div class="row">
   <!-- 1 -->
   <div class="col-md-4">
     <!-- Top level column -->
-    <div class="row">
-      <div class="col-md-8" ng-show="item.seen_by">
-        <b>Seen by:</b>
-      </div>
-      <div class="col-md-4">
-        [[ item.seen_by ]]
-      </div>
-    </div>
-    </span>
+    {% field_display field="ClinicLog.seen_by" %}
   </div>
 
   <div class="col-md-4">
