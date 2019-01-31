@@ -56,12 +56,12 @@ class PASMatcher(Matcher):
     ]
 
 
-def load_PAS_demographics():
+def load_PAS_demographics(file_name):
     """
     Load the demographics from the database that talks to the PAS.
     Use these as our basis for matching against.
     """
-    data = ffs.Path('~/Documents/ohc/Brompton-17-Jan/patient details.csv')
+    data = ffs.Path(file_name)
     patients_imported = 0
     print('Beginning PAS DB demographics import ')
     with open(data.abspath) as csvfile:
@@ -81,7 +81,13 @@ def load_PAS_demographics():
 
 
 class Command(BaseCommand):
+    def add_arguments(self, parser):
+        parser.add_argument(
+            'file_name',
+            help="Specify import file",
+        )
 
     def handle(self, *args, **kwargs):
+        file_name = kwargs.get("file_name")
         flush()
-        load_PAS_demographics()
+        load_PAS_demographics(file_name)

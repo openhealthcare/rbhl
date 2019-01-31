@@ -11,6 +11,7 @@ from opal.core import exceptions
 from opal.models import Patient, Episode
 
 from rbhl.models import Demographics, ContactDetails, Referral, Employment, ClinicLog, Letter
+from rbhl.episode_categories import OccupationalLungDiseaseEpisode
 
 from plugins.trade import match
 from plugins.trade.match import FieldConverter, Matcher, Mapping
@@ -34,12 +35,36 @@ class Matcher(match.Matcher):
     ]
 
 
+def create_unmatched_patient(row):
+    row_demographcis_fields = {
+        "Hospital Number": "hospital_number",
+        "Patient First Name": "first_name",
+        "Patient Surname": "surname"
+    }
+    patient = Patient.objects.create()
+    episode = patient.create_episode(
+        category_name=OccupationalLungDiseaseEpisode.display_name
+    )
+    demographics = patient.demographics_set.get()
+
+    for field, demographics_field in row_demographcis_fields.items():
+        setattr(demographics, demographics_field, row[field])
+    demographics.save()
+    return patient
+
+
 class Command(BaseCommand):
+    def add_arguments(self, parser):
+        parser.add_argument(
+            'file_name',
+            help="Specify import file",
+        )
 
     def handle(self, *args, **options):
+        file_name = options.get("file_name")
         Letter.objects.all().delete()
 
-        data = ffs.Path('~/Documents/ohc/Brompton-17-Jan/action.log.csv')
+        data = ffs.Path(file_name)
         self.patients_imported = 0
         self.patients_missed = 0
         self.no_hosp_num = 0
@@ -58,8 +83,7 @@ class Command(BaseCommand):
                 try:
                     patient = matcher.direct_match()
                 except PatientNotFoundError:
-                    self.patients_missed += 1
-                    continue
+                    patient = create_unmatched_patient(row)
                 except:
                     print('uncaught')
                     print(row)
