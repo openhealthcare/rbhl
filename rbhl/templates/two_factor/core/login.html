@@ -2,9 +2,7 @@
 {% load i18n two_factor %}
 
 {% block content %}
-  {% if wizard.steps.current == 'auth' %}
-  <p>Please enter your username and password.</p>
-  {% elif wizard.steps.current == 'token' %}
+  {% if wizard.steps.current == 'token' %}
     {% if device.method == 'call' %}
       <p>{% blocktrans %}We are calling your phone right now, please enter the
         digits you hear.{% endblocktrans %}</p>
@@ -25,7 +23,25 @@
   {% endif %}
 
   <form action="" method="post">{% csrf_token %}
-    {% include "two_factor/_wizard_forms.html" %}
+    {% if wizard.steps.current == 'auth' %}
+    <div class="row">
+      {{ wizard.management_form }}
+      <div class="form-group">
+        <div class="col-sm-12">
+          <input type="text" name="auth-username" autofocus="" maxlength="254" placeholder="Username" required="" id="id_auth-username">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="col-sm-12 lg-text">
+          <input type="password" name="auth-password" id="id_auth-password" placeholder="Password" class="form-control">
+        </div>
+      </div>
+      <div style="margin-left: -9999px"><input type="submit" value=""></div>
+    </div>
+    {% else %}
+      {% include "two_factor/_wizard_forms.html" %}
+    {%endif %}
 
     {# hidden submit button to enable [enter] key #}
     <div style="margin-left: -9999px"><input type="submit" value=""/></div>
