@@ -24,17 +24,22 @@
 
   <form action="" method="post">{% csrf_token %}
     {% if wizard.steps.current == 'auth' %}
-    <div class="row">
       {{ wizard.management_form }}
-      <div class="form-group">
-        <div class="col-sm-12">
-          <input type="text" name="auth-username" autofocus="" maxlength="254" placeholder="Username" required="" id="id_auth-username">
+      <div class="form-inline">
+        <div class="row">
+          <label for="id_auth-username" name="auth-username" maxlength="254" class="text-right control-label col-xs-3">
+            Username
+          </label>
+          <input id="id_auth-username" name="auth-username" class="col-xs-8" type="text" autofocus>
         </div>
       </div>
 
-      <div class="form-group">
-        <div class="col-sm-12 lg-text">
-          <input type="password" name="auth-password" id="id_auth-password" placeholder="Password" class="form-control">
+      <div class="form-inline">
+        <div class="row">
+          <label for="id_auth-password" name="auth-password" maxlength="254" class="text-right control-label col-xs-3">
+            Password
+          </label>
+          <input id="id_auth-password" name="auth-password" class="col-xs-8" type="password" autofocus>
         </div>
       </div>
       <div style="margin-left: -9999px"><input type="submit" value=""></div>
