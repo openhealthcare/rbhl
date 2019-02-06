@@ -1,0 +1,33 @@
+<div class="form-group"
+     {% if visibility %} {{ visibility|safe }} {% endif %}
+     >
+  <label
+    class="control-label {% ifequal style "horizontal" %}col-sm-3{% endifequal %}">
+    {{ label }}
+  </label>
+  <div
+    {% ifequal style "horizontal" %}
+    class="col-sm-8"
+    {% endifequal %}
+    >
+    {% if user_options %}
+      <div class="input-group">
+    {% endif %}
+        <input type="date" class="form-control"
+               max="2030-12-01"
+               min="1900-01-01"
+               ng-model="{{ model }}"
+               name="[[ {{ element_name}} ]]"
+               {% if change %}
+               ng-change="{{ change }}"
+               {% endif %}
+               />
+     {% if user_options %}
+         <span class="input-group-btn">
+           <button type="button" class="btn btn-default" ng-click="{{ model }} = dateHelper.now()" href="">Today</a>
+           <button type="button" class="btn btn-default" ng-click="{{ model }} = dateHelper.yesterday()" href="">Yesterday</a>
+         </span>
+       </div>
+     {% endif %}
+  </div>
+</div>
