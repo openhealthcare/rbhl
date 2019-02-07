@@ -2,19 +2,20 @@
 Pathways for the rbhl app
 """
 from opal.core.pathway import Step, WizardPathway, PagePathway
+from add_patient_step import FindPatientStep
 
 from rbhl import models
+
 
 class NewReferral(WizardPathway):
     display_name = 'New referral'
     icon = 'fa-plus'
     slug = 'new_referral'
+    finish_button_text = "Create New Referral"
+    finish_button_icon = None
     template = "pathway/base/rbhl_page_pathway_base.html"
     steps = [
-        Step(
-            template="pathway/new_referral.html",
-            display_name="Shut up Pathway",
-            icon="fa fa-user",
+        FindPatientStep(
             base_template="pathway/steps/step_base_without_display_name.html"
         ),
     ]

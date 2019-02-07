@@ -28,33 +28,9 @@ class Application(application.OpalApplication):
         from rbhl.patient_lists import WithLetter, ActivePatients
         from rbhl.pathways import NewReferral
 
-        # upload = menus.MenuItem(
-        #     href="/#/import",
-        #     display="Import",
-        #     icon='fa-upload',
-        #     index=200
-        # )
-
         items = [
             NewReferral.as_menuitem(index=1),
             ActivePatients.as_menuitem(index=2),
-            menus.MenuItem(
-                href=reverse(logout_view),
-                display='Log out',
-                icon='fa-sign-out',
-                index=1000
-            )
-            # menus.MenuItem(
-            #     href='/pathway/#/add_patient',
-            #     display='Add Patient',
-            #     icon='fa-plus',
-            #     activepattern='/pathway/#/add_patient',
-            #     index=-1
-            # ),
-
-            # add,
-            # logout
-
         ]
         if user:
             if user.is_authenticated:

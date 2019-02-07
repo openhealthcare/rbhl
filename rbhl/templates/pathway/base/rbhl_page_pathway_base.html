@@ -8,33 +8,46 @@
     <div class="panel panel-primary panel-container panel-pathway">
       <div class="panel-heading pathway-header">
         {% block pathway_header %}
-          <h1>
-            {% if pathway.icon %}{% icon pathway.icon %}{% endif %} {{ pathway.display_name }}
-            <span ng-show="episode">
-              (<a href="/#/patient/[[ episode.demographics[0].patient_id ]]/[[ episode.demographics[0].id ]]">[[ episode.demographics[0].first_name ]] [[ episode.demographics[0].surname ]]</a>)
-            </span>
-          </h1>
+        <h1>
+          {% if pathway.icon %}{% icon pathway.icon %}{% endif %} {{ pathway.display_name }}
+          <span ng-show="episode">
+            (<a href="/#/patient/[[ episode.demographics[0].patient_id ]]/[[ episode.demographics[0].id ]]">[[
+              episode.demographics[0].first_name ]] [[ episode.demographics[0].surname ]]</a>)
+          </span>
+        </h1>
         {% endblock pathway_header %}
       </div>
       <div class="panel-body">
         {% block pathway_body %}
-          {% for step in pathway.get_steps %}
-            {% include step.get_base_template %}
-          {% endfor %}
+        {% for step in pathway.get_steps %}
+        <div ng-show="pathway.currentStep.display_name === '{{ step.get_display_name }}'"
+          class="pathway-process-steps-padding">
+          {% include step.get_base_template %}
+        </div>
+        {% endfor %}
         {% endblock pathway_body %}
       </div>
       <div class="text-center" ng-show="form.$submitted && form.$invalid">
-          <strong class="help-block">Please fix the above errors</strong>
+        <strong class="help-block">Please fix the above errors</strong>
       </div>
       {% block pathway_footer %}
-        <div class="panel-footer">
-          <div class="row">
-            <div class="col-md-8 col-md-push-2">
-                {% include "pathway/partial/save_button.html" %}
+      <div ng-hide="pathway.currentStep.scope.hideFooter" class="panel-footer">
+        <div class="row">
+          <div class="col-md-8 col-md-push-2">
+            {% include "pathway/partial/wizard_back_button.html" %}
+
+            <div class="pull-right push-left-12">
+              {% include "pathway/partial/wizard_next_button.html" %}
+            </div>
+            <div ng-show="pathway.steps[0].scope.state === 'has_demographics'" class="pull-right">
+              <a href="" class="btn btn-lg btn-primary">
+                View Patient
+              </a>
             </div>
           </div>
         </div>
-      {% endblock pathway_footer %}
+      </div>
+      {% endblock %}
     </div>
   </form>
 </div>
