@@ -2,12 +2,12 @@
      {% if visibility %} {{ visibility|safe }} {% endif %}
      >
   <label
-    class="control-label {% ifequal style "horizontal" %}col-sm-3{% endifequal %}">
+    class="control-label {% ifequal style "horizontal" %}col-sm-2{% endifequal %}">
     {{ label }}
   </label>
   <div
     {% ifequal style "horizontal" %}
-    class="col-sm-8"
+    class="col-sm-10"
     {% endifequal %}
     >
     {% if user_options %}
