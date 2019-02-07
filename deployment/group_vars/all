@@ -15,7 +15,7 @@ DB_PASSWORD: !vault |
           33383737303965666132646566656632336434316665626362313865663562356361
 PROJECT_PATH: /usr/lib/ohc/rbhl
 GIT_REPO: https://github.com/openhealthcare/rbhl
-GIT_BRANCH: master
+GIT_BRANCH: 8-Feb-demo-branch
 LOG_DIR: /usr/lib/ohc/log
 PROJECT_NAME: rbhl
 SECRET_KEY: !vault |
