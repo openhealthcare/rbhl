@@ -141,10 +141,8 @@ h1 small {
 .green{
     color: $green;
 }
-/* Fonts */
-.panel-primary.login .panel-heading h1 {
-    color: $black;
-}
+
+
 body,
 h1 small {
   font-size: 15px;
@@ -261,6 +259,7 @@ a {
     border: 1px solid $lightgrey;
 }
 
+
 .panel.login{
     border: 1px solid #ccc;
     padding: 12px;
@@ -277,10 +276,18 @@ a {
 
     .panel-heading{
         background: white;
+        position: relative;
 
         h1{
             text-align: center;
             font-weight: bold;
+            color: $black;
+        }
+
+        img{
+            position: absolute;
+            right: 0px;
+            bottom: 10px;
         }
     }
 
@@ -292,6 +299,7 @@ a {
 
     .btn.btn-primary {
         width: 100%;
+        font-size: 18px;
     }
 
     input[type=text], input[type=password], input[type=number]  {

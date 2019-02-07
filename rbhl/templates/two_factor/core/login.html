@@ -23,7 +23,26 @@
   {% endif %}
 
   <form action="" method="post">{% csrf_token %}
-    {% include "two_factor/_wizard_forms.html" %}
+    {% if wizard.steps.current == 'auth' %}
+      {{ wizard.management_form }}
+      <div class="row">
+        <label for="id_auth-username" name="auth-username" maxlength="254" class="control-label">
+          Username
+        </label>
+        <input id="id_auth-username" name="auth-username" type="text" autofocus>
+      </div>
+
+      <div class="row">
+        <label for="id_auth-password" name="auth-password" maxlength="254" class="control-label">
+          Password
+        </label>
+        <input id="id_auth-password" name="auth-password" type="password" autofocus>
+      </div>
+      <div style="margin-left: -9999px"><input type="submit" value=""></div>
+    </div>
+    {% else %}
+      {% include "two_factor/_wizard_forms.html" %}
+    {%endif %}
 
     {# hidden submit button to enable [enter] key #}
     <div style="margin-left: -9999px"><input type="submit" value=""/></div>
