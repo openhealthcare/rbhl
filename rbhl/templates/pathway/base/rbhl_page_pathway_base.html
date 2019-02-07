@@ -27,9 +27,12 @@
         {% endfor %}
         {% endblock pathway_body %}
       </div>
+      {% comment %}
+      seems to have issues with the date picker..
       <div class="text-center" ng-show="form.$submitted && form.$invalid">
         <strong class="help-block">Please fix the above errors</strong>
       </div>
+      {% endcomment %}
       {% block pathway_footer %}
       <div ng-hide="pathway.currentStep.scope.hideFooter" class="panel-footer">
         <div class="horizontal-form">
@@ -41,8 +44,8 @@
                 {% include "pathway/partial/wizard_next_button.html" %}
               </div>
               <div ng-show="pathway.steps[0].scope.state === 'has_demographics'" class="pull-right">
-                <a href="" class="btn btn-lg btn-primary">
-                  View Patient
+                <a href="/#/patient/[[ editing.demographics.patient_id ]]" class="btn btn-lg btn-primary">
+                  View patient
                 </a>
               </div>
             </div>

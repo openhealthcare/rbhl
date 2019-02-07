@@ -1,11 +1,15 @@
 <div class="row">
-    <div class="col-md-12 col-md-push-2">
-            <div class="col-md-12">
-                    <p class="lead">
-                            Found [[ editing.demographics.first_name ]] [[ editing.demographics.surname ]]
-                            <small>([[ editing.demographics.date_of_birth | shortDate ]]) [[ editing.demographics.hospital_number ]]</small>
+        <div class="col-md-12 col-md-push-2">
+                <div class="col-md-12">
+                        <p class="lead">
+                                Found [[ editing.demographics.first_name ]] [[ editing.demographics.surname ]]
+                                <small>
+                                        <span ng-show="editing.demographics.date_of_birth">
+                                                ([[ editing.demographics.date_of_birth | shortDate ]])
+                                        </span>
+                                        [[ editing.demographics.hospital_number ]]
+                                </small>
                         </p>
-            </div>
-    </div>
+                </div>
+        </div>
 </div>
-
