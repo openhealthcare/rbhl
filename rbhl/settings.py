@@ -158,6 +158,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'opal.context_processors.settings',
                 'opal.context_processors.models',
+                'opal.core.pathway.context_processors.pathways',
             ],
         },
     },
