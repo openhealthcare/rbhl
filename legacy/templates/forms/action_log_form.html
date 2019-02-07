@@ -1,28 +1,4 @@
 {% load forms %}
-{% input field="ActionLog.employer" %}
-{% input field="ActionLog.oh_provider" %}
-{% input field="ActionLog.seen_by" %}
-{% datepicker field="ActionLog.clinicdate" %}
-{% datepicker field="ActionLog.date_first_appointment" %}
-{% checkbox field="ActionLog.attendance" %}
-{% checkbox field="ActionLog.peak_flow" %}
-{% checkbox field="ActionLog.immunology_oem" %}
-{% checkbox field="ActionLog.histamine" %}
-{% datepicker field="ActionLog.histamine_date" %}
-{% checkbox field="ActionLog.histamine_attendance" %}
-{% checkbox field="ActionLog.lung_function" %}
-{% datepicker field="ActionLog.lung_function_date" %}
-{% checkbox field="ActionLog.lung_function_attendance" %}
-{% checkbox field="ActionLog.work_samples" %}
-{% checkbox field="ActionLog.other_hospital_info" %}
-{% checkbox field="ActionLog.other_oh_info" %}
-{% checkbox field="ActionLog.other_gp_info" %}
-{% checkbox field="ActionLog.other_rbh_bloods" %}
-{% checkbox field="ActionLog.firefighter" %}
-{% checkbox field="ActionLog.diagnosis_made" %}
-{% checkbox field="ActionLog.follow_up_planned" %}
-{% datepicker field="ActionLog.date_of_followup" %}
-{% checkbox field="ActionLog.active" %}
-{% textarea field="ActionLog.general_notes" %}
-{% textarea field="ActionLog.letters" %}
-{% input field="ActionLog.finaldays" %}
+<div class="horizontal-form">
+    {% textarea label="  " field="ActionLog.general_notes" rows="20" style="vertical" %}
+</div>

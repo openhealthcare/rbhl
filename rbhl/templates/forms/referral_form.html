@@ -2,11 +2,6 @@
 <div class="row">
   <div class="col-md-6">
     <div class="horizontal-form">
-      {% input field="Referral.referrer_title" style="vertical" %}
-    </div>
-  </div>
-  <div class="col-md-6">
-    <div class="horizontal-form">
       {% input field="Referral.referrer_name" style="vertical" %}
     </div>
   </div>
@@ -26,11 +21,27 @@
 <div class="row">
   <div class="col-md-6">
     <div class="horizontal-form">
+      {% datepicker field="Referral.date_first_appointment" style="vertical" %}
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="horizontal-form">
+      {% checkbox field="Referral.attendance" style="vertical" %}
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-6">
+    <div class="horizontal-form">
       {% datepicker field="Referral.date_first_contact" style="vertical" %}
     </div>
   </div>
 </div>
-
+<div class="row">
+  <div class="col-md-6">
+    {% checkbox field="Referral.firefighter" style="vertical" %}
+  </div>
+</div>
 
 <div class="row">
   <div class="col-md-12">

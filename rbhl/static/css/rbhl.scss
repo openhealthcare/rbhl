@@ -151,10 +151,8 @@ h1 small {
 .green{
     color: $green;
 }
-/* Fonts */
-.panel-primary.login .panel-heading h1 {
-    color: $black;
-}
+
+
 body,
 h1 small {
   font-size: 15px;
@@ -241,6 +239,7 @@ a {
   background: none;
   border: none;
 }
+
 .btn{
     box-shadow: none;
     border-color: $lightgrey;
@@ -249,17 +248,27 @@ a {
     padding-top: 18px;
     padding-bottom: 18px;
 }
+
+// date picker btns
+.dropdown-menu .btn{
+    padding: 5px 10px;
+}
+
 .btn.btn-primary {
     background: $red;
+    border: none;
 }
 .btn.btn-secondary {
     background: white;
     color: $black;
+    border: 1px solid $lightgrey;
 }
 
 .btn-cancel{
     margin-right: 20px;
+    border: 1px solid $lightgrey;
 }
+
 
 .panel.login{
     border: 1px solid #ccc;
@@ -277,10 +286,18 @@ a {
 
     .panel-heading{
         background: white;
+        position: relative;
 
         h1{
             text-align: center;
             font-weight: bold;
+            color: $black;
+        }
+
+        img{
+            position: absolute;
+            right: 0px;
+            bottom: 10px;
         }
     }
 
@@ -292,6 +309,7 @@ a {
 
     .btn.btn-primary {
         width: 100%;
+        font-size: 18px;
     }
 
     input[type=text], input[type=password], input[type=number]  {
@@ -347,7 +365,31 @@ a {
     fill: red;
 }
 
+.bottom-menu{
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    bottom: 30px;
+    display: block;
+    padding-top: 10px;
+
+    hr{
+        margin-left: 10px;
+        margin-right: 10px;
+        border-top: 2px solid white;
+        display: block;
+    }
+}
+
 .horizontal-form{
-    padding-left: 15px;
-    padding-right: 15px;
+    padding-left: 20px;
+    padding-right: 20px;
+
+    .checkbox{
+        margin-top: 32px;
+    }
+}
+
+.form-row{
+    height: 59px;
 }

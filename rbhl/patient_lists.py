@@ -54,7 +54,7 @@ class WithLetter(core.patient_lists.PatientList):
         return Episode.objects.exclude(
             letter=None).exclude(
                 peakflowday=None
-            ).order_by('-cliniclog__clinicdate')[:20]
+            ).order_by('-cliniclog__clinic_date')[:20]
 
 
 class StaticTableList(core.patient_lists.PatientList, AbstractBase):
@@ -83,4 +83,4 @@ class ActivePatients(StaticTableList):
         """
         Only those patients who are active
         """
-        return Episode.objects.filter(cliniclog__active=True).order_by("cliniclog__clinicdate")
+        return Episode.objects.filter(cliniclog__active=True).order_by("cliniclog__clinic_date")

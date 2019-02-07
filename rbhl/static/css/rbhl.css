@@ -115,11 +115,6 @@ h1 small {
   color: #2e993e;
 }
 
-/* Fonts */
-.panel-primary.login .panel-heading h1 {
-  color: #2c2d30;
-}
-
 body,
 h1 small {
   font-size: 15px;
@@ -226,17 +221,24 @@ a {
   padding-bottom: 18px;
 }
 
+.dropdown-menu .btn {
+  padding: 5px 10px;
+}
+
 .btn.btn-primary {
   background: #d01c17;
+  border: none;
 }
 
 .btn.btn-secondary {
   background: white;
   color: #2c2d30;
+  border: 1px solid #ccc;
 }
 
 .btn-cancel {
   margin-right: 20px;
+  border: 1px solid #ccc;
 }
 
 .panel.login {
@@ -254,10 +256,17 @@ a {
 }
 .panel.login .panel-heading {
   background: white;
+  position: relative;
 }
 .panel.login .panel-heading h1 {
   text-align: center;
   font-weight: bold;
+  color: #2c2d30;
+}
+.panel.login .panel-heading img {
+  position: absolute;
+  right: 0px;
+  bottom: 10px;
 }
 .panel.login .panel-body img {
   float: none;
@@ -266,6 +275,7 @@ a {
 }
 .panel.login .btn.btn-primary {
   width: 100%;
+  font-size: 18px;
 }
 .panel.login input[type=text], .panel.login input[type=password], .panel.login input[type=number] {
   font-size: 20px;
@@ -310,9 +320,31 @@ a {
   fill: red;
 }
 
+.bottom-menu {
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  bottom: 30px;
+  display: block;
+  padding-top: 10px;
+}
+.bottom-menu hr {
+  margin-left: 10px;
+  margin-right: 10px;
+  border-top: 2px solid white;
+  display: block;
+}
+
 .horizontal-form {
-  padding-left: 15px;
-  padding-right: 15px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+.horizontal-form .checkbox {
+  margin-top: 32px;
+}
+
+.form-row {
+  height: 59px;
 }
 
 /*# sourceMappingURL=rbhl.css.map */

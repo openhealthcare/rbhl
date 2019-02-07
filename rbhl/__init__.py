@@ -1,10 +1,10 @@
 """
 rbhl - Our Opal Application
 """
-from django.urls import reverse
 from opal.core import application, menus
 
 from rbhl.episode_categories import OccupationalLungDiseaseEpisode
+
 
 class Application(application.OpalApplication):
     javascripts   = [
@@ -23,9 +23,7 @@ class Application(application.OpalApplication):
     @classmethod
     def get_menu_items(klass, user=None):
         # we import here as settings must be set before this is imported
-        from django.contrib.auth.views import logout as logout_view
-
-        from rbhl.patient_lists import WithLetter, ActivePatients
+        from rbhl.patient_lists import ActivePatients
         from rbhl.pathways import NewReferral
 
         items = [
