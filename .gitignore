@@ -20,5 +20,8 @@ deployment/hosts.dev
 deployment/ansible.cfg
 rbhl/local_settings.py
 *.csv
+rbhl/data/lookuplists/employer.json
+rbhl/data/lookuplists/ohprovider.json
+rbhl/data/lookuplists/rbhreferrer.json
 
 .vscode
