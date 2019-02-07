@@ -51,6 +51,7 @@ class Referral(models.EpisodeSubrecord):
     _icon         = 'fa fa-level-up'
     _is_singleton = True
 
+    # Deprecated
     referrer_title         = models.ForeignKeyOrFreeText(
         models.Title, verbose_name="Referrer title"
     )
