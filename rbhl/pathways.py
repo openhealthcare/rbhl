@@ -11,7 +11,7 @@ class NewReferral(WizardPathway):
     display_name = 'New referral'
     icon = 'fa-plus'
     slug = 'new_referral'
-    finish_button_text = "Create New Referral"
+    finish_button_text = "Create new referral"
     finish_button_icon = None
     template = "pathway/base/rbhl_page_pathway_base.html"
     steps = [
