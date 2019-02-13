@@ -23,12 +23,33 @@ class Application(application.OpalApplication):
     @classmethod
     def get_menu_items(klass, user=None):
         # we import here as settings must be set before this is imported
-        from rbhl.patient_lists import ActivePatients
         from rbhl.pathways import NewReferral
+        from rbhl.patient_lists import (
+            ActivePatients, MinePatientList
+        )
+
+        # upload = menus.MenuItem(
+        #     href="/#/import",
+        #     display="Import",
+        #     icon='fa-upload',
+        #     index=200
+        # )
 
         items = [
             NewReferral.as_menuitem(index=1),
             ActivePatients.as_menuitem(index=2),
+            MinePatientList.as_menuitem(index=3),
+            # menus.MenuItem(
+            #     href='/pathway/#/add_patient',
+            #     display='Add Patient',
+            #     icon='fa-plus',
+            #     activepattern='/pathway/#/add_patient',
+            #     index=-1
+            # ),
+
+            # add,
+            # logout
+
         ]
         if user:
             if user.is_authenticated:

@@ -398,6 +398,17 @@ a {
 input::-webkit-calendar-picker-indicator{
     display: none;
 }
+
 input[type="date"]::-webkit-input-placeholder{
     visibility: hidden !important;
+}
+
+
+.pagination > li > a {
+    color: $blue;
+    cursor: pointer;
+
+    &:hover, &:active, &:focus{
+        color: $blue;
+    }
 }
