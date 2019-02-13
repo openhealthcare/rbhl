@@ -1,25 +1,20 @@
 """
 Management command to import the actionlog csv from the admin database
 """
-import datetime
 import csv
 
 from django.core.management.base import BaseCommand
-from django.utils import timezone
-import ffs
-from opal.core import exceptions
-from opal.models import Patient, Episode
+from opal.models import Patient
 
-from rbhl.models import Demographics, ContactDetails, Referral, Employment, ClinicLog, Letter
+from rbhl.models import Letter
 from rbhl.episode_categories import OccupationalLungDiseaseEpisode
 
 from plugins.trade import match
-from plugins.trade.match import FieldConverter, Matcher, Mapping
 from plugins.trade.exceptions import PatientNotFoundError
 
 from legacy.models import ActionLog
-from legacy.episode_categories import AdminDatabase
 from legacy.utils import str_to_date, bol, inty
+
 
 class Matcher(match.Matcher):
     direct_match_field     = match.Mapping('Hospital Number', 'hospital_number')
@@ -29,7 +24,7 @@ class Matcher(match.Matcher):
         match.Mapping('Patient First Name', 'first_name')
     ]
     demographics_fields    = [
-        Mapping('Hospital Number', 'hospital_number'),
+        match.Mapping('Hospital Number', 'hospital_number'),
         match.Mapping('Patient Surname',    'surname'),
         match.Mapping('Patient First Name', 'first_name')
     ]
@@ -42,7 +37,7 @@ def create_unmatched_patient(row):
         "Patient Surname": "surname"
     }
     patient = Patient.objects.create()
-    episode = patient.create_episode(
+    patient.create_episode(
         category_name=OccupationalLungDiseaseEpisode.display_name
     )
     demographics = patient.demographics_set.get()
@@ -64,13 +59,12 @@ class Command(BaseCommand):
         file_name = options.get("file_name")
         Letter.objects.all().delete()
 
-        data = ffs.Path(file_name)
         self.patients_imported = 0
         self.patients_missed = 0
         self.no_hosp_num = 0
 
         print('Open CSV to read')
-        with open(data.abspath) as csvfile:
+        with open(file_name) as csvfile:
             reader = csv.DictReader(csvfile)
 
             for row in reader:
@@ -84,7 +78,7 @@ class Command(BaseCommand):
                     patient = matcher.direct_match()
                 except PatientNotFoundError:
                     patient = create_unmatched_patient(row)
-                except:
+                except Exception:
                     print('uncaught')
                     print(row)
                     raise
