@@ -101,13 +101,7 @@ h1 small {
   color: white;
 }
 
-#left-col .nav-pills li.active a {
-  background: #3a8a8a;
-  border-radius: 0px;
-  color: white;
-}
-
-.nav-pills li a:hover {
+.nav-pills li a:hover, #left-col .nav-pills li.active a {
   background: #392f37;
 }
 

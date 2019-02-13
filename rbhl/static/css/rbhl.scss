@@ -140,13 +140,9 @@ h1 small {
 #left-col h1 small {
   color: white;
 }
-#left-col .nav-pills li.active a {
-    background: $bluegreen;
-    border-radius: 0px;
-    color: white;
-}
-.nav-pills li a:hover{
-    background:    rgb(57, 47, 55)
+
+.nav-pills li a:hover, #left-col .nav-pills li.active a{
+    background: rgb(57, 47, 55)
 }
 .green{
     color: $green;
