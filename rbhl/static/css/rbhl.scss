@@ -385,3 +385,12 @@ a {
 .form-row{
     height: 59px;
 }
+
+.pagination > li > a {
+    color: $blue;
+    cursor: pointer;
+
+    &:hover, &:active, &:focus{
+        color: $blue;
+    }
+}

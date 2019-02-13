@@ -5,7 +5,9 @@ import json
 
 from django.contrib.auth.models import User
 from django.urls import reverse
-from django.views.generic import FormView, TemplateView, RedirectView
+from django.views.generic import (
+    FormView, TemplateView, RedirectView, ListView
+)
 from django.contrib.auth import login, logout
 from django.contrib.admin.views.decorators import staff_member_required
 from django.utils.decorators import method_decorator
@@ -78,10 +80,12 @@ class ImportView(FormView):
         return super(ImportView, self).form_valid(form)
 
 
-class StaticTableListView(TemplateView):
+class StaticTableListView(ListView):
     """
     View to render a Static HTML table list
     """
+    paginate_by = 30
+
     def dispatch(self, *args, **kwargs):
         """
         Find the relevant PatientList class and attach it to self.patient_list
@@ -89,13 +93,8 @@ class StaticTableListView(TemplateView):
         self.patient_list = StaticTableList.get(kwargs['slug'])()
         return super(StaticTableListView, self).dispatch(*args, **kwargs)
 
-    def get_context_data(self, *args, **kwargs):
-        """
-        Add the queryset to the patient list as {{ object_list }}
-        """
-        ctx = super(StaticTableListView, self).get_context_data(*args, **kwargs)
-        ctx['object_list'] = self.patient_list.get_queryset()
-        return ctx
+    def get_queryset(self, *args, **kwargs):
+        return self.patient_list.get_queryset()
 
     def get_template_names(self, *args, **kwargs):
         return self.patient_list.template_name

@@ -347,4 +347,12 @@ a {
   height: 59px;
 }
 
+.pagination > li > a {
+  color: #4676c5;
+  cursor: pointer;
+}
+.pagination > li > a:hover, .pagination > li > a:active, .pagination > li > a:focus {
+  color: #4676c5;
+}
+
 /*# sourceMappingURL=rbhl.css.map */
