@@ -289,7 +289,7 @@ a {
   width: 100%;
 }
 
-.edit {
+.edit, .faded {
   color: #ccc;
 }
 

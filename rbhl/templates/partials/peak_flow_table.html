@@ -6,6 +6,12 @@
          ng-click="episode.recordEditor.newItem('peak_flow_day', $index)"
          ></i>
     </h3>
+    <div ng-hide="episode.peak_flow_day.length">
+      <h3 class="faded">
+        This patient has history no peak flow.
+      </h3>
+    </div>
+
     <div style="min-height: 300px; border:"
          ng-show="episode.peak_flow_day.length > 3">
       <div peak-flow-graph id="peakFlow"></div>
