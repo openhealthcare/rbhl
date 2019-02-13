@@ -27,9 +27,6 @@
         {% endfor %}
         {% endblock pathway_body %}
       </div>
-      <div class="text-center" ng-show="form.$submitted && form.$invalid">
-        <strong class="help-block">Please fix the above errors</strong>
-      </div>
       {% block pathway_footer %}
       <div ng-hide="pathway.currentStep.scope.hideFooter" class="panel-footer">
         <div class="horizontal-form">
