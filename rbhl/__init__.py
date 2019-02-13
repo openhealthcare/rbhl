@@ -25,7 +25,9 @@ class Application(application.OpalApplication):
         # we import here as settings must be set before this is imported
         from django.contrib.auth.views import logout as logout_view
 
-        from rbhl.patient_lists import WithLetter, ActivePatients
+        from rbhl.patient_lists import (
+            ActivePatients, MinePatientList
+        )
         from rbhl.pathways import AddPatient
 
         # upload = menus.MenuItem(
@@ -38,6 +40,7 @@ class Application(application.OpalApplication):
         items = [
             # AddPatient.as_menuitem(index=1),
             ActivePatients.as_menuitem(index=2),
+            MinePatientList.as_menuitem(index=3),
             # menus.MenuItem(
             #     href='/pathway/#/add_patient',
             #     display='Add Patient',

@@ -84,7 +84,7 @@ class StaticTableListView(ListView):
     """
     View to render a Static HTML table list
     """
-    paginate_by = 30
+    paginate_by = 50
 
     def dispatch(self, *args, **kwargs):
         """
