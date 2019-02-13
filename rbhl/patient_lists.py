@@ -93,4 +93,6 @@ class MinePatientList(StaticTableList):
         """
         Only those patients who are active
         """
-        return Episode.objects.filter(cliniclog__seen_by__icontains="JS")
+        return Episode.objects.filter(
+            cliniclog__seen_by__icontains="JS"
+        ).order_by("-cliniclog__clinic_date")
