@@ -18,6 +18,7 @@ libpeerconnection.log
 .DS_Store
 deployment/hosts.dev
 deployment/ansible.cfg
+rbhl/local_settings.py
 *.csv
 
 .vscode

@@ -68,14 +68,14 @@ class Referral(models.EpisodeSubrecord):
     )
     # ??
     date_first_contact     = fields.DateField(
-        blank=True, null=True, verbose_name="Date first contact"
+        blank=True, null=True, verbose_name="Date of first contact"
     )
     # Used by admin staff
     comments               = fields.TextField(blank=True, null=True)
 
     attendance = fields.NullBooleanField()
     date_first_appointment = fields.DateField(
-        blank=True, null=True, verbose_name="Date first appointment"
+        blank=True, null=True, verbose_name="Date of first appointment"
     )
     firefighter         = fields.NullBooleanField()
 
