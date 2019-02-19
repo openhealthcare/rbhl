@@ -2,6 +2,7 @@
 rbhl models.
 """
 import datetime
+from dateutil.relativedelta import relativedelta
 
 from django.db.models import fields
 
@@ -14,7 +15,19 @@ YN = enum('Yes', 'No')
 Core Opal models - these inherit from the abstract data models in
 opal.models but can be customised here with extra / altered fields.
 """
-class Demographics(models.Demographics): pass
+
+
+class Demographics(models.Demographics):
+    @property
+    def age(self):
+        if self.date_of_birth:
+            today = datetime.date.today()
+            return relativedelta(
+                today,
+                self.date_of_birth
+            ).years
+
+
 class Location(models.Location): pass
 class Allergies(models.Allergies): pass
 
@@ -158,6 +171,7 @@ class ClinicLog(models.EpisodeSubrecord):
         today = datetime.date.today()
         diff = today - self.clinic_date
         return diff.days
+
 
 class Letter(models.EpisodeSubrecord):
     _icon = 'fa fa-envelope'
