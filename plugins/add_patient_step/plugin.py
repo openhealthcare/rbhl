@@ -3,8 +3,8 @@ Plugin definition for the add_patient_step Opal plugin
 """
 from opal.core import plugins
 
-from add_patient_step.urls import urlpatterns
-from add_patient_step import api
+from plugins.add_patient_step.urls import urlpatterns
+from plugins.add_patient_step import api
 
 
 class add_patient_stepPlugin(plugins.OpalPlugin):

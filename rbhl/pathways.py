@@ -2,7 +2,7 @@
 Pathways for the rbhl app
 """
 from opal.core.pathway import Step, WizardPathway, PagePathway
-from add_patient_step import FindPatientStep
+from plugins.add_patient_step import FindPatientStep
 
 from rbhl import models
 
