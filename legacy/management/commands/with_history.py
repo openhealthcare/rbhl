@@ -6,12 +6,12 @@ import datetime
 
 from django.core.management import BaseCommand
 from django.utils import timezone
-import ffs
 
 from plugins.trade.match import FieldConverter, Matcher, Mapping
 
 from legacy.management.commands.flush_database import flush
 from rbhl.episode_categories import OccupationalLungDiseaseEpisode
+
 
 def sex_to_sex(raw_data, *args, **kwargs):
     raw = raw_data['Sex']
@@ -61,10 +61,9 @@ def load_PAS_demographics(file_name):
     Load the demographics from the database that talks to the PAS.
     Use these as our basis for matching against.
     """
-    data = ffs.Path(file_name)
     patients_imported = 0
     print('Beginning PAS DB demographics import ')
-    with open(data.abspath) as csvfile:
+    with open(file_name) as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
             if row['Dateofbirth'] == '00-Jan-00':
@@ -72,7 +71,7 @@ def load_PAS_demographics(file_name):
             matcher = PASMatcher(row)
             patients_imported += 1
             patient = matcher.create()
-            episode = patient.create_episode(
+            patient.create_episode(
                 category_name=OccupationalLungDiseaseEpisode.display_name
             )
             if patients_imported % 500 == 0:
