@@ -25,10 +25,12 @@
   </div>
 </div>
 
+{% if permissions.CAN_SEE_PEAK_FLOW %}
+  {% include 'partials/peak_flow_table.html' %}
+{% endif %}
+
+
 {% comment %}
-{% include 'partials/peak_flow_table.html' %}
-
-
 <h2 class="text-center">Old Unconverted Details</h2>
 <div class="row">
   <div class="col-md-12">

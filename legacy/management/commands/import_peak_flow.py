@@ -1,27 +1,46 @@
 """
 Management command to bring in historic Peak Flow data
 """
+import os
+import csv
 from django.core.management.base import BaseCommand
-import ffs
-from opal.core import exceptions, match
+from plugins.trade import match
+from plugins.trade.exceptions import PatientNotFoundError
 
 from rbhl.models import PeakFlowDay
 from legacy.models import PeakFlowIdentifier
 
 
 class Matcher(match.Matcher):
-    direct_match_field = match.Mapping('crn', 'hospital_number')
+    direct_match_field = match.Mapping('CRN', 'hospital_number')
 
 
 class Command(BaseCommand):
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            'directory_name',
+            help="Specify import directory",
+        )
 
     def handle(self, *args, **kwargs):
         print('Deleting all existing Peak Flow objects')
         PeakFlowDay.objects.all().delete()
         PeakFlowIdentifier.objects.all().delete()
 
-        demographics_data = ffs.Path('~/Documents/RBHL/peakflow/demographics.csv')
-        flow_data = ffs.Path('~/Documents/RBHL/peakflow/trial_day.csv')
+        dir_name = kwargs.get("directory_name")
+        demographics_file_name = os.path.join(dir_name, "demographics.csv")
+        flow_data_file_name = os.path.join(dir_name, "trial_day.csv")
+
+        if not os.path.exists(demographics_file_name):
+            raise ValueError(
+                "We expect a demographics file called demographics.csv"
+            )
+
+        if not os.path.exists(flow_data_file_name):
+            raise ValueError(
+                "We expect a demographics file called trial_day.csv"
+            )
 
         self.patients_imported = 0
         self.flow_days_imported = 0
@@ -30,32 +49,39 @@ class Command(BaseCommand):
         self.no_hosp_num = 0
 
         print('Import Peak Flow IDs')
-        with demographics_data.csv(header=True) as csv:
-            for row in csv:
-                if row.crn == 'NULL':
+        with open(demographics_file_name) as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+
+                if row["CRN"] == 'NULL':
                     self.no_hosp_num += 1
                     continue
 
-                matcher = Matcher(row._asdict())
+                matcher = Matcher(row)
                 try:
                     patient = matcher.direct_match()
-                except exceptions.PatientNotFoundError:
+                except PatientNotFoundError:
                     self.patients_missed += 1
                     continue
 
                 print('Creating Peak Flow Identifier')
 
                 identifier = PeakFlowIdentifier(patient=patient)
-                identifier.occmendo = int(row.occmedno)
+                identifier.occmendo = int(row["OCCMEDNO"])
                 identifier.save()
 
-        print('Imported {} matched Peak Flow Identifiers'.format(PeakFlowIdentifier.objects.all().count()))
+        print('Imported {} matched Peak Flow Identifiers'.format(
+            PeakFlowIdentifier.objects.all().count())
+        )
 
         print('Import peak flow measurements')
-        with flow_data.csv(header=True) as csv:
-            for row in csv:
+        with open(flow_data_file_name) as f:
+            reader = csv.DictReader(f)
 
-                patients = PeakFlowIdentifier.objects.filter(occmendo=int(row.occmedno))
+            for row in reader:
+                patients = PeakFlowIdentifier.objects.filter(
+                    occmendo=int(row["OCCMEDNO"])
+                )
                 if patients.count() > 1:
                     print(row)
                     raise ValueError('Too many identifiers')
@@ -69,7 +95,7 @@ class Command(BaseCommand):
                 episode = patient.episode_set.get()
 
                 day = PeakFlowDay(episode=episode)
-                data = row.trial_data.split(',')[:-1]
+                data = row["TRIAL_DATA"].split(',')[:-1]
 
                 flow_fields = [
                     'flow_0000', 'flow_0100', 'flow_0200', 'flow_0300', 'flow_0400', 'flow_0500',
@@ -81,10 +107,10 @@ class Command(BaseCommand):
                 for i, field in enumerate(flow_fields):
                     setattr(day, field, data[i])
 
-                day.day_num    = int(row.day_num)
-                day.trial_num  = int(row.trial_num)
-                day.work_start = int(row.work_start)
-                day.work_end   = int(row.work_finish)
+                day.day_num    = int(row["DAY_NUM"])
+                day.trial_num  = int(row["TRIAL_NUM"])
+                day.work_start = int(row["WORK_START"])
+                day.work_end   = int(row["WORK_FINISH"])
 
                 day.save()
                 self.flow_days_imported += 1
