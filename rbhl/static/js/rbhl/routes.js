@@ -75,6 +75,11 @@ app.directive('editPeakFlow', function($q){
             return scope.fields[index]
         }
 
+        scope.openEditItem = function(day){
+            var idx = scope.episode.peak_flow_day.indexOf(day);
+            scope.episode.recordEditor.editItem('peak_flow_day', idx);
+        }
+
         scope.edit = function(day, fieldName, time){
             scope.selectedDayId = day.id;
             scope.selectedTime = time;

@@ -18,7 +18,7 @@
       <tr>
         <td><div class="row-label">Note</div></td>
         <td ng-repeat="day in episode.peak_flow_day | orderBy:'day_num'">
-            <a class="" href="" ng-click="episode.recordEditor.editItem('peak_flow_day', $index)">
+            <a class="" href="" ng-click="openEditItem(day)">
               <div class="number-display note-link">
                 <span ng-show="day.note">
                   {% icon "fa-check" %}

@@ -280,6 +280,9 @@ class PeakFlowDay(models.EpisodeSubrecord):
     flow_2200 = fields.IntegerField(blank=True, null=True, verbose_name="22:00")
     flow_2300 = fields.IntegerField(blank=True, null=True, verbose_name="23:00")
 
+    class Meta:
+        ordering = ["day_num"]
+
 
 
 """

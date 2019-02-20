@@ -91,6 +91,7 @@ h1 small {
 #left-col {
   background: #4676c5;
   position: fixed;
+  z-index: 100;
 }
 
 #center-col {
