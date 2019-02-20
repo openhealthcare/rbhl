@@ -1,9 +1,22 @@
 {% load forms %}
-<div edit-peak-flow class="row">
-  <div class="peak-flow col-md-12">
+<div class="row">
+  <div class="col-md-12">
     <h3>
-      Peak Flow
+        Peak Flow
     </h3>
+  </div>
+</div>
+<div ng-if="!episode.peak_flow_day.length">
+    <div class="row">
+        <div class="col-md-12">
+          <h1 class="faded">
+            No peak flow data available
+          </h1>
+        </div>
+    </div>
+</div>
+<div ng-if="episode.peak_flow_day.length" class="row">
+  <div edit-peak-flow class="peak-flow col-md-12">
     <div style="min-height: 300px; border:"
          ng-show="episode.peak_flow_day.length > 3">
       <div peak-flow-graph id="peakFlow"></div>

@@ -1,4 +1,5 @@
 $red: rgba(208, 28, 23, 1);
+
 $blue: rgba(70, 118, 197, 1);
 $bluegreen: rgba(58, 138, 138, 1);
 $green: rgba(46, 153, 62, 1);
@@ -451,4 +452,8 @@ input[type="date"]::-webkit-input-placeholder{
             background-color: $lightgrey;
         }
     }
+}
+
+.faded{
+    color: $lightgrey;
 }

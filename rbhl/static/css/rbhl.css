@@ -396,4 +396,8 @@ input[type=date]::-webkit-input-placeholder {
   background-color: #ccc;
 }
 
+.faded {
+  color: #ccc;
+}
+
 /*# sourceMappingURL=rbhl.css.map */
