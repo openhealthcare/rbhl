@@ -18,7 +18,30 @@ opal.models but can be customised here with extra / altered fields.
 """
 
 
+def calculate_peak_expiratory_flow(height, age, sex):
+    # below is the wrong equation that gives
+    # close to the correct results... from
+    # https://fpnotebook.com/Lung/Lab/PkExprtryFlwRt.htm
+    # TODO this is for display purposes only
+    if sex == "Male":
+        return (((height * 0.0548) + 1.58) - (age * 0.041)) * 60
+
+    if sex == "Female":
+        return (((height * 0.0372) + 2.24) - (age * 0.03)) * 60
+
+    # Below is an incorrect version of the right equation
+    # import math
+
+    # if sex == "Male":
+    #     r = (0.544 * math.log(age)) - (0.0151 * age) - 74.7/(height + 5.48)
+    # if sex == "Female":
+    #     r = (0.376 * math.log(age)) - (0.0121 * age) - 58.8/(height + 5.63)
+    # return math.exp(r)
+
+
 class Demographics(models.Demographics):
+    height = fields.IntegerField(blank=True, null=True, verbose_name='Height(cm)')
+
     @property
     def age(self):
         if self.date_of_birth:
@@ -27,6 +50,32 @@ class Demographics(models.Demographics):
                 today,
                 self.date_of_birth
             ).years
+
+    def save(self, *args, **kwargs):
+        print("{} {} {}".format(self.height, self.age, self.sex))
+        if self.height and self.age and self.sex:
+            pef = self.patient.peakexpiratoryflow_set.first()
+            pef.save()
+        super().save(*args, **kwargs)
+
+
+class PeakExpiratoryFlow(models.PatientSubrecord):
+    _is_singleton = True
+    value = fields.IntegerField(blank=True, null=True)
+
+    def calculate_peak_expiratory_flow(self):
+        demographics = self.patient.demographics()
+        height, age = demographics.height, demographics.age
+        sex = demographics.sex
+
+        if not height or not age or not sex:
+            return
+
+        return calculate_peak_expiratory_flow(height, age, sex)
+
+    def save(self, *args, **kwargs):
+        self.value = self.calculate_peak_expiratory_flow()
+        super().save(*args, **kwargs)
 
 
 class Location(models.Location): pass
