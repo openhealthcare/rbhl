@@ -89,10 +89,29 @@ class MinePatientList(StaticTableList):
     template_name = 'patient_lists/active_patients.html'
     display_name = 'My patients'
 
-    def get_queryset(self):
+    def extract_initials(self, sn):
+        return [
+            i.strip()[0] for i in sn.split(" ") if i.strip()
+        ]
+
+    def get_initials(self, user):
+        initials = []
+
+        if user.first_name:
+            initials.extend(self.extract_initials(user.first_name))
+        if user.last_name:
+            initials.extend(self.extract_initials(user.last_name))
+        return "".join(initials)
+
+    def get_queryset(self, user=None):
         """
         Only those patients who are active
         """
+        initials = self.get_initials(user)
+
+        if not initials:
+            return Episode.objects.none()
+
         return Episode.objects.filter(
-            cliniclog__seen_by__icontains="JS"
+            cliniclog__seen_by__icontains=initials
         ).order_by("-cliniclog__clinic_date")

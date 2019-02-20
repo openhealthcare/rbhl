@@ -94,7 +94,7 @@ class StaticTableListView(ListView):
         return super(StaticTableListView, self).dispatch(*args, **kwargs)
 
     def get_queryset(self, *args, **kwargs):
-        return self.patient_list.get_queryset()
+        return self.patient_list.get_queryset(user=self.request.user)
 
     def get_template_names(self, *args, **kwargs):
         return self.patient_list.template_name
