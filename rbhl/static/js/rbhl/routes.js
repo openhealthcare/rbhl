@@ -18,10 +18,124 @@ app.config(
 
      }]);
 
+app.directive('editPeakFlow', function($q){
+    "use strict";
+
+    return {
+      scope: false,
+      link: function(scope, element, attrs){
+        scope.times = [
+            "06:00",
+            "07:00",
+            "08:00",
+            "09:00",
+            "10:00",
+            "11:00",
+            "12:00",
+            "13:00",
+            "14:00",
+            "15:00",
+            "16:00",
+            "17:00",
+            "18:00",
+            "19:00",
+            "20:00",
+            "21:00",
+            "22:00",
+            "23:00",
+        ]
+
+        scope.fields = [
+            "flow_0600",
+            "flow_0700",
+            "flow_0800",
+            "flow_0900",
+            "flow_1000",
+            "flow_1100",
+            "flow_1200",
+            "flow_1300",
+            "flow_1400",
+            "flow_1500",
+            "flow_1600",
+            "flow_1700",
+            "flow_1800",
+            "flow_1900",
+            "flow_2000",
+            "flow_2100",
+            "flow_2200",
+            "flow_2300",
+        ]
+
+        scope.selectedDayId = null;
+        scope.selectedTime = null;
+        scope.oldValue = null;
+        scope.savingPromise = $q.defer().promise;
+
+        scope.getFieldName = function(index){
+            return scope.fields[index]
+        }
+
+        scope.edit = function(day, fieldName, time){
+            scope.selectedDayId = day.id;
+            scope.selectedTime = time;
+            scope.oldValue = day[fieldName];
+        }
+
+        scope.addDay = function(){
+           var maxNum = _.max(_.pluck(scope.episode.peak_flow_day, "day_num"))
+           var pfd = scope.episode.newItem("peak_flow_day");
+           var copy = pfd.makeCopy()
+           _.each(scope.fields, function(field){
+            copy[field] = 0;
+           });
+           copy.day_num = maxNum + 1;
+           pfd.save(copy);
+        };
+
+
+        scope.save = function(selectedDayId, selectedTime, newValue){
+            var deferred = $q.defer();
+            var item = _.findWhere(scope.episode.peak_flow_day, {id: selectedDayId});
+            var copy = item.makeCopy();
+            copy[scope.fields[scope.times.indexOf(selectedTime)]] = newValue;
+            item.save(copy).then(function(x){
+                scope.$broadcast("reloadGraph")
+                deferred.resolve(x);
+            });
+            return deferred.promise
+        }
+
+        scope.loseFocus = function(value){
+            if(value !== scope.oldValue){
+                var saving = scope.save(scope.selectedDayId, scope.selectedTime, value);
+                // we save synchronously to make sure we are up to date.
+                // with consistency tokens and previous results.
+                scope.savingPromise = scope.savingPromise.then(saving);
+            }
+            scope.selectedDayId = null;
+            scope.selectedTime = null;
+            scope.oldValue = null;
+        }
+
+        scope.isSelected = function(dayId, time){
+            return dayId === scope.selectedDayId && scope.selectedTime === time
+        }
+
+        // they don't have to lose focus, they can
+        // press the enter key
+        scope.onEnter = function(keyEvent, value) {
+            if(keyEvent.which === 13){
+                scope.loseFocus(value)
+            }
+        }
+      }
+    }
+});
+
 app.directive('peakFlowGraph', function($timeout){
     return function(scope, element, attrs){
         function render_chart(){
-              var fields = [
+            var fields = [
                 'flow_0600','flow_0700','flow_0800','flow_0900','flow_1000','flow_1100',
                 'flow_1200','flow_1300','flow_1400','flow_1500','flow_1600','flow_1700',
                 'flow_1800','flow_1900','flow_2000','flow_2100','flow_2200','flow_2300',
@@ -32,6 +146,8 @@ app.directive('peakFlowGraph', function($timeout){
             var mean = ['Mean']
             var max = ['Max']
             var min = ['Min']
+            var pef = ["PEF"]
+            var pefValue = scope.episode.peak_expiratory_flow[0].value
             // var predicted = ['Predicted Mean']
             _.each(days, function(day){
                 var count = 0
@@ -49,6 +165,7 @@ app.directive('peakFlowGraph', function($timeout){
                     mean.push(parseInt(sum/count));
                     max.push(_.max(values));
                     min.push(_.min(values));
+                    pef.push(pefValue);
                     // predicted.push(510);
                 }
             });
@@ -89,7 +206,7 @@ app.directive('peakFlowGraph', function($timeout){
             });
 
             var columns = [
-                x, max, min, mean//, predicted
+                x, max, min, mean, pef
             ]
             var ret = c3.generate({
                 bindto: element[0],
@@ -117,5 +234,11 @@ app.directive('peakFlowGraph', function($timeout){
             });
         }
         $timeout(render_chart, 500);
+
+        // when anything has changed in the table below
+        // reload the graph
+        scope.$on("reloadGraph", function(){
+            render_chart()
+        });
     }
 })

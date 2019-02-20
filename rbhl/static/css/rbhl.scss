@@ -401,3 +401,53 @@ input::-webkit-calendar-picker-indicator{
 input[type="date"]::-webkit-input-placeholder{
     visibility: hidden !important;
 }
+
+.peak-flow{
+    tbody > tr > td, tbody > tr > th{
+        padding: 0;
+        text-align: right;
+
+        &.text-center{
+            text-align: center;
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        input{
+            display: none;
+        }
+        &.editing{
+            input{
+                width: 50px;
+                height: 27px;
+                border: none;
+                padding-left: 3px;
+                display: inline-block;
+                text-align: right;
+
+                &:focus{
+                    background-color: $lightgrey;
+                }
+            }
+
+            .number-display{
+                display: none;
+            }
+        }
+    }
+
+    .row-label, .number-display{
+        height: 27px;
+        width: 50px;
+        padding-top: 3px;
+        padding-left: 3px;
+        padding-right: 14px;
+    }
+
+    .note-link{
+        color: black;
+        &:hover{
+            background-color: $lightgrey;
+        }
+    }
+}

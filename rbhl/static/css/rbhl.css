@@ -355,4 +355,44 @@ input[type=date]::-webkit-input-placeholder {
   visibility: hidden !important;
 }
 
+.peak-flow tbody > tr > td, .peak-flow tbody > tr > th {
+  padding: 0;
+  text-align: right;
+}
+.peak-flow tbody > tr > td.text-center, .peak-flow tbody > tr > th.text-center {
+  text-align: center;
+  padding-left: 0;
+  padding-right: 0;
+}
+.peak-flow tbody > tr > td input, .peak-flow tbody > tr > th input {
+  display: none;
+}
+.peak-flow tbody > tr > td.editing input, .peak-flow tbody > tr > th.editing input {
+  width: 50px;
+  height: 27px;
+  border: none;
+  padding-left: 3px;
+  display: inline-block;
+  text-align: right;
+}
+.peak-flow tbody > tr > td.editing input:focus, .peak-flow tbody > tr > th.editing input:focus {
+  background-color: #ccc;
+}
+.peak-flow tbody > tr > td.editing .number-display, .peak-flow tbody > tr > th.editing .number-display {
+  display: none;
+}
+.peak-flow .row-label, .peak-flow .number-display {
+  height: 27px;
+  width: 50px;
+  padding-top: 3px;
+  padding-left: 3px;
+  padding-right: 14px;
+}
+.peak-flow .note-link {
+  color: black;
+}
+.peak-flow .note-link:hover {
+  background-color: #ccc;
+}
+
 /*# sourceMappingURL=rbhl.css.map */
