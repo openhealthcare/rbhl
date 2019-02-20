@@ -158,6 +158,8 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'opal.context_processors.settings',
                 'opal.context_processors.models',
+                'opal.core.pathway.context_processors.pathways',
+                'rbhl.context_processors.permissions',
             ],
         },
     },
@@ -184,6 +186,7 @@ INSTALLED_APPS = (
     'django_otp.plugins.otp_static',
     'django_otp.plugins.otp_totp',
     'two_factor',
+    'plugins.add_patient_step',
     'rbhl',
 )
 

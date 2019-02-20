@@ -1,3 +1,14 @@
+.panel.panel-primary .panel-heading.pathway-header, .panel.panel-primary .panel-heading.patient-detail-heading,
+.patient-detail-heading {
+  position: fixed;
+  top: 0px;
+  z-index: 1001;
+  margin-top: -16px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  background: transparent;
+}
+
 /* Layout */
 #center-col {
   margin-left: 16.6666666667%;
@@ -290,17 +301,6 @@ a {
   background: #4123BF;
 }
 
-.panel.panel-primary .panel-heading.patient-detail-heading,
-.patient-detail-heading {
-  position: fixed;
-  top: 0px;
-  z-index: 1001;
-  margin-top: -16px;
-  padding-top: 0px;
-  padding-bottom: 0px;
-  background: transparent;
-}
-
 .legacy_content p br {
   content: "A" !important;
   display: block !important;
@@ -345,6 +345,14 @@ a {
 
 .form-row {
   height: 59px;
+}
+
+input::-webkit-calendar-picker-indicator {
+  display: none;
+}
+
+input[type=date]::-webkit-input-placeholder {
+  visibility: hidden !important;
 }
 
 /*# sourceMappingURL=rbhl.css.map */

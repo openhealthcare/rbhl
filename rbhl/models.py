@@ -8,6 +8,7 @@ from django.db.models import fields
 
 from opal import models
 from opal.core.fields import enum
+from opal.core import lookuplists
 
 YN = enum('Yes', 'No')
 
@@ -60,6 +61,10 @@ class ContactDetails(models.PatientSubrecord):
         verbose_name = "Contact details"
 
 
+class RBHReferrer(lookuplists.LookupList):
+    pass
+
+
 class Referral(models.EpisodeSubrecord):
     _icon         = 'fa fa-level-up'
     _is_singleton = True
@@ -68,7 +73,7 @@ class Referral(models.EpisodeSubrecord):
     referrer_title         = models.ForeignKeyOrFreeText(
         models.Title, verbose_name="Referrer title"
     )
-    referrer_name          = fields.CharField(
+    referrer_name = fields.CharField(
         blank=True, null=True, max_length=100, verbose_name="Referrer name"
     )
     date_of_referral       = fields.DateField(
@@ -81,23 +86,31 @@ class Referral(models.EpisodeSubrecord):
     )
     # ??
     date_first_contact     = fields.DateField(
-        blank=True, null=True, verbose_name="Date first contact"
+        blank=True, null=True, verbose_name="Date of first contact"
     )
     # Used by admin staff
     comments               = fields.TextField(blank=True, null=True)
 
     attendance = fields.NullBooleanField()
     date_first_appointment = fields.DateField(
-        blank=True, null=True, verbose_name="Date first appointment"
+        blank=True, null=True, verbose_name="Date of first appointment"
     )
     firefighter         = fields.NullBooleanField()
+
+
+class Employer(lookuplists.LookupList):
+    pass
+
+
+class OHProvider(lookuplists.LookupList):
+    pass
 
 
 class Employment(models.EpisodeSubrecord):
     _icon         = 'fa fa-building-o'
     _is_singleton = True
 
-    employer    = fields.CharField(blank=True, null=True, max_length=100)
+    employer = fields.CharField(blank=True, null=True, max_length=100)
     oh_provider = fields.CharField(
         blank=True, null=True, max_length=100, verbose_name="OH provider"
     )
