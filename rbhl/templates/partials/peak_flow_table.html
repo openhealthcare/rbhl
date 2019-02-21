@@ -21,6 +21,7 @@
          ng-show="episode.peak_flow_day.length > 3">
       <div peak-flow-graph id="peakFlow"></div>
     </div>
+    {% comment %}
     <div style="overflow: scroll" class="col-md-12">
     <table class="peak-flow table table-bordered content-offset-25" ng-show="episode.peak_flow_day.length > 0">
       <tr>
@@ -31,6 +32,28 @@
           [[ day.day_num ]]
         </th>
       </tr>
+<tr>
+ <td><div class="row-label">Work start</div></td>
+ <td ng-repeat="day in episode.peak_flow_day | orderBy:'day_num'">
+ <div class="number-display note-link">
+ <span ng-show="day.work_start">
+   [[ day.work_start | toTime ]]
+ </span>
+ </div>
+ </span>
+ </td>
+ </tr>
+ <tr>
+    <td><div class="row-label">Work end</div></td>
+    <td ng-repeat="day in episode.peak_flow_day | orderBy:'day_num'">
+    <div class="number-display note-link">
+    <span ng-show="day.work_end">
+      [[ day.work_end | toTime ]]
+    </span>
+    </div>
+    </span>
+    </td>
+    </tr>
       <tr ng-repeat="time in times">
         <td>
           <div class="row-label">[[ time ]]</div>
@@ -46,5 +69,6 @@
       </tr>
     </table>
     </div>
+    {% endcomment %}
   </div>
 </div>

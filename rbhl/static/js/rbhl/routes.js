@@ -18,6 +18,23 @@ app.config(
 
      }]);
 
+app.filter("toTime", function(){
+    return function(x){
+        if(!x){
+            return ""
+        }
+        var str_x = String(x);
+        if(!str_x.length){
+            return ""
+        }
+        str_x.splice(str_x.length-2, 0, ":")
+        return str_x
+    }
+})
+
+
+
+
 app.directive('editPeakFlow', function($q, $timeout){
     "use strict";
 
