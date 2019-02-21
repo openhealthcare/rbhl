@@ -46,7 +46,7 @@
           <div class="row-label">[[ time ]]</div>
         </td>
         <td ng-class="{editing: isSelected(day.id, time)}" ng-repeat="day in episode.peak_flow_day | orderBy:'day_num'">
-          <span class="pointer" ng-click="edit(day, fieldName, time)" ng-repeat="fieldName in [getFieldName($parent.$index)]">
+          <span class="pointer" ng-click="edit(day, fieldName, time, $event)" ng-repeat="fieldName in [getFieldName($parent.$index)]">
             <input ng-keypress="onEnter($event, day[fieldName])" ng-blur="loseFocus(day[fieldName])" ng-model="day[fieldName]" type="number">
             <div class="number-display">
               [[ day[fieldName] ]]

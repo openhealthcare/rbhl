@@ -18,7 +18,7 @@ app.config(
 
      }]);
 
-app.directive('editPeakFlow', function($q){
+app.directive('editPeakFlow', function($q, $timeout){
     "use strict";
 
     return {
@@ -80,10 +80,15 @@ app.directive('editPeakFlow', function($q){
             scope.episode.recordEditor.editItem('peak_flow_day', idx);
         }
 
-        scope.edit = function(day, fieldName, time){
+        scope.edit = function(day, fieldName, time, $event){
             scope.selectedDayId = day.id;
             scope.selectedTime = time;
             scope.oldValue = day[fieldName];
+            $timeout(function(){
+                var target = $event.target;
+                var a = $($(target.parentNode).find("input").get())
+                a.focus();
+            }, 1);
         }
 
         scope.addDay = function(){
