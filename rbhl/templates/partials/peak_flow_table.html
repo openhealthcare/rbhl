@@ -21,6 +21,7 @@
          ng-show="episode.peak_flow_day.length > 3">
       <div peak-flow-graph id="peakFlow"></div>
     </div>
+    <div style="overflow: scroll" class="col-md-12">
     <table class="peak-flow table table-bordered content-offset-25" ng-show="episode.peak_flow_day.length > 0">
       <tr>
         <th>
@@ -29,17 +30,6 @@
         <th class="number-display" ng-repeat="day in episode.peak_flow_day | orderBy:'day_num'">
           [[ day.day_num ]]
         </th>
-      </tr>
-      <tr>
-        <td><div class="row-label">Note</div></td>
-        <td ng-repeat="day in episode.peak_flow_day | orderBy:'day_num'">
-              <div class="number-display note-link">
-                <span ng-show="day.note">
-                  {% icon "fa-check" %}
-                </span>
-              </div>
-          </span>
-        </td>
       </tr>
       <tr ng-repeat="time in times">
         <td>
@@ -55,5 +45,6 @@
         </td>
       </tr>
     </table>
+    </div>
   </div>
 </div>
