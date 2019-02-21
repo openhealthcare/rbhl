@@ -448,16 +448,17 @@ input[type="date"]::-webkit-input-placeholder{
 
     .note-link{
         color: black;
-        &:hover{
-            background-color: $lightgrey;
-        }
+
+        // &:hover{
+        //     background-color: $lightgrey;
+        // }
     }
 
     .add-day{
         color: black;
-        &:hover{
-            background-color: $lightgrey;
-        }
+        // &:hover{
+        //     background-color: $lightgrey;
+        // }
     }
 }
 

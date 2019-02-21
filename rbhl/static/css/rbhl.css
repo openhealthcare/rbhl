@@ -392,14 +392,8 @@ input[type=date]::-webkit-input-placeholder {
 .peak-flow .note-link {
   color: black;
 }
-.peak-flow .note-link:hover {
-  background-color: #ccc;
-}
 .peak-flow .add-day {
   color: black;
-}
-.peak-flow .add-day:hover {
-  background-color: #ccc;
 }
 
 .faded {
