@@ -360,7 +360,7 @@ input[type=date]::-webkit-input-placeholder {
   padding: 0;
   text-align: right;
 }
-.peak-flow tbody > tr > td.text-center, .peak-flow tbody > tr > th.text-center {
+.peak-flow tbody > tr > td .text-center, .peak-flow tbody > tr > th .text-center {
   text-align: center;
   padding-left: 0;
   padding-right: 0;
@@ -393,6 +393,12 @@ input[type=date]::-webkit-input-placeholder {
   color: black;
 }
 .peak-flow .note-link:hover {
+  background-color: #ccc;
+}
+.peak-flow .add-day {
+  color: black;
+}
+.peak-flow .add-day:hover {
   background-color: #ccc;
 }
 

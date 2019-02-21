@@ -23,7 +23,11 @@
     </div>
     <table class="peak-flow table table-bordered content-offset-25" ng-show="episode.peak_flow_day.length > 0">
       <tr>
-        <th class="number-display text-center"><i ng-click="addDay()" class="fa fa-plus-circle pointer"></i></th>
+        <th>
+            <div ng-click="addDay()" class="number-display note-link text-center pointer">
+              <i class="fa fa-plus-circle pointer"></i>
+            </div>
+        </th>
         <th class="number-display" ng-repeat="day in episode.peak_flow_day | orderBy:'day_num'">
           [[ day.day_num ]]
         </th>

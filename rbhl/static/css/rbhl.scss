@@ -409,7 +409,7 @@ input[type="date"]::-webkit-input-placeholder{
         padding: 0;
         text-align: right;
 
-        &.text-center{
+        .text-center{
             text-align: center;
             padding-left: 0;
             padding-right: 0;
@@ -447,6 +447,13 @@ input[type="date"]::-webkit-input-placeholder{
     }
 
     .note-link{
+        color: black;
+        &:hover{
+            background-color: $lightgrey;
+        }
+    }
+
+    .add-day{
         color: black;
         &:hover{
             background-color: $lightgrey;
