@@ -2,6 +2,8 @@
 rbhl models.
 """
 import datetime
+import math
+from dateutil.relativedelta import relativedelta
 
 from django.db.models import fields
 
@@ -15,7 +17,58 @@ YN = enum('Yes', 'No')
 Core Opal models - these inherit from the abstract data models in
 opal.models but can be customised here with extra / altered fields.
 """
-class Demographics(models.Demographics): pass
+
+
+def calculate_peak_expiratory_flow(height, age, sex):
+    """
+    For males
+    PEF = e (0.544 loge*age – 0.0151age – 74.7/height + 5.48)
+
+    For females
+    PEF = e (0.376 loge*age – 0.0121 age – 58.8/height + 5.63)
+
+    Reference
+
+    AJ Nunn, I Gregg New regression equations for predicting peak expiratory flow in adults Br Med J 1989; 298:1068-70
+    """
+    if sex == "Male":
+        PEF = 0.544 * (math.log(age)) - (0.0151*age) - 74.7/height + 5.48
+    if sex == "Female":
+        PEF = 0.376 * (math.log(age)) - (0.0121*age) - 58.8/height + 5.63
+
+    return round(math.exp(PEF), 2)
+
+
+class Demographics(models.Demographics):
+    height = fields.IntegerField(blank=True, null=True, verbose_name='Height(cm)')
+
+    def save(self, *args, **kwargs):
+        print("{} {} {}".format(self.height, self.age, self.sex))
+        if self.height and self.age and self.sex:
+            pef = self.patient.peakexpiratoryflow_set.first()
+            pef.save()
+        super().save(*args, **kwargs)
+
+
+class PeakExpiratoryFlow(models.PatientSubrecord):
+    _is_singleton = True
+    value = fields.IntegerField(blank=True, null=True)
+
+    def calculate_peak_expiratory_flow(self):
+        demographics = self.patient.demographics()
+        height, age = demographics.height, demographics.age
+        sex = demographics.sex
+
+        if not height or not age or not sex:
+            return
+
+        return calculate_peak_expiratory_flow(height, age, sex)
+
+    def save(self, *args, **kwargs):
+        self.value = self.calculate_peak_expiratory_flow()
+        super().save(*args, **kwargs)
+
+
 class Location(models.Location): pass
 class Allergies(models.Allergies): pass
 
@@ -172,6 +225,7 @@ class ClinicLog(models.EpisodeSubrecord):
         diff = today - self.clinic_date
         return diff.days
 
+
 class Letter(models.EpisodeSubrecord):
     _icon = 'fa fa-envelope'
 
@@ -216,6 +270,9 @@ class PeakFlowDay(models.EpisodeSubrecord):
     flow_2100 = fields.IntegerField(blank=True, null=True, verbose_name="21:00")
     flow_2200 = fields.IntegerField(blank=True, null=True, verbose_name="22:00")
     flow_2300 = fields.IntegerField(blank=True, null=True, verbose_name="23:00")
+
+    class Meta:
+        ordering = ["day_num"]
 
 
 
