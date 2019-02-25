@@ -80,6 +80,11 @@
     chdir: "{{ PROJECT_PATH}}"
   command: "{{ VIRTUALENV_PATH }}/bin/python manage.py collectstatic --noinput"
 
+- name: Create singletons
+  args:
+    chdir: "{{ PROJECT_PATH}}"
+  command: "{{ VIRTUALENV_PATH }}/bin/python manage.py create_singletons"
+
 - name: Load lookuplists
   args:
     chdir: "{{ PROJECT_PATH}}"

@@ -11,6 +11,16 @@ $lightgrey: #ccc;
 
 $twocolwidth: 16.6666666667%;
 
+%nav-bar-heading{
+    position: fixed;
+    top: 0px;
+    z-index: 1001;
+    margin-top: -16px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    background: transparent;
+}
+
 
 /* Layout */
 #center-col {
@@ -327,13 +337,11 @@ a {
 }
 .panel.panel-primary .panel-heading.patient-detail-heading,
 .patient-detail-heading {
-    position: fixed;
-    top: 0px;
-    z-index: 1001;
-    margin-top: -16px;
-    padding-top: 0px;
-    padding-bottom: 0px;
-    background: transparent;
+    @extend %nav-bar-heading;
+}
+
+.panel.panel-primary .panel-heading.pathway-header{
+    @extend %nav-bar-heading;
 }
 
 .legacy_content p br  {
@@ -393,4 +401,12 @@ a {
     &:hover, &:active, &:focus{
         color: $blue;
     }
+}
+
+// hides the html5 datepicker
+input::-webkit-calendar-picker-indicator{
+    display: none;
+}
+input[type="date"]::-webkit-input-placeholder{
+    visibility: hidden !important;
 }

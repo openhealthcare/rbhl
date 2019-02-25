@@ -1,0 +1,22 @@
+{% load forms %}
+<div class="col-md-12">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <p class="lead">
+                Unable to find a patient with the hospital number <b>[[ editing.demographics.hospital_number ]]</b>. Add now:
+            </p>
+        </div>
+    </div>
+    <form class="form-horizontal">
+        <div class="form-group">
+            <label class="control-label col-sm-3">Hospital #</label>
+            <label class="control-label col-sm-8 text-left">
+                [[ editing.demographics.hospital_number ]]
+            </label>
+        </div>
+        {% input "autofocus" field="Demographics.first_name" %}
+        {% input field="Demographics.surname" %}
+        {% date_of_birth_field %}
+        {% select field="Demographics.sex" %}
+    </form>
+</div>
