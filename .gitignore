@@ -25,3 +25,4 @@ rbhl/data/lookuplists/ohprovider.json
 rbhl/data/lookuplists/rbhreferrer.json
 
 .vscode
+node_modules
