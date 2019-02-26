@@ -1,3 +1,4 @@
+{% load forms %}
 <div class="row" ng-show="item.employer">
   <div class="col-md-6">
     <b>Employer:</b>
@@ -14,3 +15,12 @@
     [[ item.oh_provider ]]
   </div>
 </div>
+<div class="row">
+  <div class="col-md-6">
+    <b>Firefighter <br />pre-employment:</b>
+  </div>
+  <div class="col-md-6" ng-show="item.firefighter">
+      {% icon "fa-check" %}
+  </div>
+</div>
+

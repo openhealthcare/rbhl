@@ -80,9 +80,8 @@ class Referral(models.EpisodeSubrecord):
 
     attendance = fields.NullBooleanField()
     date_first_appointment = fields.DateField(
-        blank=True, null=True, verbose_name="Date of first appointment"
+        blank=True, null=True, verbose_name="Date of first appointment offered"
     )
-    firefighter         = fields.NullBooleanField()
 
 
 class Employer(lookuplists.LookupList):
@@ -101,6 +100,7 @@ class Employment(models.EpisodeSubrecord):
     oh_provider = fields.CharField(
         blank=True, null=True, max_length=100, verbose_name="OH provider"
     )
+    firefighter = fields.NullBooleanField()
 
 
 class ClinicLog(models.EpisodeSubrecord):
