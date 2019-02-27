@@ -25,6 +25,13 @@ class NewReferral(WizardPathway):
         )
     ]
 
+    def save(self, *args, **kwargs):
+        patient, episode = super().save(*args, **kwargs)
+        clinical_log = episode.cliniclog_set.get()
+        clinical_log.active = True
+        clinical_log.save()
+        return patient, episode
+
 
 class PeakFlowDayPathway(PagePathway):
     display_name = 'Peak Flow Day'

@@ -105,7 +105,6 @@ class Command(BaseCommand):
                 referral.comments               = row['Commentscontact']
                 referral.date_first_appointment = str_to_date(row['DateFirstPatientAppt'])
                 referral.attendance = bol(row['Did patient attend?'])
-                referral.firefighter = bol(row['Firefighter- pre-employment'])
                 referral.save()
 
                 print('Creating Employment')
@@ -113,6 +112,7 @@ class Command(BaseCommand):
 
                 employment.employer    = row['Employer']
                 employment.oh_provider = row['OH Provider']
+                employment.firefighter = bol(row['Firefighter- pre-employment'])
                 employment.save()
 
                 print('Creating ClinicLog')
