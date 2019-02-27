@@ -9,7 +9,7 @@ class FindPatientStep(Step):
     icon = "fa fa-user"
 
     # an end point that takes a get parameter of hospital_number
-    search_end_point = reverse_lazy("demographics_search-list")
+    search_end_point = reverse_lazy("demographics-search-list")
 
     def to_dict(self, *args, **kwargs):
         dicted = super().to_dict(*args, **kwargs)
