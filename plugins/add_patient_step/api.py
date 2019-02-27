@@ -28,7 +28,7 @@ class DemographicsSearch(LoginRequiredViewset):
                 status=self.PATIENT_FOUND_IN_APPLICATION
             ))
         else:
-            if hasattr(settings, "UPSTREAM_DEMOGRAPHICS_SERVICE"):
+            if getattr(settings, "UPSTREAM_DEMOGRAPHICS_SERVICE", None):
                 upstream_demographics = import_string(
                     settings.UPSTREAM_DEMOGRAPHICS_SERVICE
                 )

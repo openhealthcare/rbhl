@@ -1,4 +1,4 @@
-angular.module('opal.services').factory('DemographicsSearch', function($q, $http, $window, Patient, ngProgressLite) {
+angular.module('opal.services').factory('DemographicsSearch', function($http, $window, ngProgressLite) {
     "use strict";
     /*
     * The demographics search used by the find patient
@@ -16,7 +16,7 @@ angular.module('opal.services').factory('DemographicsSearch', function($q, $http
 
     // patient is not found
     var PATIENT_NOT_FOUND = "patient_not_found";
-  
+
     var expectedStatuses = [
       PATIENT_FOUND_IN_APPLICATION,
       PATIENT_FOUND_UPSTREAM,
