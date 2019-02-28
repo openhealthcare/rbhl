@@ -10,6 +10,7 @@ class Application(application.OpalApplication):
     javascripts   = [
         'js/rbhl/routes.js',
         'js/rbhl/clinicdatecomparator.js',
+        'js/rbhl/controllers/peak_flow_ctrl.js',
         'js/opal/controllers/discharge.js',
         # Uncomment this if you want to implement custom dynamic flows.
         # 'js/rbhl/flow.js',

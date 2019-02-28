@@ -132,7 +132,7 @@ h1 small {
     background: $blue;
     // height: 99vh;
     position: fixed;
-
+    z-index: 10;
 }
 #center-col {
     background: white;
@@ -351,6 +351,10 @@ a {
     margin-top: 6px;
 }
 
+
+.peak-flow-table-container{
+    overflow-x: scroll;
+}
 
 .peak-flow-grid {
     margin-left: 24px;

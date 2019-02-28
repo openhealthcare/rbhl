@@ -1,102 +1,105 @@
 <div class="row">
-  <div class="col-md-12">
-    <h3>
-      Peak Flow
-      <i class="fa fa-plus-circle pull-right pointer edit"
-         ng-click="episode.recordEditor.newItem('peak_flow_day', $index)"
-         ></i>
-    </h3>
-    <div style="min-height: 300px; border:"
-         ng-show="episode.peak_flow_day.length > 3">
-      <div peak-flow-graph id="peakFlow"></div>
+  <div ng-controller="PeakFlowCtrl" class="col-md-12">
+    <div ng-repeat="peakFlowDayByTrial in peakFlowDaysByTrial">
+      <h3>
+        Peak Flow
+        <span ng-show="peakFlowDaysByTrial.length > 1">
+          Trial [[ peakFlowDayByTrial[0].trial_num ]]
+          <span>
+            <i class="fa fa-plus-circle pull-right pointer edit"
+              ng-click="episode.recordEditor.newItem('peak_flow_day', $index)"></i>
+      </h3>
+      <div style="min-height: 300px;" ng-show="peakFlowDayByTrial.length > 3">
+        <div peak-flow-graph days="peakFlowDayByTrial" id="peakFlow"></div>
+      </div>
+      <div class="peak-flow-table-container">
+        <table class="table table-bordered content-offset-25" ng-show="peakFlowDayByTrial.length > 0">
+          <tr>
+            <th></th>
+            <th ng-repeat="day in peakFlowDayByTrial">
+              <i class="fa fa-pencil pointer edit"
+                ng-click="episode.recordEditor.editItem('peak_flow_day', getIdx(day))"></i>&nbsp;
+              [[ day.date | displayDate ]]
+            </th>
+          </tr>
+          <tr>
+            <td>Note</td>
+            <td ng-repeat="day in peakFlowDayByTrial">[[ day.note ]]</td>
+          </tr>
+          <tr>
+            <td>06:00</td>
+            <td ng-repeat="day in peakFlowDayByTrial">[[ day.flow_0600 ]]</td>
+          </tr>
+          <tr>
+            <td>07:00</td>
+            <td ng-repeat="day in peakFlowDayByTrial">[[ day.flow_0700 ]]</td>
+          </tr>
+          <tr>
+            <td>08:00</td>
+            <td ng-repeat="day in peakFlowDayByTrial">[[ day.flow_0800 ]]</td>
+          </tr>
+          <tr>
+            <td>09:00</td>
+            <td ng-repeat="day in peakFlowDayByTrial">[[ day.flow_0900 ]]</td>
+          </tr>
+          <tr>
+            <td>10:00</td>
+            <td ng-repeat="day in peakFlowDayByTrial">[[ day.flow_1000 ]]</td>
+          </tr>
+          <tr>
+            <td>11:00</td>
+            <td ng-repeat="day in peakFlowDayByTrial">[[ day.flow_1100 ]]</td>
+          </tr>
+          <tr>
+            <td>12:00</td>
+            <td ng-repeat="day in peakFlowDayByTrial">[[ day.flow_1200 ]]</td>
+          </tr>
+          <tr>
+            <td>13:00</td>
+            <td ng-repeat="day in peakFlowDayByTrial">[[ day.flow_1300 ]]</td>
+          </tr>
+          <tr>
+            <td>14:00</td>
+            <td ng-repeat="day in peakFlowDayByTrial">[[ day.flow_1400 ]]</td>
+          </tr>
+          <tr>
+            <td>15:00</td>
+            <td ng-repeat="day in peakFlowDayByTrial">[[ day.flow_1500 ]]</td>
+          </tr>
+          <tr>
+            <td>16:00</td>
+            <td ng-repeat="day in peakFlowDayByTrial">[[ day.flow_1600 ]]</td>
+          </tr>
+          <tr>
+            <td>17:00</td>
+            <td ng-repeat="day in peakFlowDayByTrial">[[ day.flow_0700 ]]</td>
+          </tr>
+          <tr>
+            <td>18:00</td>
+            <td ng-repeat="day in peakFlowDayByTrial">[[ day.flow_1800 ]]</td>
+          </tr>
+          <tr>
+            <td>19:00</td>
+            <td ng-repeat="day in peakFlowDayByTrial">[[ day.flow_1900 ]]</td>
+          </tr>
+          <tr>
+            <td>20:00</td>
+            <td ng-repeat="day in peakFlowDayByTrial">[[ day.flow_2000 ]]</td>
+          </tr>
+          <tr>
+            <td>21:00</td>
+            <td ng-repeat="day in peakFlowDayByTrial">[[ day.flow_2100 ]]</td>
+          </tr>
+          <tr>
+            <td>22:00</td>
+            <td ng-repeat="day in peakFlowDayByTrial">[[ day.flow_2200 ]]</td>
+          </tr>
+          <tr>
+            <td>23:00</td>
+            <td ng-repeat="day in peakFlowDayByTrial">[[ day.flow_2300 ]]</td>
+          </tr>
+        </table>
+      </div>
     </div>
-    <table class="table table-bordered content-offset-25" ng-show="episode.peak_flow_day.length > 0">
-      <tr>
-        <th></th>
-        <th ng-repeat="day in episode.peak_flow_day">
-          <i class="fa fa-pencil pointer edit"
-             ng-click="episode.recordEditor.editItem('peak_flow_day', $index)"
-             ></i>&nbsp;
-          [[ day.date | displayDate ]]
-        </th>
-      </tr>
-      <tr>
-        <td>Note</td>
-        <td ng-repeat="day in episode.peak_flow_day">[[ day.note ]]</td>
-      </tr>
-      <tr>
-        <td>06:00</td>
-        <td ng-repeat="day in episode.peak_flow_day">[[ day.flow_0600 ]]</td>
-      </tr>
-      <tr>
-        <td>07:00</td>
-        <td ng-repeat="day in episode.peak_flow_day">[[ day.flow_0700 ]]</td>
-      </tr>
-      <tr>
-        <td>08:00</td>
-        <td ng-repeat="day in episode.peak_flow_day">[[ day.flow_0800 ]]</td>
-      </tr>
-      <tr>
-        <td>09:00</td>
-        <td ng-repeat="day in episode.peak_flow_day">[[ day.flow_0900 ]]</td>
-      </tr>
-      <tr>
-        <td>10:00</td>
-        <td ng-repeat="day in episode.peak_flow_day">[[ day.flow_1000 ]]</td>
-      </tr>
-      <tr>
-        <td>11:00</td>
-        <td ng-repeat="day in episode.peak_flow_day">[[ day.flow_1100 ]]</td>
-      </tr>
-      <tr>
-        <td>12:00</td>
-        <td ng-repeat="day in episode.peak_flow_day">[[ day.flow_1200 ]]</td>
-      </tr>
-      <tr>
-        <td>13:00</td>
-        <td ng-repeat="day in episode.peak_flow_day">[[ day.flow_1300 ]]</td>
-      </tr>
-      <tr>
-        <td>14:00</td>
-        <td ng-repeat="day in episode.peak_flow_day">[[ day.flow_1400 ]]</td>
-      </tr>
-      <tr>
-        <td>15:00</td>
-        <td ng-repeat="day in episode.peak_flow_day">[[ day.flow_1500 ]]</td>
-      </tr>
-      <tr>
-        <td>16:00</td>
-        <td ng-repeat="day in episode.peak_flow_day">[[ day.flow_1600 ]]</td>
-      </tr>
-      <tr>
-        <td>17:00</td>
-        <td ng-repeat="day in episode.peak_flow_day">[[ day.flow_0700 ]]</td>
-      </tr>
-      <tr>
-        <td>18:00</td>
-        <td ng-repeat="day in episode.peak_flow_day">[[ day.flow_1800 ]]</td>
-      </tr>
-      <tr>
-        <td>19:00</td>
-        <td ng-repeat="day in episode.peak_flow_day">[[ day.flow_1900 ]]</td>
-      </tr>
-      <tr>
-        <td>20:00</td>
-        <td ng-repeat="day in episode.peak_flow_day">[[ day.flow_2000 ]]</td>
-      </tr>
-      <tr>
-        <td>21:00</td>
-        <td ng-repeat="day in episode.peak_flow_day">[[ day.flow_2100 ]]</td>
-      </tr>
-      <tr>
-        <td>22:00</td>
-        <td ng-repeat="day in episode.peak_flow_day">[[ day.flow_2200 ]]</td>
-      </tr>
-      <tr>
-        <td>23:00</td>
-        <td ng-repeat="day in episode.peak_flow_day">[[ day.flow_2300 ]]</td>
-      </tr>
-
-    </table>
   </div>
 </div>

@@ -91,6 +91,7 @@ h1 small {
 #left-col {
   background: #4676c5;
   position: fixed;
+  z-index: 10;
 }
 
 #center-col {
@@ -306,6 +307,10 @@ a {
   display: block !important;
   margin-bottom: 0.6em !important;
   margin-top: 6px;
+}
+
+.peak-flow-table-container {
+  overflow-x: scroll;
 }
 
 .peak-flow-grid {
