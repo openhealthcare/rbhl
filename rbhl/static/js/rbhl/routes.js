@@ -70,6 +70,22 @@ app.directive('peakFlowGraph', function ($timeout) {
 
         working_days.sort(function (a, b) { return a - b });
 
+        var calculateGridLines = function(trialDays){
+          /*
+          * the grid lines should be intra file day not
+          * on the day itself
+          */
+          var gridLinesMax = _.max(x);
+          var gridLinesMin = _.min(x);
+          var range = _.range(gridLinesMin - 0.5, gridLinesMax + 0.5, 1)
+          return _.map(range, function(r){
+            return {
+              value: r, class: "c3-dashed-line"
+            }
+          })
+        }
+
+
         var sequences = []
 
         var find_sequences = function (data) {
@@ -89,6 +105,7 @@ app.directive('peakFlowGraph', function ($timeout) {
         }
 
         find_sequences([sequences, working_days])
+        var gridLines = calculateGridLines(x);
 
 
         var regions = _.map(sequences, function (sequence) {
@@ -120,7 +137,11 @@ app.directive('peakFlowGraph', function ($timeout) {
             }
           },
           grid: {
-            x: { show: true },
+            x: {
+              // show: true,
+              // position: 'start'
+              lines: gridLines
+          },
             y: { show: true }
           },
           regions: regions
