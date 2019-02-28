@@ -37,7 +37,6 @@ DemographicsColumn = Column(
 )
 
 
-
 class WithLetter(core.patient_lists.PatientList):
     icon = 'fa-table'
     display_name = 'Some Patients'
