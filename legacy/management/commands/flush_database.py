@@ -6,7 +6,8 @@ from django.core.management import BaseCommand
 from opal.models import Patient, Episode
 
 from rbhl.models import Demographics, Referral, ClinicLog, ContactDetails
-from legacy.models import BloodBook, BloodBookResult, ActionLog
+from legacy.models import BloodBookResult, ActionLog
+
 
 def flush():
     print('Deleting old episodes, referrals and actionlogs')
@@ -18,7 +19,7 @@ def flush():
     ClinicLog.objects.all().delete()
     ActionLog.objects.all().delete()
     BloodBookResult.objects.all().delete()
-    BloodBookResult.objects.all().delete ()
+    BloodBookResult.objects.all().delete()
 
 
 class Command(BaseCommand):

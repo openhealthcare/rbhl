@@ -17,10 +17,12 @@ def str_to_date(s, no_future_dates=False):
             when = when.replace(year=when.year - 100)
     return when
 
+
 def bol(s):
     if s == '':
         return
     return bool(int(s))
+
 
 def inty(s):
     if s == '':

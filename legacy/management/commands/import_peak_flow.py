@@ -98,10 +98,14 @@ class Command(BaseCommand):
                 data = row["TRIAL_DATA"].split(',')[:-1]
 
                 flow_fields = [
-                    'flow_0000', 'flow_0100', 'flow_0200', 'flow_0300', 'flow_0400', 'flow_0500',
-                    'flow_0600', 'flow_0700', 'flow_0800', 'flow_0900', 'flow_1000', 'flow_1100',
-                    'flow_1200', 'flow_1300', 'flow_1400', 'flow_1500', 'flow_1600', 'flow_1700',
-                    'flow_1800', 'flow_1900', 'flow_2000', 'flow_2100', 'flow_2200', 'flow_2300',
+                    'flow_0000', 'flow_0100', 'flow_0200',
+                    'flow_0300', 'flow_0400', 'flow_0500',
+                    'flow_0600', 'flow_0700', 'flow_0800',
+                    'flow_0900', 'flow_1000', 'flow_1100',
+                    'flow_1200', 'flow_1300', 'flow_1400',
+                    'flow_1500', 'flow_1600', 'flow_1700',
+                    'flow_1800', 'flow_1900', 'flow_2000',
+                    'flow_2100', 'flow_2200', 'flow_2300',
                 ]
 
                 for i, field in enumerate(flow_fields):

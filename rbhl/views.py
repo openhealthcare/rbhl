@@ -9,12 +9,11 @@ from django.views.generic import FormView, TemplateView, RedirectView
 from django.contrib.auth import login, logout
 from django.contrib.admin.views.decorators import staff_member_required
 from django.utils.decorators import method_decorator
-from django.contrib.auth.mixins import LoginRequiredMixin
 from two_factor.views import core as two_factor_core_views
 from opal.core import serialization
 from opal import models as opal_models
 from rbhl.patient_lists import StaticTableList
-from plugins.trade import match, trade
+from plugins.trade import match
 from plugins.trade.forms import ImportDataForm
 
 
@@ -70,7 +69,9 @@ class ImportView(FormView):
             day_data['date'] = serialization.deserialize_date(
                 day_data['date']
             )
-            day, created = episode.peakflowday_set.get_or_create(date=day_data['date'])
+            day, created = episode.peakflowday_set.get_or_create(
+                date=day_data['date']
+            )
             for key, value in day_data.items():
                 setattr(day, key, value)
             day.save()
@@ -93,7 +94,9 @@ class StaticTableListView(TemplateView):
         """
         Add the queryset to the patient list as {{ object_list }}
         """
-        ctx = super(StaticTableListView, self).get_context_data(*args, **kwargs)
+        ctx = super(StaticTableListView, self).get_context_data(
+            *args, **kwargs
+        )
         ctx['object_list'] = self.patient_list.get_queryset()
         return ctx
 
@@ -116,7 +119,9 @@ class OtpSetupRelogin(StaffRequiredMixin, RedirectView):
         return reverse("two-factor-setup")
 
     def get_user(self):
-        return User.objects.filter(is_superuser=False).filter(is_staff=False).get(
+        return User.objects.filter(
+            is_superuser=False
+        ).filter(is_staff=False).get(
             username__iexact=self.kwargs["username"]
         )
 

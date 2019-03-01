@@ -1,7 +1,6 @@
 """
 Defining Opal PatientLists
 """
-import datetime
 from functools import partial
 
 from django.urls import reverse
@@ -9,7 +8,6 @@ from opal import core
 from opal.models import Episode
 from opal.utils import AbstractBase
 
-from rbhl import models
 
 Column = partial(
     core.patient_lists.Column,
@@ -51,9 +49,12 @@ class WithLetter(core.patient_lists.PatientList):
 
     def get_queryset(self, **kwargs):
         return Episode.objects.exclude(
-            letter=None).exclude(
-                peakflowday=None
-            ).order_by('-cliniclog__clinic_date')[:20]
+            letter=None
+        ).exclude(
+            peakflowday=None
+        ).order_by(
+            '-cliniclog__clinic_date'
+        )[:20]
 
 
 class StaticTableList(core.patient_lists.PatientList, AbstractBase):
@@ -82,4 +83,8 @@ class ActivePatients(StaticTableList):
         """
         Only those patients who are active
         """
-        return Episode.objects.filter(cliniclog__active=True).order_by("cliniclog__clinic_date")
+        return Episode.objects.filter(
+            cliniclog__active=True
+        ).order_by(
+            "cliniclog__clinic_date"
+        )
