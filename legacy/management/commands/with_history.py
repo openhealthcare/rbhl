@@ -37,6 +37,7 @@ def date_to_dob(raw_data, *args, **kwargs):
         when = datetime.date(when.year - 100, when.month, when.day)
     return when
 
+
 def nhs_number_without_spaces(raw_data, *args, **kwargs):
     number = raw_data['NHSnumber']
     parts = number.split(' ')
@@ -51,7 +52,7 @@ class PASMatcher(Matcher):
         Mapping('Surname', 'surname'),
         Mapping('Firstname', 'first_name'),
         Mapping('Postcode', 'post_code'),
-        FieldConverter(sex_to_sex, 'sex' ),
+        FieldConverter(sex_to_sex, 'sex'),
         FieldConverter(date_to_dob, 'date_of_birth')
     ]
 

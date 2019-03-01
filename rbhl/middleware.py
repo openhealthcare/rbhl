@@ -7,10 +7,11 @@ from django.contrib.auth import logout
 from two_factor import utils as two_factor_utils
 
 
-
 class SecurityHeadersMiddleware(MiddlewareMixin):
     def process_response(self, request, response):
-        response['Strict-Transport-Security'] = "max-age=31536000; includeSubDomains"
+        response[
+            'Strict-Transport-Security'
+        ] = "max-age=31536000; includeSubDomains"
         response['Content-Security-Policy-Report-Only'] = "script-src self"
         response['X-Frame-Options'] = "SAMEORIGIN"
         response['X-XSS-Protection'] = "1; mode=block"
@@ -28,8 +29,10 @@ class TwoStageAuthenticationRequired(MiddlewareMixin):
                - just return, nothing to see here
             2. The user is authenticated and verified,
                - great you're good to go
-            3. The user is authenticated but does not have two factor auth set up
-               - log out the user and redirect them requesting them to contact us
+            3. The user is authenticated but does not have two factor
+               auth set up
+               - log out the user and redirect them requesting them to
+                 contact us
             4. The user is authenticated and is not verified
                - redirect to do 2 step auth
             5. The user is not authenticated
@@ -51,8 +54,9 @@ class TwoStageAuthenticationRequired(MiddlewareMixin):
                     return
 
         if request.user.is_authenticated:
-            if not settings.TWO_FACTOR_FOR_SUPERUSERS and request.user.is_superuser:
-                return
+            if not settings.TWO_FACTOR_FOR_SUPERUSERS:
+                if request.user.is_superuser:
+                    return
 
             if request.user.is_verified():
                 return

@@ -13,6 +13,7 @@ before_script:
   - sh -e /etc/init.d/xvfb start
 script:
   - opal test --coverage py
+  - flake8
 after_success:
   - find coverage
   - coveralls-lcov -v -n coverage/Firefox\ 56.0.2\ \(Linux\ 0.0.0\)/lcov.info > coverage/coverage.json

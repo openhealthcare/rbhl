@@ -26,6 +26,46 @@ class Matcher(match.Matcher):
     ]
 
 
+def create_blood_book(row, episode):
+    print('Creating blood book entry')
+    book = BloodBook(episode=episode)
+    book.reference_number = row.reference_no
+    book.blood_date = str_to_date(row.blooddat)
+    book.blood_number = row.bloodno
+    book.method = row.method
+    book.blood_collected = row.edta_blood_collected
+    book.date_dna_extracted = row.date_dna_extracted
+    book.information = row.information
+    book.assayno = row.assayno
+    book.assay_date = str_to_date(row.assaydate)
+    book.blood_taken = str_to_date(row.bloodtk)
+    book.blood_tm = str_to_date(row.bloodtm)
+    book.report_dt = str_to_date(row.reportdt)
+    book.report_st = str_to_date(row.reportst)
+    book.employer = row.employer
+    book.store = row.store
+    book.exposure = row.exposure
+    try:
+        book.antigen_date = str_to_date(row.antigendat)
+    except ValueError:
+        # We know that sometimes the data claims that the value of this field
+        # should be month number -1098.
+        #
+        # Strptime will complain that -1098 is not a month in the format %m.
+        # This seems eminently reasonable. Allow it to complain, but move on.
+        pass
+    book.antigen_type = row.antigentyp
+    book.comment = row.comment
+    book.oh_provider = row.oh_provider
+    book.batches = row.batches
+    book.room = row.room
+    book.freezer = row.freezer
+    book.shelf = row.shelf
+    book.tray = row.tray
+    book.vials = row.vials
+    book.save()
+
+
 class Command(BaseCommand):
     def handle(self, *args, **options):
         data = ffs.Path('~/Documents/RBHL/bloods/bloodbook.csv')
@@ -39,7 +79,9 @@ class Command(BaseCommand):
 
                 data = row._asdict()
 
-                data['birth'] = str_to_date(data['birth'], no_future_dates=True)
+                data['birth'] = str_to_date(
+                    data['birth'], no_future_dates=True
+                )
 
                 matcher = Matcher(data)
                 # print(matcher.get_demographic_dict())
@@ -62,43 +104,7 @@ class Command(BaseCommand):
                 referral.referrer_title = row.referrerttl
                 referral.save()
 
-                print('Creating blood book entry')
-                book = BloodBook(episode=episode)
-                book.reference_number = row.reference_no
-                book.blood_date = str_to_date(row.blooddat)
-                book.blood_number = row.bloodno
-                book.method = row.method
-                book.blood_collected = row.edta_blood_collected
-                book.date_dna_extracted = row.date_dna_extracted
-                book.information = row.information
-                book.assayno = row.assayno
-                book.assay_date = str_to_date(row.assaydate)
-                book.blood_taken = str_to_date(row.bloodtk)
-                book.blood_tm = str_to_date(row.bloodtm)
-                book.report_dt = str_to_date(row.reportdt)
-                book.report_st = str_to_date(row.reportst)
-                book.employer = row.employer
-                book.store = row.store
-                book.exposure = row.exposure
-                try:
-                    book.antigen_date = str_to_date(row.antigendat)
-                except ValueError:
-                    # We know that sometimes the data claims that the value of this field
-                    # should be month number -1098.
-                    #
-                    # Strptime will complain that -1098 is not a month in the format %m.
-                    # This seems eminently reasonable. Allow it to complain, but move on.
-                    pass
-                book.antigen_type = row.antigentyp
-                book.comment = row.comment
-                book.oh_provider = row.oh_provider
-                book.batches = row.batches
-                book.room = row.room
-                book.freezer = row.freezer
-                book.shelf = row.shelf
-                book.tray = row.tray
-                book.vials = row.vials
-                book.save()
+                create_blood_book(row, episode)
 
                 print('Creating Blood results')
 
@@ -122,4 +128,7 @@ class Command(BaseCommand):
                         result = BloodBookResult(**result_data)
                         result.save()
                 self.patients_imported += 1
-                print('{} ({})'.format(patient.demographics_set.get().name, self.patients_imported))
+                print('{} ({})'.format(
+                    patient.demographics_set.get().name,
+                    self.patients_imported)
+                )

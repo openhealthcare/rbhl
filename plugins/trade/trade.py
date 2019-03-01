@@ -46,7 +46,8 @@ def validate_import_data(data):
     for k, v in data['episodes'].items():
         try:
             if v['category_name'] not in categories:
-                msg = "Sorry, we can't import episodes of the category {0}".format(
+                msg = "Sorry, we can't import episodes of the category {0}"
+                msg = msg.format(
                     v['category_name']
                 )
                 raise exceptions.InvalidEpisodeCategoryError(msg)

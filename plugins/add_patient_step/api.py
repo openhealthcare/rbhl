@@ -40,4 +40,3 @@ class DemographicsSearch(LoginRequiredViewset):
                         status=self.PATIENT_FOUND_UPSTREAM
                     ))
         return json_response(dict(status=self.PATIENT_NOT_FOUND))
-

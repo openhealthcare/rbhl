@@ -5,14 +5,10 @@ from django.db import models
 from opal.models import PatientSubrecord, EpisodeSubrecord
 
 
-
-
 """
-
 18 WEEK DB
-
-
 """
+
 
 class ActionLog(EpisodeSubrecord):
     class Meta:
@@ -43,7 +39,7 @@ class ActionLog(EpisodeSubrecord):
 
     # Now in rbhl.models.Letter
     # Second comment box RHS [Comments1]
-    #letters             = models.TextField(blank=True, null=True)
+    # letters             = models.TextField(blank=True, null=True)
 
     # LHS
 
@@ -52,11 +48,7 @@ class ActionLog(EpisodeSubrecord):
 
     finaldays           = models.IntegerField(blank=True, null=True)
 
-"""
 
-Blood Book
-
-"""
 class BloodBook(EpisodeSubrecord):
     reference_number   = models.CharField(blank=True, null=True,
                                           max_length=200)
@@ -111,6 +103,7 @@ class BloodBookResult(EpisodeSubrecord):
     igg        = models.CharField(blank=True, null=True, max_length=200)
     iggclass   = models.CharField(blank=True, null=True, max_length=200)
 
+
 """
 Existing form/fields:
 
@@ -135,31 +128,31 @@ Existing form/fields:
 [igg1..10]			Text (100),
 [iggclass1..10]			Text (100),
 
-	[RESULT1]			Text (200),
-	[RESULT2]			Text (200),
-	[RESULT3]			Text (200),
-	[RESULT4]			Text (200),
-	[RESULT5]			Text (200),
-	[RESULT6]			Text (200),
-	[RESULT7]			Text (100),
-	[RESULT8]			Text (100),
-	[RESULT9]			Text (100),
-	[RESULT10]			Text (100),
+    [RESULT1]			Text (200),
+    [RESULT2]			Text (200),
+    [RESULT3]			Text (200),
+    [RESULT4]			Text (200),
+    [RESULT5]			Text (200),
+    [RESULT6]			Text (200),
+    [RESULT7]			Text (100),
+    [RESULT8]			Text (100),
+    [RESULT9]			Text (100),
+    [RESULT10]			Text (100),
 
 
 # Unknown fields
 
-	[EDTA blood collected]			Text (100),
-	[Date DNA extracted]			Double,
-	[REPORTDT]			DateTime,
-	[REPORTST]			DateTime,
-	[Comment]			Text (510),
-	[Batches]			Text (510),
-	[Room]			Text (510),
-	[Freezer]			Text (510),
-	[Shelf]			Text (510),
-	[Tray]			Text (510),
-	[Vials]			Text (510)
+    [EDTA blood collected]			Text (100),
+    [Date DNA extracted]			Double,
+    [REPORTDT]			DateTime,
+    [REPORTST]			DateTime,
+    [Comment]			Text (510),
+    [Batches]			Text (510),
+    [Room]			Text (510),
+    [Freezer]			Text (510),
+    [Shelf]			Text (510),
+    [Tray]			Text (510),
+    [Vials]			Text (510)
 
 """
 
@@ -168,6 +161,7 @@ Existing form/fields:
 Peak Flow DB
 
 """
+
 
 class PeakFlowIdentifier(PatientSubrecord):
     occmendo = models.IntegerField(blank=True, null=True)
