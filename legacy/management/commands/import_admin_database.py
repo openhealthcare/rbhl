@@ -14,6 +14,7 @@ from plugins.trade.exceptions import PatientNotFoundError
 
 from legacy.models import ActionLog
 from legacy.utils import str_to_date, bol, inty
+from django.contrib.auth.models import User
 
 
 class Matcher(match.Matcher):
