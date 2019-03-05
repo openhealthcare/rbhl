@@ -320,6 +320,10 @@ a {
   fill: #4286f4;
 }
 
+.c3-dashed-line {
+  stroke-dasharray: 3, 3;
+}
+
 .bottom-menu {
   position: absolute;
   left: 0px;
