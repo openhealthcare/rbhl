@@ -70,6 +70,23 @@ directives.directive("peakFlowGraph", function($timeout) {
           return a - b;
         });
 
+        var calculateGridLines = function(trialDays) {
+          /*
+           * the grid lines should be intra file day not
+           * on the day itself
+           */
+          var gridLinesMax = _.max(trialDays);
+          var gridLinesMin = _.min(trialDays);
+          var range = _.range(gridLinesMin - 0.5, gridLinesMax + 0.5, 1);
+          return _.map(range, function(r) {
+            return {
+              value: r,
+              class: "c3-dashed-line"
+            };
+          });
+        };
+
+        var gridLines = calculateGridLines(x);
         var sequences = [];
 
         var find_sequences = function(data) {
@@ -126,7 +143,9 @@ directives.directive("peakFlowGraph", function($timeout) {
             }
           },
           grid: {
-            x: { show: true },
+            x: {
+              lines: gridLines
+            },
             y: { show: true }
           },
           regions: regions

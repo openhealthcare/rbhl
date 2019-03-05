@@ -362,7 +362,11 @@ a {
 
 
 .c3-region.workingday {
-    fill: red;
+    fill: #4286f4;
+}
+
+.c3-dashed-line {
+    stroke-dasharray: 3, 3;
 }
 
 .bottom-menu{
