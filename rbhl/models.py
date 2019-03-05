@@ -43,32 +43,6 @@ class Demographics(models.Demographics):
         blank=True, null=True, verbose_name='Height(cm)'
     )
 
-    def save(self, *args, **kwargs):
-        print("{} {} {}".format(self.height, self.age, self.sex))
-        if self.height and self.age and self.sex:
-            pef = self.patient.peakexpiratoryflow_set.first()
-            pef.save()
-        super().save(*args, **kwargs)
-
-
-class PeakExpiratoryFlow(models.PatientSubrecord):
-    _is_singleton = True
-    value = fields.IntegerField(blank=True, null=True)
-
-    def calculate_peak_expiratory_flow(self):
-        demographics = self.patient.demographics()
-        height, age = demographics.height, demographics.age
-        sex = demographics.sex
-
-        if not height or not age or not sex:
-            return
-
-        return calculate_peak_expiratory_flow(height, age, sex)
-
-    def save(self, *args, **kwargs):
-        self.value = self.calculate_peak_expiratory_flow()
-        super().save(*args, **kwargs)
-
 
 class Location(models.Location):
     pass
