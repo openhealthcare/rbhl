@@ -7,7 +7,7 @@ from opal.core.views import json_response
 
 
 class DemographicsSearch(LoginRequiredViewset):
-    base_name = 'demographics_search'
+    base_name = 'demographics-search'
     PATIENT_FOUND_IN_APPLICATION = "patient_found_in_application"
     PATIENT_FOUND_UPSTREAM = "patient_found_upstream"
     PATIENT_NOT_FOUND = "patient_not_found"
@@ -28,7 +28,7 @@ class DemographicsSearch(LoginRequiredViewset):
                 status=self.PATIENT_FOUND_IN_APPLICATION
             ))
         else:
-            if hasattr(settings, "UPSTREAM_DEMOGRAPHICS_SERVICE"):
+            if getattr(settings, "UPSTREAM_DEMOGRAPHICS_SERVICE", None):
                 upstream_demographics = import_string(
                     settings.UPSTREAM_DEMOGRAPHICS_SERVICE
                 )
@@ -40,4 +40,3 @@ class DemographicsSearch(LoginRequiredViewset):
                         status=self.PATIENT_FOUND_UPSTREAM
                     ))
         return json_response(dict(status=self.PATIENT_NOT_FOUND))
-

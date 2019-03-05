@@ -17,15 +17,17 @@ from legacy.utils import str_to_date, bol, inty
 
 
 class Matcher(match.Matcher):
-    direct_match_field     = match.Mapping('Hospital Number', 'hospital_number')
+    direct_match_field     = match.Mapping(
+        'Hospital Number', 'hospital_number'
+    )
 
     attribute_match_fields = [
-        match.Mapping('Patient Surname',    'surname'),
+        match.Mapping('Patient Surname', 'surname'),
         match.Mapping('Patient First Name', 'first_name')
     ]
     demographics_fields    = [
         match.Mapping('Hospital Number', 'hospital_number'),
-        match.Mapping('Patient Surname',    'surname'),
+        match.Mapping('Patient Surname', 'surname'),
         match.Mapping('Patient First Name', 'first_name')
     ]
 
@@ -46,6 +48,66 @@ def create_unmatched_patient(row):
         setattr(demographics, demographics_field, row[field])
     demographics.save()
     return patient
+
+
+def create_clinic_log(row, episode):
+    print('Creating ClinicLog')
+    cliniclog = episode.cliniclog_set.get()
+
+    cliniclog.seen_by           = row['SeenBy']
+    cliniclog.clinic_date        = str_to_date(row['Clinicdate'])
+    cliniclog.diagnosis_made    = bol(row['DiagnosisMade'])
+    cliniclog.follow_up_planned = bol(row['FollowUp'])
+    cliniclog.date_of_followup  = str_to_date(row['DateFollowUpAppt'])
+    cliniclog.lung_function = bol(row['LungFunction'])
+    cliniclog.lung_function_date = str_to_date(row['DateLungFunction'])
+    cliniclog.lung_function_attendance = bol(row['Did patient attend LF?'])
+    cliniclog.histamine = bol(row['Histamine'])
+    cliniclog.histamine_date = str_to_date(row['DateHistamine'])
+    cliniclog.histamine_attendance = bol(row['Did patient attend Histamine?'])
+    cliniclog.peak_flow = bol(row['PeakFlow'])
+    cliniclog.other_rbh_bloods = bol(row['BloodRBHlab'])
+    cliniclog.immunology_oem = bol(row['ImmunologyOEM'])
+    cliniclog.other_hostpital_info = bol(row['OtherHospitalInfo'])
+    cliniclog.other_oh_info = bol(row['OherOHInfo'])
+    cliniclog.other_gp_info = bol(row['OtherGPInfo'])
+    cliniclog.work_samples = bol(row['Samples(Work)'])
+    cliniclog.active = bol(row['Active'])
+    cliniclog.save()
+
+
+def create_contact_details(row, patient):
+    print('Saving contact details')
+    contact_details = patient.contactdetails_set.get()
+    contact_details.mobile = row['Mobile']
+    contact_details.phone = row['Telno']
+    contact_details.email = row['Email']
+    contact_details.save()
+
+
+def create_referral(row, episode):
+    print('Creating referral')
+    referral = episode.referral_set.get()
+
+    referral.referrer_title         = row['Referrerttl']
+    referral.referrer_name          = row['Referrername']
+    referral.date_of_referral       = str_to_date(row['DateReferral'])
+    referral.date_referral_received = str_to_date(row['DateRecdReferral'])
+    referral.date_first_contact     = str_to_date(row['DateFirstContact'])
+    referral.comments               = row['Commentscontact']
+    referral.date_first_appointment = str_to_date(row['DateFirstPatientAppt'])
+    referral.attendance = bol(row['Did patient attend?'])
+    referral.save()
+
+
+def create_employment(row, episode):
+    print('Creating Employment')
+    employment = episode.employment_set.get()
+
+    employment.employer    = row['Employer']
+    employment.oh_provider = row['OH Provider']
+    employment.firefighter = bol(row['Firefighter- pre-employment'])
+    employment.save()
 
 
 class Command(BaseCommand):
@@ -83,62 +145,16 @@ class Command(BaseCommand):
                     print(row)
                     raise
 
-
-                print('Saving contact details')
-                contact_details = patient.contactdetails_set.get()
-                contact_details.mobile = row['Mobile']
-                contact_details.phone = row['Telno']
-                contact_details.email = row['Email']
-                contact_details.save()
+                create_contact_details(row, patient)
 
                 print('Fetching episode')
                 episode = patient.episode_set.get()
 
-                print('Creating referral')
-                referral = episode.referral_set.get()
+                create_referral(row, episode)
 
-                referral.referrer_title         = row['Referrerttl']
-                referral.referrer_name          = row['Referrername']
-                referral.date_of_referral       = str_to_date(row['DateReferral'])
-                referral.date_referral_received = str_to_date(row['DateRecdReferral'])
-                referral.date_first_contact     = str_to_date(row['DateFirstContact'])
-                referral.comments               = row['Commentscontact']
-                referral.date_first_appointment = str_to_date(row['DateFirstPatientAppt'])
-                referral.attendance = bol(row['Did patient attend?'])
-                referral.firefighter = bol(row['Firefighter- pre-employment'])
-                referral.save()
+                create_employment(row, episode)
 
-                print('Creating Employment')
-                employment = episode.employment_set.get()
-
-                employment.employer    = row['Employer']
-                employment.oh_provider = row['OH Provider']
-                employment.save()
-
-                print('Creating ClinicLog')
-                cliniclog = episode.cliniclog_set.get()
-
-                cliniclog.seen_by           = row['SeenBy']
-                cliniclog.clinic_date        = str_to_date(row['Clinicdate'])
-                cliniclog.diagnosis_made    = bol(row['DiagnosisMade'])
-                cliniclog.follow_up_planned = bol(row['FollowUp'])
-                cliniclog.date_of_followup  = str_to_date(row['DateFollowUpAppt'])
-                cliniclog.lung_function = bol(row['LungFunction'])
-                cliniclog.lung_function_date = str_to_date(row['DateLungFunction'])
-                cliniclog.lung_function_attendance = bol(row['Did patient attend LF?'])
-                cliniclog.histamine = bol(row['Histamine'])
-                cliniclog.histamine_date = str_to_date(row['DateHistamine'])
-                cliniclog.histamine_attendance = bol(row['Did patient attend Histamine?'])
-                cliniclog.peak_flow = bol(row['PeakFlow'])
-                cliniclog.other_rbh_bloods = bol(row['BloodRBHlab'])
-                cliniclog.immunology_oem = bol(row['ImmunologyOEM'])
-                cliniclog.other_hostpital_info = bol(row['OtherHospitalInfo'])
-                cliniclog.other_oh_info = bol(row['OherOHInfo'])
-                cliniclog.other_gp_info = bol(row['OtherGPInfo'])
-                cliniclog.work_samples = bol(row['Samples(Work)'])
-                cliniclog.active = bol(row['Active'])
-
-                cliniclog.save()
+                create_clinic_log(row, episode)
 
                 print('Creating Letter')
                 letter = Letter(episode=episode)

@@ -1,5 +1,6 @@
 import collections
 
+
 def _remove_key(d, key):
     """
     Remove the given key from the given dictionary recursively

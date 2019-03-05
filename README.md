@@ -14,6 +14,14 @@ To get started, run the following commands:
     python manage.py import_blood_book # currently needs work
 ```
 
+
+#### Development
+```
+    pip install pre-commit
+    pre-commit install
+```
+
+
 To recompile sass files to css in development:
 ```
 sass --watch rbhl/static/css/rbhl.scss:rbhl/static/css/rbhl.css

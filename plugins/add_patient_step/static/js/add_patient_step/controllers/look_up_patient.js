@@ -1,5 +1,5 @@
 angular.module('opal.controllers').controller('LookupPatientCrl',
-  function(scope, step, episode, DemographicsSearch, $location) {
+  function(scope, step, DemographicsSearch, $location) {
     "use strict";
 
     scope.lookup_hospital_number = function() {
@@ -18,13 +18,10 @@ angular.module('opal.controllers').controller('LookupPatientCrl',
 
     this.initialise = function(scope){
       if($location.search().hospital_number){
-        scope.from_param = true;
         scope.editing.demographics = {
           hospital_number: $location.search().hospital_number
-        }
-      }
-      if(scope.from_param){
-        scope.lookup_hospital_number()
+        };
+        scope.lookup_hospital_number();
       }
       else{
         scope.state = 'initial';
@@ -35,7 +32,7 @@ angular.module('opal.controllers').controller('LookupPatientCrl',
       scope.hideFooter = true;
     };
 
-    scope.new_patient = function(result){
+    scope.new_patient = function(){
         scope.hideFooter = false;
         scope.state = 'editing_demographics';
     };
@@ -59,7 +56,7 @@ angular.module('opal.controllers').controller('LookupPatientCrl',
           "has_demographics",
           "editing_demographics",
         ]
-        return nextStates.indexOf(scpoe.state) !== -1
+        return nextStates.indexOf(scope.state) !== -1
     };
 
     scope.preSave = function(editing){

@@ -3,8 +3,6 @@ rbhl models.
 """
 import datetime
 import math
-from dateutil.relativedelta import relativedelta
-
 from django.db.models import fields
 
 from opal import models
@@ -29,7 +27,8 @@ def calculate_peak_expiratory_flow(height, age, sex):
 
     Reference
 
-    AJ Nunn, I Gregg New regression equations for predicting peak expiratory flow in adults Br Med J 1989; 298:1068-70
+    AJ Nunn, I Gregg New regression equations for predicting peak
+    expiratory flow in adults Br Med J 1989; 298:1068-70
     """
     if sex == "Male":
         PEF = 0.544 * (math.log(age)) - (0.0151*age) - 74.7/height + 5.48
@@ -40,7 +39,9 @@ def calculate_peak_expiratory_flow(height, age, sex):
 
 
 class Demographics(models.Demographics):
-    height = fields.IntegerField(blank=True, null=True, verbose_name='Height(cm)')
+    height = fields.IntegerField(
+        blank=True, null=True, verbose_name='Height(cm)'
+    )
 
     def save(self, *args, **kwargs):
         print("{} {} {}".format(self.height, self.age, self.sex))
@@ -69,25 +70,46 @@ class PeakExpiratoryFlow(models.PatientSubrecord):
         super().save(*args, **kwargs)
 
 
-class Location(models.Location): pass
-class Allergies(models.Allergies): pass
+class Location(models.Location):
+    pass
+
+
+class Allergies(models.Allergies):
+    pass
+
 
 class Diagnosis(models.Diagnosis):
     _title = 'Diagnosis'
 
-class PastMedicalHistory(models.PastMedicalHistory): pass
-class Treatment(models.Treatment): pass
-class Investigation(models.Investigation): pass
-class SymptomComplex(models.SymptomComplex): pass
-class PatientConsultation(models.PatientConsultation): pass
+
+class PastMedicalHistory(models.PastMedicalHistory):
+    pass
+
+
+class Treatment(models.Treatment):
+    pass
+
+
+class Investigation(models.Investigation):
+    pass
+
+
+class SymptomComplex(models.SymptomComplex):
+    pass
+
+
+class PatientConsultation(models.PatientConsultation):
+    pass
 
 # we commonly need a referral route, ie how the patient
 # came to the service, but not always.
 # class ReferralRoute(models.ReferralRoute): pass
 
+
 """
 End Opal core models
 """
+
 
 class ContactDetails(models.PatientSubrecord):
     _is_singleton = True
@@ -133,9 +155,8 @@ class Referral(models.EpisodeSubrecord):
 
     attendance = fields.NullBooleanField()
     date_first_appointment = fields.DateField(
-        blank=True, null=True, verbose_name="Date of first appointment"
+        blank=True, null=True, verbose_name="Date of first appointment offered"
     )
-    firefighter         = fields.NullBooleanField()
 
 
 class Employer(lookuplists.LookupList):
@@ -154,6 +175,7 @@ class Employment(models.EpisodeSubrecord):
     oh_provider = fields.CharField(
         blank=True, null=True, max_length=100, verbose_name="OH provider"
     )
+    firefighter = fields.NullBooleanField()
 
 
 class ClinicLog(models.EpisodeSubrecord):
@@ -165,7 +187,9 @@ class ClinicLog(models.EpisodeSubrecord):
     )
     clinic_date        = fields.DateField(blank=True, null=True)
     diagnosis_made    = fields.NullBooleanField(verbose_name="Diagnosis made")
-    follow_up_planned = fields.NullBooleanField(verbose_name="Follow up planned")
+    follow_up_planned = fields.NullBooleanField(
+        verbose_name="Follow up planned"
+    )
     date_of_followup  = fields.DateField(
         blank=True, null=True, verbose_name="Date of follow up"
     )
@@ -217,7 +241,6 @@ class ClinicLog(models.EpisodeSubrecord):
     class Meta:
         verbose_name = "Clinic log"
 
-
     def days_since_first_attended(self):
         if not self.clinic_date:
             return None
@@ -245,35 +268,81 @@ class PeakFlowDay(models.EpisodeSubrecord):
     work_start = fields.IntegerField(blank=True, null=True)
     work_end   = fields.IntegerField(blank=True, null=True)
 
-    flow_0000 = fields.IntegerField(blank=True, null=True, verbose_name="00:00")
-    flow_0100 = fields.IntegerField(blank=True, null=True, verbose_name="01:00")
-    flow_0200 = fields.IntegerField(blank=True, null=True, verbose_name="02:00")
-    flow_0300 = fields.IntegerField(blank=True, null=True, verbose_name="03:00")
-    flow_0400 = fields.IntegerField(blank=True, null=True, verbose_name="04:00")
-    flow_0500 = fields.IntegerField(blank=True, null=True, verbose_name="05:00")
-
-    flow_0600 = fields.IntegerField(blank=True, null=True, verbose_name="06:00")
-    flow_0700 = fields.IntegerField(blank=True, null=True, verbose_name="07:00")
-    flow_0800 = fields.IntegerField(blank=True, null=True, verbose_name="08:00")
-    flow_0900 = fields.IntegerField(blank=True, null=True, verbose_name="09:00")
-    flow_1000 = fields.IntegerField(blank=True, null=True, verbose_name="10:00")
-    flow_1100 = fields.IntegerField(blank=True, null=True, verbose_name="11:00")
-    flow_1200 = fields.IntegerField(blank=True, null=True, verbose_name="12:00")
-    flow_1300 = fields.IntegerField(blank=True, null=True, verbose_name="13:00")
-    flow_1400 = fields.IntegerField(blank=True, null=True, verbose_name="14:00")
-    flow_1500 = fields.IntegerField(blank=True, null=True, verbose_name="15:00")
-    flow_1600 = fields.IntegerField(blank=True, null=True, verbose_name="16:00")
-    flow_1700 = fields.IntegerField(blank=True, null=True, verbose_name="17:00")
-    flow_1800 = fields.IntegerField(blank=True, null=True, verbose_name="18:00")
-    flow_1900 = fields.IntegerField(blank=True, null=True, verbose_name="19:00")
-    flow_2000 = fields.IntegerField(blank=True, null=True, verbose_name="20:00")
-    flow_2100 = fields.IntegerField(blank=True, null=True, verbose_name="21:00")
-    flow_2200 = fields.IntegerField(blank=True, null=True, verbose_name="22:00")
-    flow_2300 = fields.IntegerField(blank=True, null=True, verbose_name="23:00")
+    flow_0000 = fields.IntegerField(
+        blank=True, null=True, verbose_name="00:00"
+    )
+    flow_0100 = fields.IntegerField(
+        blank=True, null=True, verbose_name="01:00"
+    )
+    flow_0200 = fields.IntegerField(
+        blank=True, null=True, verbose_name="02:00"
+    )
+    flow_0300 = fields.IntegerField(
+        blank=True, null=True, verbose_name="03:00"
+    )
+    flow_0400 = fields.IntegerField(
+        blank=True, null=True, verbose_name="04:00"
+    )
+    flow_0500 = fields.IntegerField(
+        blank=True, null=True, verbose_name="05:00"
+    )
+    flow_0600 = fields.IntegerField(
+        blank=True, null=True, verbose_name="06:00"
+    )
+    flow_0700 = fields.IntegerField(
+        blank=True, null=True, verbose_name="07:00"
+    )
+    flow_0800 = fields.IntegerField(
+        blank=True, null=True, verbose_name="08:00"
+    )
+    flow_0900 = fields.IntegerField(
+        blank=True, null=True, verbose_name="09:00"
+    )
+    flow_1000 = fields.IntegerField(
+        blank=True, null=True, verbose_name="10:00"
+    )
+    flow_1100 = fields.IntegerField(
+        blank=True, null=True, verbose_name="11:00"
+    )
+    flow_1200 = fields.IntegerField(
+        blank=True, null=True, verbose_name="12:00"
+    )
+    flow_1300 = fields.IntegerField(
+        blank=True, null=True, verbose_name="13:00"
+    )
+    flow_1400 = fields.IntegerField(
+        blank=True, null=True, verbose_name="14:00"
+    )
+    flow_1500 = fields.IntegerField(
+        blank=True, null=True, verbose_name="15:00"
+    )
+    flow_1600 = fields.IntegerField(
+        blank=True, null=True, verbose_name="16:00"
+    )
+    flow_1700 = fields.IntegerField(
+        blank=True, null=True, verbose_name="17:00"
+    )
+    flow_1800 = fields.IntegerField(
+        blank=True, null=True, verbose_name="18:00"
+    )
+    flow_1900 = fields.IntegerField(
+        blank=True, null=True, verbose_name="19:00"
+    )
+    flow_2000 = fields.IntegerField(
+        blank=True, null=True, verbose_name="20:00"
+    )
+    flow_2100 = fields.IntegerField(
+        blank=True, null=True, verbose_name="21:00"
+    )
+    flow_2200 = fields.IntegerField(
+        blank=True, null=True, verbose_name="22:00"
+    )
+    flow_2300 = fields.IntegerField(
+        blank=True, null=True, verbose_name="23:00"
+    )
 
     class Meta:
         ordering = ["day_num"]
-
 
 
 """
@@ -283,7 +352,9 @@ Begin exploratory models during testing
 
 class Occupation(models.EpisodeSubrecord):
     _is_singleton = True
-    currently_employed = fields.CharField(max_length=200, choices=YN, blank=True, null=True)
+    currently_employed = fields.CharField(
+        max_length=200, choices=YN, blank=True, null=True
+    )
     job_title = fields.CharField(max_length=200, blank=True, null=True)
     name_of_employer = fields.CharField(max_length=200, blank=True, null=True)
     exposures = fields.TextField(blank=True, null=True)
@@ -293,10 +364,11 @@ class DiagnosisAsthma(models.EpisodeSubrecord):
     _is_singleton = True
 
     asthma = fields.CharField(max_length=200, blank=True, null=True)
-    exacerbated_by_work = fields.CharField(max_length=200, blank=True, null=True)
+    exacerbated_by_work = fields.CharField(
+        max_length=200, blank=True, null=True
+    )
     irritant_induced_asthma = fields.CharField(
-        max_length=200, blank=True, null=True,
-        choices=YN
+        max_length=200, blank=True, null=True, choices=YN
     )
     sensitisation = fields.CharField(
         max_length=200, blank=True, null=True,
@@ -305,8 +377,7 @@ class DiagnosisAsthma(models.EpisodeSubrecord):
     )
     sensitising_agent = fields.TextField(blank=True, null=True)
     non_occupational_asthma = fields.CharField(
-        max_length=200, blank=True, null=True,
-        choices=YN
+        max_length=200, blank=True, null=True, choices=YN
     )
 
 

@@ -3,7 +3,6 @@ Plugin definition for the add_patient_step Opal plugin
 """
 from opal.core import plugins
 
-from plugins.add_patient_step.urls import urlpatterns
 from plugins.add_patient_step import api
 
 
@@ -11,7 +10,6 @@ class add_patient_stepPlugin(plugins.OpalPlugin):
     """
     Main entrypoint to expose this plugin to our Opal application.
     """
-    urls = urlpatterns
     javascripts = {
         'opal.services': [
             'js/add_patient_step/services/demographics_search.js',
@@ -35,7 +33,7 @@ class add_patient_stepPlugin(plugins.OpalPlugin):
         return {}
 
     apis = [
-        ("demographics_search", api.DemographicsSearch,),
+        ("demographics-search", api.DemographicsSearch,),
     ]
 
     opal_angular_exclude_tracking_qs = [

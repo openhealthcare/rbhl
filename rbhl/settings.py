@@ -1,6 +1,5 @@
 # Django settings for rbhl project.
 import os
-import sys
 import urllib
 
 PROJECT_PATH = os.path.realpath(os.path.dirname(__file__))
@@ -18,17 +17,19 @@ try:
     import dj_database_url
 
     DATABASES = {
-        'default': dj_database_url.config(default='sqlite:///' + PROJECT_PATH + '/opal.sqlite')
+        'default': dj_database_url.config(
+            default='sqlite:///' + PROJECT_PATH + '/opal.sqlite'
+        )
     }
 except ImportError:
     DATABASES = {
         'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(PROJECT_PATH, 'opal.sqlite'),
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': ''
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(PROJECT_PATH, 'opal.sqlite'),
+            'USER': '',
+            'PASSWORD': '',
+            'HOST': '',
+            'PORT': ''
         }
     }
 
@@ -93,7 +94,6 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
     'compressor.finders.CompressorFinder',
 )
 
@@ -110,7 +110,7 @@ else:
         ('django.template.loaders.cached.Loader', (
             'django.template.loaders.filesystem.Loader',
             'django.template.loaders.app_directories.Loader',
-            )),
+        )),
     )
 
 MIDDLEWARE = (
@@ -128,10 +128,6 @@ MIDDLEWARE = (
     'opal.middleware.DjangoReversionWorkaround',
     'reversion.middleware.RevisionMiddleware',
     'rbhl.middleware.SecurityHeadersMiddleware',
-
-#    'axes.middleware.FailedLoginMiddleware',
-    # Uncomment the next line for simple clickjacking protection:
-    # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
 ROOT_URLCONF = 'rbhl.urls'
@@ -172,7 +168,6 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-#    'axes',
     'reversion',
     'rest_framework',
     'rest_framework.authtoken',
@@ -189,7 +184,6 @@ INSTALLED_APPS = (
     'plugins.add_patient_step',
     'rbhl',
 )
-
 
 
 V_FORMAT = '%(asctime)s %(process)d %(thread)d %(filename)s %(funcName)s \
@@ -255,10 +249,12 @@ APPEND_SLASH = False
 AXES_LOCK_OUT_AT_FAILURE = False
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
-EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
+EMAIL_BACKEND = os.environ.get(
+    'EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend'
+)
 if not DEBUG:
     EMAIL_HOST_USER = os.environ.get('SENDGRID_USERNAME', '')
-    EMAIL_HOST= 'smtp.sendgrid.net'
+    EMAIL_HOST = 'smtp.sendgrid.net'
     EMAIL_PORT = 587
     EMAIL_USE_TLS = True
     EMAIL_HOST_PASSWORD = os.environ.get('SENDGRID_PASSWORD', '')
@@ -341,13 +337,12 @@ OTP_TOTP_ISSUER = urllib.parse.quote(OPAL_BRAND_NAME)
 TWO_FACTOR_FOR_SUPERUSERS = True
 
 
-
 # if you want sass, uncomment the below and gem install sass
 # COMPRESS_PRECOMPILERS = (
 #     ('text/x-scss', 'sass --scss {infile} {outfile}'),
 # )
 
 try:
-    from rbhl.local_settings import *
+    from rbhl.local_settings import *  # NOQA
 except ImportError:
     pass
