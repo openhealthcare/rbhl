@@ -1,0 +1,60 @@
+<div class="row">
+  <label class="control-label col-sm-3">
+    Start date
+  </label>
+  <div class="col-sm-3">
+    <input class="form-control" type="date" ng-model="startDate" ng-change="updateTrialNumbers()">
+  </div>
+  <label class="control-label col-sm-3">
+    Number of trial days
+  </label>
+  <div class="col-sm-3">
+    <input class="form-control" type="number" ng-model="numOfTrials" ng-change="updateTrialNumbers()">
+  </div>
+</div>
+<div class="content-offset" ng-repeat="date in trialDays">
+  <div class="row">
+    <div class="col-md-4">
+      <h3>Trial date [[ $index + 1]] <small>[[ date | displayDate ]]</small></h3>
+    </div>
+  </div>
+  <div class="row">
+    <div>
+      <form ng-submit="addFlow($index)" class="form">
+        <div class="col-md-4">
+          <div listen class="form-group">
+            <label>Time</label>
+            <ui-select reemit="'reset' + $index" focus-on="refocus" style="min-width: 100px;" ng-model="form[$index].time" theme="bootstrap">
+              <ui-select-match>[[ $select.selected ]]</ui-select-match>
+              <ui-select-choices repeat="i in timeOptions | filter:$select.search track by $index">
+                <div ng-bind-html="i | highlight: $select.search"></div>
+              </ui-select-choices>
+            </ui-select>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group">
+            <label>Flow</label>
+            <input ng-model="form[$index].flow" class="form-control" type="number">
+          </div>
+        </div>
+        <input type="hidden" ng-model="form[$index].date">
+        <div class="col-md-4">
+          <button style="margin-top: 25px; padding-top: 10px; padding-bottom: 10px" type="submit" class="btn btn-default">Add flow</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <table ng-show="results[$index].length" class="table">
+    <tr>
+      <th> Time </th>
+      <th> Flow </th>
+      <th></th>
+    </tr>
+    <tr ng-repeat="row in results[$index]">
+      <td>[[ row.time ]]</td>
+      <td>[[ row.flow ]]</td>
+      <td></td>
+    </tr>
+  </table>
+</div>
