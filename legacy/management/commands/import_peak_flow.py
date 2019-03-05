@@ -64,8 +64,25 @@ class Command(BaseCommand):
                     self.patients_missed += 1
                     continue
 
-                print('Creating Peak Flow Identifier')
+                print("Updating demographics")
+                demographics = patient.demographics()
+                demographics_changed = False
 
+                if row["HEIGHT"] and int(row["HEIGHT"]):
+                    demographics.height = int(row["HEIGHT"])
+                    demographics_changed = True
+
+                if row["SEX"] and not demographics.sex:
+                    if row["SEX"] == "M":
+                        demographics_changed = True
+                        demographics.sex = "Male"
+                    elif row["SEX"] == "F":
+                        demographics_changed = True
+                        demographics.sex = "Female"
+                if demographics_changed:
+                    demographics.save()
+
+                print('Creating Peak Flow Identifier')
                 identifier = PeakFlowIdentifier(patient=patient)
                 identifier.occmendo = int(row["OCCMEDNO"])
                 identifier.save()
