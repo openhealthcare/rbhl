@@ -33,7 +33,7 @@ class add_patient_stepPlugin(plugins.OpalPlugin):
         return {}
 
     apis = [
-        ("demographics_search", api.DemographicsSearch,),
+        ("demographics-search", api.DemographicsSearch,),
     ]
 
     opal_angular_exclude_tracking_qs = [

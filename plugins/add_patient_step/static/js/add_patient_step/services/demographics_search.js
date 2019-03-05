@@ -1,4 +1,4 @@
-angular.module('opal.services').factory('DemographicsSearch', function($q, $http, $window, Patient, ngProgressLite) {
+angular.module('opal.services').factory('DemographicsSearch', function($http, $window, ngProgressLite) {
     "use strict";
     /*
     * The demographics search used by the find patient
@@ -16,7 +16,7 @@ angular.module('opal.services').factory('DemographicsSearch', function($q, $http
 
     // patient is not found
     var PATIENT_NOT_FOUND = "patient_not_found";
-  
+
     var expectedStatuses = [
       PATIENT_FOUND_IN_APPLICATION,
       PATIENT_FOUND_UPSTREAM,
@@ -42,7 +42,7 @@ angular.module('opal.services').factory('DemographicsSearch', function($q, $http
           findPatientOptions[PATIENT_FOUND_UPSTREAM](response.data.patient);
         }
         else if(response.data.status == PATIENT_NOT_FOUND){
-          findPatientOptions[PATIENT_NOT_FOUND](response.data.patient);
+          findPatientOptions[PATIENT_NOT_FOUND]();
         }
         else{
           $window.alert('DemographicsSearch could not be loaded');
