@@ -315,9 +315,6 @@ class PeakFlowDay(models.EpisodeSubrecord):
         blank=True, null=True, verbose_name="23:00"
     )
 
-    class Meta:
-        ordering = ["day_num"]
-
 
 """
 Begin exploratory models during testing
