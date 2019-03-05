@@ -2,7 +2,7 @@
 rbhl models.
 """
 import datetime
-
+import math
 from django.db.models import fields
 
 from opal import models
@@ -17,8 +17,31 @@ opal.models but can be customised here with extra / altered fields.
 """
 
 
+def calculate_peak_expiratory_flow(height, age, sex):
+    """
+    For males
+    PEF = e (0.544 loge*age – 0.0151age – 74.7/height + 5.48)
+
+    For females
+    PEF = e (0.376 loge*age – 0.0121 age – 58.8/height + 5.63)
+
+    Reference
+
+    AJ Nunn, I Gregg New regression equations for predicting peak
+    expiratory flow in adults Br Med J 1989; 298:1068-70
+    """
+    if sex == "Male":
+        PEF = 0.544 * (math.log(age)) - (0.0151*age) - 74.7/height + 5.48
+    if sex == "Female":
+        PEF = 0.376 * (math.log(age)) - (0.0121*age) - 58.8/height + 5.63
+
+    return round(math.exp(PEF), 2)
+
+
 class Demographics(models.Demographics):
-    pass
+    height = fields.IntegerField(
+        blank=True, null=True, verbose_name='Height(cm)'
+    )
 
 
 class Location(models.Location):
