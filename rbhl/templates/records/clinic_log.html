@@ -1,93 +1,36 @@
 {% load forms %}
+{% load rbhl_panels %}
 <div class="row">
   <!-- 1 -->
   <div class="col-md-4">
     <!-- Top level column -->
-    <div class="row">
-      <div class="col-md-8" ng-show="item.seen_by">
-        <b>Seen by:</b>
-      </div>
-      <div class="col-md-4">
-        [[ item.seen_by ]]
-      </div>
-    </div>
+    {% field_display "ClinicLog.seen_by" %}
   </div>
 
   <div class="col-md-4">
     <!-- Top level column -->
-    <div class="row">
-      <div class="col-md-8" ng-show="item.clinic_date">
-        <b>First attended clinic:</b>
-      </div>
-      <div class="col-md-4">
-        [[ item.clinic_date | displayDate ]]
-      </div>
-    </div>
+    {% field_display "ClinicLog.clinic_date" label="First attended clinic" %}
   </div>
   <div class="col-md-4">
-    <div class="row">
-      <div class="col-md-8">
-        <b>Active:</b>
-      </div>
-      <div class="col-md-4" ng-show="item.active">
-        {% icon "fa-check" %}
-      </div>
-    </div>
+    {% field_display "ClinicLog.active" %}
   </div>
 </div>
 <div class="row">
   <div class="col-md-4">
-    <div class="row">
-      <div class="col-md-8">
-        <b>Diagnosis made:</b>
-      </div>
-      <div class="col-md-4" ng-show="item.diagnosis_made">
-        {% icon "fa-check" %}
-      </div>
-    </div>
+    {% field_display "ClinicLog.diagnosis_made" %}
   </div>
 </div>
 
 <hr />
 
 <div class="row">
-  <!-- 4 -->
-
   <div class="col-md-4">
-    <!-- Top level column -->
-
-    <div class="row">
-      <div class="col-md-8">
-        <b>Peak flow:</b>
-      </div> <!-- Label column -->
-      <div class="col-md-4" ng-show="item.peak_flow">
-        {% icon "fa-check" %}
-      </div> <!-- value column -->
-    </div>
-
-  </div> <!-- Top level column -->
-
+    {% field_display "ClinicLog.peak_flow" %}
+  </div>
   <div class="col-md-4">
-    <!-- Top level column -->
-    <div class="row">
-      <div class="col-md-8">
-        <b>Other RBH bloods:</b>
-      </div> <!-- Label column -->
-      <div class="col-md-4" ng-show="item.other_rbh_bloods">
-        {% icon "fa-check" %}
-      </div> <!-- value column -->
-    </div>
-  </div> <!-- Top level column -->
-
+    {% field_display "ClinicLog.other_rbh_bloods" %}
+  </div>
   <div class="col-md-4">
-    <!-- Top level column -->
-    <div class="row">
-      <div class="col-md-8">
-        <b>Immunology OEM:</b>
-      </div> <!-- Label column -->
-      <div class="col-md-4" ng-show="item.immunology_oem">
-        {% icon "fa-check" %}
-      </div> <!-- value column -->
-    </div>
-  </div> <!-- Top level column -->
+    {% field_display "ClinicLog.immunology_oem" %}
+  </div>
 </div>

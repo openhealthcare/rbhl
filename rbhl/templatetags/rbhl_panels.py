@@ -46,10 +46,9 @@ def field_display(
     ctx["label_size"] = kwargs.get(
         "label_size", context.get("label_size", 8)
     )
-    ctx["field_size"] = kwargs.get("field_size", 4)
 
     ctx["field_size"] = kwargs.get(
-        "field_size", context.get("label_field_sizesize", 8)
+        "field_size", context.get("label_field_sizesize", 4)
     )
     ctx["is_boolean"] = is_boolean(field)
     ctx["is_date"] = is_date(field)

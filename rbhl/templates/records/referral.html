@@ -1,44 +1,9 @@
-{% load forms %}
-<div class="row">
-  <div class="col-md-8">
-    <b>Referrer:</b>
-  </div>
-  <div class="col-md-4">
-    [[ item.referrer_title ]]     [[ item.referrer_name ]]
-  </div>
-</div>
-<div class="row" ng-show="item.date_of_referral">
-  <div class="col-md-8">
-    <b> Date of referral:</b>
-  </div>
-  <div class="col-md-4">
-    [[ item.date_of_referral | displayDate ]]
-  </div>
-</div>
-<div class="row" ng-show="item.date_referral_received">
-  <div class="col-md-8">
-    <b>Referral received:</b>
-  </div>
-  <div class="col-md-4">
-    [[ item.date_referral_received | displayDate ]]
-  </div>
-</div>
-<div class="row" ng-show="item.attendance">
-  <div class="col-md-8">
-    <b>Attendance:</b>
-  </div>
-  <div ng-show="item.attendance" class="col-md-4">
-    {% icon "fa-check" %}
-  </div>
-</div>
-<div class="row" ng-show="item.date_first_appointment">
-  <div class="col-md-8">
-    <b>First appointment offered:</b>
-  </div>
-  <div class="col-md-4">
-    [[ item.date_first_appointment | displayDate ]]
-  </div>
-</div>
+{% load rbhl_panels %}
+{% field_display "Referral.referrer_title" %}
+{% field_display "Referral.date_of_referral" %}
+{% field_display "Referral.date_referral_received" %}
+{% field_display "Referral.attendance" %}
+{% field_display "Referral.date_first_appointment" %}
 <span ng-show="item.comments">
   <h4>Comments</h4>
   <div markdown="comments"></div>
