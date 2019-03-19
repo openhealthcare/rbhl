@@ -165,3 +165,24 @@ Peak Flow DB
 
 class PeakFlowIdentifier(PatientSubrecord):
     occmendo = models.IntegerField(blank=True, null=True)
+
+
+class GP(PatientSubrecord):
+    _is_singleton = True
+
+    name = models.TextField()
+    address = models.TextField(null=True)
+    post_code = models.TextField(null=True)
+
+
+class PatientNumber(PatientSubrecord):
+    _is_singleton = True
+
+    value = models.TextField(null=True)
+
+
+class Address(PatientSubrecord):
+    _is_singleton = True
+
+    address = models.TextField(null=True)
+    telephone = models.TextField(null=True)

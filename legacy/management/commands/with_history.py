@@ -10,7 +10,6 @@ from opal.models import Patient
 
 from legacy.management.commands.flush_database import flush
 from rbhl.episode_categories import OccupationalLungDiseaseEpisode
-from rbhl.models import Demographics
 
 sexLUT = {"F": "Female", "M": "Male", "U": "Not Known"}
 
@@ -50,29 +49,69 @@ class Command(BaseCommand):
         # ignore rows with no DoB
         rows = filter(lambda r: r["Dateofbirth"] != "00-Jan-00", rows)
 
-        demographics = []
         patients_imported = 0
         for row in rows:
             patient = Patient.objects.create()
             patient.create_episode(
                 category_name=OccupationalLungDiseaseEpisode.display_name
             )
+            patient.demographics_set.get().update_from_dict(
+                {
+                    "created": timezone.now(),
+                    "hospital_number": row["Hospital Number"],
+                    "nhs_number": row["NHSnumber"].replace(" ", ""),
+                    "surname": row["Surname"],
+                    "first_name": row["Firstname"],
+                    "post_code": row["Postcode"],
+                    "sex": sexLUT.get(row["Sex"], None),
+                    "date_of_birth": date_to_dob(row["Dateofbirth"]),
+                },
+                user=None,
+            )
 
-            demographics.append(
-                Demographics(
-                    hospital_number=row["Hospital Number"],
-                    nhs_number=row["NHSnumber"].replace(" ", ""),
-                    surname=row["Surname"],
-                    first_name=row["Firstname"],
-                    post_code=row["Postcode"],
-                    sex=sexLUT.get(row["Sex"], None),
-                    date_of_birth=date_to_dob(row["Dateofbirth"]),
-                    patient=patient,
+            if row["Patient_num"]:
+                patient.patientnumber_set.get().update_from_dict(
+                    {
+                        "created": timezone.now(),
+                        "value": row["Patient_num"],
+                    },
+                    user=None
                 )
+
+            if any([row["GPname"], row["GPPostcode"]]):
+                address = ", ".join(
+                    [
+                        row["GPAddress1"],
+                        row["GPAddress2"],
+                        row["GPAddress3"],
+                        row["GPAddress4"],
+                    ]
+                )
+                patient.gp_set.get().update_from_dict(
+                    {
+                        "created": timezone.now(),
+                        "name": row["GPname"],
+                        "address": address,
+                        "post_code": row["GPPostcode"],
+                    },
+                    user=None
+                )
+
+            address = ", ".join([
+                row["ADDRESS1"],
+                row["Address2"],
+                row["Address3"],
+                row["Address4"],
+            ])
+            patient.address_set.get().update_from_dict(
+                {
+                    "created": timezone.now(),
+                    "address": address,
+                    "telephone": row["Telephone"],
+                },
+                user=None
             )
 
             patients_imported += 1
-
-        Demographics.objects.bulk_create(demographics)
 
         print("Imported {} patients".format(patients_imported))
