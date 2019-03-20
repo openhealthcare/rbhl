@@ -12,19 +12,19 @@
     <input class="form-control" type="number" ng-model="numOfTrials" ng-change="updateTrialNumbers()">
   </div>
 </div>
-<div class="content-offset" ng-repeat="date in trialDays">
+<div class="content-offset" ng-repeat="trialDay in trialDays">
   <div class="row">
     <div class="col-md-4">
-      <h3>Trial date [[ $index + 1]] <small>[[ date | displayDate ]]</small></h3>
+      <h3>Trial date [[ $index + 1]] <small>[[ trialDay.date | displayDate ]]</small></h3>
     </div>
   </div>
   <div class="row">
     <div>
-      <form ng-submit="addFlow($index)" class="form">
+      <form ng-submit="trialDay.addFlow($index)" class="form">
         <div class="col-md-4">
           <div listen class="form-group">
             <label>Time</label>
-            <ui-select reemit="'reset' + $index" focus-on="refocus" style="min-width: 100px;" ng-model="form[$index].time" theme="bootstrap">
+            <ui-select reemit="'reset' + $index" focus-on="refocus" style="min-width: 100px;" ng-model="trialDay.form.time" theme="bootstrap">
               <ui-select-match>[[ $select.selected ]]</ui-select-match>
               <ui-select-choices repeat="i in timeOptions | filter:$select.search track by $index">
                 <div ng-bind-html="i | highlight: $select.search"></div>
@@ -35,7 +35,7 @@
         <div class="col-md-4">
           <div class="form-group">
             <label>Flow</label>
-            <input ng-model="form[$index].flow" class="form-control" type="number">
+            <input ng-model="trialDay.form.flow" class="form-control" type="number">
           </div>
         </div>
         <input type="hidden" ng-model="form[$index].date">
@@ -45,13 +45,13 @@
       </form>
     </div>
   </div>
-  <table ng-show="results[$index].length" class="table">
+  <table ng-show="trialDay.peakFlowTimes.length" class="table">
     <tr>
       <th> Time </th>
       <th> Flow </th>
       <th></th>
     </tr>
-    <tr ng-repeat="row in results[$index]">
+    <tr ng-repeat="row in trialDay.peakFlowTimes">
       <td>[[ row.time ]]</td>
       <td>[[ row.flow ]]</td>
       <td></td>

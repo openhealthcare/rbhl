@@ -5,9 +5,17 @@
         Peak Flow
         <span ng-show="peakFlowDaysByTrial.length > 1">
           Trial [[ peakFlowDayByTrial[0].trial_num ]]
-          <span>
-            <i class="fa fa-plus-circle pull-right pointer edit"
-              ng-click="episode.recordEditor.newItem('peak_flow_day', $index)"></i>
+          <a href="/pathway/#/peak_flow_day/[[ patient.id ]]/[[ episode.id ]]?trial_num=[[ peakFlowDayByTrial[0].trial_num ]]">
+            <i class="fa fa-pencil edit pull-right pointer">
+            </i>
+          </a>
+        </span>
+        <span ng-hide="peakFlowDaysByTrial.length > 1">
+          <a href="/pathway/#/peak_flow_day/[[ patient.id ]]/[[ episode.id ]]?trial_num=[[ peakFlowDayByTrial[0].trial_num ]]">
+            <i class="fa fa-pencil edit pull-right pointer">
+            </i>
+          </a>
+        </span>
       </h3>
       <div style="min-height: 300px;" ng-show="peakFlowDayByTrial.length > 3">
         <div peak-flow-graph days="peakFlowDayByTrial" id="peakFlow"></div>
