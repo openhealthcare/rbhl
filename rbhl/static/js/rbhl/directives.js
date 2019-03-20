@@ -59,7 +59,7 @@ directives.directive("peakFlowGraph", function($timeout) {
 
         var working_days = _.map(
           _.filter(days, function(day) {
-            return day.work_start || day.work_end;
+            return day.work_day;
           }),
           function(day) {
             return day.day_num;
@@ -152,6 +152,19 @@ directives.directive("peakFlowGraph", function($timeout) {
         });
       }
       $timeout(render_chart, 500);
+    }
+  };
+});
+
+directives.directive("reemit", function($parse, $timeout) {
+  "use strict";
+  return {
+    scope: false,
+    link: function(scope, element, attrs) {
+      var ev = $parse(attrs.reemit)(scope);
+      scope.$on(ev, function() {
+        scope.$broadcast("refocus")
+      });
     }
   };
 });

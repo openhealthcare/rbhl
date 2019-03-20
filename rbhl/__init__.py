@@ -13,6 +13,7 @@ class Application(application.OpalApplication):
         'js/opal/controllers/discharge.js',
         'js/rbhl/directives.js',
         'js/rbhl/controllers/peak_flow_ctrl.js',
+        'js/rbhl/controllers/peak_flow_step.js',
         # Uncomment this if you want to implement custom dynamic flows.
         # 'js/rbhl/flow.js',
     ]
