@@ -1,24 +1,5 @@
-<div class="row" ng-show="item.mobile">
-  <div class="col-md-4">
-    <b>Mobile:</b>
-  </div>
-  <div class="col-md-8">
-    [[ item.mobile ]]
-  </div>
-</div>
-<div class="row" ng-show="item.phone">
-  <div class="col-md-4">
-    <b>Phone:</b>
-  </div>
-  <div class="col-md-8">
-    [[ item.phone ]]
-  </div>
-</div>
-<div class="row" ng-show="item.email">
-  <div class="col-md-4">
-    <b>Email:</b>
-  </div>
-  <div class="col-md-8">
-    [[ item.email ]]
-  </div>
-</div>
+{% load rbhl_panels %}
+{% field_display "ContactDetails.mobile" %}
+{% field_display "ContactDetails.phone" %}
+{% field_display "ContactDetails.email" %}
+

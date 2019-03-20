@@ -1,57 +1,29 @@
-<div class="row">
-  <div class="col-md-4">
-    <b>Name</b>
-  </div>
-  <div class="col-md-8">
-    [[ item.first_name ]]
-    [[ item.surname ]]
-  </div>
-</div>
-<div class="row">
-  <div class="col-md-4">
-    <b>Hospital #</b>
-  </div>
-  <div class="col-md-8">
-    [[ item.hospital_number ]]
-  </div>
-</div>
-<div class="row">
-  <div class="col-md-4">
-    <b>NHS #</b>
-  </div>
-  <div class="col-md-8">
-    [[ item.nhs_number ]]
-  </div>
-</div>
-<div class="row">
-  <div class="col-md-4">
-    <b>DOB</b>
-  </div>
-  <div class="col-md-8">
-    [[ item.date_of_birth | displayDate ]]
-  </div>
-</div>
-<div class="row">
-  <div class="col-md-4">
-    <b>Sex</b>
-  </div>
-  <div class="col-md-8">
-    [[ item.sex ]]
-  </div>
-</div>
-<div class="row">
-    <div class="col-md-4">
-      <b>Height</b>
+{% load rbhl_panels %}
+{% with label_size=4 field_size=8 %}
+  <div class="row">
+    <div class="col-md-{{ label_size }}">
+      <b>Name</b>
     </div>
-    <div class="col-md-8">
-      [[ item.height ]]
+    <div class="col-md-{{ field_size }}">
+      [[ item.first_name ]]
+      [[ item.surname ]]
     </div>
   </div>
-<div class="row" ng-show="item.post_code">
-  <div class="col-md-4">
-    <b>Post code</b>
+  {% field_display "Demographics.hospital_number" label="Hospital #" %}
+  {% field_display "Demographics.nhs_number" label="NHS #" %}
+  <div class="row">
+    <div class="col-md-{{ label_size }}">
+      <b>DOB</b>
+    </div>
+    <div class="col-md-{{ field_size }}">
+      [[ item.date_of_birth | displayDate ]]
+      <span ng-show="item.date_of_birth">
+        ([[ item.date_of_birth | age ]])
+      </span>
+    </div>
   </div>
-  <div class="col-md-8">
-    [[ item.post_code ]]
-  </div>
-</div>
+  {% field_display "Demographics.sex" %}
+  {% field_display "Demographics.height" %}
+  {% field_display "Demographics.post_code" %}
+{% endwith %}
+
