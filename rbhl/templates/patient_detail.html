@@ -1,4 +1,7 @@
 {% extends 'patient_detail_base.html' %}
+
+{% load panels %}
+
 {% block content %}
   <div ng-show="episode.category_name == 'Outpatient'">
     {% include 'detail/outpatient.html' %}
@@ -11,5 +14,23 @@
   </div>
   <div ng-show="episode.category_name == 'OCLD'">
     {% include 'detail/ocld.html' %}
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      {% record_panel models.PatientNumber %}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      {% record_panel models.GP %}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      {% record_panel models.Address %}
+    </div>
   </div>
 {% endblock %}
