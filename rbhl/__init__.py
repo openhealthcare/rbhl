@@ -12,6 +12,7 @@ class Application(application.OpalApplication):
         'js/rbhl/clinicdatecomparator.js',
         'js/opal/controllers/discharge.js',
         'js/rbhl/controllers/peak_flow_step.js',
+        'js/rbhl/directives.js',
         # Uncomment this if you want to implement custom dynamic flows.
         # 'js/rbhl/flow.js',
     ]

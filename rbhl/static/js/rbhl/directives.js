@@ -137,14 +137,14 @@ directives.directive("peakFlowGraph", function($timeout) {
   };
 });
 
-directives.directive("reemit", function($parse) {
+directives.directive("reemit", function($parse, $timeout) {
   "use strict";
   return {
     scope: false,
     link: function(scope, element, attrs) {
-      var ev = $parse(attrs.blah)(scope);
+      var ev = $parse(attrs.reemit)(scope);
       scope.$on(ev, function() {
-        scope.$broadcast("refocus");
+        scope.$broadcast("refocus")
       });
     }
   };

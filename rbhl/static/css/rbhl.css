@@ -355,4 +355,17 @@ input[type=date]::-webkit-input-placeholder {
   visibility: hidden !important;
 }
 
+.ui-select-choices-row.active {
+  background-color: #f5f5f5;
+}
+
+.ui-select-match-text {
+  font-size: 18px;
+  margin-top: -9px;
+}
+
+.ui-select-choices-row-inner {
+  font-size: 18px;
+}
+
 /*# sourceMappingURL=rbhl.css.map */
