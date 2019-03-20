@@ -1,0 +1,17 @@
+- name: Kill gunicorn
+  become: yes
+  command: "pkill gunicorn"
+  ignore_errors: True
+
+- name: Restart nginx
+  become: true
+  ignore_errors: True
+  service:
+    name: nginx
+    state: restarted
+    enabled: yes
+
+- name: Restart circus
+  become: yes
+  command: "circusctl restart"
+  ignore_errors: True

@@ -1,0 +1,53 @@
+---
+# set up the PHMI project itself
+- name: Creates project dir
+  become: true
+  file:
+    path: "{{ PROJECT_PATH }}"
+    state: directory
+    mode: 0777
+
+- name: Setup the Git repo
+  git: repo={{ GIT_REPO }}
+       version={{ GIT_BRANCH }}
+       dest={{ PROJECT_PATH }}
+       accept_hostkey=yes
+       force=yes
+
+- name: Creates log dir
+  file:
+    path: "{{ LOG_DIR }}"
+    state: directory
+    owner: ubuntu
+
+# otherwise it complains silently and
+# blows up the world
+- name: Creates gunicorn log
+  file:
+    path: "{{ LOG_DIR }}/gunicorn.log"
+    state: touch
+
+
+- name: Creates config dir
+  file:
+    path: "{{ PROJECT_PATH }}/etc"
+    state: directory
+
+- name: Ensure no existing virtualenv exists
+  file:
+    state: absent
+    path: "{{ VIRTUALENV_PATH }}/"
+
+- name: Create the virtualenv
+  shell: . /usr/share/virtualenvwrapper/virtualenvwrapper.sh && mkvirtualenv -p /usr/bin/python3 {{ PROJECT_NAME }}
+  args:
+    executable: /bin/bash
+
+- name: Set the virtualenv project
+  template:
+    src: templates/project.jinja2
+    dest: "{{ VIRTUALENV_PATH }}/.project"
+    mode: 0744
+    owner: ubuntu
+
+

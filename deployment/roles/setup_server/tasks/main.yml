@@ -8,8 +8,14 @@
   become: true
   command: /usr/sbin/update-locale LANG=en_GB.UTF-8
 
+- name: Remove apt lock file
+  file:
+    state: absent
+    path: "/var/lib/dpkg/lock-frontend"
+  become: true
+
 - name: update apt-cache
-  sudo: true
+  become: true
   apt: update_cache=yes
 
 - name: install packages for sysadmin

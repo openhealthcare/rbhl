@@ -31,7 +31,7 @@
     mode: 0600
 
 - name: Restart postgres
-  sudo: yes
+  become: true
   command: "service postgresql restart"
 
 - name: add a database user

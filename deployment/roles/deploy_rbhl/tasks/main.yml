@@ -1,35 +1,9 @@
----
-# set up the PHMI project itself
-- name: Creates project dir
-  become: true
-  file:
-    path: "{{ PROJECT_PATH }}"
-    state: directory
-    mode: 0777
-
 - name: Setup the Git repo
   git: repo={{ GIT_REPO }}
        version={{ GIT_BRANCH }}
        dest={{ PROJECT_PATH }}
        accept_hostkey=yes
        force=yes
-
-- name: Creates log dir
-  file:
-    path: "{{ LOG_DIR }}"
-    state: directory
-
-# otherwise it complains silently and
-# blows up the world
-- name: Creates gunicorn log
-  file:
-    path: "{{ LOG_DIR }}/gunicorn.log"
-    state: touch
-
-- name: Creates config dir
-  file:
-    path: "{{ PROJECT_PATH }}/etc"
-    state: directory
 
 - name: Create configs
   template:
@@ -49,26 +23,8 @@
     mode: 0744
     owner: ubuntu
 
-- name: Ensure no existing virtualenv exists
-  file:
-    state: absent
-    path: "{{ VIRTUALENV_PATH }}/"
-
-- name: Create the virtualenv
-  shell: . /usr/share/virtualenvwrapper/virtualenvwrapper.sh && mkvirtualenv -p /usr/bin/python3 {{ PROJECT_NAME }}
-  args:
-    executable: /bin/bash
-
-- name: Set the virtualenv project
-  template:
-    src: templates/project.jinja2
-    dest: "{{ VIRTUALENV_PATH }}/.project"
-    mode: 0744
-    owner: ubuntu
-
 - name: Install packages required by the Django app inside virtualenv
   pip: virtualenv="{{ VIRTUALENV_PATH }}" requirements="{{ PROJECT_PATH }}/{{ REQUIREMENTS_FILE }}"
-#  executable: pip3
 
 - name: Run Django database migrations
   args:
@@ -104,6 +60,18 @@
     owner: root
     group: root
 
+- name: Stop circus
+  become: yes
+  command: "circusctl stop"
+  ignore_errors: True
+
+- name: Restart nginx
+  become: true
+  service:
+    name: nginx
+    state: restarted
+    enabled: yes
+
 - name: add the Launchpad key ID
   become: true
   apt_key:
@@ -121,7 +89,6 @@
   apt:
     pkg: python-certbot-nginx
     state: present
-
 
 - name: generate cert with Lets Encrypt
   become: true
@@ -142,7 +109,6 @@
     group: root
     state: link
 
-
 - name: Restart nginx
   become: true
   service:
@@ -150,18 +116,8 @@
     state: restarted
     enabled: yes
 
-- name: Kill gunicorn
-  sudo: yes
-  command: "pkill gunicorn"
-  ignore_errors: True
-
 - name: Create circus config
   become: yes
   template:
     src: "templates/circus.ini.jinja2"
     dest: "/etc/circus/circusd.ini"
-
-- name: Restart circus
-  become: yes
-  command: "circusctl restart"
-  ignore_errors: True

@@ -1,23 +1,33 @@
 ---
 - name: Things you want on servers generally
-  sudo: yes
+  become: true
   user: ubuntu
   hosts: webserver
   gather_facts: no
   roles:
-    - server
-
+    - setup_server
 
 - name: Make the server capable of running a standard database
-  sudo: yes
+  become: true
   user: ubuntu
   hosts: webserver
   roles:
-    - db
-
+    - setup_db
 
 - name: Set up our project
   user: ubuntu
   hosts: webserver
   roles:
-    - rbhl
+    - setup_rbhl
+
+- name: Deploy project
+  user: ubuntu
+  hosts: webserver
+  roles:
+    - deploy_rbhl
+
+- name: Restart services
+  user: ubuntu
+  hosts: webserver
+  roles:
+    - restart
