@@ -3,7 +3,6 @@ Pathways for the rbhl app
 """
 from opal.core.pathway import Step, WizardPathway, PagePathway
 from plugins.add_patient_step import FindPatientStep
-from opal.models import Patient
 
 from rbhl import models
 
@@ -47,16 +46,15 @@ class PeakFlowStep(Step):
     model = models.PeakFlowDay
     display_name = "Peak Flow Day"
 
-    def pre_save(data, user, patient=None, episode=None):
-        trial_num = data.pop("trial_num")
-        qs = Patient.peakflowday_set.all()
+    def pre_save(self, data, user, patient=None, episode=None):
+        trial_num = int(data.pop("trial_num")[0])
+        qs = episode.peakflowday_set.all()
         existing_ids = [i.get("id") for i in data[
             models.PeakFlowDay.get_api_name()
         ]]
         existing_ids = [i for i in existing_ids if i]
-
         to_remove = qs.exclude(
-            ids__in=existing_ids
+            id__in=existing_ids
         ).filter(
             trial_num=trial_num
         )

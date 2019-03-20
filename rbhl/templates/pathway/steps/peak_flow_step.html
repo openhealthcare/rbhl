@@ -1,30 +1,60 @@
-<div class="row">
-  <label class="control-label col-sm-3">
-    Start date
-  </label>
-  <div class="col-sm-3">
-    <input class="form-control" type="date" ng-model="startDate" ng-change="updateTrialNumbers()">
-  </div>
-  <label class="control-label col-sm-3">
-    Number of trial days
-  </label>
-  <div class="col-sm-3">
-    <input class="form-control" type="number" ng-model="numOfTrials" ng-change="updateTrialNumbers()">
-  </div>
-</div>
-<div class="content-offset" ng-repeat="date in trialDays">
+<div class="peak-flow-step">
   <div class="row">
-    <div class="col-md-4">
-      <h3>Trial date [[ $index + 1]] <small>[[ date | displayDate ]]</small></h3>
+    <div class="col-sm-4">
+      <label for="startDate" class="control-label">
+        Start date
+      </label>
+      <input id="startDate" class="form-control" type="date" ng-model="startDate" ng-change="updateTrialNumbers()">
+    </div>
+    <div class="col-sm-4">
+      <label for="trialDays" class="control-label">Number of trial days</label>
+      <input id="trialDays" class="form-control" type="number" ng-model="numOfTrials" ng-change="updateTrialNumbers()">
     </div>
   </div>
-  <div class="row">
-    <div>
-      <form ng-submit="addFlow($index)" class="form">
+  <div class="content-offset content-offset-below-10" ng-repeat="trialDay in trialDays">
+    <div class="row">
+      <div class="col-md-4">
+        <h3>Trial date [[ trialDay.day_num ]] <small>[[ trialDay.date | displayDate ]]</small></h3>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label>Treatment</label>
+          <input ng-model="trialDay.treatment_taken" class="form-control" type="text">
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label>Note</label>
+          <textarea ng-model="trialDay.note" class="form-control"></textarea>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <div>
+            <label class="control-label">Work day</label>
+          </div>
+          <label class="radio-inline">
+            <input type="radio" ng-model="trialDay.work_day" name="workday_[[ $index ]]" id="workday[[ $index ]]" ng-value="true"> Yes
+          </label>
+          <label class="radio-inline">
+            <input type="radio" ng-model="trialDay.work_day" name="workday_[[ $index ]]" id="workday[[ $index ]]" ng-value="false"> No
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <hr></hr>
+      </div>
+    </div>
+    <div class="row">
+      <form ng-submit="trialDay.addFlow($index)" class="form">
         <div class="col-md-4">
           <div listen class="form-group">
             <label>Time</label>
-            <ui-select reemit="'reset' + $index" focus-on="refocus" style="min-width: 100px;" ng-model="form[$index].time" theme="bootstrap">
+            <ui-select reemit="'reset' + $index" focus-on="refocus" style="min-width: 100px;" ng-model="trialDay.form.time" theme="bootstrap">
               <ui-select-match>[[ $select.selected ]]</ui-select-match>
               <ui-select-choices repeat="i in timeOptions | filter:$select.search track by $index">
                 <div ng-bind-html="i | highlight: $select.search"></div>
@@ -35,26 +65,24 @@
         <div class="col-md-4">
           <div class="form-group">
             <label>Flow</label>
-            <input ng-model="form[$index].flow" class="form-control" type="number">
+            <input ng-model="trialDay.form.flow" class="form-control" type="number">
           </div>
         </div>
-        <input type="hidden" ng-model="form[$index].date">
         <div class="col-md-4">
-          <button style="margin-top: 25px; padding-top: 10px; padding-bottom: 10px" type="submit" class="btn btn-default">Add flow</button>
+          <button ng-click="trialDay.addFlow($index)" type="submit" class="btn btn-default add-flow">Add flow</button>
         </div>
       </form>
     </div>
+    <div ng-repeat="peakFlowTime in trialDay.peakFlowTimes" class="row">
+      <div class="col-md-8">
+        <div class="row">
+          <div class="col-md-6 flow-table">[[ peakFlowTime.time ]]</div>
+          <div class="col-md-6 flow-table">[[ peakFlowTime.flow ]]</div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <button ng-click="trialDay.removeFlow($index)" class="btn btn-default remove-flow">&#8722;</button>
+      </div>
+    </div>
   </div>
-  <table ng-show="results[$index].length" class="table">
-    <tr>
-      <th> Time </th>
-      <th> Flow </th>
-      <th></th>
-    </tr>
-    <tr ng-repeat="row in results[$index]">
-      <td>[[ row.time ]]</td>
-      <td>[[ row.flow ]]</td>
-      <td></td>
-    </tr>
-  </table>
 </div>
