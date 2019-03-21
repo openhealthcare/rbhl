@@ -22,4 +22,5 @@ angular
     _.each(trialNums, function(tn) {
       $scope.peakFlowDaysByTrial.push(peakFlowDaysBytrialNum[tn]);
     });
+    $scope.newTrialNum = trialNums.length + 1;
   });

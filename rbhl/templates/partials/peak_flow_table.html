@@ -1,8 +1,18 @@
 <div class="row">
   <div ng-controller="PeakFlowCtrl" class="col-md-12">
+    <div class="panel panel-default record-panel">
+      <div class="panel-heading">
+        <h3>
+          Peak Flow
+        <a href="/pathway/#/peak_flow_day/[[ patient.id ]]/[[ episode.id ]]?trial_num=[[ newTrialNum ]]">
+          <i class="fa fa-plus-circle edit pull-right pointer">
+          </i>
+        </a>
+        </h3>
+      </div>
+    </div>
     <div ng-repeat="peakFlowDayByTrial in peakFlowDaysByTrial">
-      <h3>
-        Peak Flow
+      <h4 style="padding-left: 20px; padding-right: 20px">
         <span ng-show="peakFlowDaysByTrial.length > 1">
           Trial [[ peakFlowDayByTrial[0].trial_num ]]
           <a href="/pathway/#/peak_flow_day/[[ patient.id ]]/[[ episode.id ]]?trial_num=[[ peakFlowDayByTrial[0].trial_num ]]">
@@ -16,7 +26,7 @@
             </i>
           </a>
         </span>
-      </h3>
+      </h4>
       <div style="min-height: 300px;" ng-show="peakFlowDayByTrial.length > 3">
         <div peak-flow-graph days="peakFlowDayByTrial" id="peakFlow"></div>
       </div>

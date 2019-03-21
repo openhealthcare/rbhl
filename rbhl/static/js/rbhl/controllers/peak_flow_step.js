@@ -95,7 +95,7 @@ angular.module('opal.controllers').controller('PeakFlowStep',
         var timeToField = _.invert(timeOptions);
 
         _.each(this.peakFlowTimes, pft => {
-          json[timeToField[pft.flow]] = pft.flow;
+          json[timeToField[pft.time]] = pft.flow;
         });
 
         return json;
@@ -128,7 +128,7 @@ angular.module('opal.controllers').controller('PeakFlowStep',
         return;
       }
       scope.trialNum = parseInt($location.search().trial_num);
-      this.updateTrialNumbers();
+      this.setUpTrialNumbers();
 
       // The number of trial days to show, usually this is
       // we pull this off the model if its populated
@@ -143,28 +143,21 @@ angular.module('opal.controllers').controller('PeakFlowStep',
     }
 
 
-    scope.getTrialDays = function(numOfTrials, startDate){
+    scope.getTrialDays = function(numOfTrials, startDate, startDayNum){
       /*
       * Returns an array of PeakFlowDay
       *
       * e.g. if given a number of trials of 5 and a date of 1 April
       * it will return 1 April, 2 April, 3 April, 4 April, 5 April
       */
-      if(!numOfTrials || !startDate){
-        return [];
-      }
-
       var range = _.range(numOfTrials);
       return  _.map(range, function(x){
         var dt = moment(startDate).add(x, "d")
-        return new PeakFlowDay(dt, x+1)
+        return new PeakFlowDay(dt, x+startDayNum)
       });
     }
 
-    scope.updateTrialNumbers = function(){
-      /*
-      * Sets an array of dates that the trial covers
-      */
+    scope.setUpTrialNumbers = function(){
       var existingPeakFlows = _.where(
         scope.editing.peak_flow_day,
         {trial_num: scope.trialNum}
@@ -172,10 +165,56 @@ angular.module('opal.controllers').controller('PeakFlowStep',
 
       if(existingPeakFlows.length){
         existingPeakFlows = _.sortBy(existingPeakFlows, "day_num")
-        this.trialDays = _.map(existingPeakFlows, epf => PeakFlowDay.fromDict(epf));
+        scope.trialDays = _.map(existingPeakFlows, epf => PeakFlowDay.fromDict(epf));
+        scope.startDate = _.min(scope.trialDays, x => {
+          return x.date;
+        }).date;
+        scope.numOfTrials = _.max(scope.trialDays, x => {
+          return x.day_num;
+        }).day_num;
       }
       else{
-        this.trialDays = this.getTrialDays(scope.numOfTrials, scope.startDate);
+        scope.startDate = null;
+        scope.trialDays = 0;
+      }
+    }
+
+    scope.updateTrialNumbers = function(){
+      /*
+      * What happens when you update the form after its rendered
+      */
+      if(!scope.numOfTrials || !scope.startDate){
+        return
+      }
+
+      if(!scope.trialDays.length){
+        scope.trialDays = scope.getTrialDays(scope.numOfTrials, scope.startDate, 1);
+      }
+
+      if(scope.numOfTrials < scope.trialDays.length){
+        scope.trialDays = scope.trialDays.slice(0, scope.numOfTrials);
+      }
+      else if(scope.numOfTrials > scope.trialDays.length){
+        var numNewTrialDays = scope.numOfTrials - scope.trialDays.length;
+        var existingMaxDate = _.max(scope.trialDays, x => {
+          return x.date;
+        }).date;
+        var newStartDate = moment(existingMaxDate).add(1, "d")
+        var newDayNum = _.max(scope.trialDays, x => {
+          return x.day_num;
+        }).day_num + 1;
+        var newTrialDays = scope.getTrialDays(numNewTrialDays, newStartDate, newDayNum);
+        scope.trialDays = scope.trialDays.concat(newTrialDays);
+      }
+
+      var minDate = _.min(scope.trialDays, x => {
+        return x.date;
+      }).date;
+
+      if(scope.startDate !== minDate){
+        _.each(scope.trialDays, td => {
+          td.date = moment(scope.startDate).add(td.day_num - 1, "d");
+        });
       }
     }
 
@@ -196,5 +235,4 @@ angular.module('opal.controllers').controller('PeakFlowStep',
     }
 
     scope.initialise();
-    debugger;
 });

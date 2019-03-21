@@ -4,11 +4,11 @@
       <label for="startDate" class="control-label">
         Start date
       </label>
-      <input id="startDate" class="form-control" type="date" ng-model="startDate" ng-change="updateTrialNumbers()">
+      <input id="startDate" class="form-control" type="date" ng-model="startDate" ng-blur="updateTrialNumbers()">
     </div>
     <div class="col-sm-4">
       <label for="trialDays" class="control-label">Number of trial days</label>
-      <input id="trialDays" class="form-control" type="number" ng-model="numOfTrials" ng-change="updateTrialNumbers()">
+      <input id="trialDays" class="form-control" type="number" ng-model="numOfTrials" ng-blur="updateTrialNumbers()">
     </div>
   </div>
   <div class="content-offset content-offset-below-10" ng-repeat="trialDay in trialDays">
@@ -77,7 +77,7 @@
       <div class="col-md-8">
         <div class="row">
           <div class="col-md-6 flow-table">[[ peakFlowTime.time ]]</div>
-          <div class="col-md-6 flow-table">[[ peakFlowTime.flow ]]</div>
+          <div class="col-md-6 flow-table">[[ peakFlowTime.flow || 0]]</div>
         </div>
       </div>
       <div class="col-md-4">
