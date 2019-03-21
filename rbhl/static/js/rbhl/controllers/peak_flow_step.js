@@ -111,7 +111,9 @@ angular.module('opal.controllers').controller('PeakFlowStep',
           return;
         }
         if(timeOptions[k]){
-          pfts.push(new PeakFlowTime(timeOptions[k], json[k]))
+          if(json[k]){
+            pfts.push(new PeakFlowTime(timeOptions[k], json[k]))
+          }
           return
         }
         pfd[k] = json[k]
