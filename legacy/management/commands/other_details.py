@@ -3,7 +3,6 @@ import csv
 from django.core.management import BaseCommand
 from django.db import transaction
 from django.utils import timezone
-from opal.models import Patient
 
 from legacy.models import PatientNumber
 
@@ -24,10 +23,9 @@ class Command(BaseCommand):
                 p_num = PatientNumber.objects.get(value=row["Patient_num"])
                 patient = p_num.patient
             except PatientNumber.DoesNotExist:
-                patient = Patient.objects.create()
-                patient.patientnumber_set.get().update_from_dict(
-                    {"created": timezone.now(), "value": row["Patient_num"]}, user=None
-                )
+                msg = "Unknown Patient: {}".format(row["Patient_num"])
+                self.stderr.write(self.style.ERROR(msg))
+                continue
 
             patient.details_set.get().update_from_dict(
                 {
