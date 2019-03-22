@@ -8,6 +8,13 @@ from django.utils import timezone
 from legacy.models import RoutineSPT, PatientNumber
 
 
+def to_float(s):
+    if not s:
+        return
+
+    return float(s)
+
+
 class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument("file_name", help="Specify import file")
@@ -32,46 +39,16 @@ class Command(BaseCommand):
                 self.stderr.write(self.style.ERROR(msg))
                 continue
 
-            if not row["asp_fumigatus"]:
-                msg = "Skipped {}, empty asp_fumigatus".format(row["Patient_num"])
-                self.stderr.write(self.style.ERROR(msg))
-                continue
-
-            if not row["cat"]:
-                msg = "Skipped {}, empty cat".format(row["Patient_num"])
-                self.stderr.write(self.style.ERROR(msg))
-                continue
-
-            if not row["d_pter"]:
-                msg = "Skipped {}, empty d_pter".format(row["Patient_num"])
-                self.stderr.write(self.style.ERROR(msg))
-                continue
-
-            if not row["neg_control"]:
-                msg = "Skipped {}, empty neg_control".format(row["Patient_num"])
-                self.stderr.write(self.style.ERROR(msg))
-                continue
-
-            if not row["grass_pollen"]:
-                msg = "Skipped {}, empty grass_pollen".format(row["Patient_num"])
-                self.stderr.write(self.style.ERROR(msg))
-                continue
-
-            if not row["pos_control"]:
-                msg = "Skipped {}, empty pos_control".format(row["Patient_num"])
-                self.stderr.write(self.style.ERROR(msg))
-                continue
-
             tests.append(
                 RoutineSPT(
                     patient=patient,
                     created=timezone.now(),
-                    neg_control=float(row["neg_control"]),
-                    pos_control=float(row["pos_control"]),
-                    asp_fumigatus=float(row["asp_fumigatus"]),
-                    grass_pollen=float(row["grass_pollen"]),
-                    cat=float(row["cat"]),
-                    d_pter=float(row["d_pter"]),
+                    neg_control=to_float(row["neg_control"]),
+                    pos_control=to_float(row["pos_control"]),
+                    asp_fumigatus=to_float(row["asp_fumigatus"]),
+                    grass_pollen=to_float(row["grass_pollen"]),
+                    cat=to_float(row["cat"]),
+                    d_pter=to_float(row["d_pter"]),
                 )
             )
 
