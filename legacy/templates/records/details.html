@@ -1,25 +1,33 @@
 <span ng-show="item.hospital_number">
-    hospital_number: [[ item.hospital_number ]]
+  Hospital Number: [[ item.hospital_number ]]
+  <b>Sanity check identical to Demographics.hospital_number</b>
    <br />
 </span>
+
 <span ng-show="item.date_first_attended">
     date_first_attended: [[ item.date_first_attended ]]
+    <b>Check for merge with ClinicLog.clinic_date</b>
    <br />
 </span>
+
 <span ng-show="item.referring_doctor">
-    referring_doctor: [[ item.referring_doctor ]]
+  referring_doctor: [[ item.referring_doctor ]]
+  <b>Check for merge with Referral.referrer_name</b>
    <br />
 </span>
 <span ng-show="item.date_referral_received">
     date_referral_received: [[ item.date_referral_received ]]
+    <b>Check for merge with Referral.date_referral_received</b>
    <br />
 </span>
 <span ng-show="item.referral_type">
     referral_type: [[ item.referral_type ]]
+    <b>Add this field to Referral</b>
    <br />
 </span>
 <span ng-show="item.fire_service_applicant">
     fire_service_applicant: [[ item.fire_service_applicant ]]
+    <b>Check for merge with Employment.firefighter</b>
    <br />
 </span>
 <span ng-show="item.systems_presenting_compliant">
