@@ -21,6 +21,7 @@ class Command(BaseCommand):
         with open(options["file_name"], encoding="utf-8-sig") as f:
             rows = list(csv.DictReader(f))
 
+        self.stdout.write(self.style.SUCCESS("Importing Routine SPTs"))
         tests = []
         for row in rows:
             try:
@@ -31,19 +32,46 @@ class Command(BaseCommand):
                 self.stderr.write(self.style.ERROR(msg))
                 continue
 
+            if not row["asp_fumigatus"]:
+                msg = "Skipped {}, empty asp_fumigatus".format(row["Patient_num"])
+                self.stderr.write(self.style.ERROR(msg))
+                continue
+
+            if not row["cat"]:
+                msg = "Skipped {}, empty cat".format(row["Patient_num"])
+                self.stderr.write(self.style.ERROR(msg))
+                continue
+
+            if not row["d_pter"]:
+                msg = "Skipped {}, empty d_pter".format(row["Patient_num"])
+                self.stderr.write(self.style.ERROR(msg))
+                continue
+
+            if not row["neg_control"]:
+                msg = "Skipped {}, empty neg_control".format(row["Patient_num"])
+                self.stderr.write(self.style.ERROR(msg))
+                continue
+
+            if not row["grass_pollen"]:
+                msg = "Skipped {}, empty grass_pollen".format(row["Patient_num"])
+                self.stderr.write(self.style.ERROR(msg))
+                continue
+
+            if not row["pos_control"]:
+                msg = "Skipped {}, empty pos_control".format(row["Patient_num"])
+                self.stderr.write(self.style.ERROR(msg))
+                continue
+
             tests.append(
                 RoutineSPT(
                     patient=patient,
                     created=timezone.now(),
-                    neg_control=row["neg_control"],
-                    pos_control=row["pos_control"],
-                    asp_fumigatus=row["asp_fumigatus"],
-                    grass_pollen=row["grass_pollen"],
-                    cat=row["cat"],
-                    dog=row["dog"],
-                    d_pter=row["d_pter"],
-                    alternaria=row["alternaria"],
-                    clad=row["clad"],
+                    neg_control=float(row["neg_control"]),
+                    pos_control=float(row["pos_control"]),
+                    asp_fumigatus=float(row["asp_fumigatus"]),
+                    grass_pollen=float(row["grass_pollen"]),
+                    cat=float(row["cat"]),
+                    d_pter=float(row["d_pter"]),
                 )
             )
 

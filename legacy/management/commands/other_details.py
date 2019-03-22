@@ -18,6 +18,7 @@ class Command(BaseCommand):
         with open(options["file_name"], encoding="utf-8-sig") as f:
             rows = list(csv.DictReader(f))
 
+        self.stdout.write(self.style.SUCCESS("Importing other details rows"))
         for row in rows:
             try:
                 p_num = PatientNumber.objects.get(value=row["Patient_num"])
@@ -199,3 +200,6 @@ class Command(BaseCommand):
                 },
                 user=None,
             )
+
+        msg = "Imported {} other details rows".format(len(rows))
+        self.stdout.write(self.style.SUCCESS(msg))
