@@ -12,6 +12,9 @@
     {% record_panel models.Employment %}
   </div>
   <div class="col-md-6">
+    {% record_panel models.SuspectOccupationalCategory %}
+  </div>
+  <div class="col-md-6">
     {% record_panel models.Referral %}
   </div>
 </div>
@@ -20,6 +23,13 @@
 <div class="row">
   <div class="col-md-12">
     {% record_panel models.ClinicLog full_width=True %}
+
+  <div class="row">
+    <div class="col-md-12">
+      {% record_panel models.Details %}
+    </div>
+  </div>
+
     {% record_panel models.ActionLog %}
     {% record_panel models.Letter %}
   </div>
@@ -29,6 +39,49 @@
   {% include 'partials/peak_flow_table.html' %}
 {% endif %}
 
+  <div class="row">
+    <div class="col-md-12">
+      {% record_panel models.DiagnosticTesting %}
+    </div>
+
+    <div class="col-md-4">
+      {% record_panel models.RoutineSPT %}
+    </div>
+
+    <div class="col-md-4">
+      {% record_panel models.BronchialTest %}
+    </div>
+
+    <div class="col-md-4">
+      {% record_panel models.SkinPrickTest %}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      {% record_panel models.DiagnosticOutcome %}
+    </div>
+
+    <div class="col-md-4">
+      {% record_panel models.DiagnosticAsthma %}
+    </div>
+
+    <div class="col-md-4">
+      {% record_panel models.DiagnosticRhinitis %}
+    </div>
+
+    <div class="col-md-4">
+      {% record_panel models.DiagnosticOther %}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      {% record_panel models.OtherFields %}
+    </div>
+  </div>
+
+
 
 {% comment %}
 <h2 class="text-center">Old Unconverted Details</h2>
@@ -36,5 +89,26 @@
   <div class="col-md-12">
     {% record_panel models.ActionLog %}
   </div>
+
+
+  <div class="row">
+    <div class="col-md-12">
+      {% record_panel models.PatientNumber %}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      {% record_panel models.GP %}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      {% record_panel models.Address %}
+    </div>
+  </div>
+
+
 </div>
 {% endcomment %}

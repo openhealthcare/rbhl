@@ -169,6 +169,7 @@ class PeakFlowIdentifier(PatientSubrecord):
 
 class GP(PatientSubrecord):
     _is_singleton = True
+    _icon = 'fa fa-warning'
 
     name = models.TextField()
     address = models.TextField(null=True)
@@ -177,12 +178,14 @@ class GP(PatientSubrecord):
 
 class PatientNumber(PatientSubrecord):
     _is_singleton = True
+    _icon = 'fa fa-warning'
 
     value = models.TextField(null=True)
 
 
 class Address(PatientSubrecord):
     _is_singleton = True
+    _icon = 'fa fa-warning'
 
     address = models.TextField(null=True)
     telephone = models.TextField(null=True)
@@ -190,6 +193,10 @@ class Address(PatientSubrecord):
 
 class Details(PatientSubrecord):
     _is_singleton = True
+    _icon = 'fa fa-warning'
+
+    class Meta:
+        verbose_name = 'Asthma Database Details'
 
     hospital_number = models.TextField(null=True, blank=True)
     date_first_attended = models.TextField(null=True, blank=True)
@@ -215,6 +222,10 @@ class Details(PatientSubrecord):
 
 class SuspectOccupationalCategory(PatientSubrecord):
     _is_singleton = True
+    _icon = 'fa fa-warning'
+
+    class Meta:
+        verbose_name = 'Asthma Database Occupation'
 
     is_currently_employed = models.TextField(null=True, blank=True)
     suspect_occupational_category = models.TextField(null=True, blank=True)
@@ -230,6 +241,7 @@ class SuspectOccupationalCategory(PatientSubrecord):
 
 class DiagnosticTesting(PatientSubrecord):
     _is_singleton = True
+    _icon = 'fa fa-warning'
 
     antihistimines = models.TextField(null=True, blank=True)
     skin_prick_test = models.TextField(null=True, blank=True)
@@ -263,6 +275,7 @@ class DiagnosticTesting(PatientSubrecord):
 
 class DiagnosticOutcome(PatientSubrecord):
     _is_singleton = True
+    _icon = 'fa fa-warning'
 
     diagnosis = models.TextField(null=True, blank=True)
     diagnosis_date = models.TextField(null=True, blank=True)
@@ -271,6 +284,7 @@ class DiagnosticOutcome(PatientSubrecord):
 
 class DiagnosticAsthma(PatientSubrecord):
     _is_singleton = True
+    _icon = 'fa fa-warning'
 
     asthma = models.TextField(null=True, blank=True)
     is_exacerbated_by_work = models.TextField(null=True, blank=True)
@@ -282,6 +296,7 @@ class DiagnosticAsthma(PatientSubrecord):
 
 class DiagnosticRhinitis(PatientSubrecord):
     _is_singleton = True
+    _icon = 'fa fa-warning'
 
     rhinitis = models.TextField(null=True, blank=True)
     work_exacerbated = models.TextField(null=True, blank=True)
@@ -292,6 +307,7 @@ class DiagnosticRhinitis(PatientSubrecord):
 
 class DiagnosticOther(PatientSubrecord):
     _is_singleton = True
+    _icon = 'fa fa-warning'
 
     copd = models.TextField(null=True, blank=True)
     emphysema = models.TextField(null=True, blank=True)
@@ -316,10 +332,12 @@ class DiagnosticOther(PatientSubrecord):
 
 class SkinPrickTest(PatientSubrecord):
     _is_singleton = True
+    _icon = 'fa fa-warning'
 
 
 class OtherFields(PatientSubrecord):
     _is_singleton = True
+    _icon = 'fa fa-warning'
 
     other_det_num = models.TextField(null=True, blank=True)
     attendance_date = models.TextField(null=True, blank=True)
@@ -345,6 +363,8 @@ class OtherFields(PatientSubrecord):
 
 
 class BronchialTest(PatientSubrecord):
+    _icon = 'fa fa-warning'
+
     bronchial_num = models.IntegerField(null=True, blank=True)
     substance = models.TextField(null=True, blank=True)
     last_exposed = models.DateTimeField(null=True, blank=True)
@@ -358,6 +378,8 @@ class BronchialTest(PatientSubrecord):
 
 
 class RoutineSPT(PatientSubrecord):
+    _icon = 'fa fa-warning'
+
     neg_control = models.FloatField(null=True, blank=True)
     pos_control = models.FloatField(null=True, blank=True)
     asp_fumigatus = models.FloatField(null=True, blank=True)
