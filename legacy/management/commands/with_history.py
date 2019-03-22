@@ -69,14 +69,13 @@ class Command(BaseCommand):
                 user=None,
             )
 
-            if row["Patient_num"]:
-                patient.patientnumber_set.get().update_from_dict(
-                    {
-                        "created": timezone.now(),
-                        "value": row["Patient_num"],
-                    },
-                    user=None
-                )
+            patient.patientnumber_set.get().update_from_dict(
+                {
+                    "created": timezone.now(),
+                    "value": row["Patient_num"],
+                },
+                user=None
+            )
 
             if any([row["GPname"], row["GPPostcode"]]):
                 address = ", ".join(
