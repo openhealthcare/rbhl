@@ -345,11 +345,11 @@ class OtherFields(PatientSubrecord):
 
 
 class BronchialTest(PatientSubrecord):
-    bronchial_num = models.TextField(null=True, blank=True)
+    bronchial_num = models.IntegerField(null=True, blank=True)
     substance = models.TextField(null=True, blank=True)
-    last_exposed = models.TextField(null=True, blank=True)
+    last_exposed = models.DateTimeField(null=True, blank=True)
     duration_exposed = models.TextField(null=True, blank=True)
-    date_of_challenge = models.TextField(null=True, blank=True)
+    date_of_challenge = models.DateTimeField(null=True, blank=True)
     foo = models.TextField(null=True, blank=True)
     other_type = models.TextField(null=True, blank=True)
     other = models.TextField(null=True, blank=True)
@@ -358,12 +358,9 @@ class BronchialTest(PatientSubrecord):
 
 
 class RoutineSPT(PatientSubrecord):
-    neg_control = models.TextField(null=True, blank=True)
-    pos_control = models.TextField(null=True, blank=True)
-    asp_fumigatus = models.TextField(null=True, blank=True)
-    grass_pollen = models.TextField(null=True, blank=True)
-    cat = models.TextField(null=True, blank=True)
-    dog = models.TextField(null=True, blank=True)
-    d_pter = models.TextField(null=True, blank=True)
-    alternaria = models.TextField(null=True, blank=True)
-    clad = models.TextField(null=True, blank=True)
+    neg_control = models.FloatField(null=True, blank=True)
+    pos_control = models.FloatField(null=True, blank=True)
+    asp_fumigatus = models.FloatField(null=True, blank=True)
+    grass_pollen = models.FloatField(null=True, blank=True)
+    cat = models.FloatField(null=True, blank=True)
+    d_pter = models.FloatField(null=True, blank=True)
