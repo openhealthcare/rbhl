@@ -1,26 +1,17 @@
 {% load forms %}
-<div class="row" ng-show="item.employer">
-  <div class="col-md-6">
-    <b>Employer:</b>
-  </div>
-  <div class="col-md-6">
-    [[ item.employer ]]
-  </div>
-</div>
-<div class="row" ng-show="item.oh_provider">
-  <div class="col-md-6">
-  <b>OH Provider:</b>
-  </div>
-  <div class="col-md-6">
-    [[ item.oh_provider ]]
-  </div>
-</div>
+{% load rbhl_panels %}
+{% with label_size=6 field_size=6 %}
+{% field_display "Employment.employer" %}
+{% field_display "Employment.oh_provider" %}
 <div class="row">
-  <div class="col-md-6">
+  <div class="col-md-{{ label_size }}">
     <b>Firefighter <br />pre-employment:</b>
   </div>
-  <div class="col-md-6" ng-show="item.firefighter">
+  <div class="col-md-{{ field_size }}" ng-show="item.firefighter">
       {% icon "fa-check" %}
   </div>
 </div>
+{% endwith %}
+
+
 
