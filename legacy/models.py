@@ -191,9 +191,6 @@ class Address(PatientSubrecord):
 class Details(PatientSubrecord):
     _is_singleton = True
 
-    hospital_number = models.TextField(null=True, blank=True)
-    date_first_attended = models.DateTimeField(null=True, blank=True)
-    referring_doctor = models.TextField(null=True, blank=True)
     date_referral_received = models.DateTimeField(null=True, blank=True)
     referral_type = models.TextField(null=True, blank=True)
     fire_service_applicant = models.TextField(null=True, blank=True)

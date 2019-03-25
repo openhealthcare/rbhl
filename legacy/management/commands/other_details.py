@@ -84,14 +84,32 @@ class Command(BaseCommand):
                 self.stderr.write(self.style.ERROR(msg))
                 continue
 
-            date_first_attended = to_date(row["Attendance_date"])
+            episode = patient.episode_set.get()
+
+            # CONVERTED FIELDS
+
+            demographics = patient.demographics_set.get()
+            demographics.hospital_number = row["Hospital Number"]
+            demographics.save()
+
+            clinic_log = episode.cliniclog_set.get()
+            clinic_log.clinic_date = to_date(row["Attendance_date"])
+            clinic_log.save()
+
+            employment = episode.employment_set.get()
+            employment.employer = row["Employer"]
+            employment.save()
+
+            referral = episode.referral_set.get()
+            referral.referral_name = row["Referring_doctor"]
+            referral.save()
+
+            # REMAINING FIELDS
+
             date_referral_received = to_date(row["Date referral written"])
             patient.details_set.get().update_from_dict(
                 {
                     "created": timezone.now(),
-                    "hospital_number": row["Hospital Number"],
-                    "date_first_attended": date_first_attended,
-                    "referring_doctor": row["Referring_doctor"],
                     "date_referral_received": date_referral_received,
                     "referral_type": row["Referral_reason"],
                     "fire_service_applicant": row["Fireapplicant"],
@@ -120,7 +138,6 @@ class Command(BaseCommand):
                     "suspect_occupational_category": row["Occupation_category"],
                     "job_title": row["Current_employment"],
                     "exposures": row["Exposures"],
-                    "employer_name": row["Employer"],
                     # "is_employed_in_suspect_occupation": row[""],
                     "month_started_exposure": row["Date started"],
                     "year_started_exposure": row["Dates_st_Exposure_Y"],
