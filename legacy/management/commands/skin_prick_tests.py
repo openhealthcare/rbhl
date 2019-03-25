@@ -4,9 +4,9 @@ from django.core.management import BaseCommand
 from django.db import transaction
 from django.utils import timezone
 
-from legacy.models import PatientNumber, RoutineSPT
+from legacy.models import PatientNumber, SkinPrickTest
 
-from ..utils import to_float
+from ..utils import to_date, to_float, to_int
 
 
 class Command(BaseCommand):
@@ -15,14 +15,14 @@ class Command(BaseCommand):
 
     @transaction.atomic()
     def handle(self, *args, **options):
-        RoutineSPT.objects.all().delete()
+        SkinPrickTest.objects.all().delete()
 
         # Open with utf-8-sig encoding to avoid having a BOM in the first
         # header string.
         with open(options["file_name"], encoding="utf-8-sig") as f:
             rows = list(csv.DictReader(f))
 
-        self.stdout.write(self.style.SUCCESS("Importing Routine SPTs"))
+        self.stdout.write(self.style.SUCCESS("Importing Skin Prick Tests"))
         tests = []
         for row in rows:
             try:
@@ -34,19 +34,16 @@ class Command(BaseCommand):
                 continue
 
             tests.append(
-                RoutineSPT(
+                SkinPrickTest(
                     patient=patient,
                     created=timezone.now(),
-                    neg_control=to_float(row["neg_control"]),
-                    pos_control=to_float(row["pos_control"]),
-                    asp_fumigatus=to_float(row["asp_fumigatus"]),
-                    grass_pollen=to_float(row["grass_pollen"]),
-                    cat=to_float(row["cat"]),
-                    d_pter=to_float(row["d_pter"]),
+                    specific_sp_testnum=to_int(row["Specific_sp_testnum"]),
+                    spt=row["SPT"],
+                    wheal=to_float(row["Wheal"]),
+                    test_date=to_date(row["Testdate"]),
                 )
             )
 
-        RoutineSPT.objects.bulk_create(tests)
-        self.stdout.write(
-            self.style.SUCCESS("Created {} Routine SPTs".format(len(tests)))
-        )
+        SkinPrickTest.objects.bulk_create(tests)
+        msg = "Created {} Skin Prick Tests".format(len(tests))
+        self.stdout.write(self.style.SUCCESS(msg))
