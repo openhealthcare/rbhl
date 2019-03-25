@@ -1,18 +1,43 @@
 import csv
 
-from django.core.management import BaseCommand
+from django.core.management import BaseCommand, call_command
 from django.db import transaction
 from django.utils import timezone
 
-from legacy.models import PatientNumber
+from legacy.models import (
+    Details,
+    DiagnosticAsthma,
+    DiagnosticOther,
+    DiagnosticOutcome,
+    DiagnosticRhinitis,
+    DiagnosticTesting,
+    OtherFields,
+    PatientNumber,
+    SkinPrickTest,
+    SuspectOccupationalCategory,
+)
 
 
 class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument("file_name", help="Specify import file")
 
+    def flush(self):
+        Details.objects.all().delete()
+        SuspectOccupationalCategory.objects.all().delete()
+        DiagnosticTesting.objects.all().delete()
+        DiagnosticOutcome.objects.all().delete()
+        DiagnosticAsthma.objects.all().delete()
+        DiagnosticRhinitis.objects.all().delete()
+        DiagnosticOther.objects.all().delete()
+        SkinPrickTest.objects.all().delete()
+        OtherFields.objects.all().delete()
+
     @transaction.atomic()
     def handle(self, *args, **options):
+        self.flush()
+        call_command("create_singletons")
+
         # Open with utf-8-sig encoding to avoid having a BOM in the first
         # header string.
         with open(options["file_name"], encoding="utf-8-sig") as f:
