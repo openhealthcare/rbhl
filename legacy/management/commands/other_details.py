@@ -17,7 +17,7 @@ from legacy.models import (
     SuspectOccupationalCategory,
 )
 
-from ..utils import to_bool, to_date, to_int
+from ..utils import to_bool, to_date, to_float, to_int
 
 
 class Command(BaseCommand):
@@ -121,28 +121,28 @@ class Command(BaseCommand):
             patient.diagnostictesting_set.get().update_from_dict(
                 {
                     "created": timezone.now(),
-                    "antihistimines": row["Antihistimines"],
-                    "skin_prick_test": row["SkinPrick_test"],
+                    "antihistimines": to_bool(row["Antihistimines"]),
+                    "skin_prick_test": to_bool(row["SkinPrick_test"]),
                     "atopic": row["Atopic"],
-                    "specific_skin_prick": row["SpecificSkinPrick"],
-                    "serum_antibodies": row["Serum_antibodies"],
-                    "bronchial_prov_test": row["BronchialProvTest"],
+                    "specific_skin_prick": to_bool(row["SpecificSkinPrick"]),
+                    "serum_antibodies": to_bool(row["Serum_antibodies"]),
+                    "bronchial_prov_test": to_bool(row["BronchialProvTest"]),
                     "change_pc_20": row["ChangePC20"],
-                    "nasal_prov_test": row["NasalProvTest"],
-                    "positive_reaction": row["PositiveReaction"],
+                    "nasal_prov_test": to_bool(row["NasalProvTest"]),
+                    "positive_reaction": to_bool(row["PositiveReaction"]),
                     "height": row["Height"],
-                    "fev_1": row["FEV1"],
-                    "fev_1_post_ventolin": row["FEV1PostVentolin"],
-                    "fev_1_percentage_protected": row["FEV1%pred"],
-                    "fvc": row["FVCpPreVentolin"],
-                    "fvc_post_ventolin": row["FVCPostVentolin"],
-                    "fvc_percentage_protected": row["FVC%pred"],
+                    "fev_1": to_float(row["FEV1"]),
+                    "fev_1_post_ventolin": to_float(row["FEV1PostVentolin"]),
+                    "fev_1_percentage_protected": to_int(row["FEV1%pred"]),
+                    "fvc": to_float(row["FVCpPreVentolin"]),
+                    "fvc_post_ventolin": to_float(row["FVCPostVentolin"]),
+                    "fvc_percentage_protected": to_int(row["FVC%pred"]),
                     # "is_serial_peak_flows_requested": row[""],
                     # "has_spefr_variability": row[""],
-                    "is_returned": row["Returned?"],
+                    "is_returned": to_bool(row["Returned?"]),
                     # "is_spefr_work_related": row[""],
-                    "ct_chest_scan": row["CTChestScan"],
-                    "ct_chest_scan_date": row["CTdate"],
+                    "ct_chest_scan": to_bool(row["CTChestScan"]),
+                    "ct_chest_scan_date": to_date(row["CTdate"]),
                     # "full_lung_function": row[""],
                     # "full_lung_function_date": row[""],
                 },
@@ -153,7 +153,7 @@ class Command(BaseCommand):
                 {
                     "created": timezone.now(),
                     "diagnosis": row["Diagnosis"],
-                    "diagnosis_date": row["Date of Diagnosis"],
+                    "diagnosis_date": to_date(row["Date of Diagnosis"]),
                     "referred_to": row["Diagnosis_referral"],
                 },
                 user=None,
@@ -162,28 +162,38 @@ class Command(BaseCommand):
             patient.diagnosticasthma_set.get().update_from_dict(
                 {
                     "created": timezone.now(),
-                    "asthma": row["DiagnosisAsthma"],
-                    "is_exacerbated_by_work": row["AsthmaExacerbate"],
-                    "has_infant_induced_asthma": row["AsthmaOccInt"],
-                    "occupational_asthma_caused_by_sensitisation": row["AsthmaOccSen"],
+                    "asthma": to_bool(row["DiagnosisAsthma"]),
+                    "is_exacerbated_by_work": to_bool(row["AsthmaExacerbate"]),
+                    "has_infant_induced_asthma": to_bool(row["AsthmaOccInt"]),
+                    "occupational_asthma_caused_by_sensitisation": to_bool(
+                        row["AsthmaOccSen"]
+                    ),
                     "sensitising_agent": row["AsthmaOccSenCause"],
-                    "has_non_occupational_asthma": row["AsthmaNonOcc"],
+                    "has_non_occupational_asthma": to_bool(row["AsthmaNonOcc"]),
                 },
                 user=None,
             )
 
+            # FIXME: there is a single row where this field has the value "x"
+            # in the data as of 2019/03/25.  The surrounding data makes it look
+            # like this is a typo (since there is no surrounding data).
+            RhinitisNonOcc = row["RhinitisNonOcc"]
+            if RhinitisNonOcc != "x":
+                has_non_occupational_rhinitis = to_bool(RhinitisNonOcc)
+            else:
+                has_non_occupational_rhinitis = None
             patient.diagnosticrhinitis_set.get().update_from_dict(
                 {
                     "created": timezone.now(),
-                    "rhinitis": row["DiagnosisRhinitis"],
-                    "work_exacerbated": row["RhinitisExacerbate"],
-                    "occupational_rhinitis_caused_by_sensitisation": row[
-                        "RhinitisOccSen"
-                    ],
+                    "rhinitis": to_bool(row["DiagnosisRhinitis"]),
+                    "work_exacerbated": to_bool(row["RhinitisExacerbate"]),
+                    "occupational_rhinitis_caused_by_sensitisation": to_bool(
+                        row["RhinitisOccSen"]
+                    ),
                     "rhinitis_occupational_sensitisation_cause": row[
                         "RhinitisOccSenCause"
                     ],
-                    "has_non_occupational_rhinitis": row["RhinitisNonOcc"],
+                    "has_non_occupational_rhinitis": has_non_occupational_rhinitis,
                 },
                 user=None,
             )
@@ -191,31 +201,36 @@ class Command(BaseCommand):
             patient.diagnosticother_set.get().update_from_dict(
                 {
                     "created": timezone.now(),
-                    "copd": row["ChronicAirFlow"],
-                    "emphysema": row["Emphsema"],
-                    "copd_with_emphysema": row["COPD&emph"],
+                    "copd": to_bool(row["ChronicAirFlow"]),
+                    "emphysema": to_bool(row["Emphsema"]),
+                    "copd_with_emphysema": to_bool(row["COPD&emph"]),
                     # "copd_is_occupational": row[""],
-                    "malignancy": row["Malignancy"],
-                    "malignancy_is_occupational": row["MalignancyType"],
+                    "malignancy": to_bool(row["Malignancy"]),
+                    "malignancy_is_occupational": to_bool(
+                        row["MalignancyType"]
+                    ),
                     "malignancy_type": row["MalignancyTypeChoice"],
                     "malignancy_type_other": row["MalignancyTypeChoiceOther"],
-                    "NAD": row["NAD"],
-                    "diffuse_lung_disease": row["DiffuseLungDis"],
-                    "diffuse_lung_disease_is_occupational": row["DiffuseLungDisChoice"],
+                    "NAD": to_bool(row["NAD"]),
+                    "diffuse_lung_disease": to_bool(row["DiffuseLungDis"]),
+                    "diffuse_lung_disease_is_occupational": to_bool(
+                        row["DiffuseLungDisChoice"]
+                    ),
                     "diffuse_lung_disease_type": row["DiffuseLungDisType"],
-                    "diffuse_lung_disease_type_other": row["DiffuseLungDisTypeOther"],
-                    "benign_pleural_disease": row["BenignPleuralDis"],
+                    "diffuse_lung_disease_type_other": row[
+                        "DiffuseLungDisTypeOther"
+                    ],
+                    "benign_pleural_disease": to_bool(row["BenignPleuralDis"]),
                     "benign_pleural_disease_type": row["BenignPleuralDisType"],
-                    "other_diagnosis": row["OtherDiag"],
-                    "other_diagnosis_is_occupational": row["OtherDiagChoice"],
+                    "other_diagnosis": to_bool(row["OtherDiag"]),
+                    "other_diagnosis_is_occupational": to_bool(
+                        row["OtherDiagChoice"]
+                    ),
                     "other_diagnosis_type": row["OtherDiagChoiceType"],
                     "other_diagnosis_type_other": row["OtherDiagOther"],
                 },
                 user=None,
             )
-
-            # patient.skinpricktest_set.get().update_from_dict({
-            # }, user=None)
 
             patient.otherfields_set.get().update_from_dict(
                 {
@@ -233,8 +248,8 @@ class Command(BaseCommand):
                     "perf_variability": row["PERFVariablility"],
                     "perf_work_relate": row["PERFWorkRelate"],
                     "outcome_num": row["outcome_num"],
-                    "full_pul_fun_test": row["FullPulFunTest"],
-                    "lft_date": row["LFTdate"],
+                    "full_pul_fun_test": to_bool(row["FullPulFunTest"]),
+                    "lft_date": to_bool(row["LFTdate"]),
                     "asthma_relate_work": row["AsthmaRelateWork"],
                     "chronic_air_flow": row["ChronicAirFlow"],
                     "chronic_air_flow_choice": row["ChronicAirFlowChoice"],

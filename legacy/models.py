@@ -228,33 +228,33 @@ class SuspectOccupationalCategory(PatientSubrecord):
 class DiagnosticTesting(PatientSubrecord):
     _is_singleton = True
 
-    antihistimines = models.TextField(null=True, blank=True)
-    skin_prick_test = models.TextField(null=True, blank=True)
+    antihistimines = models.NullBooleanField(null=True, blank=True)
+    skin_prick_test = models.NullBooleanField(null=True, blank=True)
     atopic = models.TextField(null=True, blank=True)
-    specific_skin_prick = models.TextField(null=True, blank=True)
-    serum_antibodies = models.TextField(null=True, blank=True)
-    bronchial_prov_test = models.TextField(null=True, blank=True)
+    specific_skin_prick = models.NullBooleanField(null=True, blank=True)
+    serum_antibodies = models.NullBooleanField(null=True, blank=True)
+    bronchial_prov_test = models.NullBooleanField(null=True, blank=True)
     change_pc_20 = models.TextField(null=True, blank=True)
-    nasal_prov_test = models.TextField(null=True, blank=True)
-    positive_reaction = models.TextField(null=True, blank=True)
+    nasal_prov_test = models.NullBooleanField(null=True, blank=True)
+    positive_reaction = models.NullBooleanField(null=True, blank=True)
     height = models.TextField(null=True, blank=True)
-    fev_1 = models.TextField(null=True, blank=True)
-    fev_1_post_ventolin = models.TextField(null=True, blank=True)
-    fev_1_percentage_protected = models.TextField(null=True, blank=True)
-    fvc = models.TextField(null=True, blank=True)
-    fvc_post_ventolin = models.TextField(null=True, blank=True)
-    fvc_percentage_protected = models.TextField(null=True, blank=True)
+    fev_1 = models.FloatField(null=True, blank=True)
+    fev_1_post_ventolin = models.FloatField(null=True, blank=True)
+    fev_1_percentage_protected = models.IntegerField(null=True, blank=True)
+    fvc = models.FloatField(null=True, blank=True)
+    fvc_post_ventolin = models.FloatField(null=True, blank=True)
+    fvc_percentage_protected = models.IntegerField(null=True, blank=True)
     is_serial_peak_flows_requested = models.TextField(null=True, blank=True)
     has_spefr_variability = models.TextField(null=True, blank=True)
     is_returned = models.TextField(null=True, blank=True)
     is_spefr_work_related = models.TextField(null=True, blank=True)
 
     # TODO: combine?
-    ct_chest_scan = models.TextField(null=True, blank=True)
-    ct_chest_scan_date = models.TextField(null=True, blank=True)
+    ct_chest_scan = models.NullBooleanField(null=True, blank=True)
+    ct_chest_scan_date = models.DateTimeField(null=True, blank=True)
 
     # TODO: combine?
-    full_lung_function = models.TextField(null=True, blank=True)
+    full_lung_function = models.NullBooleanField(null=True, blank=True)
     full_lung_function_date = models.TextField(null=True, blank=True)
 
 
@@ -262,51 +262,61 @@ class DiagnosticOutcome(PatientSubrecord):
     _is_singleton = True
 
     diagnosis = models.TextField(null=True, blank=True)
-    diagnosis_date = models.TextField(null=True, blank=True)
+    diagnosis_date = models.DateTimeField(null=True, blank=True)
     referred_to = models.TextField(null=True, blank=True)
 
 
 class DiagnosticAsthma(PatientSubrecord):
     _is_singleton = True
 
-    asthma = models.TextField(null=True, blank=True)
-    is_exacerbated_by_work = models.TextField(null=True, blank=True)
-    has_infant_induced_asthma = models.TextField(null=True, blank=True)
-    occupational_asthma_caused_by_sensitisation = models.TextField(null=True, blank=True)
+    asthma = models.NullBooleanField(null=True, blank=True)
+    is_exacerbated_by_work = models.NullBooleanField(null=True, blank=True)
+    has_infant_induced_asthma = models.NullBooleanField(null=True, blank=True)
+    occupational_asthma_caused_by_sensitisation = models.NullBooleanField(null=True, blank=True)
     sensitising_agent = models.TextField(null=True, blank=True)
-    has_non_occupational_asthma = models.TextField(null=True, blank=True)
+    has_non_occupational_asthma = models.NullBooleanField(null=True, blank=True)
 
 
 class DiagnosticRhinitis(PatientSubrecord):
     _is_singleton = True
 
-    rhinitis = models.TextField(null=True, blank=True)
-    work_exacerbated = models.TextField(null=True, blank=True)
-    occupational_rhinitis_caused_by_sensitisation = models.TextField(null=True, blank=True)
-    rhinitis_occupational_sensitisation_cause = models.TextField(null=True, blank=True)
-    has_non_occupational_rhinitis = models.TextField(null=True, blank=True)
+    rhinitis = models.NullBooleanField(null=True, blank=True)
+    work_exacerbated = models.NullBooleanField(null=True, blank=True)
+    occupational_rhinitis_caused_by_sensitisation = models.NullBooleanField(
+        null=True, blank=True,
+    )
+    rhinitis_occupational_sensitisation_cause = models.TextField(
+        null=True, blank=True,
+    )
+    has_non_occupational_rhinitis = models.NullBooleanField(
+        null=True, blank=True,
+    )
 
 
 class DiagnosticOther(PatientSubrecord):
     _is_singleton = True
 
-    copd = models.TextField(null=True, blank=True)
-    emphysema = models.TextField(null=True, blank=True)
-    copd_with_emphysema = models.TextField(null=True, blank=True)
-    copd_is_occupational = models.TextField(null=True, blank=True)
-    malignancy = models.TextField(null=True, blank=True)
-    malignancy_is_occupational = models.TextField(null=True, blank=True)
+    copd = models.NullBooleanField(null=True, blank=True)
+    emphysema = models.NullBooleanField(null=True, blank=True)
+    copd_with_emphysema = models.NullBooleanField(null=True, blank=True)
+    copd_is_occupational = models.NullBooleanField(null=True, blank=True)
+    malignancy = models.NullBooleanField(null=True, blank=True)
+    malignancy_is_occupational = models.NullBooleanField(null=True, blank=True)
     malignancy_type = models.TextField(null=True, blank=True)
     malignancy_type_other = models.TextField(null=True, blank=True)
-    NAD = models.TextField(null=True, blank=True)
-    diffuse_lung_disease = models.TextField(null=True, blank=True)
-    diffuse_lung_disease_is_occupational = models.TextField(null=True, blank=True)
+    NAD = models.NullBooleanField(null=True, blank=True)
+    diffuse_lung_disease = models.NullBooleanField(null=True, blank=True)
+    diffuse_lung_disease_is_occupational = models.NullBooleanField(
+        null=True, blank=True
+    )
     diffuse_lung_disease_type = models.TextField(null=True, blank=True)
     diffuse_lung_disease_type_other = models.TextField(null=True, blank=True)
-    benign_pleural_disease = models.TextField(null=True, blank=True)
+    benign_pleural_disease = models.NullBooleanField(null=True, blank=True)
     benign_pleural_disease_type = models.TextField(null=True, blank=True)
-    other_diagnosis = models.TextField(null=True, blank=True)
-    other_diagnosis_is_occupational = models.TextField(null=True, blank=True)
+    other_diagnosis = models.NullBooleanField(null=True, blank=True)
+    other_diagnosis_is_occupational = models.NullBooleanField(
+        null=True, blank=True,
+    )
     other_diagnosis_type = models.TextField(null=True, blank=True)
     other_diagnosis_type_other = models.TextField(null=True, blank=True)
 
