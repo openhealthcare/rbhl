@@ -1,4 +1,5 @@
 import csv
+from datetime import datetime
 
 from django.core.management import BaseCommand, call_command
 from django.db import transaction
@@ -16,6 +17,36 @@ from legacy.models import (
     SkinPrickTest,
     SuspectOccupationalCategory,
 )
+
+
+def to_bool(s):
+    boolLUT = {
+        "no": False,
+        "yes": True,
+    }
+    return boolLUT.get(s, None)
+
+
+def to_date(s):
+    if not s:
+        return
+
+    try:
+        dt = datetime.strptime(s, "%d-%b-%y")
+    except ValueError:
+        return
+
+    return timezone.make_aware(dt)
+
+
+def to_int(s):
+    if not s:
+        return 0
+
+    try:
+        return int(s)
+    except ValueError:
+        return 0
 
 
 class Command(BaseCommand):
@@ -53,13 +84,15 @@ class Command(BaseCommand):
                 self.stderr.write(self.style.ERROR(msg))
                 continue
 
+            date_first_attended = to_date(row["Attendance_date"])
+            date_referral_received = to_date(row["Date referral written"])
             patient.details_set.get().update_from_dict(
                 {
                     "created": timezone.now(),
                     "hospital_number": row["Hospital Number"],
-                    "date_first_attended": row["Attendance_date"],
+                    "date_first_attended": date_first_attended,
                     "referring_doctor": row["Referring_doctor"],
-                    "date_referral_received": row["Date referral written"],
+                    "date_referral_received": date_referral_received,
                     "referral_type": row["Referral_reason"],
                     "fire_service_applicant": row["Fireapplicant"],
                     # "systems_presenting_compliant": row[""],
@@ -71,11 +104,11 @@ class Command(BaseCommand):
                     "clinic_status": row["Clinic_status"],
                     # "seen_by_dr": row[""],
                     "previous_atopic_disease": row["AtopicDisease"],
-                    "has_asthma": row["Asthma"],
-                    "has_hayfever": row["Hayfever"],
-                    "has_eczema": row["Eczema"],
+                    "has_asthma": to_bool(row["Asthma"]),
+                    "has_hayfever": to_bool(row["Hayfever"]),
+                    "has_eczema": to_bool(row["Eczema"]),
                     "is_smoker": row["Smoker"],
-                    "smokes_per_day": row["No_cigarettes"],
+                    "smokes_per_day": to_int(row["No_cigarettes"]),
                 },
                 user=None,
             )
@@ -83,7 +116,7 @@ class Command(BaseCommand):
             patient.suspectoccupationalcategory_set.get().update_from_dict(
                 {
                     "created": timezone.now(),
-                    "is_currently_employed": row["Employed"],
+                    "is_currently_employed": to_bool(row["Employed"]),
                     "suspect_occupational_category": row["Occupation_category"],
                     "job_title": row["Current_employment"],
                     "exposures": row["Exposures"],

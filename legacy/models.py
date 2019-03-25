@@ -192,9 +192,9 @@ class Details(PatientSubrecord):
     _is_singleton = True
 
     hospital_number = models.TextField(null=True, blank=True)
-    date_first_attended = models.TextField(null=True, blank=True)
+    date_first_attended = models.DateTimeField(null=True, blank=True)
     referring_doctor = models.TextField(null=True, blank=True)
-    date_referral_received = models.TextField(null=True, blank=True)
+    date_referral_received = models.DateTimeField(null=True, blank=True)
     referral_type = models.TextField(null=True, blank=True)
     fire_service_applicant = models.TextField(null=True, blank=True)
     systems_presenting_compliant = models.TextField(null=True, blank=True)
@@ -206,17 +206,17 @@ class Details(PatientSubrecord):
     clinic_status = models.TextField(null=True, blank=True)
     seen_by_dr = models.TextField(null=True, blank=True)
     previous_atopic_disease = models.TextField(null=True, blank=True)
-    has_asthma = models.TextField(null=True, blank=True)
-    has_hayfever = models.TextField(null=True, blank=True)
-    has_eczema = models.TextField(null=True, blank=True)
+    has_asthma = models.NullBooleanField(null=True, blank=True)
+    has_hayfever = models.NullBooleanField(null=True, blank=True)
+    has_eczema = models.NullBooleanField(null=True, blank=True)
     is_smoker = models.TextField(null=True, blank=True)
-    smokes_per_day = models.TextField(null=True, blank=True)
+    smokes_per_day = models.IntegerField(null=True, blank=True)
 
 
 class SuspectOccupationalCategory(PatientSubrecord):
     _is_singleton = True
 
-    is_currently_employed = models.TextField(null=True, blank=True)
+    is_currently_employed = models.NullBooleanField(null=True, blank=True)
     suspect_occupational_category = models.TextField(null=True, blank=True)
     job_title = models.TextField(null=True, blank=True)
     exposures = models.TextField(null=True, blank=True)
