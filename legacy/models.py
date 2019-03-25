@@ -272,9 +272,13 @@ class DiagnosticAsthma(PatientSubrecord):
     asthma = models.NullBooleanField(null=True, blank=True)
     is_exacerbated_by_work = models.NullBooleanField(null=True, blank=True)
     has_infant_induced_asthma = models.NullBooleanField(null=True, blank=True)
-    occupational_asthma_caused_by_sensitisation = models.NullBooleanField(null=True, blank=True)
+    occupational_asthma_caused_by_sensitisation = models.NullBooleanField(
+        null=True, blank=True
+    )
     sensitising_agent = models.TextField(null=True, blank=True)
-    has_non_occupational_asthma = models.NullBooleanField(null=True, blank=True)
+    has_non_occupational_asthma = models.NullBooleanField(
+        null=True, blank=True
+    )
 
 
 class DiagnosticRhinitis(PatientSubrecord):

@@ -106,7 +106,9 @@ class Command(BaseCommand):
                 {
                     "created": timezone.now(),
                     "is_currently_employed": to_bool(row["Employed"]),
-                    "suspect_occupational_category": row["Occupation_category"],
+                    "suspect_occupational_category": row[
+                        "Occupation_category"
+                    ],
                     "job_title": row["Current_employment"],
                     "exposures": row["Exposures"],
                     # "is_employed_in_suspect_occupation": row[""],
@@ -169,7 +171,9 @@ class Command(BaseCommand):
                         row["AsthmaOccSen"]
                     ),
                     "sensitising_agent": row["AsthmaOccSenCause"],
-                    "has_non_occupational_asthma": to_bool(row["AsthmaNonOcc"]),
+                    "has_non_occupational_asthma": to_bool(
+                        row["AsthmaNonOcc"]
+                    ),
                 },
                 user=None,
             )
@@ -179,9 +183,9 @@ class Command(BaseCommand):
             # like this is a typo (since there is no surrounding data).
             RhinitisNonOcc = row["RhinitisNonOcc"]
             if RhinitisNonOcc != "x":
-                has_non_occupational_rhinitis = to_bool(RhinitisNonOcc)
+                has_non_occ_rhinitis = to_bool(RhinitisNonOcc)
             else:
-                has_non_occupational_rhinitis = None
+                has_non_occ_rhinitis = None
             patient.diagnosticrhinitis_set.get().update_from_dict(
                 {
                     "created": timezone.now(),
@@ -193,7 +197,7 @@ class Command(BaseCommand):
                     "rhinitis_occupational_sensitisation_cause": row[
                         "RhinitisOccSenCause"
                     ],
-                    "has_non_occupational_rhinitis": has_non_occupational_rhinitis,
+                    "has_non_occupational_rhinitis": has_non_occ_rhinitis,
                 },
                 user=None,
             )
