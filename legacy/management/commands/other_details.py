@@ -245,13 +245,9 @@ class Command(BaseCommand):
                     "referral": row["referral"],
                     "reason_other": row["reason_other"],
                     "occupation_other": row["Occupation_other"],
-                    "ige_results": row["IgEresults"],
-                    "serum_results_num": row["Serum_resultsnum"],
-                    "ssp_test_num": row["SSPTest_Num"],
                     "serial_perf": row["SerialPERF"],
                     "perf_variability": row["PERFVariablility"],
                     "perf_work_relate": row["PERFWorkRelate"],
-                    "outcome_num": row["outcome_num"],
                     "full_pul_fun_test": to_bool(row["FullPulFunTest"]),
                     "lft_date": to_bool(row["LFTdate"]),
                     "asthma_relate_work": row["AsthmaRelateWork"],
@@ -260,8 +256,6 @@ class Command(BaseCommand):
                     "chronic_obstructive_brinchitis": row[
                         "ChronicObstructiveBrinchitis"
                     ],
-                    "exposure_dates": row["Exposure_dates"],
-                    "bronch_prov_test_type": row["BronchProvTest_type"],
                 },
                 user=None,
             )

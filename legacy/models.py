@@ -341,21 +341,15 @@ class OtherFields(PatientSubrecord):
     referral = models.TextField(null=True, blank=True)
     reason_other = models.TextField(null=True, blank=True)
     occupation_other = models.TextField(null=True, blank=True)
-    ige_results = models.TextField(null=True, blank=True)
-    serum_results_num = models.TextField(null=True, blank=True)
-    ssp_test_num = models.TextField(null=True, blank=True)
     serial_perf = models.TextField(null=True, blank=True)
     perf_variability = models.TextField(null=True, blank=True)
     perf_work_relate = models.TextField(null=True, blank=True)
-    outcome_num = models.TextField(null=True, blank=True)
     full_pul_fun_test = models.TextField(null=True, blank=True)
     lft_date = models.TextField(null=True, blank=True)
     asthma_relate_work = models.TextField(null=True, blank=True)
     chronic_air_flow = models.TextField(null=True, blank=True)
     chronic_air_flow_choice = models.TextField(null=True, blank=True)
     chronic_obstructive_brinchitis = models.TextField(null=True, blank=True)
-    exposure_dates = models.TextField(null=True, blank=True)
-    bronch_prov_test_type = models.TextField(null=True, blank=True)
 
 
 class BronchialTest(PatientSubrecord):
