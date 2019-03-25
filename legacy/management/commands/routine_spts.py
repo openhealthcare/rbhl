@@ -4,14 +4,9 @@ from django.core.management import BaseCommand
 from django.db import transaction
 from django.utils import timezone
 
-from legacy.models import RoutineSPT, PatientNumber
+from legacy.models import PatientNumber, RoutineSPT
 
-
-def to_float(s):
-    if not s:
-        return
-
-    return float(s)
+from ..utils import to_float
 
 
 class Command(BaseCommand):
