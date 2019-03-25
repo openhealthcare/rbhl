@@ -1,5 +1,4 @@
 import csv
-from datetime import datetime
 
 from django.core.management import BaseCommand, call_command
 from django.db import transaction
@@ -18,35 +17,7 @@ from legacy.models import (
     SuspectOccupationalCategory,
 )
 
-
-def to_bool(s):
-    boolLUT = {
-        "no": False,
-        "yes": True,
-    }
-    return boolLUT.get(s, None)
-
-
-def to_date(s):
-    if not s:
-        return
-
-    try:
-        dt = datetime.strptime(s, "%d-%b-%y")
-    except ValueError:
-        return
-
-    return timezone.make_aware(dt)
-
-
-def to_int(s):
-    if not s:
-        return 0
-
-    try:
-        return int(s)
-    except ValueError:
-        return 0
+from ..utils import to_bool, to_date, to_int
 
 
 class Command(BaseCommand):
