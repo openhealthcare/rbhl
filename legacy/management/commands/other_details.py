@@ -38,7 +38,9 @@ class Command(BaseCommand):
     @transaction.atomic()
     def handle(self, *args, **options):
         self.flush()
+        self.stdout.write(self.style.SUCCESS("Removed existing rows"))
         call_command("create_singletons")
+        self.stdout.write(self.style.SUCCESS("Created singleton models"))
 
         # Open with utf-8-sig encoding to avoid having a BOM in the first
         # header string.
