@@ -341,7 +341,6 @@ class OtherFields(PatientSubrecord):
     referral = models.TextField(null=True, blank=True)
     reason_other = models.TextField(null=True, blank=True)
     occupation_other = models.TextField(null=True, blank=True)
-    full_pul_fun_test = models.TextField(null=True, blank=True)
     asthma_relate_work = models.TextField(null=True, blank=True)
     chronic_air_flow = models.TextField(null=True, blank=True)
     chronic_air_flow_choice = models.TextField(null=True, blank=True)
