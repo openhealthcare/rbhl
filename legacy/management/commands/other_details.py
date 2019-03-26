@@ -106,9 +106,7 @@ class Command(BaseCommand):
                 {
                     "created": timezone.now(),
                     "is_currently_employed": to_bool(row["Employed"]),
-                    "suspect_occupational_category": row[
-                        "Occupation_category"
-                    ],
+                    "suspect_occupational_category": row["Occupation_category"],
                     "job_title": row["Current_employment"],
                     "exposures": row["Exposures"],
                     # "is_employed_in_suspect_occupation": row[""],
@@ -139,7 +137,9 @@ class Command(BaseCommand):
                     "fvc": to_float(row["FVCpPreVentolin"]),
                     "fvc_post_ventolin": to_float(row["FVCPostVentolin"]),
                     "fvc_percentage_protected": to_int(row["FVC%pred"]),
-                    "is_serial_peak_flows_requested": to_bool(row["SerialPERF"]),
+                    "is_serial_peak_flows_requested": to_bool(
+                        row["SerialPERF"]
+                    ),
                     "has_spefr_variability": row["PERFVariablility"],
                     "is_returned": to_bool(row["Returned?"]),
                     "is_spefr_work_related": row["PERFWorkRelate"],
@@ -171,9 +171,7 @@ class Command(BaseCommand):
                         row["AsthmaOccSen"]
                     ),
                     "sensitising_agent": row["AsthmaOccSenCause"],
-                    "has_non_occupational_asthma": to_bool(
-                        row["AsthmaNonOcc"]
-                    ),
+                    "has_non_occupational_asthma": to_bool(row["AsthmaNonOcc"]),
                 },
                 user=None,
             )
