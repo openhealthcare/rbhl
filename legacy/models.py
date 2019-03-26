@@ -244,7 +244,9 @@ class DiagnosticTesting(PatientSubrecord):
     fvc = models.FloatField(null=True, blank=True)
     fvc_post_ventolin = models.FloatField(null=True, blank=True)
     fvc_percentage_protected = models.IntegerField(null=True, blank=True)
-    is_serial_peak_flows_requested = models.TextField(null=True, blank=True)
+    is_serial_peak_flows_requested = models.NullBooleanField(
+        null=True, blank=True,
+    )
     has_spefr_variability = models.TextField(null=True, blank=True)
     is_returned = models.TextField(null=True, blank=True)
     is_spefr_work_related = models.TextField(null=True, blank=True)
@@ -255,7 +257,7 @@ class DiagnosticTesting(PatientSubrecord):
 
     # TODO: combine?
     full_lung_function = models.NullBooleanField(null=True, blank=True)
-    full_lung_function_date = models.TextField(null=True, blank=True)
+    full_lung_function_date = models.DateTimeField(null=True, blank=True)
 
 
 class DiagnosticOutcome(PatientSubrecord):
