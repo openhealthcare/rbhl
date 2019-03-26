@@ -35,3 +35,10 @@ def to_int(s):
         return int(s)
     except ValueError:
         return 0
+
+
+def to_upper(s):
+    if not s:
+        return
+
+    return s.upper()

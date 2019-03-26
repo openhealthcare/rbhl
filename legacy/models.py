@@ -201,7 +201,6 @@ class Details(PatientSubrecord):
     site_of_clinic = models.TextField(null=True, blank=True)
     other_clinic_site = models.TextField(null=True, blank=True)
     clinic_status = models.TextField(null=True, blank=True)
-    seen_by_dr = models.TextField(null=True, blank=True)
     previous_atopic_disease = models.TextField(null=True, blank=True)
     has_asthma = models.NullBooleanField(null=True, blank=True)
     has_hayfever = models.NullBooleanField(null=True, blank=True)
@@ -339,7 +338,6 @@ class OtherFields(PatientSubrecord):
 
     other_det_num = models.TextField(null=True, blank=True)
     attendance_date = models.TextField(null=True, blank=True)
-    specialist_doctor = models.TextField(null=True, blank=True)
     referral = models.TextField(null=True, blank=True)
     reason_other = models.TextField(null=True, blank=True)
     occupation_other = models.TextField(null=True, blank=True)

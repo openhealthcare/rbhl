@@ -17,7 +17,7 @@ from legacy.models import (
     SuspectOccupationalCategory,
 )
 
-from ..utils import to_bool, to_date, to_float, to_int
+from ..utils import to_bool, to_date, to_float, to_int, to_upper
 
 
 class Command(BaseCommand):
@@ -65,6 +65,7 @@ class Command(BaseCommand):
 
             clinic_log = episode.cliniclog_set.get()
             clinic_log.clinic_date = to_date(row["Attendance_date"])
+            clinic_log.seen_by = to_upper(row["Specialist_Dr"])
             clinic_log.save()
 
             employment = episode.employment_set.get()
@@ -91,7 +92,6 @@ class Command(BaseCommand):
                     "site_of_clinic": row["Site of Clinic"],
                     "other_clinic_site": row["Other Clinic Site"],
                     "clinic_status": row["Clinic_status"],
-                    # "seen_by_dr": row[""],
                     "previous_atopic_disease": row["AtopicDisease"],
                     "has_asthma": to_bool(row["Asthma"]),
                     "has_hayfever": to_bool(row["Hayfever"]),
@@ -239,7 +239,6 @@ class Command(BaseCommand):
                     "created": timezone.now(),
                     "other_det_num": row["OtherDet_Num"],
                     "attendance_date": row["Attendance_date"],
-                    "specialist_doctor": row["Specialist_Dr"],
                     "referral": row["referral"],
                     "reason_other": row["reason_other"],
                     "occupation_other": row["Occupation_other"],
