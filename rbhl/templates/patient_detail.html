@@ -16,6 +16,7 @@
     {% include 'detail/ocld.html' %}
   </div>
 
+  {% if permissions.CAN_SEE_EXTRA_FIELDS %}
   <div class="row">
     <div class="col-md-12">
       {% record_panel models.PatientNumber %}
@@ -99,4 +100,5 @@
       {% record_panel models.RoutineSPT %}
     </div>
   </div>
+  {% endif %}
 {% endblock %}
