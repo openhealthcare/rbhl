@@ -203,7 +203,9 @@ class Command(BaseCommand):
                 benign_pleural_disease=to_bool(row["BenignPleuralDis"]),
                 benign_pleural_disease_type=row["BenignPleuralDisType"],
                 other_diagnosis=to_bool(row["OtherDiag"]),
-                other_diagnosis_is_occupational=to_bool(row["OtherDiagChoice"]),
+                other_diagnosis_is_occupational=to_bool(
+                    row["OtherDiagChoice"],
+                ),
                 other_diagnosis_type=row["OtherDiagChoiceType"],
                 other_diagnosis_type_other=row["OtherDiagOther"],
             )
