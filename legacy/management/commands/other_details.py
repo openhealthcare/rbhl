@@ -1,4 +1,5 @@
 import csv
+import functools
 
 import structlog
 from django.core.management import BaseCommand
@@ -279,8 +280,11 @@ class Command(BaseCommand):
         History.objects.all().delete()
         Exposure.objects.all().delete()
 
+        log.info("Deleted existing models")
+
     @transaction.atomic()
     def handle(self, *args, **options):
+        log.info("Importing from other details CSV")
         self.flush()
 
         # Open with utf-8-sig encoding to avoid having a BOM in the first
@@ -319,6 +323,7 @@ class Command(BaseCommand):
         History.objects.bulk_create(self.build_history(patientLUT, rows))
         OtherFields.objects.bulk_create(self.build_other(patientLUT, rows))
 
+        log.info("Updating existing models")
         for row in rows:
             patient = patientLUT.get(row["Patient_num"], None)
 
@@ -327,34 +332,38 @@ class Command(BaseCommand):
 
             episode = patient.episode_set.get()
 
+            # Set up a short function name and save us some typing since this
+            # will be used for each field being [potentially] updated.
+            u = functools.partial(update, row)
+
             # CONVERTED FIELDS
 
             demographics = patient.demographics_set.get()
-            demographics.hospital_number = row["Hospital Number"]
+            u(demographics, "hospital_number", "Hospital Number")
             demographics.save()
 
             clinic_log = episode.cliniclog_set.get()
-            clinic_log.clinic_date = to_date(row["Attendance_date"])
-            clinic_log.seen_by = to_upper(row["Specialist_Dr"])
+            u(clinic_log, "clinic_date", "Attendance_date", to_date)
+            u(clinic_log, "seen_by", "Specialist_Dr", to_upper)
             clinic_log.save()
 
             employment = episode.employment_set.get()
-            employment.employer = row["Employer"]
-            employment.firefighter = to_bool(row["Fireapplicant"])
-            employment.is_currently_employed = row["Current_employment"]
-            employment.suspect_occupational_category = row[
-                "Occupation_category",
-            ]
-            employment.employment_is_suspect = row["Employed"]
-            employment.job_title = row["Occupation_other"]
+            u(employment, "employer", "Employer")
+            u(employment, "firefighter", "Fireapplicant", to_bool)
+            u(employment, "is_currently_employed", "Current_employment")
+            u(employment, "suspect_occupational_category", "Occupation_category")  # noqa: E501
+            u(employment, "employment_is_suspect", "Employed")
+            u(employment, "job_title", "Occupation_other")
             employment.save()
 
             referral = episode.referral_set.get()
-            referral.referrer_name = row["Referring_doctor"]
-            referral.referral_type = row["referral"]
-            referral.reason = row["Referral_reason"]
-            referral.disease = row["Referral_disease"]
-            referral.geographical_area = row["Geographical_area"]
+            u(referral, "referrer_name", "Referring_doctor")
+            u(referral, "date_referral_received", "Date referral written", to_date)  # noqa: E501
+            u(referral, "referrer_name", "Referring_doctor")
+            u(referral, "referral_type", "referral")
+            u(referral, "reason", "Referral_reason")
+            u(referral, "disease", "Referral_disease")
+            u(referral, "geographical_area", "Geographical_area")
             referral.save()
 
         msg = "Imported {} other details rows".format(len(rows))
