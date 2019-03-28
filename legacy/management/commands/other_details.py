@@ -22,6 +22,43 @@ from ..utils import to_bool, to_date, to_float, to_int, to_upper
 log = structlog.get_logger("rbhl")
 
 
+def update(row, obj, field, column, mutator=None):
+    """
+    Try to update the given obj.field with the given column value
+
+    We're importing data from multiple sources, however those sources have
+    overlapping value, eg Referral.referral_name (the referring doctor) can
+    come from more than one source.  Often these values are only slightly
+    different [to a human] but we still don't want to pick one source over
+    another.  This function checks we're not going to wipe out existing data
+    before assigning the new value.  When existing data is found it logs out
+    the relevant information so we can fix the differences in the sources.
+    """
+    existing = getattr(obj, field)
+    new = row[column]
+
+    if mutator:
+        new = mutator(new)
+
+    if not new:
+        # Don't overwrite target field with an empty value
+        return
+
+    if existing and new != existing:
+        # Don't overwrite target field when it has a value and the new value
+        # isn't the same.
+        log.info(
+            "Avoiding overwrite",
+            model=obj.__class__.__name__,
+            field=field,
+            exising=existing,
+            new=new,
+        )
+        return
+
+    setattr(obj, field, new)
+
+
 class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument("file_name", help="Specify import file")
