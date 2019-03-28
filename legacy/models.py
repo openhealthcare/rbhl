@@ -191,8 +191,6 @@ class Address(PatientSubrecord):
 class Details(PatientSubrecord):
     _is_singleton = True
 
-    # UI Field: Fire Service Applicant
-    fire_service_applicant = models.TextField(null=True, blank=True)
     # UI Field: Symptoms / presenting compliant
     systems_presenting_compliant = models.TextField(null=True, blank=True)
     # UI Field: Clinic status

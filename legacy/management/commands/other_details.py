@@ -34,7 +34,6 @@ class Command(BaseCommand):
             yield Details(
                 patient=patient,
                 created=timezone.now(),
-                fire_service_applicant=row["Fireapplicant"],
                 # "systems_presenting_compliant": row[""],
                 clinic_status=row["Clinic_status"],
             )
@@ -319,6 +318,7 @@ class Command(BaseCommand):
 
             employment = episode.employment_set.get()
             employment.employer = row["Employer"]
+            employment.firefighter = to_bool(row["Fireapplicant"])
             employment.save()
 
             referral = episode.referral_set.get()
