@@ -197,21 +197,6 @@ class Details(PatientSubrecord):
     clinic_status = models.TextField(null=True, blank=True)
 
 
-class SuspectOccupationalCategory(PatientSubrecord):
-    _is_singleton = True
-
-    # UI Field: Currently Employed?
-    is_currently_employed = models.NullBooleanField(null=True, blank=True)
-    # UI Field: Suspect occupation Category
-    suspect_occupational_category = models.TextField(null=True, blank=True)
-    # UI Field: Job Title
-    job_title = models.TextField(null=True, blank=True)
-    # UI Field: Name of Employer
-    employer_name = models.TextField(null=True, blank=True)
-    # UI Field: Currently employed in suspect occupation
-    is_employed_in_suspect_occupation = models.TextField(null=True, blank=True)
-
-
 class DiagnosticTesting(PatientSubrecord):
     _is_singleton = True
 
@@ -377,7 +362,6 @@ class OtherFields(PatientSubrecord):
     other_det_num = models.TextField(null=True, blank=True)
     attendance_date = models.TextField(null=True, blank=True)
     reason_other = models.TextField(null=True, blank=True)
-    occupation_other = models.TextField(null=True, blank=True)
     asthma_relate_work = models.TextField(null=True, blank=True)
     chronic_air_flow = models.TextField(null=True, blank=True)
     chronic_air_flow_choice = models.TextField(null=True, blank=True)

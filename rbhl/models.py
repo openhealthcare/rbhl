@@ -163,6 +163,11 @@ class Employment(models.EpisodeSubrecord):
     )
     firefighter = fields.NullBooleanField()
 
+    is_currently_employed = fields.TextField(null=True, blank=True)
+    suspect_occupational_category = fields.TextField(null=True, blank=True)
+    employment_is_suspect = fields.TextField(null=True, blank=True)
+    job_title = fields.TextField(null=True, blank=True)
+
 
 class ClinicLog(models.EpisodeSubrecord):
     _icon         = 'fa fa-hospital-o'

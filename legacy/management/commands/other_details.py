@@ -13,7 +13,6 @@ from legacy.models import (
     DiagnosticTesting,
     OtherFields,
     PatientNumber,
-    SuspectOccupationalCategory,
 )
 from rbhl.models import Exposure, History
 
@@ -36,22 +35,6 @@ class Command(BaseCommand):
                 created=timezone.now(),
                 # "systems_presenting_compliant": row[""],
                 clinic_status=row["Clinic_status"],
-            )
-
-    def build_suspect_occupational_category(self, patientLUT, rows):
-        for row in rows:
-            patient = patientLUT.get(row["Patient_num"], None)
-
-            if patient is None:
-                continue
-
-            yield SuspectOccupationalCategory(
-                patient=patient,
-                created=timezone.now(),
-                is_currently_employed=to_bool(row["Employed"]),
-                suspect_occupational_category=row["Occupation_category"],
-                job_title=row["Current_employment"],
-                # is_employed_in_suspect_occupation=row[""],
             )
 
     def build_diagnostic_testing(self, patientLUT, rows):
@@ -237,7 +220,6 @@ class Command(BaseCommand):
                 other_det_num=row["OtherDet_Num"],
                 attendance_date=row["Attendance_date"],
                 reason_other=row["reason_other"],
-                occupation_other=row["Occupation_other"],
                 asthma_relate_work=row["AsthmaRelateWork"],
                 chronic_air_flow=row["ChronicAirFlow"],
                 chronic_air_flow_choice=row["ChronicAirFlowChoice"],
@@ -248,7 +230,6 @@ class Command(BaseCommand):
 
     def flush(self):
         Details.objects.all().delete()
-        SuspectOccupationalCategory.objects.all().delete()
         DiagnosticTesting.objects.all().delete()
         DiagnosticOutcome.objects.all().delete()
         DiagnosticAsthma.objects.all().delete()
@@ -275,9 +256,6 @@ class Command(BaseCommand):
 
         # REMAINING FIELDS
         Details.objects.bulk_create(self.build_details(patientLUT, rows))
-        SuspectOccupationalCategory.objects.bulk_create(
-            self.build_suspect_occupational_category(patientLUT, rows)
-        )
         DiagnosticTesting.objects.bulk_create(
             self.build_diagnostic_testing(patientLUT, rows)
         )
@@ -319,6 +297,12 @@ class Command(BaseCommand):
             employment = episode.employment_set.get()
             employment.employer = row["Employer"]
             employment.firefighter = to_bool(row["Fireapplicant"])
+            employment.is_currently_employed = row["Current_employment"]
+            employment.suspect_occupational_category = row[
+                "Occupation_category",
+            ]
+            employment.employment_is_suspect = row["Employed"]
+            employment.job_title = row["Occupation_other"]
             employment.save()
 
             referral = episode.referral_set.get()
