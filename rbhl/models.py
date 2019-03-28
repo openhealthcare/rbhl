@@ -385,3 +385,10 @@ class History(models.PatientSubrecord):
     has_eczema = fields.NullBooleanField(null=True, blank=True)
     is_smoker = fields.TextField(null=True, blank=True)
     smokes_per_day = fields.IntegerField(null=True, blank=True)
+
+
+class Exposure(models.EpisodeSubrecord):
+    _is_singleton = True
+
+    exposures = fields.TextField(null=True, blank=True)
+    year_started = fields.IntegerField(null=True, blank=True)

@@ -218,14 +218,10 @@ class SuspectOccupationalCategory(PatientSubrecord):
     suspect_occupational_category = models.TextField(null=True, blank=True)
     # UI Field: Job Title
     job_title = models.TextField(null=True, blank=True)
-    # UI Field: Exposures
-    exposures = models.TextField(null=True, blank=True)
     # UI Field: Name of Employer
     employer_name = models.TextField(null=True, blank=True)
     # UI Field: Currently employed in suspect occupation
     is_employed_in_suspect_occupation = models.TextField(null=True, blank=True)
-    # UI Field: Date started Exposure -> Month
-    year_started_exposure = models.TextField(null=True, blank=True)
 
 
 class DiagnosticTesting(PatientSubrecord):

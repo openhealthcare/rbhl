@@ -15,7 +15,7 @@ from legacy.models import (
     PatientNumber,
     SuspectOccupationalCategory,
 )
-from rbhl.models import History
+from rbhl.models import Exposure, History
 
 from ..utils import to_bool, to_date, to_float, to_int, to_upper
 
@@ -58,9 +58,7 @@ class Command(BaseCommand):
                 is_currently_employed=to_bool(row["Employed"]),
                 suspect_occupational_category=row["Occupation_category"],
                 job_title=row["Current_employment"],
-                exposures=row["Exposures"],
                 # is_employed_in_suspect_occupation=row[""],
-                year_started_exposure=row["Dates_st_Exposure_Y"],
             )
 
     def build_diagnostic_testing(self, patientLUT, rows):
@@ -199,6 +197,22 @@ class Command(BaseCommand):
                 other_diagnosis_type_other=row["OtherDiagOther"],
             )
 
+    def build_exposure(self, patientLUT, rows):
+        for row in rows:
+            patient = patientLUT.get(row["Patient_num"], None)
+
+            if patient is None:
+                continue
+
+            episode = patient.episode_set.get()
+
+            yield Exposure(
+                episode=episode,
+                created=timezone.now(),
+                exposures=row["Exposures"],
+                year_started=to_int(row["Dates_st_Exposure_Y"]),
+            )
+
     def build_history(self, patientLUT, rows):
         for row in rows:
             patient = patientLUT.get(row["Patient_num"], None)
@@ -250,6 +264,7 @@ class Command(BaseCommand):
         DiagnosticOther.objects.all().delete()
         OtherFields.objects.all().delete()
         History.objects.all().delete()
+        Exposure.objects.all().delete()
 
     @transaction.atomic()
     def handle(self, *args, **options):
@@ -286,6 +301,7 @@ class Command(BaseCommand):
         DiagnosticOther.objects.bulk_create(
             self.build_diagnostic_other(patientLUT, rows)
         )
+        Exposure.objects.bulk_create(self.build_exposure(patientLUT, rows))
         History.objects.bulk_create(self.build_history(patientLUT, rows))
         OtherFields.objects.bulk_create(self.build_other(patientLUT, rows))
 
