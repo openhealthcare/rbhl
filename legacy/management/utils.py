@@ -9,6 +9,15 @@ def to_bool(s):
 
 
 def to_date(s):
+    dt = to_datetime(s)
+
+    if not dt:
+        return
+
+    return dt.date()
+
+
+def to_datetime(s):
     if not s:
         return
 

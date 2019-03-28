@@ -17,7 +17,7 @@ from legacy.models import (
 )
 from rbhl.models import Exposure, History
 
-from ..utils import to_bool, to_date, to_float, to_int, to_upper
+from ..utils import to_bool, to_date, to_datetime, to_float, to_int, to_upper
 
 log = structlog.get_logger("rbhl")
 
@@ -108,9 +108,9 @@ class Command(BaseCommand):
                 is_returned=to_bool(row["Returned?"]),
                 is_spefr_work_related=row["PERFWorkRelate"],
                 ct_chest_scan=to_bool(row["CTChestScan"]),
-                ct_chest_scan_date=to_date(row["CTdate"]),
+                ct_chest_scan_date=to_datetime(row["CTdate"]),
                 full_lung_function=to_bool(row["FullPulFunTest"]),
-                full_lung_function_date=to_date(row["LFTdate"]),
+                full_lung_function_date=to_datetime(row["LFTdate"]),
             )
 
     def build_diagnostic_outcome(self, patientLUT, rows):
@@ -124,7 +124,7 @@ class Command(BaseCommand):
                 patient=patient,
                 created=timezone.now(),
                 diagnosis=row["Diagnosis"],
-                diagnosis_date=to_date(row["Date of Diagnosis"]),
+                diagnosis_date=to_datetime(row["Date of Diagnosis"]),
                 referred_to=row["Diagnosis_referral"],
             )
 
