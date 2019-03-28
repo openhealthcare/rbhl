@@ -409,13 +409,6 @@ class DiagnosticOther(PatientSubrecord):
     other_diagnosis_type_other = models.TextField(null=True, blank=True)
 
 
-class SkinPrickTest(PatientSubrecord):
-    specific_sp_testnum = models.IntegerField(null=True, blank=True)
-    spt = models.TextField(null=True, blank=True)
-    wheal = models.FloatField(null=True, blank=True)
-    test_date = models.DateTimeField(null=True, blank=True)
-
-
 class OtherFields(PatientSubrecord):
     _is_singleton = True
 

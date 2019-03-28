@@ -13,7 +13,6 @@ from legacy.models import (
     DiagnosticTesting,
     OtherFields,
     PatientNumber,
-    SkinPrickTest,
     SuspectOccupationalCategory,
 )
 
@@ -241,7 +240,6 @@ class Command(BaseCommand):
         DiagnosticAsthma.objects.all().delete()
         DiagnosticRhinitis.objects.all().delete()
         DiagnosticOther.objects.all().delete()
-        SkinPrickTest.objects.all().delete()
         OtherFields.objects.all().delete()
 
     @transaction.atomic()
