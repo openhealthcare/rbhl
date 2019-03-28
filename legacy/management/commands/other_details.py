@@ -1,5 +1,6 @@
 import csv
 
+import structlog
 from django.core.management import BaseCommand
 from django.db import transaction
 from django.utils import timezone
@@ -17,6 +18,8 @@ from legacy.models import (
 from rbhl.models import Exposure, History
 
 from ..utils import to_bool, to_date, to_float, to_int, to_upper
+
+log = structlog.get_logger("rbhl")
 
 
 class Command(BaseCommand):
@@ -248,11 +251,15 @@ class Command(BaseCommand):
         with open(options["file_name"], encoding="utf-8-sig") as f:
             rows = list(csv.DictReader(f))
 
-        patient_ids = (row["Patient_num"] for row in rows)
-        patient_nums = PatientNumber.objects.filter(id__in=patient_ids)
+        csv_patient_ids = set(sorted(row["Patient_num"] for row in rows))
+        patient_nums = PatientNumber.objects.filter(id__in=csv_patient_ids)
         patientLUT = {p.value: p.patient for p in patient_nums}
 
-        # TODO: print missing patient IDs here
+        db_patient_nums = set(str(p.id) for p in patient_nums)
+        missing_patient_nums = csv_patient_ids - db_patient_nums
+        if missing_patient_nums:
+            missing = ", ".join(missing_patient_nums)
+            log.error("Unknown Patient_nums: {}".format(missing))
 
         # REMAINING FIELDS
         Details.objects.bulk_create(self.build_details(patientLUT, rows))
