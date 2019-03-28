@@ -205,10 +205,6 @@ class Details(PatientSubrecord):
     geographical_area = models.TextField(null=True, blank=True)
     # UI Field: Other
     geographical_area_other = models.TextField(null=True, blank=True)
-    # UI Field: Site of Clinic
-    site_of_clinic = models.TextField(null=True, blank=True)
-    # UI Field: Other Clinic Site
-    other_clinic_site = models.TextField(null=True, blank=True)
     # UI Field: Clinic status
     clinic_status = models.TextField(null=True, blank=True)
     # UI Field: Previous atopic disease
@@ -242,12 +238,6 @@ class SuspectOccupationalCategory(PatientSubrecord):
     is_employed_in_suspect_occupation = models.TextField(null=True, blank=True)
     # UI Field: Date started Exposure -> Month
     year_started_exposure = models.TextField(null=True, blank=True)
-    # UI Field: Date started Exposure -> Year
-    month_started_exposure = models.TextField(null=True, blank=True)
-    # UI Field: Date finished exposure -> Month
-    year_finished_exposure = models.TextField(null=True, blank=True)
-    # UI Field: Date finished exposure -> Year
-    month_finished_exposure = models.TextField(null=True, blank=True)
 
 
 class DiagnosticTesting(PatientSubrecord):

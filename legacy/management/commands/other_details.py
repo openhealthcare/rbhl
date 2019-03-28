@@ -41,8 +41,6 @@ class Command(BaseCommand):
                 referral_disease=row["Referral_disease"],
                 geographical_area=row["Geographical_area"],
                 geographical_area_other=row["Geographical_area"],
-                site_of_clinic=row["Site of Clinic"],
-                other_clinic_site=row["Other Clinic Site"],
                 clinic_status=row["Clinic_status"],
                 previous_atopic_disease=row["AtopicDisease"],
                 has_asthma=to_bool(row["Asthma"]),
@@ -67,10 +65,7 @@ class Command(BaseCommand):
                 job_title=row["Current_employment"],
                 exposures=row["Exposures"],
                 # is_employed_in_suspect_occupation=row[""],
-                month_started_exposure=row["Date started"],
                 year_started_exposure=row["Dates_st_Exposure_Y"],
-                month_finished_exposure=row["Date Finished"],
-                year_finished_exposure=row["Dates_f_Exposure_Y"],
             )
 
     def build_diagnostic_testing(self, patientLUT, rows):
