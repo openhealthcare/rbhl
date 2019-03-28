@@ -15,6 +15,7 @@ from legacy.models import (
     PatientNumber,
     SuspectOccupationalCategory,
 )
+from rbhl.models import History
 
 from ..utils import to_bool, to_date, to_float, to_int, to_upper
 
@@ -42,12 +43,6 @@ class Command(BaseCommand):
                 geographical_area=row["Geographical_area"],
                 geographical_area_other=row["Geographical_area"],
                 clinic_status=row["Clinic_status"],
-                previous_atopic_disease=row["AtopicDisease"],
-                has_asthma=to_bool(row["Asthma"]),
-                has_hayfever=to_bool(row["Hayfever"]),
-                has_eczema=to_bool(row["Eczema"]),
-                is_smoker=row["Smoker"],
-                smokes_per_day=to_int(row["No_cigarettes"]),
             )
 
     def build_suspect_occupational_category(self, patientLUT, rows):
@@ -204,6 +199,24 @@ class Command(BaseCommand):
                 other_diagnosis_type_other=row["OtherDiagOther"],
             )
 
+    def build_history(self, patientLUT, rows):
+        for row in rows:
+            patient = patientLUT.get(row["Patient_num"], None)
+
+            if patient is None:
+                continue
+
+            yield History(
+                patient=patient,
+                created=timezone.now(),
+                atopic_disease=row["AtopicDisease"],
+                has_asthma=to_bool(row["Asthma"]),
+                has_hayfever=to_bool(row["Hayfever"]),
+                has_eczema=to_bool(row["Eczema"]),
+                is_smoker=row["Smoker"],
+                smokes_per_day=to_int(row["No_cigarettes"]),
+            )
+
     def build_other(self, patientLUT, rows):
         for row in rows:
             patient = patientLUT.get(row["Patient_num"], None)
@@ -236,6 +249,7 @@ class Command(BaseCommand):
         DiagnosticRhinitis.objects.all().delete()
         DiagnosticOther.objects.all().delete()
         OtherFields.objects.all().delete()
+        History.objects.all().delete()
 
     @transaction.atomic()
     def handle(self, *args, **options):
@@ -272,6 +286,7 @@ class Command(BaseCommand):
         DiagnosticOther.objects.bulk_create(
             self.build_diagnostic_other(patientLUT, rows)
         )
+        History.objects.bulk_create(self.build_history(patientLUT, rows))
         OtherFields.objects.bulk_create(self.build_other(patientLUT, rows))
 
         for row in rows:

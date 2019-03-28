@@ -374,3 +374,14 @@ class DiagnosisRhinitis(models.EpisodeSubrecord):
         max_length=200, blank=True, null=True,
         choices=YN
     )
+
+
+class History(models.PatientSubrecord):
+    _is_singleton = True
+
+    atopic_disease = fields.TextField(null=True, blank=True)
+    has_asthma = fields.NullBooleanField(null=True, blank=True)
+    has_hayfever = fields.NullBooleanField(null=True, blank=True)
+    has_eczema = fields.NullBooleanField(null=True, blank=True)
+    is_smoker = fields.TextField(null=True, blank=True)
+    smokes_per_day = fields.IntegerField(null=True, blank=True)

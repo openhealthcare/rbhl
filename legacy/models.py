@@ -207,18 +207,6 @@ class Details(PatientSubrecord):
     geographical_area_other = models.TextField(null=True, blank=True)
     # UI Field: Clinic status
     clinic_status = models.TextField(null=True, blank=True)
-    # UI Field: Previous atopic disease
-    previous_atopic_disease = models.TextField(null=True, blank=True)
-    # UI Field: Asthma
-    has_asthma = models.NullBooleanField(null=True, blank=True)
-    # UI Field: Hayfever
-    has_hayfever = models.NullBooleanField(null=True, blank=True)
-    # UI Field: Eczema
-    has_eczema = models.NullBooleanField(null=True, blank=True)
-    # UI Field: Smoker
-    is_smoker = models.TextField(null=True, blank=True)
-    # UI Field: How many a day?
-    smokes_per_day = models.IntegerField(null=True, blank=True)
 
 
 class SuspectOccupationalCategory(PatientSubrecord):
