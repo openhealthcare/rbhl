@@ -1,3 +1,4 @@
 ansible==2.7.1
 cryptography==2.4.1
 coverage==3.6
+colorama==0.4.1
