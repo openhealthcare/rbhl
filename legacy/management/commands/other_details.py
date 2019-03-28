@@ -31,17 +31,11 @@ class Command(BaseCommand):
             if patient is None:
                 continue
 
-            date_referral_received = to_date(row["Date referral written"])
             yield Details(
                 patient=patient,
                 created=timezone.now(),
-                date_referral_received=date_referral_received,
-                referral_type=row["Referral_reason"],
                 fire_service_applicant=row["Fireapplicant"],
                 # "systems_presenting_compliant": row[""],
-                referral_disease=row["Referral_disease"],
-                geographical_area=row["Geographical_area"],
-                geographical_area_other=row["Geographical_area"],
                 clinic_status=row["Clinic_status"],
             )
 
@@ -243,7 +237,6 @@ class Command(BaseCommand):
                 created=timezone.now(),
                 other_det_num=row["OtherDet_Num"],
                 attendance_date=row["Attendance_date"],
-                referral=row["referral"],
                 reason_other=row["reason_other"],
                 occupation_other=row["Occupation_other"],
                 asthma_relate_work=row["AsthmaRelateWork"],
@@ -328,9 +321,13 @@ class Command(BaseCommand):
             employment.employer = row["Employer"]
             employment.save()
 
-            # referral = episode.referral_set.get()
-            # referral.referrer_name = row["Referring_doctor"]
-            # referral.save()
+            referral = episode.referral_set.get()
+            referral.referrer_name = row["Referring_doctor"]
+            referral.referral_type = row["referral"]
+            referral.reason = row["Referral_reason"]
+            referral.disease = row["Referral_disease"]
+            referral.geographical_area = row["Geographical_area"]
+            referral.save()
 
         msg = "Imported {} other details rows".format(len(rows))
         self.stdout.write(self.style.SUCCESS(msg))

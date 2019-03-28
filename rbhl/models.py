@@ -134,6 +134,15 @@ class Referral(models.EpisodeSubrecord):
     referral_type = fields.TextField(
         blank=True, null=True, verbose_name="Type of Referral",
     )
+    disease = fields.TextField(
+        null=True, blank=True, verbose_name="Referral disease",
+    )
+    reason = fields.TextField(
+        null=True, blank=True, verbose_name="Reason for Referral",
+    )
+    geographical_area = fields.TextField(
+        null=True, blank=True, verbose_name="Geographical Area",
+    )
 
 
 class Employer(lookuplists.LookupList):

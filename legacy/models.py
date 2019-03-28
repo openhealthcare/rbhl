@@ -191,20 +191,10 @@ class Address(PatientSubrecord):
 class Details(PatientSubrecord):
     _is_singleton = True
 
-    # UI Field: Date referral received
-    date_referral_received = models.DateTimeField(null=True, blank=True)
-    # UI Field: Type of referral
-    referral_type = models.TextField(null=True, blank=True)
     # UI Field: Fire Service Applicant
     fire_service_applicant = models.TextField(null=True, blank=True)
     # UI Field: Symptoms / presenting compliant
     systems_presenting_compliant = models.TextField(null=True, blank=True)
-    # UI Field: Referral disease
-    referral_disease = models.TextField(null=True, blank=True)
-    # UI Field: Georgraphical area
-    geographical_area = models.TextField(null=True, blank=True)
-    # UI Field: Other
-    geographical_area_other = models.TextField(null=True, blank=True)
     # UI Field: Clinic status
     clinic_status = models.TextField(null=True, blank=True)
 
@@ -388,7 +378,6 @@ class OtherFields(PatientSubrecord):
 
     other_det_num = models.TextField(null=True, blank=True)
     attendance_date = models.TextField(null=True, blank=True)
-    referral = models.TextField(null=True, blank=True)
     reason_other = models.TextField(null=True, blank=True)
     occupation_other = models.TextField(null=True, blank=True)
     asthma_relate_work = models.TextField(null=True, blank=True)
