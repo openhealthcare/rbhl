@@ -7,7 +7,6 @@ from django.db import transaction
 from django.utils import timezone
 
 from legacy.models import (
-    Details,
     DiagnosticAsthma,
     DiagnosticOther,
     DiagnosticOutcome,
@@ -63,20 +62,6 @@ def update(row, obj, field, column, mutator=None):
 class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument("file_name", help="Specify import file")
-
-    def build_details(self, patientLUT, rows):
-        for row in rows:
-            patient = patientLUT.get(row["Patient_num"], None)
-
-            if patient is None:
-                continue
-
-            yield Details(
-                patient=patient,
-                created=timezone.now(),
-                # "systems_presenting_compliant": row[""],
-                clinic_status=row["Clinic_status"],
-            )
 
     def build_diagnostic_testing(self, patientLUT, rows):
         for row in rows:
@@ -270,7 +255,6 @@ class Command(BaseCommand):
             )
 
     def flush(self):
-        Details.objects.all().delete()
         DiagnosticTesting.objects.all().delete()
         DiagnosticOutcome.objects.all().delete()
         DiagnosticAsthma.objects.all().delete()
@@ -303,7 +287,6 @@ class Command(BaseCommand):
             log.error("Unknown Patient_nums: {}".format(missing))
 
         # REMAINING FIELDS
-        Details.objects.bulk_create(self.build_details(patientLUT, rows))
         DiagnosticTesting.objects.bulk_create(
             self.build_diagnostic_testing(patientLUT, rows)
         )

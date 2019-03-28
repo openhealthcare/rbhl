@@ -188,15 +188,6 @@ class Address(PatientSubrecord):
     telephone = models.TextField(null=True)
 
 
-class Details(PatientSubrecord):
-    _is_singleton = True
-
-    # UI Field: Symptoms / presenting compliant
-    systems_presenting_compliant = models.TextField(null=True, blank=True)
-    # UI Field: Clinic status
-    clinic_status = models.TextField(null=True, blank=True)
-
-
 class DiagnosticTesting(PatientSubrecord):
     _is_singleton = True
 
