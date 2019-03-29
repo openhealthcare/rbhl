@@ -258,48 +258,6 @@ class DiagnosticOutcome(PatientSubrecord):
     referred_to = models.TextField(null=True, blank=True)
 
 
-class DiagnosticAsthma(PatientSubrecord):
-    _is_singleton = True
-
-    # UI Field: Asthma
-    asthma = models.NullBooleanField(null=True, blank=True)
-    # UI Field: Exacerbated by work
-    is_exacerbated_by_work = models.NullBooleanField(null=True, blank=True)
-    # UI Field: Irritant induced asthma
-    has_infant_induced_asthma = models.NullBooleanField(null=True, blank=True)
-    # UI Field: Occupational asthma caused by sensitisation
-    occupational_asthma_caused_by_sensitisation = models.NullBooleanField(
-        null=True, blank=True
-    )
-    # UI Field: Sensitising agent
-    sensitising_agent = models.TextField(null=True, blank=True)
-    # UI Field: Non-Occupational Asthma
-    has_non_occupational_asthma = models.NullBooleanField(
-        null=True, blank=True
-    )
-
-
-class DiagnosticRhinitis(PatientSubrecord):
-    _is_singleton = True
-
-    # Rhinitis
-    rhinitis = models.NullBooleanField(null=True, blank=True)
-    # Work exacerbated
-    work_exacerbated = models.NullBooleanField(null=True, blank=True)
-    # Occupation rhinitis caused by sensitization
-    occupational_rhinitis_caused_by_sensitisation = models.NullBooleanField(
-        null=True, blank=True,
-    )
-    # RhinitisOccSenCause
-    rhinitis_occupational_sensitisation_cause = models.TextField(
-        null=True, blank=True,
-    )
-    # Non-Occupational Rhinitis
-    has_non_occupational_rhinitis = models.NullBooleanField(
-        null=True, blank=True,
-    )
-
-
 class DiagnosticOther(PatientSubrecord):
     _is_singleton = True
 

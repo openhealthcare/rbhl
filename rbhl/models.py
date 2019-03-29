@@ -348,48 +348,6 @@ class Occupation(models.EpisodeSubrecord):
     exposures = fields.TextField(blank=True, null=True)
 
 
-class DiagnosisAsthma(models.EpisodeSubrecord):
-    _is_singleton = True
-
-    asthma = fields.CharField(max_length=200, blank=True, null=True)
-    exacerbated_by_work = fields.CharField(
-        max_length=200, blank=True, null=True
-    )
-    irritant_induced_asthma = fields.CharField(
-        max_length=200, blank=True, null=True, choices=YN
-    )
-    sensitisation = fields.CharField(
-        max_length=200, blank=True, null=True,
-        choices=YN,
-        verbose_name="Occupational asthma caused by sensitisation"
-    )
-    sensitising_agent = fields.TextField(blank=True, null=True)
-    non_occupational_asthma = fields.CharField(
-        max_length=200, blank=True, null=True, choices=YN
-    )
-
-
-class DiagnosisRhinitis(models.EpisodeSubrecord):
-    _is_singleton = True
-
-    rhinitis = fields.CharField(max_length=200, blank=True, null=True)
-    work_exacerbated = fields.CharField(
-        max_length=200, blank=True, null=True,
-        choices=YN,
-        verbose_name="Occupational asthma caused by sensitisation"
-    )
-    sensitisation = fields.CharField(
-        max_length=200, blank=True, null=True,
-        choices=YN,
-        verbose_name="Occupational rhinitis caused by sensitisation"
-    )
-    cause = fields.TextField(blank=True, null=True)
-    non_occupational_rhinitis = fields.CharField(
-        max_length=200, blank=True, null=True,
-        choices=YN
-    )
-
-
 class History(models.PatientSubrecord):
     _is_singleton = True
 
@@ -406,3 +364,18 @@ class Exposure(models.EpisodeSubrecord):
 
     exposures = fields.TextField(null=True, blank=True)
     year_started = fields.IntegerField(null=True, blank=True)
+
+
+DIAGNOSIS_CHOICES = [
+    ("asthma", "Asthma"),
+    ("rhinitis", "Rhinitis"),
+]
+
+
+class SupportingDiagnosis(models.EpisodeSubrecord):
+    type = fields.TextField(choices=DIAGNOSIS_CHOICES)
+    is_work_exacerbated = fields.NullBooleanField(null=True, blank=True)
+    is_irritant_induced = fields.NullBooleanField(null=True, blank=True)
+    is_caused_by_sensitisation = fields.NullBooleanField(null=True, blank=True)
+    sensitising_agent = fields.TextField(null=True, blank=True)
+    is_non_occupational = fields.NullBooleanField(null=True, blank=True)

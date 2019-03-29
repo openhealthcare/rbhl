@@ -7,15 +7,13 @@ from django.db import transaction
 from django.utils import timezone
 
 from legacy.models import (
-    DiagnosticAsthma,
     DiagnosticOther,
     DiagnosticOutcome,
-    DiagnosticRhinitis,
     DiagnosticTesting,
     OtherFields,
     PatientNumber,
 )
-from rbhl.models import Exposure, History
+from rbhl.models import SupportingDiagnosis, Exposure, History
 
 from ..utils import to_bool, to_date, to_datetime, to_float, to_int, to_upper
 
@@ -114,56 +112,6 @@ class Command(BaseCommand):
                 referred_to=row["Diagnosis_referral"],
             )
 
-    def build_diagnostic_asthma(self, patientLUT, rows):
-        for row in rows:
-            patient = patientLUT.get(row["Patient_num"], None)
-
-            if patient is None:
-                continue
-
-            yield DiagnosticAsthma(
-                patient=patient,
-                created=timezone.now(),
-                asthma=to_bool(row["DiagnosisAsthma"]),
-                is_exacerbated_by_work=to_bool(row["AsthmaExacerbate"]),
-                has_infant_induced_asthma=to_bool(row["AsthmaOccInt"]),
-                occupational_asthma_caused_by_sensitisation=to_bool(
-                    row["AsthmaOccSen"]
-                ),
-                sensitising_agent=row["AsthmaOccSenCause"],
-                has_non_occupational_asthma=to_bool(row["AsthmaNonOcc"]),
-            )
-
-    def build_diagnostic_rhinitis(self, patientLUT, rows):
-        for row in rows:
-            patient = patientLUT.get(row["Patient_num"], None)
-
-            if patient is None:
-                continue
-
-            # FIXME: there is a single row where this field has the value "x"
-            # in the data as of 2019/03/25.  The surrounding data makes it look
-            # like this is a typo (since there is no surrounding data).
-            RhinitisNonOcc = row["RhinitisNonOcc"]
-            if RhinitisNonOcc != "x":
-                has_non_occ_rhinitis = to_bool(RhinitisNonOcc)
-            else:
-                has_non_occ_rhinitis = None
-
-            yield DiagnosticRhinitis(
-                patient=patient,
-                created=timezone.now(),
-                rhinitis=to_bool(row["DiagnosisRhinitis"]),
-                work_exacerbated=to_bool(row["RhinitisExacerbate"]),
-                occupational_rhinitis_caused_by_sensitisation=to_bool(
-                    row["RhinitisOccSen"]
-                ),
-                rhinitis_occupational_sensitisation_cause=row[
-                    "RhinitisOccSenCause"
-                ],
-                has_non_occupational_rhinitis=has_non_occ_rhinitis,
-            )
-
     def build_diagnostic_other(self, patientLUT, rows):
         for row in rows:
             patient = patientLUT.get(row["Patient_num"], None)
@@ -198,6 +146,52 @@ class Command(BaseCommand):
                 other_diagnosis_type=row["OtherDiagChoiceType"],
                 other_diagnosis_type_other=row["OtherDiagOther"],
             )
+
+    def build_diagnoses(self, patientLUT, rows):
+        for row in rows:
+            patient = patientLUT.get(row["Patient_num"], None)
+
+            if patient is None:
+                continue
+
+            episode = patient.episode_set.get()
+
+            has_asthma = to_bool(row["DiagnosisAsthma"]),
+            has_rhinitis = to_bool(row["DiagnosisRhinitis"])
+
+            if has_asthma:
+                yield SupportingDiagnosis(
+                    episode=episode,
+                    created=timezone.now(),
+                    type="asthma",
+                    is_work_exacerbated=to_bool(row["AsthmaExacerbate"]),
+                    is_irritant_induced=to_bool(row["AsthmaOccInt"]),
+                    is_caused_by_sensitisation=to_bool(row["AsthmaOccSen"]),
+                    sensitising_agent=row["AsthmaOccSenCause"],
+                    is_non_occupational=to_bool(row["AsthmaNonOcc"]),
+
+                )
+
+            if has_rhinitis:
+                # FIXME: there is a single row where this field has the value
+                # "x" in the data as of 2019/03/25.  The surrounding data makes
+                # it look like this is a typo (since there is no surrounding
+                # data).
+                RhinitisNonOcc = row["RhinitisNonOcc"]
+                if RhinitisNonOcc != "x":
+                    has_non_occ_rhinitis = to_bool(RhinitisNonOcc)
+                else:
+                    has_non_occ_rhinitis = None
+
+                yield SupportingDiagnosis(
+                    episode=episode,
+                    created=timezone.now(),
+                    type="rhinitis",
+                    is_work_exacerbated=to_bool(row["RhinitisExacerbate"]),
+                    is_caused_by_sensitisation=to_bool(row["RhinitisOccSen"]),
+                    sensitising_agent=row["RhinitisOccSenCause"],
+                    is_non_occupational=has_non_occ_rhinitis,
+                )
 
     def build_exposure(self, patientLUT, rows):
         for row in rows:
@@ -257,12 +251,11 @@ class Command(BaseCommand):
     def flush(self):
         DiagnosticTesting.objects.all().delete()
         DiagnosticOutcome.objects.all().delete()
-        DiagnosticAsthma.objects.all().delete()
-        DiagnosticRhinitis.objects.all().delete()
         DiagnosticOther.objects.all().delete()
         OtherFields.objects.all().delete()
         History.objects.all().delete()
         Exposure.objects.all().delete()
+        SupportingDiagnosis.objects.all().delete()
 
         log.info("Deleted existing models")
 
@@ -293,14 +286,11 @@ class Command(BaseCommand):
         DiagnosticOutcome.objects.bulk_create(
             self.build_diagnostic_outcome(patientLUT, rows)
         )
-        DiagnosticAsthma.objects.bulk_create(
-            self.build_diagnostic_asthma(patientLUT, rows)
-        )
-        DiagnosticRhinitis.objects.bulk_create(
-            self.build_diagnostic_rhinitis(patientLUT, rows)
-        )
         DiagnosticOther.objects.bulk_create(
             self.build_diagnostic_other(patientLUT, rows)
+        )
+        SupportingDiagnosis.objects.bulk_create(
+            self.build_diagnoses(patientLUT, rows),
         )
         Exposure.objects.bulk_create(self.build_exposure(patientLUT, rows))
         History.objects.bulk_create(self.build_history(patientLUT, rows))
