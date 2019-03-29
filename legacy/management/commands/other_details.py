@@ -333,9 +333,9 @@ class Command(BaseCommand):
             employment = episode.employment_set.get()
             u(employment, "employer", "Employer")
             u(employment, "firefighter", "Fireapplicant", to_bool)
-            u(employment, "is_currently_employed", "Current_employment")
+            u(employment, "is_currently_employed", "Employed")
             u(employment, "suspect_occupational_category", "Occupation_category")  # noqa: E501
-            u(employment, "employment_is_suspect", "Employed")
+            u(employment, "employment_is_suspect", "Current_employment")
             u(employment, "job_title", "Occupation_other")
             employment.save()
 
