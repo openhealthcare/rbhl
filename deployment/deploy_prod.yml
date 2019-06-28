@@ -1,0 +1,11 @@
+- name: Run backups
+  user: ubuntu
+  hosts: webserver
+  roles:
+    - run_backups
+
+- name: Deploys a project update
+  user: ubuntu
+  hosts: webserver
+  roles:
+    - deploy_rbh
