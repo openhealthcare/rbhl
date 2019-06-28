@@ -23,6 +23,7 @@ rbhl/local_settings.py
 rbhl/data/lookuplists/employer.json
 rbhl/data/lookuplists/ohprovider.json
 rbhl/data/lookuplists/rbhreferrer.json
+scripts/s3_secret
 
 .vscode
 node_modules

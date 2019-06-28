@@ -1,0 +1,4 @@
+- name: Restore
+  hosts: webserver
+  roles:
+    - restore

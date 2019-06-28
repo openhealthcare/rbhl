@@ -1,0 +1,6 @@
+- name: Deploys a project update
+  user: ubuntu
+  hosts: webserver
+  roles:
+    - deploy_rbhl
+

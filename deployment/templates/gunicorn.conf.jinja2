@@ -3,7 +3,7 @@
 ; =====================
 
 [program:gunicorn]
-command=pipenv run gunicorn {{ PROJECT_NAME }}.wsgi -c %(here)s/gunicorn_conf.py
+command={{ VIRTUALENV_PATH }}/bin/gunicorn {{ PROJECT_NAME }}.wsgi -c %(here)s/gunicorn_conf.py
 directory=%(here)s/../../
 ;user=nobody
 numprocs=1
