@@ -110,6 +110,10 @@ class FormSearchRedirectView(RedirectView):
         return url + '#/?query={}'.format(self.request.GET.get('query', ''))
 
 
+class HoldingPage(TemplateView):
+    template_name = "holding.html"
+
+
 class TwoFactorRequired(TemplateView):
     template_name = "two_factor/two_factor_required.html"
 

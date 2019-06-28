@@ -315,6 +315,8 @@ LOGIN_NOT_REQUIRED = (
     # two factor core views
     ("login", "two_factor",),
     ("qr", "two_factor",),
+    "holding_page",
+    "login",
 
     # our two factor views
     "two-factor-setup-redirect",
@@ -323,6 +325,7 @@ LOGIN_NOT_REQUIRED = (
 )
 
 # Django two factor auth settings
+HOLDING_PAGE = True
 LOGIN_URL = 'two_factor:login'
 LOGIN_REDIRECT_URL = 'change-password-check'
 LOGOUT_REDIRECT_URL = 'two_factor:login'

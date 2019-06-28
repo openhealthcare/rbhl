@@ -58,6 +58,9 @@ class TwoStageAuthenticationRequired(MiddlewareMixin):
                 if request.user.is_superuser:
                     return
 
+            if not request.user.is_superuser and settings.HOLDING_PAGE:
+                return redirect("holding_page")
+
             if request.user.is_verified():
                 return
 
@@ -71,5 +74,8 @@ class TwoStageAuthenticationRequired(MiddlewareMixin):
                 )
                 logout(request)
                 return redirect("two-factor-required")
+
+        if settings.HOLDING_PAGE:
+            return redirect("holding_page")
 
         return redirect(reverse("two_factor:login"))

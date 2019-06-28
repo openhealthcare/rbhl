@@ -1,7 +1,6 @@
 from rbhl import views
 from django.conf.urls import include, url
 from two_factor.urls import urlpatterns as tf_urls
-
 from opal.urls import urlpatterns as opatterns
 from opal import views as opal_views
 
@@ -11,6 +10,7 @@ admin.autodiscover()
 
 urlpatterns = [
     url(r'', include(tf_urls)),
+    url(r'holding', views.HoldingPage.as_view(), name="holding_page"),
 
     # change the opal variable to have a name attribute
     url(r'^$', opal_views.IndexView.as_view(), name="home"),
