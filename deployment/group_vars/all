@@ -16,7 +16,7 @@ DB_PASSWORD: !vault |
 PROJECT_PATH: /usr/lib/ohc/rbhl
 BACKUPS_DIR: /usr/lib/ohc/var
 GIT_REPO: https://github.com/openhealthcare/rbhl
-GIT_BRANCH: encrypt-backups
+GIT_BRANCH: master
 LOG_DIR: /usr/lib/ohc/log
 PROJECT_NAME: rbhl
 SECRET_KEY: !vault |
