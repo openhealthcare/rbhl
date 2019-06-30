@@ -1,0 +1,40 @@
+# Deploy prod is like deploy but sets up backups
+---
+- name: Things you want on servers generally
+  become: true
+  user: ubuntu
+  hosts: webserver
+  gather_facts: no
+  roles:
+    - setup_server
+
+- name: Make the server capable of running a standard database
+  become: true
+  user: ubuntu
+  hosts: webserver
+  roles:
+    - setup_db
+
+- name: Set up our project
+  user: ubuntu
+  hosts: webserver
+  roles:
+    - setup_rbhl
+
+- name: Set up our project
+  user: ubuntu
+  hosts: webserver
+  roles:
+    - deploy_rbhl
+
+- name: Set up backups
+  user: ubuntu
+  hosts: webserver
+  roles:
+    - setup_backups
+
+- name: Restart services
+  user: ubuntu
+  hosts: webserver
+  roles:
+    - restart
