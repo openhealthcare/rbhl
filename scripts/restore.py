@@ -29,7 +29,7 @@ def load_file(db_name, db_user, file_name):
 
 def main(db_name, db_user, bucket_name, key, secret_file):
     file_name = "db_dump.sql"
-    get_backup(bucket_name, file_name, secret_file)
+    get_backup(bucket_name, key, file_name, secret_file)
     load_file(db_name, db_user, file_name)
     os.remove(file_name)
 
