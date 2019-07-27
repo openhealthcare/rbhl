@@ -405,3 +405,12 @@ input::-webkit-calendar-picker-indicator{
 input[type="date"]::-webkit-input-placeholder{
     visibility: hidden !important;
 }
+
+th.sorting-desc:after{
+    content: "￬";
+    font-size: 18px;
+}
+th.sorting-asc:after{
+    content: "￪";
+    font-size: 18px;
+}
