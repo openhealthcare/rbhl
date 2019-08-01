@@ -90,6 +90,21 @@ class StaticTableListView(TemplateView):
         self.patient_list = StaticTableList.get(kwargs['slug'])()
         return super(StaticTableListView, self).dispatch(*args, **kwargs)
 
+    def get_ordering(self):
+        options = {
+            "hospital_number": "patient__demographics__hospital_number",
+            "name": "patient__demographics__first_name",
+            "days_since_first_attended": "cliniclog__clinic_date",
+            "seen_by": "cliniclog__seen_by"
+        }
+        order_param = self.request.GET.get("order")
+        if order_param:
+            if order_param.startswith("-"):
+                order_param = order_param[1:]
+                return "-{}".format(options[order_param])
+            else:
+                return options[order_param]
+
     def get_context_data(self, *args, **kwargs):
         """
         Add the queryset to the patient list as {{ object_list }}
@@ -97,7 +112,11 @@ class StaticTableListView(TemplateView):
         ctx = super(StaticTableListView, self).get_context_data(
             *args, **kwargs
         )
-        ctx['object_list'] = self.patient_list.get_queryset()
+        queryset = self.patient_list.get_queryset()
+        ordering = self.get_ordering()
+        if ordering:
+            queryset = queryset.order_by(ordering)
+        ctx['object_list'] = queryset
         return ctx
 
     def get_template_names(self, *args, **kwargs):
