@@ -1,0 +1,12 @@
+{# expects the vars display name and slug #}
+<th {% if request.GET.order == slug %}class="sorting-asc" {% endif %} {% if request.GET.order == '-'|add:slug %}class="sorting-desc" {% endif %}>
+  {% if request.GET.order == slug %}
+    <a href="{{ request.path }}?order={{ '-'|add:slug }}">
+      {{ display_name }}
+    </a>
+  {% else %}
+    <a href="{{ request.path }}?order={{ slug }}">
+      {{ display_name }}
+    </a>
+  {% endif %}
+</th>
