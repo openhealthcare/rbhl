@@ -85,6 +85,10 @@ class ActivePatients(StaticTableList):
         """
         return Episode.objects.filter(
             cliniclog__active=True
+        ).prefetch_related(
+            "cliniclog_set"
+        ).prefetch_related(
+            "patient__demographics_set"
         ).order_by(
             "cliniclog__clinic_date"
         )
