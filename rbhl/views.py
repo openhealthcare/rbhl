@@ -84,20 +84,27 @@ class ActivePatientList(ListView):
     The active patients as per the RBHL 18 week database
     """
     template_name = 'patient_lists/active_patients.html'
+    queryset = Episode.objects.filter(cliniclog__active=True).prefetch_related(
+        "cliniclog_set"
+    ).prefetch_related(
+        "patient__demographics_set"
+    )
 
-    def get_queryset(self, *args, **kwargs):
-        """
-        Only those patients who are active
-        """
-        return Episode.objects.filter(
-            cliniclog__active=True
-        ).prefetch_related(
-            "cliniclog_set"
-        ).prefetch_related(
-            "patient__demographics_set"
-        ).order_by(
-            "cliniclog__clinic_date"
-        )
+    def get_ordering(self):
+        options = {
+            "hospital_number": "patient__demographics__hospital_number",
+            "name": "patient__demographics__first_name",
+            "days_since_first_attended": "cliniclog__clinic_date",
+            "seen_by": "cliniclog__seen_by"
+        }
+        order_param = self.request.GET.get(
+            "order", "days_since_first_attended")
+
+        if order_param.startswith("-"):
+            order_param = order_param[1:]
+            return "-{}".format(options[order_param])
+        else:
+            return options[order_param]
 
 
 class FormSearchRedirectView(RedirectView):
