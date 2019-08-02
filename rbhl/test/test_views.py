@@ -1,5 +1,4 @@
 from opal.core.test import OpalTestCase
-from rbhl import patient_lists
 from django.urls import reverse
 
 
@@ -11,10 +10,7 @@ class PatientListsTestCase(OpalTestCase):
 
     def test_active_list_when_populated(self):
         url = reverse(
-            "static-list",
-            kwargs=dict(
-                slug=patient_lists.ActivePatients.get_slug()
-            )
+            "active-list",
         )
         _, episode = self.new_patient_and_episode_please()
         cl = episode.cliniclog_set.first()
@@ -32,10 +28,7 @@ class PatientListsTestCase(OpalTestCase):
 
     def test_active_list_when_not_populated(self):
         url = reverse(
-            "static-list",
-            kwargs=dict(
-                slug=patient_lists.ActivePatients.get_slug()
-            )
+            "active-list",
         )
         result = self.client.get(url)
         self.assertEqual(

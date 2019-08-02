@@ -5,14 +5,14 @@ import json
 
 from django.contrib.auth.models import User
 from django.urls import reverse
-from django.views.generic import FormView, TemplateView, RedirectView
+from django.views.generic import FormView, TemplateView, RedirectView, ListView
 from django.contrib.auth import login, logout
 from django.contrib.admin.views.decorators import staff_member_required
 from django.utils.decorators import method_decorator
 from two_factor.views import core as two_factor_core_views
 from opal.core import serialization
+from opal.models import Episode
 from opal import models as opal_models
-from rbhl.patient_lists import StaticTableList
 from plugins.trade import match
 from plugins.trade.forms import ImportDataForm
 
@@ -79,29 +79,21 @@ class ImportView(FormView):
         return super(ImportView, self).form_valid(form)
 
 
-class StaticTableListView(TemplateView):
+class ActivePatientList(ListView):
     """
-    View to render a Static HTML table list
+    The active patients as per the RBHL 18 week database
     """
-    def dispatch(self, *args, **kwargs):
-        """
-        Find the relevant PatientList class and attach it to self.patient_list
-        """
-        self.patient_list = StaticTableList.get(kwargs['slug'])()
-        return super(StaticTableListView, self).dispatch(*args, **kwargs)
+    template_name = 'patient_lists/active_patients.html'
 
-    def get_context_data(self, *args, **kwargs):
+    def get_queryset(self, *args, **kwargs):
         """
-        Add the queryset to the patient list as {{ object_list }}
+        Only those patients who are active
         """
-        ctx = super(StaticTableListView, self).get_context_data(
-            *args, **kwargs
+        return Episode.objects.filter(
+            cliniclog__active=True
+        ).order_by(
+            "cliniclog__clinic_date"
         )
-        ctx['object_list'] = self.patient_list.get_queryset()
-        return ctx
-
-    def get_template_names(self, *args, **kwargs):
-        return self.patient_list.template_name
 
 
 class FormSearchRedirectView(RedirectView):
