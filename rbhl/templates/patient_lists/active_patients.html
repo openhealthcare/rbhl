@@ -9,9 +9,9 @@
     </tr>
     {% for episode in object_list %}
       <tr onclick=window.location="{{ episode.get_absolute_url }}" class="pointer">
-          <td>{{ episode.patient.demographics_set.get.hospital_number }}</td>
-          <td>{{ episode.patient.demographics_set.get.name }}</td>
-          {% with cliniclog=episode.cliniclog_set.get %}
+          <td>{{ episode.patient.demographics_set.all.0.hospital_number }}</td>
+          <td>{{ episode.patient.demographics_set.all.0.name }}</td>
+          {% with cliniclog=episode.cliniclog_set.all.0 %}
           <td>
             {% if cliniclog.days_since_first_attended %}
               {{ cliniclog.days_since_first_attended }}
