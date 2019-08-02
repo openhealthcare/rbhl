@@ -97,15 +97,13 @@ class ActivePatientList(ListView):
             "days_since_first_attended": "cliniclog__clinic_date",
             "seen_by": "cliniclog__seen_by"
         }
-        order_param = self.request.GET.get("order")
-        if order_param:
-            if order_param.startswith("-"):
-                order_param = order_param[1:]
-                return "-{}".format(options[order_param])
-            else:
-                return options[order_param]
+        order_param = self.request.GET.get("order", "cliniclog__clinic_date")
+
+        if order_param.startswith("-"):
+            order_param = order_param[1:]
+            return "-{}".format(options[order_param])
         else:
-            return "cliniclog__clinic_date"
+            return options[order_param]
 
 
 class FormSearchRedirectView(RedirectView):
