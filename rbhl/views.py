@@ -97,7 +97,8 @@ class ActivePatientList(ListView):
             "days_since_first_attended": "cliniclog__clinic_date",
             "seen_by": "cliniclog__seen_by"
         }
-        order_param = self.request.GET.get("order", "days_since_first_attended")
+        order_param = self.request.GET.get(
+            "order", "days_since_first_attended")
 
         if order_param.startswith("-"):
             order_param = order_param[1:]
