@@ -2,11 +2,8 @@
 Defining Opal PatientLists
 """
 from functools import partial
-
-from django.urls import reverse
 from opal import core
 from opal.models import Episode
-from opal.utils import AbstractBase
 
 
 Column = partial(
@@ -55,40 +52,3 @@ class WithLetter(core.patient_lists.PatientList):
         ).order_by(
             '-cliniclog__clinic_date'
         )[:20]
-
-
-class StaticTableList(core.patient_lists.PatientList, AbstractBase):
-    """
-    A patient list which is entirely rendered on the server without
-    Javascripts.
-    """
-    icon = 'fa-table'
-
-    @classmethod
-    def get_absolute_url(klass):
-        """
-        Return the absolute URL for this list
-        """
-        return reverse('static-list', kwargs={'slug': klass.get_slug()})
-
-
-class ActivePatients(StaticTableList):
-    """
-    As per the RBHL 18 week database
-    """
-    template_name = 'patient_lists/active_patients.html'
-    display_name  = 'Active patients'
-
-    def get_queryset(self):
-        """
-        Only those patients who are active
-        """
-        return Episode.objects.filter(
-            cliniclog__active=True
-        ).prefetch_related(
-            "cliniclog_set"
-        ).prefetch_related(
-            "patient__demographics_set"
-        ).order_by(
-            "cliniclog__clinic_date"
-        )

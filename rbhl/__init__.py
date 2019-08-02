@@ -2,6 +2,7 @@
 rbhl - Our Opal Application
 """
 from opal.core import application, menus
+from django.urls import reverse
 
 from rbhl.episode_categories import OccupationalLungDiseaseEpisode
 
@@ -25,12 +26,16 @@ class Application(application.OpalApplication):
     @classmethod
     def get_menu_items(klass, user=None):
         # we import here as settings must be set before this is imported
-        from rbhl.patient_lists import ActivePatients
         from rbhl.pathways import NewReferral
 
         items = [
             NewReferral.as_menuitem(index=1),
-            ActivePatients.as_menuitem(index=2),
+            menus.MenuItem(
+                activepattern=reverse('active-list'),
+                href=reverse('active-list'),
+                display=('Active patients'),
+                icon="fa-table"
+            )
         ]
         if user:
             if user.is_authenticated:
