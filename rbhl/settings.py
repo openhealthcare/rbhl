@@ -150,6 +150,7 @@ TEMPLATES = [
                 'django.template.context_processors.i18n',
                 'django.template.context_processors.media',
                 'django.template.context_processors.static',
+                'django.template.context_processors.request',
                 'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
                 'opal.context_processors.settings',
@@ -295,7 +296,7 @@ DEFAULT_DOMAIN = 'http://rbhl.com/'
 
 AUTOCOMPLETE_SEARCH = True
 OPAL_BRAND_NAME = 'Indigo'
-VERSION_NUMBER  = '1.0'
+VERSION_NUMBER  = '1.1'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (

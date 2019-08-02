@@ -405,3 +405,22 @@ input::-webkit-calendar-picker-indicator{
 input[type="date"]::-webkit-input-placeholder{
     visibility: hidden !important;
 }
+
+.table-sortable{
+    th.sorting-desc:after{
+        content: "￬";
+        font-size: 18px;
+    }
+    th.sorting-asc:after{
+        content: "￪";
+        font-size: 18px;
+    }
+
+    a{
+        color: $slate;
+    }
+    a:hover, a:active, a:focus{
+        text-decoration: none;
+        color: $blue;
+    }
+}
