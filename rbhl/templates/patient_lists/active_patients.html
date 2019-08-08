@@ -17,7 +17,11 @@
               {{ cliniclog.days_since_first_attended }}
             {% endif %}
           </td>
-          <td>{{ episode.cliniclog_set.all.0.seen_by }}</td>
+          <td>
+            {% if cliniclog.seen_by %}
+              {{ cliniclog.seen_by }}
+            {% endif %}
+          </td>
           {% endwith %}
       </tr>
     {% endfor %}
