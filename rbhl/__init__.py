@@ -35,6 +35,12 @@ class Application(application.OpalApplication):
                 href=reverse('active-list'),
                 display=('Active patients'),
                 icon="fa-table"
+            ),
+            menus.MenuItem(
+                activepattern=reverse('mine-list'),
+                href=reverse('mine-list'),
+                display=('Seen by me'),
+                icon="fa-table"
             )
         ]
         if user:

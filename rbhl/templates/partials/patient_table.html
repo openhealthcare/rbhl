@@ -1,0 +1,26 @@
+<table class="table table-striped table-hover table-sortable">
+  <tr>
+    {% include "partials/table_header.html" with display_name="Hospital number" slug="hospital_number" %}
+    {% include "partials/table_header.html" with display_name="Name" slug="name" %}
+    {% include "partials/table_header.html" with display_name="Days since first attended" slug="days_since_first_attended" %}
+    {% include "partials/table_header.html" with display_name="Seen by" slug="seen_by" %}
+  </tr>
+  {% for episode in object_list %}
+    <tr onclick=window.location="{{ episode.get_absolute_url }}" class="pointer">
+        <td>{{ episode.patient.demographics_set.all.0.hospital_number }}</td>
+        <td>{{ episode.patient.demographics_set.all.0.name }}</td>
+        {% with cliniclog=episode.cliniclog_set.all.0 %}
+        <td>
+          {% if cliniclog.days_since_first_attended %}
+            {{ cliniclog.days_since_first_attended }}
+          {% endif %}
+        </td>
+        <td>
+          {% if cliniclog.seen_by %}
+            {{ cliniclog.seen_by }}
+          {% endif %}
+        </td>
+        {% endwith %}
+    </tr>
+  {% endfor %}
+</table>

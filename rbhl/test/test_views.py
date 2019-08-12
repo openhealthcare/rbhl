@@ -8,8 +8,11 @@ class PatientListsTestCase(OpalTestCase):
         self.client.login(
             username=self.user.username, password=self.PASSWORD
         )
-        self.url = reverse(
+        self.active_url = reverse(
             "active-list",
+        )
+        self.mine_url = reverse(
+            "mine-list",
         )
 
     def test_active_list_when_populated(self):
@@ -17,7 +20,7 @@ class PatientListsTestCase(OpalTestCase):
         cl = episode.cliniclog_set.first()
         cl.active = True
         cl.save()
-        result = self.client.get(self.url)
+        result = self.client.get(self.active_url)
         self.assertEqual(
             result.status_code, 200
         )
@@ -28,7 +31,7 @@ class PatientListsTestCase(OpalTestCase):
         )
 
     def test_active_list_when_not_populated(self):
-        result = self.client.get(self.url)
+        result = self.client.get(self.active_url)
         self.assertEqual(
             result.status_code, 200
         )
@@ -61,7 +64,7 @@ class PatientListsTestCase(OpalTestCase):
             active=True,
             clinic_date=second_dt
         )
-        object_list = self.client.get(self.url).context["object_list"]
+        object_list = self.client.get(self.active_url).context["object_list"]
         self.assertEqual(
             list(object_list), [first_episode, second_episode, third_episode]
         )
@@ -85,7 +88,7 @@ class PatientListsTestCase(OpalTestCase):
             seen_by="Jane"
         )
         self.url = self.url + "?order=seen_by"
-        object_list = self.client.get(self.url).context["object_list"]
+        object_list = self.client.get(self.active_url).context["object_list"]
         self.assertEqual(
             list(object_list), [first_episode, second_episode, third_episode]
         )
@@ -109,7 +112,31 @@ class PatientListsTestCase(OpalTestCase):
             seen_by="Jane"
         )
         self.url = self.url + "?order=-seen_by"
-        object_list = self.client.get(self.url).context["object_list"]
+        object_list = self.client.get(self.active_url).context["object_list"]
         self.assertEqual(
             list(object_list), [third_episode, second_episode, first_episode]
+        )
+
+    def test_mine_list_with_initials(self):
+        user = self.user
+        user.first_name = "Jane"
+        user.last_name = "Doe"
+        user.save()
+        _, episode = self.new_patient_and_episode_please()
+        episode.cliniclog_set.update(active=True, seen_by="jd")
+        object_list = self.client.get(self.mine_url).context["object_list"]
+        self.assertEqual(
+            list(object_list), [episode]
+        )
+
+    def test_mine_list_for_user_without_initials(self):
+        user = self.user
+        user.first_name = None
+        user.last_name = None
+        user.save()
+        _, episode = self.new_patient_and_episode_please()
+        episode.cliniclog_set.update(active=True, seen_by="jd")
+        object_list = self.client.get(self.mine_url).context["object_list"]
+        self.assertEqual(
+            list(object_list), []
         )
