@@ -1,5 +1,6 @@
 # Django settings for rbhl project.
 import os
+import sys
 import urllib
 
 PROJECT_PATH = os.path.realpath(os.path.dirname(__file__))
@@ -343,7 +344,10 @@ TWO_FACTOR_FOR_SUPERUSERS = True
 #     ('text/x-scss', 'sass --scss {infile} {outfile}'),
 # )
 
-try:
-    from rbhl.local_settings import *  # NOQA
-except ImportError:
-    pass
+if 'test' in sys.argv:
+    TWO_FACTOR_FOR_SUPERUSERS = False
+else:
+    try:
+        from rbhl.local_settings import * # noqa
+    except ImportError:
+        pass
