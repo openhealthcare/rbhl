@@ -11,6 +11,7 @@
 */assets/rest_framework/*
 */assets/bootstrap*
 */assets/CACHE/*
+rbhl/local_settings.py
 .coverage
 htmlcov
 libpeerconnection.log
