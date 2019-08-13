@@ -110,8 +110,8 @@ class ActivePatientList(BasePatientList):
     template_name = 'patient_lists/active_patients.html'
 
 
-class MineList(BasePatientList):
-    template_name = "patient_lists/mine.html"
+class SeenByMeList(BasePatientList):
+    template_name = "patient_lists/seen_by_me.html"
 
     def initials(self):
         first_name = self.request.user.first_name or " "
@@ -120,7 +120,10 @@ class MineList(BasePatientList):
 
     def get_queryset(self, *args, **kwargs):
         qs = super().get_queryset(*args, **kwargs)
-        return qs.filter(cliniclog__seen_by__icontains=self.initials())
+        initials = self.initials()
+        if initials:
+            return qs.filter(cliniclog__seen_by__icontains=self.initials())
+        return qs.none()
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)

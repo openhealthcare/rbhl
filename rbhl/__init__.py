@@ -2,9 +2,27 @@
 rbhl - Our Opal Application
 """
 from opal.core import application, menus
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 
 from rbhl.episode_categories import OccupationalLungDiseaseEpisode
+from rbhl import constants
+
+
+class SeenByMeMenuItem(menus.MenuItem):
+    def for_user(self, user):
+        from opal.models import UserProfile
+        return UserProfile.objects.filter(
+            user=user,
+            roles__name=constants.DOCTOR_ROLE
+        ).exists()
+
+
+seen_by_me_menu_item = SeenByMeMenuItem(
+    activepattern=reverse_lazy('seen-by-me-list'),
+    href=reverse_lazy('seen-by-me-list'),
+    display='Seen by me',
+    icon="fa-table"
+)
 
 
 class Application(application.OpalApplication):
@@ -35,16 +53,12 @@ class Application(application.OpalApplication):
                 href=reverse('active-list'),
                 display=('Active patients'),
                 icon="fa-table"
-            ),
-            menus.MenuItem(
-                activepattern=reverse('mine-list'),
-                href=reverse('mine-list'),
-                display=('Seen by me'),
-                icon="fa-table"
             )
         ]
         if user:
             if user.is_authenticated:
+                if seen_by_me_menu_item.for_user(user):
+                    items.append(seen_by_me_menu_item)
                 if user.is_staff:
                     items.append(
                         menus.MenuItem(
