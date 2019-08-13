@@ -22,6 +22,8 @@ urlpatterns = [
     url(r'^import/', views.ImportView.as_view(), name='import'),
     url(r'^patient-lists/activepatients/?$',
         views.ActivePatientList.as_view(), name='active-list'),
+    url(r'^patient-lists/seen-by-me/?$',
+        views.SeenByMeList.as_view(), name='seen-by-me-list'),
     url(r'^formsearch/', views.FormSearchRedirectView.as_view(),
         name='form-search'),
     url(r'^account/login/', views.TwoFactorRequired.as_view(), name="login"),
