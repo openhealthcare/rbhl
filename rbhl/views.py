@@ -79,11 +79,7 @@ class ImportView(FormView):
         return super(ImportView, self).form_valid(form)
 
 
-class ActivePatientList(ListView):
-    """
-    The active patients as per the RBHL 18 week database
-    """
-    template_name = 'patient_lists/active_patients.html'
+class BasePatientList(ListView):
     queryset = Episode.objects.filter(cliniclog__active=True).prefetch_related(
         "cliniclog_set"
     ).prefetch_related(
@@ -105,6 +101,34 @@ class ActivePatientList(ListView):
             return "-{}".format(options[order_param])
         else:
             return options[order_param]
+
+
+class ActivePatientList(BasePatientList):
+    """
+    The active patients as per the RBHL 18 week database
+    """
+    template_name = 'patient_lists/active_patients.html'
+
+
+class SeenByMeList(BasePatientList):
+    template_name = "patient_lists/seen_by_me.html"
+
+    def initials(self):
+        first_name = self.request.user.first_name or " "
+        surname = self.request.user.last_name or " "
+        return "{}{}".format(first_name[0], surname[0]).strip().upper()
+
+    def get_queryset(self, *args, **kwargs):
+        qs = super().get_queryset(*args, **kwargs)
+        initials = self.initials()
+        if initials:
+            return qs.filter(cliniclog__seen_by__icontains=self.initials())
+        return qs.none()
+
+    def get_context_data(self, *args, **kwargs):
+        ctx = super().get_context_data(*args, **kwargs)
+        ctx["initials"] = self.initials()
+        return ctx
 
 
 class FormSearchRedirectView(RedirectView):
