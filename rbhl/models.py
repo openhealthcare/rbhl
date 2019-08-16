@@ -157,7 +157,7 @@ class ClinicLog(models.EpisodeSubrecord):
     _is_singleton = True
 
     seen_by           = fields.CharField(
-        blank=True, null=True, max_length=100, verbose_name="Seen by"
+        blank=True, default="", max_length=100, verbose_name="Seen by"
     )
     clinic_date        = fields.DateField(blank=True, null=True)
     diagnosis_made    = fields.NullBooleanField(verbose_name="Diagnosis made")
