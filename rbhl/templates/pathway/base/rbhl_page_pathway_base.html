@@ -35,6 +35,14 @@
         <div class="horizontal-form">
           <div class="row">
             <div class="col-md-10">
+              <div ng-show="pathway.currentStep.scope.state === 'editing_demographics' || pathway.currentStep.scope.state === 'has_demographics'">
+                <div class="float-left">
+                  <a class="btn btn-secondary btn-lg" go-to-top ng-click="pathway.currentStep.scope.reset()">
+                    <i class="fa fa-arrow-left"></i> Back
+                  </a>
+                </div>
+              </div>
+
               {% include "pathway/partial/wizard_back_button.html" %}
 
               <div class="pull-right push-left-12">
