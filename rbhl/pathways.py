@@ -13,7 +13,7 @@ class NewReferral(WizardPathway):
     slug = 'new_referral'
     finish_button_text = "Create new referral"
     finish_button_icon = None
-    template = "pathway/base/rbhl_page_pathway_base.html"
+    template = "pathway/base/rbhl_referral_base.html"
     steps = [
         FindPatientStep(
             base_template="pathway/steps/step_base_without_display_name.html"
