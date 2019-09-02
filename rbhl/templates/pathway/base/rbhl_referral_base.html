@@ -27,7 +27,7 @@
         {% endfor %}
         {% endblock pathway_body %}
       </div>
-      <div class="text-center" ng-show="form.$submitted && form.$invalid">
+      <div class="text-center" ng-show="(form.$submitted || pathway.currentStep.clicked) && form.$invalid">
         <strong class="help-block">Please fix the above errors</strong>
       </div>
       {% block pathway_footer %}
@@ -46,7 +46,31 @@
               {% include "pathway/partial/wizard_back_button.html" %}
 
               <div class="pull-right push-left-12">
-                {% include "pathway/partial/wizard_next_button.html" %}
+                {% comment %}
+                Make sure we validate each step before moving forward by setting clicked = true # and checking form valid.
+                This is a surrogate for form.$valid for individual steps, so that you don't need to click back at the
+                end to find out where errors were.
+                {% endcomment %}
+                <a
+                  ng-disabled="!pathway.valid(editing)"
+                  class="btn btn-lg btn-primary"
+                  ng-show="pathway.showNext(editing) && pathway.hasNext()"
+                  ng-click="(pathway.currentStep.clicked = true) && form.$valid && pathway.goNext(editing)"
+                >
+                  <i class="fa fa-arrow-right"></i>
+                  Next
+                </a>
+                <button
+                  ng-disabled="!pathway.valid(form)"
+                  class="btn btn-lg btn-primary"
+                  ng-show="pathway.showNext(editing) && !pathway.hasNext()"
+                  ng-click="form.$valid && pathway.finish(editing)"
+                  check-form="form"
+                >
+                  <i class="[[ pathway.finish_button_icon ]]"></i>
+                  [[ pathway.finish_button_text ]]
+                </button>
+
               </div>
               <div ng-show="pathway.steps[0].scope.state === 'has_demographics'" class="pull-right">
                 <a href="/#/patient/[[ editing.demographics.patient_id ]]" class="btn btn-lg btn-primary">
