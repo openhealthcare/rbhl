@@ -5,14 +5,14 @@ import json
 
 from django.contrib.auth.models import User
 from django.urls import reverse
-from django.views.generic import FormView, TemplateView, RedirectView
+from django.views.generic import FormView, TemplateView, RedirectView, ListView
 from django.contrib.auth import login, logout
 from django.contrib.admin.views.decorators import staff_member_required
 from django.utils.decorators import method_decorator
 from two_factor.views import core as two_factor_core_views
 from opal.core import serialization
+from opal.models import Episode
 from opal import models as opal_models
-from rbhl.patient_lists import StaticTableList
 from plugins.trade import match
 from plugins.trade.forms import ImportDataForm
 
@@ -79,29 +79,56 @@ class ImportView(FormView):
         return super(ImportView, self).form_valid(form)
 
 
-class StaticTableListView(TemplateView):
+class BasePatientList(ListView):
+    queryset = Episode.objects.filter(cliniclog__active=True).prefetch_related(
+        "cliniclog_set"
+    ).prefetch_related(
+        "patient__demographics_set"
+    )
+
+    def get_ordering(self):
+        options = {
+            "hospital_number": "patient__demographics__hospital_number",
+            "name": "patient__demographics__first_name",
+            "days_since_first_attended": "cliniclog__clinic_date",
+            "seen_by": "cliniclog__seen_by"
+        }
+        order_param = self.request.GET.get(
+            "order", "days_since_first_attended")
+
+        if order_param.startswith("-"):
+            order_param = order_param[1:]
+            return "-{}".format(options[order_param])
+        else:
+            return options[order_param]
+
+
+class ActivePatientList(BasePatientList):
     """
-    View to render a Static HTML table list
+    The active patients as per the RBHL 18 week database
     """
-    def dispatch(self, *args, **kwargs):
-        """
-        Find the relevant PatientList class and attach it to self.patient_list
-        """
-        self.patient_list = StaticTableList.get(kwargs['slug'])()
-        return super(StaticTableListView, self).dispatch(*args, **kwargs)
+    template_name = 'patient_lists/active_patients.html'
+
+
+class SeenByMeList(BasePatientList):
+    template_name = "patient_lists/seen_by_me.html"
+
+    def initials(self):
+        first_name = self.request.user.first_name or " "
+        surname = self.request.user.last_name or " "
+        return "{}{}".format(first_name[0], surname[0]).strip().upper()
+
+    def get_queryset(self, *args, **kwargs):
+        qs = super().get_queryset(*args, **kwargs)
+        initials = self.initials()
+        if initials:
+            return qs.filter(cliniclog__seen_by__icontains=self.initials())
+        return qs.none()
 
     def get_context_data(self, *args, **kwargs):
-        """
-        Add the queryset to the patient list as {{ object_list }}
-        """
-        ctx = super(StaticTableListView, self).get_context_data(
-            *args, **kwargs
-        )
-        ctx['object_list'] = self.patient_list.get_queryset()
+        ctx = super().get_context_data(*args, **kwargs)
+        ctx["initials"] = self.initials()
         return ctx
-
-    def get_template_names(self, *args, **kwargs):
-        return self.patient_list.template_name
 
 
 class FormSearchRedirectView(RedirectView):

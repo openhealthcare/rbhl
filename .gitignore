@@ -11,6 +11,7 @@
 */assets/rest_framework/*
 */assets/bootstrap*
 */assets/CACHE/*
+rbhl/local_settings.py
 .coverage
 htmlcov
 libpeerconnection.log
@@ -23,6 +24,7 @@ rbhl/local_settings.py
 rbhl/data/lookuplists/employer.json
 rbhl/data/lookuplists/ohprovider.json
 rbhl/data/lookuplists/rbhreferrer.json
+scripts/s3_secret
 
 .vscode
 node_modules

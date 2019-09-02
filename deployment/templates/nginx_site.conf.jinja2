@@ -3,6 +3,16 @@ log_format timed_combined '$remote_addr - $remote_user [$time_local] '
                         '"$http_referer" "$http_user_agent" "$request_body"'
                         '$request_time $upstream_response_time seconds';
 
+
+# generated 2019-08-09, https://ssl-config.mozilla.org/#server=nginx&server-version=1.17.0&config=intermediate
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    # redirect all HTTP requests to HTTPS with a 301 Moved Permanently response.
+    return 301 https://$host$request_uri;
+}
+
 server {
     listen 443;
     server_name {{ DOMAIN }};

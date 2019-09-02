@@ -15,12 +15,31 @@ of the pem file with the stanza:
 private_key_file = ~/RBHL.pem
 ```
 
-Then run:
-
-
+To create an set up a dev server
 ```
-ansible-playbook deploy.yml
+ansible-playbook setup_dev.yml
 ```
+
+To create an set up a prod server
+```
+ansible-playbook setup_prod.yml
+```
+
+To restore from a back up. (Back ups run everyday at 20:00)
+```
+ansible-playbook restore.yml --extra-vars "S3_KEY={{LATEST S3 KEY}}"
+```
+
+To deploy to prod
+```
+ansible-playbook deploy_prod.yml
+```
+
+To deploy to dev
+```
+ansible-playbook deploy_dev.yml
+```
+
 
 ## Cheatsheat: Incantations you may not remember
 

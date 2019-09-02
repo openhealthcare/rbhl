@@ -36,6 +36,3 @@
     - python3.7
     - python3-pip
 
-
-- pip:
-    name: pipenv

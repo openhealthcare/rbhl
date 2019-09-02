@@ -1,5 +1,6 @@
 # Django settings for rbhl project.
 import os
+import sys
 import urllib
 
 PROJECT_PATH = os.path.realpath(os.path.dirname(__file__))
@@ -150,6 +151,7 @@ TEMPLATES = [
                 'django.template.context_processors.i18n',
                 'django.template.context_processors.media',
                 'django.template.context_processors.static',
+                'django.template.context_processors.request',
                 'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
                 'opal.context_processors.settings',
@@ -295,7 +297,7 @@ DEFAULT_DOMAIN = 'http://rbhl.com/'
 
 AUTOCOMPLETE_SEARCH = True
 OPAL_BRAND_NAME = 'Indigo'
-VERSION_NUMBER  = '1.0'
+VERSION_NUMBER  = '1.4'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -342,7 +344,10 @@ TWO_FACTOR_FOR_SUPERUSERS = True
 #     ('text/x-scss', 'sass --scss {infile} {outfile}'),
 # )
 
-try:
-    from rbhl.local_settings import *  # NOQA
-except ImportError:
-    pass
+if 'test' in sys.argv:
+    TWO_FACTOR_FOR_SUPERUSERS = False
+else:
+    try:
+        from rbhl.local_settings import * # noqa
+    except ImportError:
+        pass

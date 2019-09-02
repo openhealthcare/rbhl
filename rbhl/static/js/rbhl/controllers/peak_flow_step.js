@@ -1,3 +1,12 @@
+/*
+* The peak flow step is a way if adding in information of a patients peak flows.
+*
+* The nurse enters a start date and number of days and it populates the days.
+*
+* Per day she types in a time presses tab to switch to the flow box
+* then a flow then presses enter. The time/flow is added to the correct
+* day and the focus is set back to the time field.
+*/
 angular.module('opal.controllers').controller('PeakFlowStep',
   function(scope, step, episode, $location, $window) {
     "use strict";
@@ -34,6 +43,9 @@ angular.module('opal.controllers').controller('PeakFlowStep',
 
     // a peak flow time, ie one of a list of times attatched to a day
     class PeakFlowTime {
+      time = undefined;
+      flow = undefined;
+
       constructor(time, flow){
         this.time = time;
         this.flow = flow;
@@ -42,19 +54,25 @@ angular.module('opal.controllers').controller('PeakFlowStep',
 
     // models a peak flow day
     class PeakFlowDay {
+      id = undefined;
+      treatment_taken = undefined;
+      note = undefined;
+      work_day = undefined;
+      trial_num = $location.search().trial_num;
+      peakFlowTimes = [];
+      date = null;
+      day_num = null;
+
+      // this is the data in the two inputs before you
+      // add a new peak flow time.
+      form = {
+        flow: undefined,
+        time: undefined
+      }
+
       constructor(date, day_num){
-        this.id = undefined;
-        this.treatment_taken = undefined;
-        this.note = undefined;
-        this.work_day = false;
-        this.trial_num = $location.search().trial_num;
-        this.peakFlowTimes = [];
         this.date = date;
         this.day_num = day_num;
-        this.form = {
-          flow: undefined,
-          time: undefined
-        }
       }
 
       addFlow(idx){
@@ -100,26 +118,26 @@ angular.module('opal.controllers').controller('PeakFlowStep',
 
         return json;
       }
-    }
 
-    PeakFlowDay.fromDict = function(json){
-      var pfts = [];
-      var keys = Object.keys(json);
-      var pfd = new PeakFlowDay(json.date, json.day_num);
-      _.each(keys, k => {
-        if(k == "date" && k == "day_num"){
-          return;
-        }
-        if(timeOptions[k]){
-          if(json[k]){
-            pfts.push(new PeakFlowTime(timeOptions[k], json[k]))
+      static fromDict(json){
+        var pfts = [];
+        var keys = Object.keys(json);
+        var pfd = new PeakFlowDay(json.date, json.day_num);
+        _.each(keys, k => {
+          if(k == "date" && k == "day_num"){
+            return;
           }
-          return
-        }
-        pfd[k] = json[k]
-      });
-      pfd.peakFlowTimes = pfts;
-      return pfd;
+          if(timeOptions[k]){
+            if(json[k]){
+              pfts.push(new PeakFlowTime(timeOptions[k], json[k]))
+            }
+            return
+          }
+          pfd[k] = json[k]
+        });
+        pfd.peakFlowTimes = pfts;
+        return pfd;
+      }
     }
 
     scope.initialise = function(){
@@ -132,7 +150,7 @@ angular.module('opal.controllers').controller('PeakFlowStep',
       scope.trialNum = parseInt($location.search().trial_num);
       this.setUpTrialNumbers();
 
-      // The number of trial days to show, usually this is
+      // The number of trial days to show
       // we pull this off the model if its populated
       if(scope.trialDays.length){
         scope.numOfTrials = _.max(scope.trialDays, x => {

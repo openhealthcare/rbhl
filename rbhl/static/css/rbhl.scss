@@ -449,3 +449,21 @@ input[type="date"]::-webkit-input-placeholder{
 .content-offset-below-100{
     margin-bottom: 100px
 }
+.table-sortable{
+    th.sorting-desc:after{
+        content: "￬";
+        font-size: 18px;
+    }
+    th.sorting-asc:after{
+        content: "￪";
+        font-size: 18px;
+    }
+
+    a{
+        color: $slate;
+    }
+    a:hover, a:active, a:focus{
+        text-decoration: none;
+        color: $blue;
+    }
+}

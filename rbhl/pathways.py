@@ -13,7 +13,7 @@ class NewReferral(WizardPathway):
     slug = 'new_referral'
     finish_button_text = "Create new referral"
     finish_button_icon = None
-    template = "pathway/base/rbhl_wizard_pathway_base.html"
+    template = "pathway/base/rbhl_referral_base.html"
     steps = [
         FindPatientStep(
             base_template="pathway/steps/step_base_without_display_name.html"
@@ -47,6 +47,13 @@ class PeakFlowStep(Step):
     display_name = "Peak Flow Day"
 
     def pre_save(self, data, user, patient=None, episode=None):
+        """
+        The Peak flow step does not look at all an episodes peak flows
+        just those related to a specific trial number.
+
+        So when we are looking at which dates have been deleted we need
+        the qs in question to be limitted by that trial number.
+        """
         trial_num = int(data.pop("trial_num")[0])
         qs = episode.peakflowday_set.all()
         existing_ids = [i.get("id") for i in data[

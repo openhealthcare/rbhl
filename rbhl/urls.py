@@ -20,8 +20,10 @@ urlpatterns = [
         name="change-password-check"
     ),
     url(r'^import/', views.ImportView.as_view(), name='import'),
-    url(r'^patient-lists/(?P<slug>[0-9a-z_\-]+)/?$',
-        views.StaticTableListView.as_view(), name='static-list'),
+    url(r'^patient-lists/activepatients/?$',
+        views.ActivePatientList.as_view(), name='active-list'),
+    url(r'^patient-lists/seen-by-me/?$',
+        views.SeenByMeList.as_view(), name='seen-by-me-list'),
     url(r'^formsearch/', views.FormSearchRedirectView.as_view(),
         name='form-search'),
     url(r'^account/login/', views.TwoFactorRequired.as_view(), name="login"),

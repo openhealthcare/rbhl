@@ -8,6 +8,8 @@ angular
   ) {
     "use strict";
 
+    var thisStep = this;
+
     scope.lookup_hospital_number = function() {
       DemographicsSearch.find(
         step.search_end_point,
@@ -37,6 +39,10 @@ angular
       }
       scope.hideFooter = true;
     };
+
+    scope.reset = function(){
+      thisStep.initialise(scope);
+    }
 
     scope.new_patient = function() {
       scope.hideFooter = false;

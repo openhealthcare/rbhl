@@ -19,5 +19,5 @@ django_otp==0.5.1
 django-two-factor-auth==1.8.0
 django-formtools==2.1
 flake8==3.6.0
-
--e git+https://github.com/openhealthcare/opal.git@v0.14.0#egg=opal
+boto3==1.9.178
+opal==0.16.2
