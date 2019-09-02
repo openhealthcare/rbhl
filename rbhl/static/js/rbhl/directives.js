@@ -70,6 +70,105 @@ directives.directive("peakFlowGraph", function($timeout) {
           return a - b;
         });
 
+        var calculateTreatments = function(days){
+          /*
+          * if a treatment only appears for a single day,
+          * we just state the name of the treament
+          * otherwise we return e.g. aspirin starts
+          * then aspirin finishes
+          */
+          var trialDayToTreatment = {}
+
+          _.each(days, function(day){
+            if(day.treatment_taken){
+              trialDayToTreatment[day.trial_num] = day.treatment_taken;
+            }
+          });
+
+          var trialDaysWithTreatments = _.keys(trialDayToTreatment);
+
+          var result = {}
+
+          _.each(trialDaysWithTreatments, function(day, idx){
+            if(trialDaysWithTreatments.length === 1){
+              result[day] = trialDayToTreatment[day];
+            }
+            else{
+              var firstDay = null;
+              var lastDay = null;
+
+              if(idx !== 0){
+                if(day + 1 !== trialDaysWithTreatments[idx + 1]){
+                  lastDay = true;
+                }
+              }
+              if(idx !== trialDaysWithTreatments.length-1){
+                if(day -1 !== trialDaysWithTreatments[idx - 1]){
+                  firstDay = true;
+                }
+              }
+              if(firstDay && lastDay){
+                result[day] = trialDayToTreatment[day];
+              }
+              else if(firstDay){
+                result[day] = trialDayToTreatment[day] + " started";
+              }
+              else if(lastDay){
+                result[day] = trialDayToTreatment[day] + " stopped";
+              }
+            }
+          });
+
+          return result;
+        }
+
+        var calculateNotes = function(days){
+          /*
+          * Notes appear as lines on the y access
+          * if a treatment only appears for a single day
+          * it is marked as as note, other wise it just
+          * states the name of the drug
+          */
+          var result = {};
+
+          _.each(days, function(day){
+            if(day.note){
+              result[day.trial_num] = day.notes;
+            }
+          });
+
+          return result;
+        }
+
+        var calculateNotesAndTreatmentLines = function(days){
+          /*
+          * Returns the lines that we draw for treatments
+          * and notes
+          */
+          var treatmentDays = calculateTreatments(days);
+          var notesDays = calculateNotes(days);
+          var allDays = _.uniq(_.keys(treatmentDays) + _.keys(notesDays));
+          var result = [];
+          _.each(allDays, function(day){
+            var text = notesDays[day];
+            if(treatmentDays[day]){
+              if(text){
+                text = text + ", " + treatmentDays[day];
+              }
+              else{
+                text = treatmentDays[day];
+              }
+            }
+            result.push({
+              value: parseInt(day),
+              text: text,
+              class: "c3-note"
+            });
+          });
+
+          return result;
+        }
+
         var calculateGridLines = function(trialDays) {
           /*
            * the grid lines should be intra file day not
@@ -81,12 +180,23 @@ directives.directive("peakFlowGraph", function($timeout) {
           return _.map(range, function(r) {
             return {
               value: r,
-              class: "c3-dashed-line"
+              class: "c3-dashed-line",
             };
           });
         };
 
-        var gridLines = calculateGridLines(x);
+        var calculateLines = function(x, days){
+          var gridLines = calculateGridLines(x);
+          var notesAndTreatments = calculateNotesAndTreatmentLines(days);
+          var allLines = _.sortBy(gridLines.concat(notesAndTreatments), function(line){
+            return line.value;
+          });
+
+          return allLines;
+        }
+
+        var lines = calculateLines(x, days);
+
         var sequences = [];
 
         var find_sequences = function(data) {
@@ -126,6 +236,7 @@ directives.directive("peakFlowGraph", function($timeout) {
           min,
           mean //, predicted
         ];
+
         var ret = c3.generate({
           bindto: element[0],
           data: {
@@ -144,7 +255,7 @@ directives.directive("peakFlowGraph", function($timeout) {
           },
           grid: {
             x: {
-              lines: gridLines
+              lines: lines
             },
             y: { show: true }
           },
