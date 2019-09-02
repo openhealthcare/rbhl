@@ -1,13 +1,13 @@
 """
 Pathways for the rbhl app
 """
-from opal.core.pathway import Step, WizardPathway, PagePathway
+from opal.core.pathway import PagePathway
 from plugins.add_patient_step import FindPatientStep
 
 from rbhl import models
 
 
-class NewReferral(WizardPathway):
+class NewReferral(PagePathway):
     display_name = 'New referral'
     icon = 'fa-plus'
     slug = 'new_referral'
@@ -18,11 +18,6 @@ class NewReferral(WizardPathway):
         FindPatientStep(
             base_template="pathway/steps/step_base_without_display_name.html"
         ),
-        Step(
-            display_name="Referral details",
-            template="pathway/new_referral.html",
-            base_template="pathway/steps/step_base_without_display_name.html"
-        )
     ]
 
     def save(self, *args, **kwargs):

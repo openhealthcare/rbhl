@@ -1,48 +1,48 @@
 {% load forms %}
 <div class="row">
-    <div class="col-md-8 col-md-push-2">
-        <div class="col-md-12">
-            <div class="row">
-                <div ng-show="from_param" class="col-md-12">
-                    <p class="lead">
-                        Create a referral for
-                        <b>#[[ editing.demographics.hospital_number ]]</b>.
-                    </p>
-                </div>
-                <div ng-show="!from_param" class="col-md-12">
-                    <p class="lead">
-                        Unable to find a patient with
-                        <b>#[[ editing.demographics.hospital_number ]]</b>.
-                    </p>
-                    <p class="lead">Would you like to add them now?</p>
-                </div>
-            </div>
-            <form class="form-horizontal">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="horizontal-form">
-                            {% input field="Demographics.first_name" label="First name" style="vertical" %}
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="horizontal-form">
-                            {% input field="Demographics.surname" style="vertical" %}
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="horizontal-form">
-                            {% datepicker field="Demographics.date_of_birth" style="vertical" label="Date of birth" %}
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="horizontal-form">
-                            {% select field="Demographics.sex" style="vertical" %}
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
+  <div class="col-md-12">
+      <div class="row">
+          <div ng-show="from_param" class="col-md-12">
+              <p class="lead">
+                  Create a referral for
+                  <b>#[[ editing.demographics.hospital_number ]]</b>.
+              </p>
+          </div>
+          <div ng-show="!from_param" class="col-md-12">
+              <p class="lead">
+                  Unable to find a patient with
+                  <b>#[[ editing.demographics.hospital_number ]]</b>.
+                  Would you like to add them now?
+              </p>
+          </div>
+      </div>
+      <div class="form-horizontal">
+          <div class="row">
+              <div class="col-md-6">
+                  <div class="horizontal-form">
+                      {% input field="Demographics.first_name" label="First name" style="vertical" %}
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <div class="horizontal-form">
+                      {% input field="Demographics.surname" style="vertical" %}
+                  </div>
+              </div>
+          </div>
+          <div class="row">
+              <div class="col-md-6">
+                  <div class="horizontal-form">
+                      {% datepicker field="Demographics.date_of_birth" style="vertical" label="Date of birth" %}
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <div class="horizontal-form">
+                      {% select field="Demographics.sex" style="vertical" %}
+                  </div>
+              </div>
+          </div>
+          {% include "pathway/new_referral.html" %}
+      </div>
+
+  </div>
 </div>

@@ -20,10 +20,7 @@
       <div class="panel-body">
         {% block pathway_body %}
         {% for step in pathway.get_steps %}
-        <div ng-show="pathway.currentStep.display_name === '{{ step.get_display_name }}'"
-          class="pathway-process-steps-padding">
           {% include step.get_base_template %}
-        </div>
         {% endfor %}
         {% endblock pathway_body %}
       </div>
