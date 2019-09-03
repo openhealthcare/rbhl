@@ -315,6 +315,18 @@ class PeakFlowDay(models.EpisodeSubrecord):
         blank=True, null=True, verbose_name="23:00"
     )
 
+    def flow_values(self):
+        db_fields = self._meta.get_fields()
+        fields = [
+            i.attname for i in db_fields if i.attname.startswith("flow_")
+        ]
+        flow_values = []
+        for field in fields:
+            value = getattr(self, field)
+            if value:
+                flow_values.append(value)
+        return flow_values
+
 
 """
 Begin exploratory models during testing

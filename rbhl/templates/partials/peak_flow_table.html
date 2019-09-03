@@ -10,7 +10,7 @@
               ng-click="episode.recordEditor.newItem('peak_flow_day', $index)"></i>
       </h3>
       <div style="min-height: 300px;" ng-show="peakFlowDayByTrial.length > 3">
-        <div peak-flow-graph days="peakFlowDayByTrial" id="peakFlow"></div>
+        <div peak-flow-graph episode-id="episode.id" trial-num="peakFlowDayByTrial[0].trial_num"></div>
       </div>
     </div>
   </div>

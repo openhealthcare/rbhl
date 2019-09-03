@@ -1,62 +1,24 @@
-directives.directive("peakFlowGraph", function($timeout) {
+directives.directive("peakFlowGraph", function($timeout, PeakFlowGraphDataLoader, PeakFlowGraphCalculator) {
   "use strict";
+
   return {
     scope: {
-      days: "="
+      trialNum: "=",
+      episodeId: "="
     },
     link: function(scope, element, attrs) {
-      function render_chart() {
-        var fields = [
-          "flow_0600",
-          "flow_0700",
-          "flow_0800",
-          "flow_0900",
-          "flow_1000",
-          "flow_1100",
-          "flow_1200",
-          "flow_1300",
-          "flow_1400",
-          "flow_1500",
-          "flow_1600",
-          "flow_1700",
-          "flow_1800",
-          "flow_1900",
-          "flow_2000",
-          "flow_2100",
-          "flow_2200",
-          "flow_2300"
-        ];
-        // var days = scope.episode.peak_flow_day;
-        // var days = _.filter(scope.days, function (day) { return day.trial_num == 1 });
-        var days = scope.days;
-        var x = ["x"];
-        var mean = ["Mean"];
-        var max = ["Max"];
-        var min = ["Min"];
-        // var predicted = ['Predicted Mean']
-        _.each(days, function(day) {
-          var count = 0;
-          var sum = 0;
-          var values = [];
-          _.each(fields, function(field) {
-            if (day[field]) {
-              values.push(day[field]);
-              count += 1;
-              sum += day[field];
-            }
-          });
-          if (count) {
-            x.push(day.day_num);
-            mean.push(parseInt(sum / count));
-            max.push(_.max(values));
-            min.push(_.min(values));
-            // predicted.push(510);
-          }
-        });
+
+      // make sure we don't call it too many times during the render
+      var render_chart = _.once(function() {
+        PeakFlowGraphDataLoader.load(scope.episodeId, scope.trialNum).then(function(data){
+          var days = data.days;
+          var x = ["x"].concat(_.pluck(days, "day_num"));
+          var mean = ["Mean"].concat(_.pluck(days, "mean_flow"));
+          var max = ["Max"].concat(_.pluck(days, "max_flow"));
+          var min = ["Min"].concat(_.pluck(days, "min_flow"));
 
         // We want to colour days when the person was at work to easily identify them
         // It's _occupational_ lung disease after all.
-
         var working_days = _.map(
           _.filter(days, function(day) {
             return day.work_start || day.work_end;
@@ -150,7 +112,8 @@ directives.directive("peakFlowGraph", function($timeout) {
           },
           regions: regions
         });
-      }
+      })
+      });
       $timeout(render_chart, 500);
     }
   };
