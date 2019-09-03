@@ -12,7 +12,7 @@ angular.module('opal.controllers').controller('PeakFlowStep',
     "use strict";
 
     // list of time options that we can set for a flow time
-    var timeOptions = {
+    const timeOptions = {
       flow_0000: "00:00",
       flow_0100: "01:00",
       flow_0200: "02:00",
@@ -79,7 +79,7 @@ angular.module('opal.controllers').controller('PeakFlowStep',
         if(!this.form.time || !this.form.flow){
           return;
         }
-        this.peakFlowTimes = _.filter(this.peakFlowTimes, (oldPft) => {
+        this.peakFlowTimes = this.peakFlowTimes.filter(oldPft => {
           return oldPft.time !== this.form.time;
         }, this);
         this.peakFlowTimes.push(new PeakFlowTime(this.form.time, this.form.flow));
@@ -96,7 +96,7 @@ angular.module('opal.controllers').controller('PeakFlowStep',
       }
 
       toDict(){
-        var fields = [
+        const fields = [
           "treatment_taken",
           "note",
           "work_day",
@@ -104,15 +104,15 @@ angular.module('opal.controllers').controller('PeakFlowStep',
           "date",
           "day_num",
         ];
-        var json = {};
+        let json = {};
 
         _.each(fields, field=>{
           json[field] = this[field];
         }, this);
 
-        var timeToField = _.invert(timeOptions);
+        let timeToField = _.invert(timeOptions);
 
-        _.each(this.peakFlowTimes, pft => {
+        this.peakFlowTimes.forEach(pft => {
           json[timeToField[pft.time]] = pft.flow;
         });
 
@@ -120,9 +120,9 @@ angular.module('opal.controllers').controller('PeakFlowStep',
       }
 
       static fromDict(json){
-        var pfts = [];
-        var keys = Object.keys(json);
-        var pfd = new PeakFlowDay(json.date, json.day_num);
+        let pfts = [];
+        let keys = Object.keys(json);
+        let pfd = new PeakFlowDay(json.date, json.day_num);
         _.each(keys, k => {
           if(k == "date" && k == "day_num"){
             return;
@@ -170,22 +170,22 @@ angular.module('opal.controllers').controller('PeakFlowStep',
       * e.g. if given a number of trials of 5 and a date of 1 April
       * it will return 1 April, 2 April, 3 April, 4 April, 5 April
       */
-      var range = _.range(numOfTrials);
+      let range = _.range(numOfTrials);
       return  _.map(range, function(x){
-        var dt = moment(startDate).add(x, "d")
+        let dt = moment(startDate).add(x, "d")
         return new PeakFlowDay(dt, x+startDayNum)
       });
     }
 
     scope.setUpTrialNumbers = function(){
-      var existingPeakFlows = _.where(
+      let existingPeakFlows = _.where(
         scope.editing.peak_flow_day,
         {trial_num: scope.trialNum}
       )
 
       if(existingPeakFlows.length){
         existingPeakFlows = _.sortBy(existingPeakFlows, "day_num")
-        scope.trialDays = _.map(existingPeakFlows, epf => PeakFlowDay.fromDict(epf));
+        scope.trialDays = existingPeakFlows.map(epf => PeakFlowDay.fromDict(epf))
         scope.startDate = _.min(scope.trialDays, x => {
           return x.date;
         }).date;
@@ -232,7 +232,7 @@ angular.module('opal.controllers').controller('PeakFlowStep',
       }).date;
 
       if(scope.startDate !== minDate){
-        _.each(scope.trialDays, td => {
+        scope.trialDays.forEach(td => {
           td.date = moment(scope.startDate).add(td.day_num - 1, "d");
         });
       }
