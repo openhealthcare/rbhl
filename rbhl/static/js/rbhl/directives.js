@@ -21,7 +21,7 @@ directives.directive("peakFlowGraph", function($timeout, PeakFlowGraphDataLoader
         // It's _occupational_ lung disease after all.
         var working_days = _.map(
           _.filter(days, function(day) {
-            return day.work_start || day.work_end;
+            return day.work_day;
           }),
           function(day) {
             return day.day_num;
@@ -148,6 +148,32 @@ directives.directive("peakFlowGraph", function($timeout, PeakFlowGraphDataLoader
       })
       });
       $timeout(render_chart, 500);
+    }
+  };
+});
+
+directives.directive("reemit", function($parse, $timeout) {
+  "use strict";
+  /*
+  * the angular js select2 wrapper does not accept dynamic event
+  * names.
+  *
+  * Given we have n select2s on the peak flow form we need to
+  * be able to broadcast an event and have it picked up
+  * and translated to a local event name.
+  *
+  * e.g. if we need to focus on the first select 2
+  * the peak flow form emits reset0 which is picked up
+  * by the below directive and then rebroadcast as
+  * refocus to the correct select2 input.
+  */
+  return {
+    scope: false,
+    link: function(scope, element, attrs) {
+      var ev = $parse(attrs.reemit)(scope);
+      scope.$on(ev, function() {
+        scope.$broadcast("refocus")
+      });
     }
   };
 });

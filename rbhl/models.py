@@ -239,8 +239,7 @@ class PeakFlowDay(models.EpisodeSubrecord):
     day_num = fields.IntegerField(blank=True, null=True)
     trial_num = fields.IntegerField(blank=True, null=True)
 
-    work_start = fields.IntegerField(blank=True, null=True)
-    work_end   = fields.IntegerField(blank=True, null=True)
+    work_day = fields.BooleanField(default=False)
 
     flow_0000 = fields.IntegerField(
         blank=True, null=True, verbose_name="00:00"
