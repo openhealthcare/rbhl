@@ -1,4 +1,4 @@
-directives.directive("peakFlowGraph", function($timeout, PeakFlowGraphDataLoader, PeakFlowGraphCalculator) {
+directives.directive("peakFlowGraph", function($timeout, PeakFlowGraphDataLoader) {
   "use strict";
 
   return {
