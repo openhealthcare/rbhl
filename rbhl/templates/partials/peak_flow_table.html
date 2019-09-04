@@ -1,15 +1,37 @@
 <div class="row">
-  <div ng-controller="PeakFlowCtrl" class="col-md-12">
-    <div ng-repeat="peakFlowDayByTrial in peakFlowDaysByTrial">
-      <h3>
-        Peak Flow
-        <span ng-show="peakFlowDaysByTrial.length > 1">
-          Trial [[ peakFlowDayByTrial[0].trial_num ]]
-          <span>
-            <i class="fa fa-plus-circle pull-right pointer edit"
-              ng-click="episode.recordEditor.newItem('peak_flow_day', $index)"></i>
-      </h3>
-      <div style="min-height: 300px;" ng-show="peakFlowDayByTrial.length > 3">
+  <div class="peak-flow-graph" ng-controller="PeakFlowCtrl" class="col-md-12">
+    <div class="panel panel-default record-panel">
+      <div class="panel-heading">
+        <h3>
+          Peak Flow
+          <a href="/pathway/#/peak_flow_day/[[ patient.id ]]/[[ episode.id ]]?trial_num=[[ newTrialNum ]]">
+            <i class="fa fa-plus-circle edit pull-right pointer">
+            </i>
+          </a>
+        </h3>
+      </div>
+    </div>
+    <div class="col-md-12" ng-repeat="peakFlowDayByTrial in peakFlowDaysByTrial">
+      <h4>
+        <div class="row">
+          <div class="col-md-12">
+            <span ng-show="peakFlowDaysByTrial.length > 1">
+                Trial [[ peakFlowDayByTrial[0].trial_num ]]
+                <a href="/pathway/#/peak_flow_day/[[ patient.id ]]/[[ episode.id ]]?trial_num=[[ peakFlowDayByTrial[0].trial_num ]]">
+                  <i class="fa fa-pencil edit pull-right pointer">
+                  </i>
+                </a>
+              </span>
+              <span ng-hide="peakFlowDaysByTrial.length > 1">
+                <a href="/pathway/#/peak_flow_day/[[ patient.id ]]/[[ episode.id ]]?trial_num=[[ peakFlowDayByTrial[0].trial_num ]]">
+                  <i class="fa fa-pencil edit pull-right pointer">
+                  </i>
+                </a>
+              </span>
+          </div>
+        </div>
+      </h4>
+      <div style="min-height: 400px;" ng-show="peakFlowDayByTrial.length > 3">
         <div peak-flow-graph episode-id="episode.id" trial-num="peakFlowDayByTrial[0].trial_num"></div>
       </div>
     </div>

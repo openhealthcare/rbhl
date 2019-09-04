@@ -12,10 +12,10 @@ directives.directive("peakFlowGraph", function($timeout, PeakFlowGraphDataLoader
       var render_chart = _.once(function() {
         PeakFlowGraphDataLoader.load(scope.episodeId, scope.trialNum).then(function(data){
           var days = data.days;
-          var x = ["x"].concat(_.pluck(days, "day_num"));
-          var mean = ["Mean"].concat(_.pluck(days, "mean_flow"));
-          var max = ["Max"].concat(_.pluck(days, "max_flow"));
-          var min = ["Min"].concat(_.pluck(days, "min_flow"));
+          var x = ["x"].concat(_.compact(_.pluck(days, "day_num")));
+          var mean = ["Mean"].concat(_.compact(_.pluck(days, "mean_flow")));
+          var max = ["Max"].concat(_.compact(_.pluck(days, "max_flow")));
+          var min = ["Min"].concat(_.compact(_.pluck(days, "min_flow")));
 
         // We want to colour days when the person was at work to easily identify them
         // It's _occupational_ lung disease after all.
@@ -88,8 +88,33 @@ directives.directive("peakFlowGraph", function($timeout, PeakFlowGraphDataLoader
           min,
           mean //, predicted
         ];
+
+        var addVariance = function(){
+          var d3Element = d3.select(element);
+          var variabilties = _.pluck(data.days, "variabilty").filter(variabilty => !_.isUndefined(variabilty));
+          var g = d3Element.selectAll('.c3-axis-x .tick').data(variabilties).append("g");
+          g.attr("transform", "translate(-15, 20)");
+
+          var rect = g.append("rect");
+          rect.attr("width", "30").attr("height", "15");
+          rect.style("fill", "white");
+          rect.style("stroke", "red");
+          rect.style("stroke-width", "2");
+
+          var text = g.append("text");
+          text.attr("width", "30").attr("height","15").classed("variance", true);
+          text.attr("text-anchor", "middle").attr('alignment-baseline', 'middle');
+          text.attr("x", "15").attr("dy", ".91em").attr("dx", "0").classed("variance", true);
+          text.text(function(variabilty){
+            return variabilty;
+          });
+        };
+
         var ret = c3.generate({
           bindto: element[0],
+          padding: {
+            bottom: 30
+          },
           data: {
             x: "x",
             columns: columns
@@ -104,13 +129,21 @@ directives.directive("peakFlowGraph", function($timeout, PeakFlowGraphDataLoader
               label: "Days"
             }
           },
+          legend: {
+            position: 'right'
+          },
           grid: {
             x: {
               lines: gridLines
             },
             y: { show: true }
           },
-          regions: regions
+          regions: regions,
+          onrendered: function() {
+            setTimeout(function(){ // timeout is needed for initial render.
+              addVariance()
+            }, 0);
+          }
         });
       })
       });
