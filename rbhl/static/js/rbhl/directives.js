@@ -89,14 +89,76 @@ directives.directive("peakFlowGraph", function($timeout, PeakFlowGraphDataLoader
           mean //, predicted
         ];
 
+        var getColStartWidths = function(){
+          /*
+          * Returns a list of objects of {start, width}
+          */
+          return d3.select(element).selectAll(".c3-event-rect")[0].map(col=> {
+            return {
+              start: col.x.baseVal.value,
+              width: col.width.baseVal.value
+            }
+          });
+        };
+
+        var addTopLayer = function(){
+          /*
+          * Adds a top layer above the graph
+          */
+          var firstG = d3.select(d3.select(element).selectAll("g")[0][0]);
+          var layer = firstG.append("g");
+          var layerNode = layer.node()
+          layerNode.parentNode.insertBefore(layerNode, layerNode.parentNode.firstChild);
+          return layer;
+        };
+
+        var addTreatments = function(treatmentObjs){
+          /*
+          * It expects an array of objects that look like
+          * {colStart: 0, colEnd: 3, treatment: treatmentName}
+          */
+          var cols = getColStartWidths();
+          var topLayer = addTopLayer();
+          treatmentObjs.forEach((treatmentObj, treatmentIdx) => {
+
+            var columns = cols.slice(treatmentObj.colStart, treatmentObj.colEnd+1);
+            var x1 = columns[0].start;
+            var width = columns.reduce((accumulator, column) => {
+              return accumulator + column.width;
+            }, 0);
+            var cls = "treatment-" + treatmentIdx % 3;
+
+            var treatmentSection = topLayer.append("g");
+            treatmentSection.attr("transform", "translate(" + x1 + ")");
+
+            var line = treatmentSection.append("line");
+
+            line.attr("x1", 0);
+            line.attr("x2", width);
+            line.attr("y1", "-10");
+            line.attr("y2", "-10");
+            line.attr("stroke-width", "2");
+            line.classed(cls, true);
+
+
+            var text = treatmentSection.append("text");
+            text.attr("x", String(width/2));
+            text.attr("y", "-15");
+            text.attr("width", width);
+            text.attr("text-anchor", "middle");
+            text.classed(cls, true);
+            text.text(treatmentObj.treatment);
+          });
+        };
+
         var addVariance = function(){
           var d3Element = d3.select(element);
           var variabilties = _.pluck(data.days, "variabilty").filter(variabilty => !_.isUndefined(variabilty));
           var g = d3Element.selectAll('.c3-axis-x .tick').data(variabilties).append("g");
-          g.attr("transform", "translate(-15, 20)");
+          g.attr("transform", "translate(-15, 25)");
 
           var rect = g.append("rect");
-          rect.attr("width", "30").attr("height", "15");
+          rect.attr("width", "30").attr("height", "20");
           rect.style("fill", "white");
           rect.style("stroke", "red");
           rect.style("stroke-width", "2");
@@ -104,7 +166,7 @@ directives.directive("peakFlowGraph", function($timeout, PeakFlowGraphDataLoader
           var text = g.append("text");
           text.attr("width", "30").attr("height","15").classed("variance", true);
           text.attr("text-anchor", "middle").attr('alignment-baseline', 'middle');
-          text.attr("x", "15").attr("dy", ".91em").attr("dx", "0").classed("variance", true);
+          text.attr("x", "15").attr("dy", ".82em").attr("dx", "0").classed("variance", true);
           text.text(function(variabilty){
             return variabilty;
           });
@@ -113,7 +175,8 @@ directives.directive("peakFlowGraph", function($timeout, PeakFlowGraphDataLoader
         var ret = c3.generate({
           bindto: element[0],
           padding: {
-            bottom: 30
+            bottom: 30,
+            top: 30,
           },
           data: {
             x: "x",
@@ -141,7 +204,13 @@ directives.directive("peakFlowGraph", function($timeout, PeakFlowGraphDataLoader
           regions: regions,
           onrendered: function() {
             setTimeout(function(){ // timeout is needed for initial render.
-              addVariance()
+              addVariance();
+              if(scope.trialNum === 1){
+                addTreatments([
+                  {colStart: 1,  colEnd: 2, treatment: "Aspirin"},
+                  {colStart: 4,  colEnd: 8, treatment: "Paracetomol"}
+                ]);
+              }
             }, 0);
           }
         });
@@ -164,7 +233,7 @@ directives.directive("reemit", function($parse, $timeout) {
   *
   * e.g. if we need to focus on the first select 2
   * the peak flow form emits reset0 which is picked up
-  * by the below directive and then rebroadcast as
+  * by the below directive and the                            n rebroadcast as
   * refocus to the correct select2 input.
   */
   return {

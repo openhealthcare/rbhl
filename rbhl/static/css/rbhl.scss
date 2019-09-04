@@ -369,6 +369,24 @@ a {
     stroke-dasharray: 3, 3;
 }
 
+.peak-flow-graph{
+    .c3 svg{
+        font-size: 15px;
+    }
+    .treatment-0{
+        stroke: #4B485E;
+        fill: #4B485E;
+    }
+    .treatment-1{
+        stroke: #CCA97C;
+        fill: #CCA97C;
+    }
+    .treatment-2{
+        stroke: #F78D40;
+        fill: #F78D40;
+    }
+}
+
 .bottom-menu{
     position: absolute;
     left: 0px;
