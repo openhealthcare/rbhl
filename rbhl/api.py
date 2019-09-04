@@ -13,7 +13,8 @@ class PeakFlowGraphData(LoginRequiredViewset):
         if not flow_values:
             return {
                 "note": peak_flow_day.note,
-                "treatment_taken": peak_flow_day.treatment_taken
+                "treatment_taken": peak_flow_day.treatment_taken,
+                "day_num": peak_flow_day.day_num,
             }
         min_flow = min(flow_values)
         max_flow = max(flow_values)
@@ -23,9 +24,9 @@ class PeakFlowGraphData(LoginRequiredViewset):
         return {
             "min_flow": min_flow,
             "max_flow": max_flow,
+            "day_num": peak_flow_day.day_num,
             "variabilty": variabilty_perc,
             "mean_flow": mean_flow,
-            "day_num": peak_flow_day.day_num,
             "work_day": peak_flow_day.work_day,
             "complete": len(flow_values) > 5,
             "note": peak_flow_day.note,
@@ -48,10 +49,12 @@ class PeakFlowGraphData(LoginRequiredViewset):
         If they miss a day, that's a day counted as incomplete
         """
 
-        days_with_flows = len([i for i in day_dicts if "min_flow" in i])
-        completed_days = len([i for i in day_dicts if i["complete"]])
-        if days_with_flows:
-            completeness = Decimal(completed_days)/Decimal(days_with_flows)
+        total_days = max([i["day_num"] for i in day_dicts if "min_flow" in i])
+        completed_days = len(
+            [i for i in day_dicts if "complete" in i and i["complete"]]
+        )
+        if total_days:
+            completeness = Decimal(completed_days)/Decimal(total_days)
         else:
             completeness = 0
         return round(completeness) * 100
