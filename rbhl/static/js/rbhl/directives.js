@@ -101,16 +101,72 @@ directives.directive("peakFlowGraph", function($timeout, PeakFlowGraphDataLoader
           });
         };
 
+        var prepend = function(parent, tagName){
+          var tag = parent.append(tagName);
+          var tagNode = tag.node();
+          tagNode.parentNode.insertBefore(tagNode, tagNode.parentNode.firstChild);
+          return tag;
+        }
+
         var addTopLayer = function(){
           /*
           * Adds a top layer above the graph
           */
           var firstG = d3.select(d3.select(element).selectAll("g")[0][0]);
-          var layer = firstG.append("g");
-          var layerNode = layer.node()
-          layerNode.parentNode.insertBefore(layerNode, layerNode.parentNode.firstChild);
-          return layer;
+          return prepend(firstG, "g")
         };
+
+        var getYAxisEnd = function(){
+          var e = d3.select(element).selectAll(".c3-axis-y .tick text")[0][0];
+          return e.x.baseVal[0].value;
+        }
+
+        // var getXAxisTickXPositions = function(){
+        //   var ticks = d3.select(element).selectAll('.c3-axis-x .tick text');
+        //   debugger;
+        //   return ticks.map(t => t[0].x.baseValue);
+        // }
+        var addRow = function(parent, idx, ytext, cls){
+            var cols = getColStartWidths();
+            var textStart = getYAxisEnd()
+            var section = parent.append("g");
+            section.attr("transform", "translate(0, " +  (-25 * idx) + ")");
+            // extends the line of the y axis
+            var axis = section.append("line");
+            axis.attr("x1", 0);
+            axis.attr("x2", 0);
+            axis.attr("y1", 0);
+            axis.attr("y2", -30);
+            axis.attr("stroke-width", "1");
+
+            // the tick on the y axis
+            var horizontalTick1 = section.append("line");
+            horizontalTick1.attr("x1", -6);
+            horizontalTick1.attr("x2", 0);
+            horizontalTick1.attr("y1", -25);
+            horizontalTick1.attr("y2", -25);
+
+            var text = prepend(section, "text");
+            text.attr("x", textStart);
+            text.attr("y", "-8");
+            text.attr("text-anchor", "end");
+            text.classed(cls, true);
+            text.text(ytext);
+
+            // extend all of the other columns up accordingly
+            cols.forEach(col =>{
+              var colLine = section.append("line");
+              colLine.attr("x1", col.start + col.width);
+              colLine.attr("x2", col.start + col.width);
+              colLine.attr("y1", -3);
+              colLine.attr("y2", -30);
+              colLine.attr("stroke-dasharray", "3");
+              colLine.attr("z-index", 20);
+              colLine.classed("treatment-dash-lines", true);
+            });
+
+            return section
+        }
 
         var addTreatments = function(){
           /*
@@ -134,46 +190,35 @@ directives.directive("peakFlowGraph", function($timeout, PeakFlowGraphDataLoader
               return accumulator + column.width;
             }, 0);
             var cls = "treatment-" + treatmentIdx % 3;
+            var treatmentSection = addRow(topLayer, treatmentIdx, treatmentObj.treatment, cls)
 
-            var treatmentSection = topLayer.append("g");
-            treatmentSection.attr("transform", "translate(" + x1 + ")");
-
-            var line = treatmentSection.append("line");
-
-            line.attr("x1", 0);
-            line.attr("x2", width);
-            line.attr("y1", "-10");
-            line.attr("y2", "-10");
-            line.attr("stroke-width", "2");
+            // the line that makes up the bar chart
+            var line = prepend(treatmentSection, "line");
+            line.attr("x1", x1);
+            line.attr("x2", x1 + width);
+            line.attr("y1", "-12");
+            line.attr("y2", "-12");
+            line.attr("stroke-width", "14");
             line.classed(cls, true);
 
-
-            var text = treatmentSection.append("text");
-            text.attr("x", String(width/2));
-            text.attr("y", "-15");
-            text.attr("width", width);
-            text.attr("text-anchor", "middle");
-            text.classed(cls, true);
-            text.text(treatmentObj.treatment);
           });
-        };
 
-        var addVariance = function(){
-          var d3Element = d3.select(element);
-          var variabilties = _.pluck(data.days, "variabilty").filter(variabilty => !_.isUndefined(variabilty));
-          var g = d3Element.selectAll('.c3-axis-x .tick').data(variabilties).append("g");
-          g.attr("transform", "translate(-15, 25)");
+          var variabilityRow = addRow(topLayer, graphTreatments.length, "Variability", "variability");
 
-          var rect = g.append("rect");
-          rect.attr("width", "30").attr("height", "20");
-          rect.classed("variability", true);
+          // add variance
+          cols.forEach((col, idx) =>{
+            var variability = data.days[idx].variabilty;
 
-          var text = g.append("text");
-          text.attr("width", "30").attr("height","15").classed("variance", true);
-          text.attr("text-anchor", "middle").attr('alignment-baseline', 'middle');
-          text.attr("x", "15").attr("dy", ".82em").attr("dx", "0").classed("variance", true);
-          text.text(function(variabilty){
-            return variabilty;
+            if(!_.isUndefined(variability)){
+              var g = prepend(variabilityRow, "g");
+              g.attr("transform", "translate(" + col.start + ", -25)");
+              var text = g.append("text");
+              // text.attr("width", col.width).attr("height","15");
+              text.attr("text-anchor", "middle").attr('alignment-baseline', 'middle');
+              text.attr("x", col.width/2).attr("dy", ".82em").attr("dx", "0").classed("variance", true);
+              text.classed("variability", true);
+              text.text(variability);
+            }
           });
         };
 
@@ -181,7 +226,8 @@ directives.directive("peakFlowGraph", function($timeout, PeakFlowGraphDataLoader
           bindto: element[0],
           padding: {
             bottom: 30,
-            top: 30,
+            left: 100,
+            top: 80,
           },
           data: {
             x: "x",
@@ -209,8 +255,8 @@ directives.directive("peakFlowGraph", function($timeout, PeakFlowGraphDataLoader
           regions: regions,
           onrendered: function() {
             setTimeout(function(){ // timeout is needed for initial render.
-              addVariance();
               addTreatments();
+              // addVariance();
             }, 0);
           }
         });

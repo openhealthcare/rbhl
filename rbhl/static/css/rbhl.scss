@@ -375,23 +375,27 @@ a {
         font-family: 'Lato', sans-serif;
     }
     .treatment-0{
-        stroke: $bluegreen;
-        fill: $bluegreen;
+        stroke: scale-color($bluegreen, $alpha: -30%);
+        fill: scale-color($bluegreen, $alpha: -30%);
     }
     .treatment-1{
-        stroke: $orange;
-        fill: $orange;
+        stroke: scale-color($orange, $alpha: -30%);
+        fill: scale-color($orange, $alpha: -30%);
     }
     .treatment-2{
-        stroke: $green;
-        fill: $green;
+        stroke: scale-color($green, $alpha: -30%);
+        fill: scale-color($green, $alpha: -30%);
     }
-
 
     .variability{
         stroke-width: 1;
         stroke: $red;
-        fill: white;
+        fill: $red;
+    }
+
+    .treatment-dash-lines{
+        stroke: #999;
+        fill: #999;
     }
 }
 
