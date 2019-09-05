@@ -39,7 +39,7 @@ class PeakFlowGraphData(LoginRequiredViewset):
         return PeakFlowDay.objects.filter(
             episode_id=episode_id,
             trial_num=trial_num
-        ).order_by("work_day")
+        ).order_by("day_num")
 
     def get_completeness(self, day_dicts):
         """
@@ -59,12 +59,58 @@ class PeakFlowGraphData(LoginRequiredViewset):
             completeness = 0
         return round(completeness) * 100
 
+    def get_treatments(self, day_dicts):
+        """
+        Looks at all treatments on the day dicts and tries
+        to change them into a continuous timeline.
+
+        End dates are inclusive.
+
+        For example
+        [
+            {
+                treatment: "Paracetomol",
+                start: 1,
+                end: 3
+            },
+            {
+                treatment: "Aspirin",
+                start: 4,
+                end: 5
+            }
+        ]
+
+        """
+        treatments = []
+        treatment = {}
+
+        for day_dict in day_dicts:
+            if day_dict["treatment_taken"]:
+                if treatment.get("treatment") == day_dict["treatment_taken"]:
+                    continue
+                elif treatment:
+                    treatment["end"] = day_dict["day_num"] - 1
+                    treatments.append(treatment)
+                    treatment = {}
+                treatment["start"] = day_dict["day_num"]
+                treatment["treatment"] = day_dict["treatment_taken"]
+            elif treatment:
+                treatment["end"] = day_dict["day_num"] - 1
+                treatments.append(treatment)
+                treatment = {}
+
+        if treatment:
+            treatment["end"] = day_dict["day_num"]
+            treatments.append(treatment)
+        return treatments
+
     def list(self, request, *args, **kwargs):
         qs = self.get_queryset()
         days = [self.day_to_dict(i) for i in qs]
         return json_response({
             "days": days,
-            "completeness": self.get_completeness(days)
+            "completeness": self.get_completeness(days),
+            "treatments": self.get_treatments(days)
         })
 
 

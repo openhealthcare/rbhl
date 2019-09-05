@@ -112,14 +112,21 @@ directives.directive("peakFlowGraph", function($timeout, PeakFlowGraphDataLoader
           return layer;
         };
 
-        var addTreatments = function(treatmentObjs){
+        var addTreatments = function(){
           /*
-          * It expects an array of objects that look like
-          * {colStart: 0, colEnd: 3, treatment: treatmentName}
+          * treatments come from the server are started/ended via trial num
+          * so we translate that to column num
           */
+          var graphTreatments = data.treatments.map(t => {
+            return {
+              colStart: t.start-1,
+              colEnd: t.end-1,
+              treatment: t.treatment
+            }
+          });
           var cols = getColStartWidths();
           var topLayer = addTopLayer();
-          treatmentObjs.forEach((treatmentObj, treatmentIdx) => {
+          graphTreatments.forEach((treatmentObj, treatmentIdx) => {
 
             var columns = cols.slice(treatmentObj.colStart, treatmentObj.colEnd+1);
             var x1 = columns[0].start;
@@ -159,9 +166,7 @@ directives.directive("peakFlowGraph", function($timeout, PeakFlowGraphDataLoader
 
           var rect = g.append("rect");
           rect.attr("width", "30").attr("height", "20");
-          rect.style("fill", "white");
-          rect.style("stroke", "red");
-          rect.style("stroke-width", "2");
+          rect.classed("variability", true);
 
           var text = g.append("text");
           text.attr("width", "30").attr("height","15").classed("variance", true);
@@ -205,12 +210,7 @@ directives.directive("peakFlowGraph", function($timeout, PeakFlowGraphDataLoader
           onrendered: function() {
             setTimeout(function(){ // timeout is needed for initial render.
               addVariance();
-              if(scope.trialNum === 1){
-                addTreatments([
-                  {colStart: 1,  colEnd: 2, treatment: "Aspirin"},
-                  {colStart: 4,  colEnd: 8, treatment: "Paracetomol"}
-                ]);
-              }
+              addTreatments();
             }, 0);
           }
         });
