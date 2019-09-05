@@ -340,21 +340,28 @@ a {
 
 .peak-flow-graph .c3 svg {
   font-size: 15px;
+  font-family: 'Lato', sans-serif;
 }
 
 .peak-flow-graph .treatment-0 {
-  stroke: #4B485E;
-  fill: #4B485E;
+  stroke: #3a8a8a;
+  fill: #3a8a8a;
 }
 
 .peak-flow-graph .treatment-1 {
-  stroke: #CCA97C;
-  fill: #CCA97C;
+  stroke: #e18400;
+  fill: #e18400;
 }
 
 .peak-flow-graph .treatment-2 {
-  stroke: #F78D40;
-  fill: #F78D40;
+  stroke: #2e993e;
+  fill: #2e993e;
+}
+
+.peak-flow-graph .variability {
+  stroke-width: 1;
+  stroke: #d01c17;
+  fill: white;
 }
 
 .bottom-menu {

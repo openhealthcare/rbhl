@@ -372,18 +372,26 @@ a {
 .peak-flow-graph{
     .c3 svg{
         font-size: 15px;
+        font-family: 'Lato', sans-serif;
     }
     .treatment-0{
-        stroke: #4B485E;
-        fill: #4B485E;
+        stroke: $bluegreen;
+        fill: $bluegreen;
     }
     .treatment-1{
-        stroke: #CCA97C;
-        fill: #CCA97C;
+        stroke: $orange;
+        fill: $orange;
     }
     .treatment-2{
-        stroke: #F78D40;
-        fill: #F78D40;
+        stroke: $green;
+        fill: $green;
+    }
+
+
+    .variability{
+        stroke-width: 1;
+        stroke: $red;
+        fill: white;
     }
 }
 
@@ -462,6 +470,7 @@ input[type="date"]::-webkit-input-placeholder{
         padding-top: 10px;
         padding-bottom: 10px
     }
+
 }
 
 .content-offset-below-100{
