@@ -203,7 +203,7 @@ directives.directive("peakFlowGraph", function($timeout, PeakFlowGraphDataLoader
 
           });
 
-          var variabilityRow = addRow(topLayer, graphTreatments.length, "Variability", "variability");
+          var variabilityRow = addRow(topLayer, graphTreatments.length, "% Variability", "variability");
 
           // add variance
           cols.forEach((col, idx) =>{
@@ -222,8 +222,62 @@ directives.directive("peakFlowGraph", function($timeout, PeakFlowGraphDataLoader
           });
         };
 
+        var calculateGraphAxisAndHeight = function(columns){
+          /*
+          * Its been requested that the graphs have a fixed axis
+          * however the range of values is quite large but often
+          * the docs care about a small range.
+          *
+          * The solution to this is that we fix the axis to account
+          * for the vast majority of patients. We grow the axis
+          * for when they are above the usual min max so the axis
+          * are always the same but the graph grows to account for
+          * extremes.
+          */
+
+          // defaut mix max vaues
+          var min = 300;
+          var max = 750;
+
+          // look at the values actually to be rendered
+          // and adjust the min/maxes accordingly.
+          columns = columns.filter(column=> column[0] !== 'x');
+          var values = columns.flat();
+          values = values.filter(value => !_.isString(value));
+          var minInVaues = Math.min(...values);
+          var maxInValues = Math.max(...values);
+
+          if(minInVaues < min){
+            min = Math.floor(minInVaues/50) * 50
+          }
+
+          if(maxInValues > max){
+            max = (Math.floor(maxInValues/50) + 1) * 50
+          }
+
+          // the range is the min -50 and the max + 50
+          var range = _.range(min, max+50, 50);
+          var height = max - min;
+
+          return {
+            size: {
+              height: height
+            },
+            axis: {
+              max: max,
+              min: min,
+              tick: {
+               values: range
+             }
+            }
+          }
+        }
+
+        var axisDimensions = calculateGraphAxisAndHeight(columns);
+
         var ret = c3.generate({
           bindto: element[0],
+          size: axisDimensions.size,
           padding: {
             bottom: 30,
             left: 100,
@@ -241,7 +295,8 @@ directives.directive("peakFlowGraph", function($timeout, PeakFlowGraphDataLoader
                 values: _.rest(x)
               },
               label: "Trial day"
-            }
+            },
+            y: axisDimensions.axis
           },
           legend: {
             position: 'right'
@@ -250,7 +305,9 @@ directives.directive("peakFlowGraph", function($timeout, PeakFlowGraphDataLoader
             x: {
               lines: gridLines
             },
-            y: { show: true }
+            y: {
+              show: true,
+            }
           },
           regions: regions,
           onrendered: function() {

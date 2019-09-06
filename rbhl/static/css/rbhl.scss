@@ -399,14 +399,6 @@ a {
         stroke: scale-color($green, $alpha: -30%);
     }
 
-    text.variability{
-        fill: $red;
-    }
-    line.variability{
-        fill: scale-color($red, $alpha: -30%);
-        stroke: scale-color($red, $alpha: -30%);
-    }
-
     .treatment-dash-lines{
         stroke: #999;
         fill: #999;

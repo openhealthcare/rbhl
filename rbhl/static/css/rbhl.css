@@ -370,15 +370,6 @@ a {
   stroke: rgba(46, 153, 62, 0.7);
 }
 
-.peak-flow-graph text.variability {
-  fill: #d01c17;
-}
-
-.peak-flow-graph line.variability {
-  fill: rgba(208, 28, 23, 0.7);
-  stroke: rgba(208, 28, 23, 0.7);
-}
-
 .peak-flow-graph .treatment-dash-lines {
   stroke: #999;
   fill: #999;
