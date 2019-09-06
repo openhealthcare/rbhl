@@ -220,6 +220,10 @@ directives.directive("peakFlowGraph", function($timeout, PeakFlowGraphDataLoader
               text.text(variability);
             }
           });
+
+          // the default fill opacity provided by d3 makes it so light you can't see
+          // workdays on the projector
+          d3.select(element).selectAll(".c3-region.workingday rect").style("fill-opacity", "0.2");
         };
 
         var calculateGraphAxisAndHeight = function(columns){
