@@ -374,23 +374,37 @@ a {
         font-size: 15px;
         font-family: 'Lato', sans-serif;
     }
-    .treatment-0{
-        stroke: scale-color($bluegreen, $alpha: -30%);
+
+    text.treatment-0{
+        fill: $bluegreen;
+    }
+    line.treatment-0{
         fill: scale-color($bluegreen, $alpha: -30%);
-    }
-    .treatment-1{
-        stroke: scale-color($orange, $alpha: -30%);
-        fill: scale-color($orange, $alpha: -30%);
-    }
-    .treatment-2{
-        stroke: scale-color($green, $alpha: -30%);
-        fill: scale-color($green, $alpha: -30%);
+        stroke: scale-color($bluegreen, $alpha: -30%);
     }
 
-    .variability{
-        stroke-width: 1;
-        stroke: $red;
+    text.treatment-1{
+        fill: $orange;
+    }
+    line.treatment-1{
+        fill: scale-color($orange, $alpha: -30%);
+        stroke: scale-color($orange, $alpha: -30%);
+    }
+
+    text.treatment-1{
+        fill: $green;
+    }
+    line.treatment-1{
+        fill: scale-color($green, $alpha: -30%);
+        stroke: scale-color($green, $alpha: -30%);
+    }
+
+    text.variability{
         fill: $red;
+    }
+    line.variability{
+        fill: scale-color($red, $alpha: -30%);
+        stroke: scale-color($red, $alpha: -30%);
     }
 
     .treatment-dash-lines{

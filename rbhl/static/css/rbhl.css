@@ -343,25 +343,40 @@ a {
   font-family: 'Lato', sans-serif;
 }
 
-.peak-flow-graph .treatment-0 {
-  stroke: rgba(58, 138, 138, 0.7);
+.peak-flow-graph text.treatment-0 {
+  fill: #3a8a8a;
+}
+
+.peak-flow-graph line.treatment-0 {
   fill: rgba(58, 138, 138, 0.7);
+  stroke: rgba(58, 138, 138, 0.7);
 }
 
-.peak-flow-graph .treatment-1 {
-  stroke: rgba(225, 132, 0, 0.7);
+.peak-flow-graph text.treatment-1 {
+  fill: #e18400;
+}
+
+.peak-flow-graph line.treatment-1 {
   fill: rgba(225, 132, 0, 0.7);
+  stroke: rgba(225, 132, 0, 0.7);
 }
 
-.peak-flow-graph .treatment-2 {
-  stroke: rgba(46, 153, 62, 0.7);
+.peak-flow-graph text.treatment-1 {
+  fill: #2e993e;
+}
+
+.peak-flow-graph line.treatment-1 {
   fill: rgba(46, 153, 62, 0.7);
+  stroke: rgba(46, 153, 62, 0.7);
 }
 
-.peak-flow-graph .variability {
-  stroke-width: 1;
-  stroke: #d01c17;
+.peak-flow-graph text.variability {
   fill: #d01c17;
+}
+
+.peak-flow-graph line.variability {
+  fill: rgba(208, 28, 23, 0.7);
+  stroke: rgba(208, 28, 23, 0.7);
 }
 
 .peak-flow-graph .treatment-dash-lines {

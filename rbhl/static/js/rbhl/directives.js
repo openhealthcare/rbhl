@@ -240,7 +240,7 @@ directives.directive("peakFlowGraph", function($timeout, PeakFlowGraphDataLoader
                 fit: true,
                 values: _.rest(x)
               },
-              label: "Days"
+              label: "Trial day"
             }
           },
           legend: {
