@@ -275,16 +275,22 @@ directives.directive("peakFlowGraph", function($timeout, PeakFlowGraphDataLoader
           }
         }
 
+        var calculatePadding = function(treatments){
+          // padding at the top is 25 for each treatment + and additional 25 for variance
+          var paddingTop = (Object.keys(treatments).length * 25) + 25;
+          return {
+            bottom: 30,
+            left: 100,
+            top: paddingTop,
+          }
+        }
+
         var axisDimensions = calculateGraphAxisAndHeight(columns);
 
         var ret = c3.generate({
           bindto: element[0],
           size: axisDimensions.size,
-          padding: {
-            bottom: 30,
-            left: 100,
-            top: 80,
-          },
+          padding: calculatePadding(data.treatments),
           data: {
             x: "x",
             columns: columns
