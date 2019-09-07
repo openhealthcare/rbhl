@@ -1,3 +1,4 @@
+from collections import defaultdict
 from decimal import Decimal
 from opal.core.views import json_response
 from opal.core.api import LoginRequiredViewset
@@ -66,19 +67,27 @@ class PeakFlowGraphData(LoginRequiredViewset):
 
         End dates are inclusive.
 
+        We aggregate by dru
+
         For example
-        [
-            {
-                treatment: "Paracetomol",
-                start: 1,
-                end: 3
-            },
-            {
-                treatment: "Aspirin",
-                start: 4,
-                end: 5
-            }
-        ]
+        {
+            'Aspirin': [
+                {
+                    start: 1,
+                    end: 3
+                },
+                {
+                    start: 4,
+                    end: 4
+                }
+            ],
+            'Paracetomol': [
+                {
+                    start: 2,
+                    end: 2
+                }
+            ]
+        }
 
         """
         treatments = []
@@ -102,7 +111,13 @@ class PeakFlowGraphData(LoginRequiredViewset):
         if treatment:
             treatment["end"] = day_dict["day_num"]
             treatments.append(treatment)
-        return treatments
+        result = defaultdict(list)
+        for treatment in treatments:
+            result[treatment["treatment"]].append({
+                "start": treatment["start"],
+                "end": treatment["end"],
+            })
+        return result
 
     def list(self, request, *args, **kwargs):
         qs = self.get_queryset()

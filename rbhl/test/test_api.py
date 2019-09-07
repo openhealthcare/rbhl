@@ -26,18 +26,53 @@ class PeakFlowGraphDataTestCase(OpalTestCase):
             }
         ]
         result = self.api.get_treatments(pfd)
-        expected = [
-            {
+        expected = {
+            "Aspirin": [{
                 "start": 1,
                 "end": 2,
-                "treatment": "Aspirin"
-            },
-            {
+            }],
+            "Paracetomol": [{
                 "start": 4,
                 "end": 4,
-                "treatment": "Paracetomol"
+            }]
+        }
+        self.assertEqual(
+            result,
+            expected
+        )
+
+    def test_same_treatments_different_tranches(self):
+        pfd = [
+            {
+                "day_num": 1,
+                "treatment_taken": "Aspirin"
+            },
+            {
+                "day_num": 2,
+                "treatment_taken": "Aspirin"
+            },
+            {
+                "day_num": 3,
+                "treatment_taken": None
+            },
+            {
+                "day_num": 4,
+                "treatment_taken": "Aspirin"
             }
         ]
+        result = self.api.get_treatments(pfd)
+        expected = {
+            "Aspirin": [
+                {
+                    "start": 1,
+                    "end": 2,
+                },
+                {
+                    "start": 4,
+                    "end": 4,
+                }
+            ]
+        }
         self.assertEqual(
             result,
             expected

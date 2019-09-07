@@ -173,37 +173,35 @@ directives.directive("peakFlowGraph", function($timeout, PeakFlowGraphDataLoader
           * treatments come from the server are started/ended via trial num
           * so we translate that to column num
           */
-          var graphTreatments = data.treatments.map(t => {
-            return {
-              colStart: t.start-1,
-              colEnd: t.end-1,
-              treatment: t.treatment
-            }
-          });
           var cols = getColStartWidths();
           var topLayer = addTopLayer();
-          graphTreatments.forEach((treatmentObj, treatmentIdx) => {
+          Object.keys(data.treatments).forEach((treatmentName, treatmentIdx) => {
 
-            var columns = cols.slice(treatmentObj.colStart, treatmentObj.colEnd+1);
-            var x1 = columns[0].start;
-            var width = columns.reduce((accumulator, column) => {
-              return accumulator + column.width;
-            }, 0);
+            var treatmentSection = addRow(topLayer, treatmentIdx, treatmentName, cls)
             var cls = "treatment-" + treatmentIdx % 3;
-            var treatmentSection = addRow(topLayer, treatmentIdx, treatmentObj.treatment, cls)
 
-            // the line that makes up the bar chart
-            var line = prepend(treatmentSection, "line");
-            line.attr("x1", x1);
-            line.attr("x2", x1 + width);
-            line.attr("y1", "-12");
-            line.attr("y2", "-12");
-            line.attr("stroke-width", "14");
-            line.classed(cls, true);
+            data.treatments[treatmentName].forEach(treatmentObj => {
 
+              // we bring through treatment with start and stop
+              // as the treatment days so we need to translate
+              // it to arra  index
+              var columns = cols.slice(treatmentObj.start - 1, treatmentObj.end );
+              var x1 = columns[0].start;
+              var width = columns.reduce((accumulator, column) => {
+                return accumulator + column.width;
+              }, 0);
+
+              var line = prepend(treatmentSection, "line");
+              line.attr("x1", x1);
+              line.attr("x2", x1 + width);
+              line.attr("y1", "-12");
+              line.attr("y2", "-12");
+              line.attr("stroke-width", "14");
+              line.classed(cls, true);
+            });
           });
 
-          var variabilityRow = addRow(topLayer, graphTreatments.length, "% Variability", "variability");
+          var variabilityRow = addRow(topLayer, Object.keys(data.treatments).length, "% Variability", "variability");
 
           // add variance
           cols.forEach((col, idx) =>{
@@ -221,7 +219,7 @@ directives.directive("peakFlowGraph", function($timeout, PeakFlowGraphDataLoader
             }
           });
 
-          // the default fill opacity provided by d3 makes it so light you can't see
+          // the default fill (0.1) opacity provided by d3 makes it so light you can't see
           // workdays on the projector
           d3.select(element).selectAll(".c3-region.workingday rect").style("fill-opacity", "0.2");
         };
