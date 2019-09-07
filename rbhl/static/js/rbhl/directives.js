@@ -110,10 +110,13 @@ directives.directive("peakFlowGraph", function($timeout, PeakFlowGraphDataLoader
 
         var addTopLayer = function(){
           /*
-          * Adds a top layer above the graph
+          * Adds a top layer above the graph, removes it, if it exists
           */
           var firstG = d3.select(d3.select(element).selectAll("g")[0][0]);
-          return prepend(firstG, "g")
+          firstG.selectAll(".treatmentLayer").remove();
+          var topLayer = prepend(firstG, "g");
+          topLayer.classed("treatmentLayer", true);
+          return topLayer;
         };
 
         var getYAxisEnd = function(){
