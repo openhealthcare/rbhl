@@ -36,7 +36,7 @@
           <div class="col-md-12">
             <div class="col-md-4">
               <div class="row">
-                <div class="col-md-8">
+                <div class="col-md-5">
                   <strong>
                     Overall mean:
                   </strong>
@@ -48,7 +48,7 @@
             </div>
             <div class="col-md-4">
               <div class="row">
-                <div class="col-md-8">
+                <div class="col-md-5">
                   <strong>
                     PEF Mean:
                   </strong>
@@ -60,7 +60,7 @@
             </div>
             <div class="col-md-4">
               <div class="row">
-                <div class="col-md-8">
+                <div class="col-md-5">
                   <strong>
                     Completeness:
                   </strong>
@@ -72,7 +72,19 @@
             </div>
           </div>
         </div>
-        <div peak-flow-graph data="graphDataByPeakFlowNum[trialNum]"></div>
+        <div peak-flow-graph data="graphDataByPeakFlowNum[trialNum]" highlights="highlights[trial_num]"></div>
+        <div ng-show="graphDataByPeakFlowNum[trialNum].notes.length" class="row content-offset-below">
+          <div class="col-md-12">
+            <div class="col-md-1">
+              <strong>Notes:</strong>
+            </div>
+            <div class="col-md-11">
+              <div ng-mouseover="highlights[trial_num].day_num = note.trial_num" ng-mouseout="highlights[trial_num].day_num = null"  ng-repeat="note in graphDataByPeakFlowNum[trialNum].notes" class="col-md-2 content-offset-below-25 text-left">
+                Trial day [[ note.trial_num ]]([[ note.date | displayDate ]]) <br />[[ note.detail ]]
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

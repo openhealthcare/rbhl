@@ -3,7 +3,8 @@ directives.directive("peakFlowGraph", function($timeout) {
 
   return {
     scope: {
-      data: "="
+      data: "=",
+      highlights: "="
     },
     link: function(scope, element, attrs) {
       var data = scope.data;
@@ -194,9 +195,6 @@ directives.directive("peakFlowGraph", function($timeout) {
               // as the treatment days so we need to translate
               // it to arra  index
               var columns = cols.slice(treatmentObj.start - 1, treatmentObj.end );
-              if(!columns[0]){
-                debugger;
-              }
               var x1 = columns[0].start;
               var width = columns.reduce((accumulator, column) => {
                 return accumulator + column.width;
@@ -304,7 +302,7 @@ directives.directive("peakFlowGraph", function($timeout) {
           padding: calculatePadding(data.treatments),
           data: {
             x: "x",
-            columns: columns
+            columns: columns,
           },
           axis: {
             x: {
@@ -335,8 +333,17 @@ directives.directive("peakFlowGraph", function($timeout) {
           onrendered: function() {
             setTimeout(function(){ // timeout is needed for initial render.
               addTreatments();
-              // addVariance();
             }, 0);
+          }
+        });
+        scope.$watch('highlights.day_num', function(){
+          if(scope.highlights){
+            if(scope.highlights.day_num){
+              ret.tooltip.show({x: scope.highlights.day_num-1});
+            }
+            else{
+              ret.tooltip.hide({x: scope.highlights.day_num-1});
+            }
           }
         });
       }

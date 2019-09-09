@@ -6,8 +6,14 @@ angular
     $scope.graphDataByPeakFlowNum = {};
     $scope.trialNums = [];
 
+    // highlights notes when you mouse over
+    $scope.highlights = {}
+
     PeakFlowGraphDataLoader.load($scope.episode.id).then(function(data){
       $scope.graphDataByPeakFlowNum = data
       $scope.trialNums = Object.keys($scope.graphDataByPeakFlowNum).sort().reverse();
+      $scope.trialNums.forEach(trialNum=> {
+        $scope.highlights.trial_num = {day_num: null};
+      });
     });
   });

@@ -36,7 +36,6 @@ class PeakFlowGraphData(LoginRequiredViewset):
             "pef_flow": pef_flow,
             "work_day": peak_flow_day.work_day,
             "complete": completeness,
-            "note": peak_flow_day.note,
             "treatment_taken": peak_flow_day.treatment_taken
         }
 
@@ -126,6 +125,13 @@ class PeakFlowGraphData(LoginRequiredViewset):
             })
         return result
 
+    def get_notes(self, pfds):
+        return [{
+            "date": pfd.date,
+            "trial_num": pfd.trial_num,
+            "detail": pfd.note
+        } for pfd in pfds if pfd.note]
+
     def trial_data(self, trial_num, demographics, pfds):
         days = [self.day_to_dict(i, demographics) for i in pfds]
         return {
@@ -133,7 +139,8 @@ class PeakFlowGraphData(LoginRequiredViewset):
             "completeness": self.get_completeness(days),
             "treatments": self.get_treatments(days),
             "overrall_mean": self.get_overrall_mean(days),
-            "pef_mean": self.get_pef_mean(days)
+            "pef_mean": self.get_pef_mean(days),
+            "notes": self.get_notes(pfds)
         }
 
     @episode_from_pk
