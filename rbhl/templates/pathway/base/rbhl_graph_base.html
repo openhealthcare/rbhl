@@ -1,0 +1,74 @@
+{% block pathway_container %}
+<div class="container-fluid content-offset">
+<div class="row">
+    <div class="peak-flow-graph" ng-controller="PeakFlowCtrl" class="col-md-12">
+      <div class="col-md-12" ng-if="graphDataByPeakFlowNum[trialNum].days.length > 3">
+        <h4>
+          <div class="row">
+            <div class="col-md-12">
+              <h3>
+                [[ episode.demographics[0].first_name ]] [[ episode.demographics[0].surname ]]
+                <small>[[ episode.demographics[0].hospital_number ]]</small>
+                - Peak flow trial [[ trialNum ]]
+              </h3>
+            </div>
+          </div>
+        </h4>
+        <div class="row content-offset-below-25">
+          <div class="col-md-12">
+            <div class="col-md-4">
+              <div class="row">
+                <div class="col-md-5">
+                  <strong>
+                    Overall mean:
+                  </strong>
+                </div>
+                <div class="col-md-7 text-left">
+                  [[ graphDataByPeakFlowNum[trialNum].overrall_mean ]] litres/minute
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="row">
+                <div class="col-md-5">
+                  <strong>
+                    PEF Mean:
+                  </strong>
+                </div>
+                <div class="col-md-7 text-left">
+                  [[ graphDataByPeakFlowNum[trialNum].pef_mean ]] litres/minute
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="row">
+                <div class="col-md-5">
+                  <strong>
+                    Completeness:
+                  </strong>
+                </div>
+                <div class="col-md-7 text-left">
+                  [[ graphDataByPeakFlowNum[trialNum].completeness ]]%
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div peak-flow-graph data="graphDataByPeakFlowNum[trialNum]" highlights="highlights[trialNum]"></div>
+        <div ng-show="graphDataByPeakFlowNum[trialNum].notes.length" class="row content-offset-below">
+          <div class="col-md-12">
+            <div class="col-md-1">
+              <strong>Notes:</strong>
+            </div>
+            <div class="col-md-11">
+              <div ng-mouseover="highlights[trialNum].day_num = note.trial_num" ng-mouseout="highlights[trialNum].day_num = null"  ng-repeat="note in graphDataByPeakFlowNum[trialNum].notes" class="col-md-3 content-offset-below-25 text-left">
+                Trial day [[ note.trial_num ]]([[ note.date | displayDate ]]) <br />[[ note.detail ]]
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

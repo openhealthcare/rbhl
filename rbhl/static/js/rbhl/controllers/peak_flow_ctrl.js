@@ -1,11 +1,15 @@
 angular
   .module("opal.controllers")
-  .controller("PeakFlowCtrl", function($scope, PeakFlowGraphDataLoader) {
+  .controller("PeakFlowCtrl", function($scope, PeakFlowGraphDataLoader, $routeParams) {
     "use strict";
     // split the peak flow by trial numbers
     $scope.graphDataByPeakFlowNum = {};
     $scope.trialNums = [];
 
+    // used by the graph full page view
+    if($routeParams.trial_num){
+      $scope.trialNum = $routeParams.trial_num;
+    }
     // highlights notes when you mouse over
     $scope.highlights = {}
 

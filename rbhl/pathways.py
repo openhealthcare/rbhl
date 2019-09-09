@@ -80,3 +80,12 @@ class PeakFlowDayPathway(PagePathway):
     steps = [
         PeakFlowStep(),
     ]
+
+
+class PeakFlowGraphFullPage(PagePathway):
+    display_name = 'Peak Graph View'
+    slug = 'peak_graph_view'
+    template = "pathway/base/rbhl_graph_base.html"
+    steps = [
+        models.Demographics,
+    ]
