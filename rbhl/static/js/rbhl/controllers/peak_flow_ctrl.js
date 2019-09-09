@@ -13,7 +13,7 @@ angular
       $scope.graphDataByPeakFlowNum = data
       $scope.trialNums = Object.keys($scope.graphDataByPeakFlowNum).sort().reverse();
       $scope.trialNums.forEach(trialNum=> {
-        $scope.highlights.trial_num = {day_num: null};
+        $scope.highlights[trialNum] = {day_num: null};
       });
     });
   });
