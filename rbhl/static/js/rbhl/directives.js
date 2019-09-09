@@ -16,6 +16,7 @@ directives.directive("peakFlowGraph", function($timeout, PeakFlowGraphDataLoader
           var mean = ["Mean"].concat(_.compact(_.pluck(days, "mean_flow")));
           var max = ["Max"].concat(_.compact(_.pluck(days, "max_flow")));
           var min = ["Min"].concat(_.compact(_.pluck(days, "min_flow")));
+          var pef = ["PEF"].concat(_.compact(_.pluck(days, "pef_flow")));
 
         // We want to colour days when the person was at work to easily identify them
         // It's _occupational_ lung disease after all.
@@ -86,7 +87,8 @@ directives.directive("peakFlowGraph", function($timeout, PeakFlowGraphDataLoader
           x,
           max,
           min,
-          mean //, predicted
+          mean, //, predicted
+          pef
         ];
 
         var getColStartWidths = function(){
@@ -319,6 +321,9 @@ directives.directive("peakFlowGraph", function($timeout, PeakFlowGraphDataLoader
             y: {
               show: true,
             }
+          },
+          point: {
+            show: false
           },
           regions: regions,
           onrendered: function() {

@@ -1,3 +1,5 @@
+import datetime
+from unittest import mock
 from opal.core.test import OpalTestCase
 from rbhl import models
 
@@ -14,3 +16,34 @@ class CalculatePEFTestCase(OpalTestCase):
             height=140, age=35, sex="Female"
         )
         self.assertEqual(result, 456.37)
+
+
+class DemographicsTestCase(OpalTestCase):
+    def setUp(self):
+        patient, _ = self.new_patient_and_episode_please()
+        self.demographics = patient.demographics()
+
+    @mock.patch("rbhl.models.datetime")
+    def test_age(self, dt):
+        dt.date.today.return_value = datetime.date(2019, 12, 1)
+        self.demographics.date_of_birth = datetime.date(1990, 12, 1)
+        self.demographics.save()
+        self.assertEqual(self.demographics.get_age(), 20)
+        self.assertEqual(
+            self.demographics.get_age(datetime.date(2019, 1, 1)),
+            19
+        )
+        self.assertEqual(
+            self.demographics.get_age(datetime.date(2020, 1, 1)),
+            21
+        )
+
+    def test_pef(self):
+        self.demographics.date_of_birth = datetime.date(1990, 12, 1)
+        self.demographics.sex = "Male"
+        self.demographics.height = 180
+        self.demographics.save()
+        expected = self.demographics.get_pef(datetime.date(2019, 12, 1))
+        self.assertEqual(
+            expected, 638.36
+        )

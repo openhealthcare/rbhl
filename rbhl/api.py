@@ -2,34 +2,40 @@ from collections import defaultdict
 from decimal import Decimal
 from opal.core.views import json_response
 from opal.core.api import LoginRequiredViewset
-from rbhl.models import PeakFlowDay
+from rbhl.models import PeakFlowDay, Demographics
 from opal.core.api import OPALRouter
 
 
 class PeakFlowGraphData(LoginRequiredViewset):
     base_name = "peak_flow_graph_data"
 
-    def day_to_dict(self, peak_flow_day):
-        flow_values = peak_flow_day.flow_values()
-        if not flow_values:
+    def day_to_dict(self, peak_flow_day, demographics):
+        aggregates = peak_flow_day.get_min_max_variability_completeness()
+        pef_flow = None
+
+        if peak_flow_day.date:
+            pef_flow = demographics.get_pef(peak_flow_day.date)
+
+        if not aggregates:
             return {
                 "note": peak_flow_day.note,
                 "treatment_taken": peak_flow_day.treatment_taken,
                 "day_num": peak_flow_day.day_num,
             }
-        min_flow = min(flow_values)
-        max_flow = max(flow_values)
-        variabilty = Decimal(max_flow - min_flow)/Decimal(max_flow)
-        variabilty_perc = round(variabilty * 100)
-        mean_flow = round(Decimal(sum(flow_values))/Decimal(len(flow_values)))
+        else:
+            (
+                min_flow, max_flow, mean_flow, variabilty, completeness
+            ) = aggregates
+
         return {
             "min_flow": min_flow,
+            "mean_flow": mean_flow,
             "max_flow": max_flow,
             "day_num": peak_flow_day.day_num,
-            "variabilty": variabilty_perc,
-            "mean_flow": mean_flow,
+            "variabilty": variabilty,
+            "pef_flow": pef_flow,
             "work_day": peak_flow_day.work_day,
-            "complete": len(flow_values) > 5,
+            "complete": completeness,
             "note": peak_flow_day.note,
             "treatment_taken": peak_flow_day.treatment_taken
         }
@@ -121,7 +127,11 @@ class PeakFlowGraphData(LoginRequiredViewset):
 
     def list(self, request, *args, **kwargs):
         qs = self.get_queryset()
-        days = [self.day_to_dict(i) for i in qs]
+        demographics = Demographics.objects.get(
+            patient__episode=self.request.GET["episode_id"]
+        )
+
+        days = [self.day_to_dict(i, demographics) for i in qs]
         return json_response({
             "days": days,
             "completeness": self.get_completeness(days),
