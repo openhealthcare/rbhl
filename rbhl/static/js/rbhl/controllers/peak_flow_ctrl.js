@@ -15,5 +15,15 @@ angular
       $scope.trialNums.forEach(trialNum=> {
         $scope.highlights[trialNum] = {day_num: null};
       });
+
+      // calculate what trial number to use when creating a new peak flow day trial
+      // trial nums are a strings because they're object keys so translate them
+      if($scope.trialNums.length){
+        var trialNums = $scope.trialNums.map(trialNum => parseInt(trialNum))
+        $scope.newTrialNum = Math.max(...trialNums) + 1;
+      }
+      else{
+        $scope.newTrialNum = 1;
+      }
     });
   });
