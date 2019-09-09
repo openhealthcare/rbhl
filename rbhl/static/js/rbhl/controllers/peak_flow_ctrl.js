@@ -1,26 +1,13 @@
 angular
   .module("opal.controllers")
-  .controller("PeakFlowCtrl", function($scope, $timeout) {
+  .controller("PeakFlowCtrl", function($scope, PeakFlowGraphDataLoader) {
     "use strict";
     // split the peak flow by trial numbers
-    var peakFlowDaysBytrialNum = {};
+    $scope.graphDataByPeakFlowNum = {};
+    $scope.trialNums = [];
 
-    _.each($scope.episode.peak_flow_day, function(pfd) {
-      var trialNum = String(pfd.trial_num);
-      if (!peakFlowDaysBytrialNum[trialNum]) {
-        peakFlowDaysBytrialNum[trialNum] = [];
-      }
-
-      peakFlowDaysBytrialNum[trialNum].push(pfd);
+    PeakFlowGraphDataLoader.load($scope.episode.id).then(function(data){
+      $scope.graphDataByPeakFlowNum = data
+      $scope.trialNums = Object.keys($scope.graphDataByPeakFlowNum).sort().reverse();
     });
-
-    var trialNums = Object.keys(peakFlowDaysBytrialNum)
-      .sort()
-      .reverse();
-    $scope.peakFlowDaysByTrial = [];
-
-    _.each(trialNums, function(tn) {
-      $scope.peakFlowDaysByTrial.push(peakFlowDaysBytrialNum[tn]);
-    });
-    $scope.newTrialNum = trialNums.length + 1;
   });

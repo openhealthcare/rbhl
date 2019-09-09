@@ -1,8 +1,8 @@
 from collections import defaultdict
 from decimal import Decimal
 from opal.core.views import json_response
-from opal.core.api import LoginRequiredViewset
-from rbhl.models import PeakFlowDay, Demographics
+from opal.core.api import LoginRequiredViewset, episode_from_pk
+from rbhl.models import Demographics
 from opal.core.api import OPALRouter
 
 
@@ -40,14 +40,6 @@ class PeakFlowGraphData(LoginRequiredViewset):
             "treatment_taken": peak_flow_day.treatment_taken
         }
 
-    def get_queryset(self, *args, **kwargs):
-        trial_num = self.request.GET["trial_num"]
-        episode_id = self.request.GET["episode_id"]
-        return PeakFlowDay.objects.filter(
-            episode_id=episode_id,
-            trial_num=trial_num
-        ).order_by("day_num")
-
     def get_completeness(self, day_dicts):
         """
         A complete day is every day where the patient has
@@ -65,6 +57,15 @@ class PeakFlowGraphData(LoginRequiredViewset):
         else:
             completeness = 0
         return round(completeness) * 100
+
+    def get_overrall_mean(self, day_dicts):
+        means = [i["mean_flow"] for i in day_dicts if "mean_flow" in i]
+        return round(sum(means)/len(means))
+
+    def get_pef_mean(self, day_dicts):
+        if day_dicts:
+            pefs = [i["pef_flow"] for i in day_dicts if "pef_flow" in i]
+            return round(sum(pefs)/len(pefs))
 
     def get_treatments(self, day_dicts):
         """
@@ -125,18 +126,31 @@ class PeakFlowGraphData(LoginRequiredViewset):
             })
         return result
 
-    def list(self, request, *args, **kwargs):
-        qs = self.get_queryset()
-        demographics = Demographics.objects.get(
-            patient__episode=self.request.GET["episode_id"]
-        )
-
-        days = [self.day_to_dict(i, demographics) for i in qs]
-        return json_response({
+    def trial_data(self, trial_num, demographics, pfds):
+        days = [self.day_to_dict(i, demographics) for i in pfds]
+        return {
             "days": days,
             "completeness": self.get_completeness(days),
-            "treatments": self.get_treatments(days)
-        })
+            "treatments": self.get_treatments(days),
+            "overrall_mean": self.get_overrall_mean(days),
+            "pef_mean": self.get_pef_mean(days)
+        }
+
+    @episode_from_pk
+    def retrieve(self, request, episode):
+        trial_num_to_peak_flow_day = defaultdict(list)
+        for pfd in episode.peakflowday_set.order_by("day_num"):
+            trial_num_to_peak_flow_day[pfd.trial_num].append(pfd)
+
+        demographics = Demographics.objects.get(
+            patient__episode=episode
+        )
+        result = {}
+        for trial_num, pfds in trial_num_to_peak_flow_day.items():
+            result[trial_num] = self.trial_data(
+                trial_num, demographics, pfds
+            )
+        return json_response(result)
 
 
 indigo_router = OPALRouter()

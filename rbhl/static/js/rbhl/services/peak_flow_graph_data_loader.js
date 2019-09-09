@@ -1,11 +1,11 @@
 angular.module('opal.services').factory('PeakFlowGraphDataLoader', function($q, $http, $window) {
   "use strict";
 
-  var url = '/indigo/v0.1/peak_flow_graph_data/?';
+  var url = '/indigo/v0.1/peak_flow_graph_data/';
 
   var load = function(episode_id, trial_num){
     var deferred = $q.defer();
-    var graphUrl = url + new URLSearchParams({episode_id: episode_id, trial_num: trial_num}).toString()
+    var graphUrl = url + episode_id + "/";
     $http.get(graphUrl).then(function(response) {
         deferred.resolve(response.data);
     }, function() {

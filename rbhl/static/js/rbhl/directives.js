@@ -1,22 +1,25 @@
-directives.directive("peakFlowGraph", function($timeout, PeakFlowGraphDataLoader) {
+directives.directive("peakFlowGraph", function($timeout) {
   "use strict";
 
   return {
     scope: {
-      trialNum: "=",
-      episodeId: "="
+      data: "="
     },
     link: function(scope, element, attrs) {
+      var data = scope.data;
 
       // make sure we don't call it too many times during the render
-      var render_chart = _.once(function() {
-        PeakFlowGraphDataLoader.load(scope.episodeId, scope.trialNum).then(function(data){
+      var render_chart = function() {
           var days = data.days;
           var x = ["x"].concat(_.compact(_.pluck(days, "day_num")));
           var mean = ["Mean"].concat(_.compact(_.pluck(days, "mean_flow")));
           var max = ["Max"].concat(_.compact(_.pluck(days, "max_flow")));
           var min = ["Min"].concat(_.compact(_.pluck(days, "min_flow")));
           var pef = ["PEF"].concat(_.compact(_.pluck(days, "pef_flow")));
+
+          scope.completeness = data.completeness;
+          scope.overrall_mean = data.overrall_mean;
+          scope.pef_mean = data.pef_mean;
 
         // We want to colour days when the person was at work to easily identify them
         // It's _occupational_ lung disease after all.
@@ -191,6 +194,9 @@ directives.directive("peakFlowGraph", function($timeout, PeakFlowGraphDataLoader
               // as the treatment days so we need to translate
               // it to arra  index
               var columns = cols.slice(treatmentObj.start - 1, treatmentObj.end );
+              if(!columns[0]){
+                debugger;
+              }
               var x1 = columns[0].start;
               var width = columns.reduce((accumulator, column) => {
                 return accumulator + column.width;
@@ -333,8 +339,7 @@ directives.directive("peakFlowGraph", function($timeout, PeakFlowGraphDataLoader
             }, 0);
           }
         });
-      })
-      });
+      }
       $timeout(render_chart, 500);
     }
   };
