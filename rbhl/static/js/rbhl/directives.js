@@ -311,7 +311,10 @@ directives.directive("peakFlowGraph", function($timeout) {
                 fit: true,
                 values: _.rest(x)
               },
-              label: "Trial day"
+              label: {
+                text: "Trial day",
+                position: 'outer-center'
+              }
             },
             y: axisDimensions.axis
           },
