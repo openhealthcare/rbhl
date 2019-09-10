@@ -16,28 +16,28 @@ class PeakFlowGraphData(LoginRequiredViewset):
         if peak_flow_day.date:
             pef_flow = demographics.get_pef(peak_flow_day.date)
 
+        result = {
+            "note": peak_flow_day.note,
+            "treatment_taken": peak_flow_day.treatment_taken,
+            "day_num": peak_flow_day.day_num,
+            "date": peak_flow_day.date,
+            "pef_flow": pef_flow,
+            "work_day": peak_flow_day.work_day,
+        }
+
         if not aggregates:
-            return {
-                "note": peak_flow_day.note,
-                "treatment_taken": peak_flow_day.treatment_taken,
-                "day_num": peak_flow_day.day_num,
-            }
+            return result
         else:
             (
                 min_flow, max_flow, mean_flow, variabilty, completeness
             ) = aggregates
 
-        return {
-            "min_flow": min_flow,
-            "mean_flow": mean_flow,
-            "max_flow": max_flow,
-            "day_num": peak_flow_day.day_num,
-            "variabilty": variabilty,
-            "pef_flow": pef_flow,
-            "work_day": peak_flow_day.work_day,
-            "complete": completeness,
-            "treatment_taken": peak_flow_day.treatment_taken
-        }
+        result["min_flow"] = min_flow
+        result["mean_flow"] = mean_flow
+        result["max_flow"] = max_flow
+        result["variabilty"] = variabilty
+        result["completeness"] = completeness
+        return result
 
     def get_completeness(self, day_dicts):
         """
@@ -47,7 +47,12 @@ class PeakFlowGraphData(LoginRequiredViewset):
         If they miss a day, that's a day counted as incomplete
         """
 
-        total_days = max([i["day_num"] for i in day_dicts if "min_flow" in i])
+        all_total_days = [i["day_num"] for i in day_dicts if "min_flow" in i]
+
+        if not all_total_days:
+            return
+
+        total_days = max(all_total_days)
         completed_days = len(
             [i for i in day_dicts if "complete" in i and i["complete"]]
         )
@@ -59,11 +64,12 @@ class PeakFlowGraphData(LoginRequiredViewset):
 
     def get_overrall_mean(self, day_dicts):
         means = [i["mean_flow"] for i in day_dicts if "mean_flow" in i]
-        return round(sum(means)/len(means))
+        if means:
+            return round(sum(means)/len(means))
 
     def get_pef_mean(self, day_dicts):
-        if day_dicts:
-            pefs = [i["pef_flow"] for i in day_dicts if "pef_flow" in i]
+        pefs = [i["pef_flow"] for i in day_dicts if "pef_flow" in i]
+        if pefs:
             return round(sum(pefs)/len(pefs))
 
     def get_treatments(self, day_dicts):

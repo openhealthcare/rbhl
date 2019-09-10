@@ -344,6 +344,12 @@ a {
     @extend %nav-bar-heading;
 }
 
+.panel-header-padding{
+    // mirrors the panel header padding
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
 .legacy_content p br  {
     content: "A" !important;
     display: block !important;

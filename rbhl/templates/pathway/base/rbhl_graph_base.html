@@ -14,9 +14,22 @@
             </div>
           </div>
         </h4>
-        <div class="row content-offset-below-25">
-          <div class="col-md-12">
-            <div class="col-md-4">
+        <div class="row content-offset-below-25 panel-header-padding">
+          <div class="col-md-3">
+            <div class="row">
+              <div class="col-md-5">
+                <strong>
+                  Start:
+                </strong>
+              </div>
+              <div class="col-md-7 text-left">
+                <span ng-show="graphDataByPeakFlowNum[trialNum].days.length">
+                    [[ graphDataByPeakFlowNum[trialNum].days[0].date | displayDate ]]
+                </span>
+              </div>
+            </div>
+            </div>
+            <div class="col-md-3">
               <div class="row">
                 <div class="col-md-5">
                   <strong>
@@ -28,7 +41,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
               <div class="row">
                 <div class="col-md-5">
                   <strong>
@@ -40,7 +53,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
               <div class="row">
                 <div class="col-md-5">
                   <strong>
@@ -52,7 +65,6 @@
                 </div>
               </div>
             </div>
-          </div>
         </div>
         <div peak-flow-graph data="graphDataByPeakFlowNum[trialNum]" highlights="highlights[trialNum]"></div>
         <div ng-show="graphDataByPeakFlowNum[trialNum].notes.length" class="row content-offset-below">
