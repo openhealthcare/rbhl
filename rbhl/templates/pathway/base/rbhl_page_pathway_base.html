@@ -17,6 +17,16 @@
       {% endblock pathway_header %}
     </div>
     <div class="panel-body">
+        <div class="row">
+          <div class="col-md-8 col-md-push-2 text-right">
+              <button ng-show="pathway.steps[0].scope.trialDays.length > 4" class="btn btn-lg btn-primary btn-save"
+              ng-click="pathway.finish(editing)"
+            >
+              <i class="[[ pathway.finish_button_icon ]]"></i>
+              [[ pathway.finish_button_text ]]
+            </button>
+          </div>
+        </div>
       {% block pathway_body %}
       {% for step in pathway.get_steps %}
       {% include step.get_base_template %}
