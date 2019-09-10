@@ -130,11 +130,6 @@ directives.directive("peakFlowGraph", function($timeout) {
           return e.x.baseVal[0].value;
         }
 
-        // var getXAxisTickXPositions = function(){
-        //   var ticks = d3.select(element).selectAll('.c3-axis-x .tick text');
-        //   debugger;
-        //   return ticks.map(t => t[0].x.baseValue);
-        // }
         var addRow = function(parent, idx, ytext, cls){
             var cols = getColStartWidths();
             var textStart = getYAxisEnd()
