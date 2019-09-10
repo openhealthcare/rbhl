@@ -14,10 +14,10 @@
       </div>
     </div>
     <div ng-repeat="trialNum in trialNums" ng-show="graphDataByPeakFlowNum[trialNum].days.length > 3">
-        <div class="row">
+        <div  class="row">
           <div class="col-md-12">
             <h4 class="panel-header-padding">
-              Trial [[ trialNum ]]
+              <span ng-show="trialNums.length > 1">Trial [[ trialNum ]]</span>
               <a href="/pathway/#/peak_flow_day/[[ patient.id ]]/[[ episode.id ]]?trial_num=[[ trialNum ]]">
                 <i class="fa fa-pencil edit pull-right pointer">
                 </i>
@@ -32,54 +32,34 @@
         </div>
       <div class="row content-offset-below-25 panel-header-padding">
         <div class="col-md-3">
-          <div class="row">
-            <div class="col-md-5">
               <strong>
                 Start:
               </strong>
-            </div>
-            <div class="col-md-7 text-left">
               <span ng-show="graphDataByPeakFlowNum[trialNum].days.length">
-                  [[ graphDataByPeakFlowNum[trialNum].days[0].date | displayDate ]]
+                &nbsp;
+                [[ graphDataByPeakFlowNum[trialNum].days[0].date | displayDate ]]
               </span>
-            </div>
-          </div>
           </div>
           <div class="col-md-3">
-            <div class="row">
-              <div class="col-md-5">
                 <strong>
                   Overall mean:
                 </strong>
-              </div>
-              <div class="col-md-7 text-left">
+                &nbsp;
                 [[ graphDataByPeakFlowNum[trialNum].overrall_mean ]] litres/minute
-              </div>
-            </div>
           </div>
           <div class="col-md-3">
-            <div class="row">
-              <div class="col-md-5">
                 <strong>
-                  PEF Mean:
+                  PEF:
                 </strong>
-              </div>
-              <div class="col-md-7 text-left">
+                &nbsp;
                 [[ graphDataByPeakFlowNum[trialNum].pef_mean ]] litres/minute
-              </div>
-            </div>
           </div>
           <div class="col-md-3">
-            <div class="row">
-              <div class="col-md-5">
                 <strong>
                   Completeness:
                 </strong>
-              </div>
-              <div class="col-md-7 text-left">
+                &nbsp;
                 [[ graphDataByPeakFlowNum[trialNum].completeness ]]%
-              </div>
-            </div>
           </div>
       </div>
       <div peak-flow-graph data="graphDataByPeakFlowNum[trialNum]" highlights="highlights[trialNum]"></div>
