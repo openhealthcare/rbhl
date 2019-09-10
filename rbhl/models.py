@@ -38,7 +38,7 @@ def calculate_peak_expiratory_flow(height, age, sex):
     if sex == FEMALE:
         PEF = 0.376 * (math.log(age)) - (0.0121*age) - 58.8/height + 5.63
 
-    return round(math.exp(PEF), 2)
+    return round(math.exp(PEF))
 
 
 class Demographics(models.Demographics):
