@@ -349,30 +349,30 @@ a {
 }
 
 .peak-flow-graph text.treatment-0 {
-  fill: #3a8a8a;
+  fill: #008C21;
 }
 
 .peak-flow-graph line.treatment-0 {
-  fill: rgba(58, 138, 138, 0.7);
-  stroke: rgba(58, 138, 138, 0.7);
+  fill: rgba(0, 140, 33, 0.7);
+  stroke: rgba(0, 140, 33, 0.7);
 }
 
 .peak-flow-graph text.treatment-1 {
-  fill: #e18400;
+  fill: #00400F;
 }
 
 .peak-flow-graph line.treatment-1 {
-  fill: rgba(225, 132, 0, 0.7);
-  stroke: rgba(225, 132, 0, 0.7);
+  fill: rgba(0, 64, 15, 0.7);
+  stroke: rgba(0, 64, 15, 0.7);
 }
 
-.peak-flow-graph text.treatment-1 {
-  fill: #2e993e;
+.peak-flow-graph text.treatment-2 {
+  fill: #8C000C;
 }
 
-.peak-flow-graph line.treatment-1 {
-  fill: rgba(46, 153, 62, 0.7);
-  stroke: rgba(46, 153, 62, 0.7);
+.peak-flow-graph line.treatment-2 {
+  fill: rgba(140, 0, 12, 0.7);
+  stroke: rgba(140, 0, 12, 0.7);
 }
 
 .peak-flow-graph .treatment-dash-lines {

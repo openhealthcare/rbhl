@@ -291,6 +291,16 @@ directives.directive("peakFlowGraph", function($timeout) {
 
         var axisDimensions = calculateGraphAxisAndHeight(columns);
 
+        var colorsOptions = [
+          "#A6143B", "#D9628D", "#C7A368", "#283959"
+        ]
+
+        var colors = {}
+
+        columns.forEach((column, idx) => {
+          colors[column[0]] = colorsOptions[idx];
+        });
+
         var ret = c3.generate({
           bindto: element[0],
           size: axisDimensions.size,
@@ -298,6 +308,7 @@ directives.directive("peakFlowGraph", function($timeout) {
           data: {
             x: "x",
             columns: columns,
+            colors: colors
           },
           axis: {
             x: {

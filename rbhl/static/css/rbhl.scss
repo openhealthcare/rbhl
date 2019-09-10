@@ -382,27 +382,27 @@ a {
     }
 
     text.treatment-0{
-        fill: $bluegreen;
+        fill: #008C21;
     }
     line.treatment-0{
-        fill: scale-color($bluegreen, $alpha: -30%);
-        stroke: scale-color($bluegreen, $alpha: -30%);
+        fill: scale-color(#008C21, $alpha: -30%);
+        stroke: scale-color(#008C21, $alpha: -30%);
     }
 
     text.treatment-1{
-        fill: $orange;
+        fill: #00400F;
     }
     line.treatment-1{
-        fill: scale-color($orange, $alpha: -30%);
-        stroke: scale-color($orange, $alpha: -30%);
+        fill: scale-color(#00400F, $alpha: -30%);
+        stroke: scale-color(#00400F, $alpha: -30%);
     }
 
-    text.treatment-1{
-        fill: $green;
+    text.treatment-2{
+        fill: #8C000C;
     }
-    line.treatment-1{
-        fill: scale-color($green, $alpha: -30%);
-        stroke: scale-color($green, $alpha: -30%);
+    line.treatment-2{
+        fill: scale-color(#8C000C, $alpha: -30%);
+        stroke: scale-color(#8C000C, $alpha: -30%);
     }
 
     .treatment-dash-lines{
