@@ -122,7 +122,6 @@ directives.directive("peakFlowGraph", function($timeout) {
           lastLine.width = lastColumn.width.baseVal.value
 
           return lines;
-          return cols;
         };
 
         var prepend = function(parent, tagName){
@@ -360,6 +359,33 @@ directives.directive("peakFlowGraph", function($timeout) {
             show: false
           },
           regions: regions,
+          tooltip: {
+            contents: function (d, defaultTitleFormat, defaultValueFormat, color) {
+              var CLASS = this.CLASS;
+              var trialNum = d[0].x;
+              var day = data.days.find(day => day.day_num === trialNum)
+
+              var rowTemplate = function(id, name, value){
+                return `<tr class="${CLASS.tooltipName}-${id}">
+                <td class="name">${name}</td><td class="value">${value}</td>
+                </tr>
+                `
+              }
+
+              var rows = d.map(row =>rowTemplate(row.id, row.name, row.value));
+              rows.push(rowTemplate("variabilty", "Variabilty", day.variabilty));
+              if(day.work_day){
+                rows.push(`<tr class="${CLASS.tooltipName}-workday"><td class="text-center" colspan="2">Work day</td></tr>`)
+              }
+
+              return `
+                <table class="${CLASS.tooltip}">
+                  <tr><th colspan='2'>Day ${trialNum} (${day.date.slice(0, 5)})</th></tr>
+                  ${rows.join("")}
+                </table>
+              `
+            }
+          },
           onrendered: function() {
             setTimeout(function(){ // timeout is needed for initial render.
               addTreatments();
