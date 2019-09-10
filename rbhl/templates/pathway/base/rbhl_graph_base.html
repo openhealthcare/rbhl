@@ -9,63 +9,40 @@
               <h3>
                 [[ episode.demographics[0].first_name ]] [[ episode.demographics[0].surname ]]
                 <small>[[ episode.demographics[0].hospital_number ]]</small>
-                - Peak flow trial [[ trialNum ]]
+                <span ng-show="trialNums.length > 1">- Peak flow trial [[ trialNum ]]</span>
               </h3>
             </div>
           </div>
         </h4>
-        <div class="row content-offset-below-25 panel-header-padding">
-          <div class="col-md-3">
-            <div class="row">
-              <div class="col-md-5">
+        {# use a table so printers understand #}
+        <table class="content-offset-below-25 table">
+          <tr>
+            <td>
                 <strong>
                   Start:
                 </strong>
-              </div>
-              <div class="col-md-7 text-left">
-                <span ng-show="graphDataByPeakFlowNum[trialNum].days.length">
-                    [[ graphDataByPeakFlowNum[trialNum].days[0].date | displayDate ]]
-                </span>
-              </div>
-            </div>
-            </div>
-            <div class="col-md-3">
-              <div class="row">
-                <div class="col-md-5">
-                  <strong>
-                    Overall mean:
-                  </strong>
-                </div>
-                <div class="col-md-7 text-left">
-                  [[ graphDataByPeakFlowNum[trialNum].overrall_mean ]] litres/minute
-                </div>
-              </div>
-            </div>
-            <div class="col-md-3">
-              <div class="row">
-                <div class="col-md-5">
-                  <strong>
-                    PEF Mean:
-                  </strong>
-                </div>
-                <div class="col-md-7 text-left">
-                  [[ graphDataByPeakFlowNum[trialNum].pef_mean ]] litres/minute
-                </div>
-              </div>
-            </div>
-            <div class="col-md-3">
-              <div class="row">
-                <div class="col-md-5">
-                  <strong>
-                    Completeness:
-                  </strong>
-                </div>
-                <div class="col-md-7 text-left">
-                  [[ graphDataByPeakFlowNum[trialNum].completeness ]]%
-                </div>
-              </div>
-            </div>
-        </div>
+                [[ graphDataByPeakFlowNum[trialNum].days[0].date | displayDate ]]
+            </td>
+            <td>
+                <strong>
+                  Overall mean:
+                </strong>
+                [[ graphDataByPeakFlowNum[trialNum].overrall_mean ]] litres/minute
+            </td>
+            <td>
+                <strong>
+                  PEF mean:
+                </strong>
+                [[ graphDataByPeakFlowNum[trialNum].pef_mean ]] litres/minute
+            </td>
+            <td>
+                <strong>
+                  Completeness
+                </strong>
+                [[ graphDataByPeakFlowNum[trialNum].completeness ]]%
+            </td>
+          </tr>
+        </table>
         <div peak-flow-graph data="graphDataByPeakFlowNum[trialNum]" highlights="highlights[trialNum]"></div>
         <div ng-show="graphDataByPeakFlowNum[trialNum].notes.length" class="row content-offset-below">
           <div class="col-md-12">
