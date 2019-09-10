@@ -158,7 +158,10 @@ directives.directive("peakFlowGraph", function($timeout) {
             text.text(ytext);
 
             // extend all of the other columns up accordingly
-            cols.forEach(col =>{
+            cols.forEach((col, idx) =>{
+              if(idx === cols.length-1){
+                return;
+              }
               var colLine = section.append("line");
               colLine.attr("x1", col.start + col.width);
               colLine.attr("x2", col.start + col.width);
