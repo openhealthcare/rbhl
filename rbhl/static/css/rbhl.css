@@ -367,17 +367,21 @@ a {
 }
 
 .peak-flow-graph text.treatment-2 {
-  fill: #8C000C;
+  fill: #40060B;
 }
 
 .peak-flow-graph line.treatment-2 {
-  fill: rgba(140, 0, 12, 0.7);
-  stroke: rgba(140, 0, 12, 0.7);
+  fill: rgba(64, 6, 11, 0.7);
+  stroke: rgba(64, 6, 11, 0.7);
 }
 
 .peak-flow-graph .treatment-dash-lines {
   stroke: #999;
   fill: #999;
+}
+
+.peak-flow-graph .upper-variability {
+  fill: #d01c17;
 }
 
 .bottom-menu {

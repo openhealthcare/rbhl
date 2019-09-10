@@ -8,6 +8,7 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
     },
     link: function(scope, element, attrs) {
       var data = scope.data;
+      const UPPER_QUARTILE = 16;
 
       var getLineData = function(days, title, name){
         var values = _.pluck(days, name);
@@ -250,6 +251,9 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
               text.attr("x", col.width/2).attr("dy", ".82em").attr("dx", "0").classed("variance", true);
               text.classed("variability", true);
               text.text(variability);
+              if(variability > UPPER_QUARTILE){
+                text.classed("upper-variability", true);
+              }
             }
           });
 

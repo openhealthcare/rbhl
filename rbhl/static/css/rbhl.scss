@@ -398,16 +398,20 @@ a {
     }
 
     text.treatment-2{
-        fill: #8C000C;
+        fill: #40060B;
     }
     line.treatment-2{
-        fill: scale-color(#8C000C, $alpha: -30%);
-        stroke: scale-color(#8C000C, $alpha: -30%);
+        fill: scale-color(#40060B, $alpha: -30%);
+        stroke: scale-color(#40060B, $alpha: -30%);
     }
 
     .treatment-dash-lines{
         stroke: #999;
         fill: #999;
+    }
+
+    .upper-variability{
+        fill: $red;
     }
 }
 
