@@ -53,13 +53,15 @@ class PeakFlowGraphData(LoginRequiredViewset):
             return
 
         total_days = max(all_total_days)
+
         completed_days = len(
-            [i for i in day_dicts if "complete" in i and i["complete"]]
+            [i for i in day_dicts if "completeness" in i and i["completeness"]]
         )
         if total_days:
             completeness = Decimal(completed_days)/Decimal(total_days)
         else:
             completeness = 0
+
         return round(completeness) * 100
 
     def get_overrall_mean(self, day_dicts):
