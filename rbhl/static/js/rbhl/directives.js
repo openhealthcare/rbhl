@@ -1,4 +1,4 @@
-directives.directive("peakFlowGraph", function($timeout) {
+directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
   "use strict";
 
   return {
@@ -9,14 +9,24 @@ directives.directive("peakFlowGraph", function($timeout) {
     link: function(scope, element, attrs) {
       var data = scope.data;
 
+      var getLineData = function(days, title, name){
+        var values = _.pluck(days, name);
+        values = values.map(value => {
+          if(_.isUndefined(value)){
+            return null;
+          }
+          return value;
+        });
+        return [title].concat(values)
+      }
       // make sure we don't call it too many times during the render
       var render_chart = function() {
           var days = data.days;
-          var x = ["x"].concat(_.compact(_.pluck(days, "day_num")));
-          var mean = ["Mean"].concat(_.compact(_.pluck(days, "mean_flow")));
-          var max = ["Max"].concat(_.compact(_.pluck(days, "max_flow")));
-          var min = ["Min"].concat(_.compact(_.pluck(days, "min_flow")));
-          var pef = ["PEF"].concat(_.compact(_.pluck(days, "pef_flow")));
+          var x = getLineData(days, "x", "day_num");
+          var mean = getLineData(days, "Mean", "mean_flow");
+          var max = getLineData(days, "Max", "max_flow");
+          var min = getLineData(days, "Min", "min_flow");
+          var pef = getLineData(days, "PEF", "pef_flow")
 
           scope.completeness = data.completeness;
           scope.overrall_mean = data.overrall_mean;
@@ -91,7 +101,7 @@ directives.directive("peakFlowGraph", function($timeout) {
           x,
           max,
           min,
-          mean, //, predicted
+          mean,
           pef
         ];
 
@@ -380,7 +390,7 @@ directives.directive("peakFlowGraph", function($timeout) {
 
               return `
                 <table class="${CLASS.tooltip}">
-                  <tr><th colspan='2'>Day ${trialNum} (${day.date.slice(0, 5)})</th></tr>
+                  <tr><th colspan='2'>Day ${trialNum} (${displayDateFilter(day.date)})</th></tr>
                   ${rows.join("")}
                 </table>
               `

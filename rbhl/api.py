@@ -9,20 +9,16 @@ from opal.core.api import OPALRouter
 class PeakFlowGraphData(LoginRequiredViewset):
     base_name = "peak_flow_graph_data"
 
-    def day_to_dict(self, peak_flow_day, demographics):
+    def day_to_dict(self, peak_flow_day, demographics, pef):
         aggregates = peak_flow_day.get_min_max_variability_completeness()
-        pef_flow = None
-
-        if peak_flow_day.date:
-            pef_flow = demographics.get_pef(peak_flow_day.date)
 
         result = {
             "note": peak_flow_day.note,
             "treatment_taken": peak_flow_day.treatment_taken,
             "day_num": peak_flow_day.day_num,
             "date": peak_flow_day.date,
-            "pef_flow": pef_flow,
             "work_day": peak_flow_day.work_day,
+            "pef_flow": pef
         }
 
         if not aggregates:
@@ -68,11 +64,6 @@ class PeakFlowGraphData(LoginRequiredViewset):
         means = [i["mean_flow"] for i in day_dicts if "mean_flow" in i]
         if means:
             return round(sum(means)/len(means))
-
-    def get_pef_mean(self, day_dicts):
-        pefs = [i["pef_flow"] for i in day_dicts if "pef_flow" in i]
-        if pefs:
-            return round(sum(pefs)/len(pefs))
 
     def get_treatments(self, day_dicts):
         """
@@ -141,13 +132,16 @@ class PeakFlowGraphData(LoginRequiredViewset):
         } for pfd in pfds if pfd.note]
 
     def trial_data(self, trial_num, demographics, pfds):
-        days = [self.day_to_dict(i, demographics) for i in pfds]
+        if pfds:
+            pef = demographics.get_pef(pfds[0].date)
+        days = [self.day_to_dict(i, demographics, pef) for i in pfds]
+
         return {
             "days": days,
             "completeness": self.get_completeness(days),
             "treatments": self.get_treatments(days),
             "overrall_mean": self.get_overrall_mean(days),
-            "pef_mean": self.get_pef_mean(days),
+            "pef_mean": pef,
             "notes": self.get_notes(pfds)
         }
 
