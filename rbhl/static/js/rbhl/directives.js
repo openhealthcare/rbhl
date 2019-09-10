@@ -99,12 +99,30 @@ directives.directive("peakFlowGraph", function($timeout) {
           /*
           * Returns a list of objects of {start, width}
           */
-          return d3.select(element).selectAll(".c3-event-rect")[0].map(col=> {
+
+         var lines  = d3.select(element).selectAll(".c3-xgrid-line line")[0].map(line=> {
             return {
-              start: col.x.baseVal.value,
-              width: col.width.baseVal.value
+              start: line.x1.baseVal.value,
             }
           });
+
+          var cols = d3.select(element).selectAll(".c3-event-rect")[0]
+
+          // by mapping to column we start with the first linw
+          lines[0].start = cols[0].x.baseVal.value,
+
+          lines.forEach((line, idx) => {
+            if(idx+1 !== lines.length){
+              line.width = lines[idx + 1].start - line.start
+            }
+          })
+
+          var lastLine = _.last(lines);
+          var lastColumn = _.last(cols);
+          lastLine.width = lastColumn.width.baseVal.value
+
+          return lines;
+          return cols;
         };
 
         var prepend = function(parent, tagName){
