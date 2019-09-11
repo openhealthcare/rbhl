@@ -1,9 +1,28 @@
+"""
+API endpoints for RBHL
+"""
 from collections import defaultdict
 from decimal import Decimal
 from opal.core.views import json_response
 from opal.core.api import LoginRequiredViewset, episode_from_pk
 from rbhl.models import Demographics
 from opal.core.api import OPALRouter
+
+
+def get_ranges(numbers):
+    if len(numbers) == 0:
+        return []
+
+    # compare the sequential range e.g [2, 3, 4] with the numbers entered
+    # when they are different, we know we've varied
+    sequential_range = range(numbers[0], numbers[0] + len(numbers))
+
+    for idx, i in enumerate(sequential_range):
+        if not i == numbers[idx]:
+            sequence = {"start": numbers[0], "end": numbers[idx-1]}
+            return [sequence] + get_ranges(numbers[idx:])
+
+    return [{"start": numbers[0], "end": numbers[-1]}]
 
 
 class PeakFlowGraphData(LoginRequiredViewset):
@@ -65,7 +84,7 @@ class PeakFlowGraphData(LoginRequiredViewset):
         if means:
             return round(sum(means)/len(means))
 
-    def get_treatments(self, day_dicts):
+    def get_treatments(self, days):
         """
         Looks at all treatments on the day dicts and tries
         to change them into a continuous timeline.
@@ -95,34 +114,17 @@ class PeakFlowGraphData(LoginRequiredViewset):
         }
 
         """
-        treatments = []
-        treatment = {}
+        treatments = defaultdict(list)
+        treatment_days = [
+            day for day in days if day.get('treatment_taken', None)
+        ]
+        if len(treatment_days) == 0:
+            return {}
 
-        for day_dict in day_dicts:
-            if day_dict["treatment_taken"]:
-                if treatment.get("treatment") == day_dict["treatment_taken"]:
-                    continue
-                elif treatment:
-                    treatment["end"] = day_dict["day_num"] - 1
-                    treatments.append(treatment)
-                    treatment = {}
-                treatment["start"] = day_dict["day_num"]
-                treatment["treatment"] = day_dict["treatment_taken"]
-            elif treatment:
-                treatment["end"] = day_dict["day_num"] - 1
-                treatments.append(treatment)
-                treatment = {}
+        for day in treatment_days:
+            treatments[day['treatment_taken']].append(day['day_num'])
 
-        if treatment:
-            treatment["end"] = day_dict["day_num"]
-            treatments.append(treatment)
-        result = defaultdict(list)
-        for treatment in treatments:
-            result[treatment["treatment"]].append({
-                "start": treatment["start"],
-                "end": treatment["end"],
-            })
-        return result
+        return {t: get_ranges(treatments[t]) for t in treatments}
 
     def get_notes(self, pfds):
         return [{
@@ -134,7 +136,7 @@ class PeakFlowGraphData(LoginRequiredViewset):
     def trial_data(self, trial_num, demographics, pfds):
         if pfds:
             pef = demographics.get_pef(pfds[0].date)
-        days = [self.day_to_dict(i, demographics, pef) for i in pfds]
+            days = [self.day_to_dict(i, demographics, pef) for i in pfds]
 
         return {
             "days": days,
