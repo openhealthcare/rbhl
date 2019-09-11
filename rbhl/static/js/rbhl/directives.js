@@ -7,11 +7,11 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
       highlights: "="
     },
     link: function(scope, element, attrs) {
-      var data = scope.data;
+      let data = scope.data;
       const UPPER_QUARTILE = 16;
 
-      var getLineData = function(days, title, name){
-        var values = _.pluck(days, name);
+      let getLineData = function(days, title, name){
+        let values = _.pluck(days, name);
         values = values.map(value => {
           if(_.isUndefined(value)){
             return null;
@@ -21,13 +21,13 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
         return [title].concat(values)
       }
       // make sure we don't call it too many times during the render
-      var render_chart = function() {
-          var days = data.days;
-          var x = getLineData(days, "x", "day_num");
-          var mean = getLineData(days, "Mean", "mean_flow");
-          var max = getLineData(days, "Max", "max_flow");
-          var min = getLineData(days, "Min", "min_flow");
-          var pef = getLineData(days, "PEF", "pef_flow")
+      let render_chart = function() {
+          let days = data.days;
+          let x = getLineData(days, "x", "day_num");
+          let mean = getLineData(days, "Mean", "mean_flow");
+          let max = getLineData(days, "Max", "max_flow");
+          let min = getLineData(days, "Min", "min_flow");
+          let pef = getLineData(days, "PEF", "pef_flow")
 
           scope.completeness = data.completeness;
           scope.overrall_mean = data.overrall_mean;
@@ -35,7 +35,7 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
 
         // We want to colour days when the person was at work to easily identify them
         // It's _occupational_ lung disease after all.
-        var working_days = _.map(
+        let working_days = _.map(
           _.filter(days, function(day) {
             return day.work_day;
           }),
@@ -48,14 +48,14 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
           return a - b;
         });
 
-        var calculateGridLines = function(trialDays) {
+        let calculateGridLines = function(trialDays) {
           /*
            * the grid lines should be intra file day not
            * on the day itself
            */
-          var gridLinesMax = _.max(trialDays);
-          var gridLinesMin = _.min(trialDays);
-          var range = _.range(gridLinesMin - 0.5, gridLinesMax + 0.5, 1);
+          let gridLinesMax = _.max(trialDays);
+          let gridLinesMin = _.min(trialDays);
+          let range = _.range(gridLinesMin - 0.5, gridLinesMax + 0.5, 1);
           return _.map(range, function(r) {
             return {
               value: r,
@@ -64,20 +64,20 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
           });
         };
 
-        var gridLines = calculateGridLines(x);
-        var sequences = [];
+        let gridLines = calculateGridLines(x);
+        let sequences = [];
 
-        var find_sequences = function(data) {
-          var sequence = data[0],
+        let find_sequences = function(data) {
+          let sequence = data[0],
             items = data[1];
 
           if (items.length == 0) {
             return;
           }
 
-          var first = _.first(items),
-            rest = _.rest(items);
-          var last = first;
+          let first = _.first(items);
+          let rest = _.rest(items);
+          let last = first;
 
           while (rest.indexOf(last + 1) != -1) {
             rest = _.without(rest, last + 1);
@@ -89,7 +89,7 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
 
         find_sequences([sequences, working_days]);
 
-        var regions = _.map(sequences, function(sequence) {
+        let regions = _.map(sequences, function(sequence) {
           return {
             axis: "x",
             start: sequence[0] - 0.5,
@@ -98,7 +98,7 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
           };
         });
 
-        var columns = [
+        let columns = [
           x,
           max,
           min,
@@ -106,18 +106,18 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
           pef
         ];
 
-        var getColStartWidths = function(){
+        let getColStartWidths = function(){
           /*
           * Returns a list of objects of {start, width}
           */
 
-         var lines  = d3.select(element).selectAll(".c3-xgrid-line line")[0].map(line=> {
+         let lines  = d3.select(element).selectAll(".c3-xgrid-line line")[0].map(line=> {
             return {
               start: line.x1.baseVal.value,
             }
           });
 
-          var cols = d3.select(element).selectAll(".c3-event-rect")[0]
+          let cols = d3.select(element).selectAll(".c3-event-rect")[0]
 
           // by mapping to column we start with the first linw
           lines[0].start = cols[0].x.baseVal.value,
@@ -128,43 +128,43 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
             }
           })
 
-          var lastLine = _.last(lines);
-          var lastColumn = _.last(cols);
+          let lastLine = _.last(lines);
+          let lastColumn = _.last(cols);
           lastLine.width = lastColumn.width.baseVal.value
 
           return lines;
         };
 
-        var prepend = function(parent, tagName){
-          var tag = parent.append(tagName);
-          var tagNode = tag.node();
+        let prepend = function(parent, tagName){
+          let tag = parent.append(tagName);
+          let tagNode = tag.node();
           tagNode.parentNode.insertBefore(tagNode, tagNode.parentNode.firstChild);
           return tag;
         }
 
-        var addTopLayer = function(){
+        let addTopLayer = function(){
           /*
           * Adds a top layer above the graph, removes it, if it exists
           */
-          var firstG = d3.select(d3.select(element).selectAll("g")[0][0]);
+          let firstG = d3.select(d3.select(element).selectAll("g")[0][0]);
           firstG.selectAll(".treatmentLayer").remove();
-          var topLayer = prepend(firstG, "g");
+          let topLayer = prepend(firstG, "g");
           topLayer.classed("treatmentLayer", true);
           return topLayer;
         };
 
-        var getYAxisEnd = function(){
-          var e = d3.select(element).selectAll(".c3-axis-y .tick text")[0][0];
+        let getYAxisEnd = function(){
+          let e = d3.select(element).selectAll(".c3-axis-y .tick text")[0][0];
           return e.x.baseVal[0].value;
         }
 
-        var addRow = function(parent, idx, ytext, cls){
-            var cols = getColStartWidths();
-            var textStart = getYAxisEnd()
-            var section = parent.append("g");
+        let addRow = function(parent, idx, ytext, cls){
+            let cols = getColStartWidths();
+            let textStart = getYAxisEnd()
+            let section = parent.append("g");
             section.attr("transform", "translate(0, " +  (-25 * idx) + ")");
             // extends the line of the y axis
-            var axis = section.append("line");
+            let axis = section.append("line");
             axis.attr("x1", 0);
             axis.attr("x2", 0);
             axis.attr("y1", 0);
@@ -172,13 +172,13 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
             axis.attr("stroke-width", "1");
 
             // the tick on the y axis
-            var horizontalTick1 = section.append("line");
+            let horizontalTick1 = section.append("line");
             horizontalTick1.attr("x1", -6);
             horizontalTick1.attr("x2", 0);
             horizontalTick1.attr("y1", -25);
             horizontalTick1.attr("y2", -25);
 
-            var text = prepend(section, "text");
+            let text = prepend(section, "text");
             text.attr("x", textStart);
             text.attr("y", "-8");
             text.attr("text-anchor", "end");
@@ -190,7 +190,7 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
               if(idx === cols.length-1){
                 return;
               }
-              var colLine = section.append("line");
+              let colLine = section.append("line");
               colLine.attr("x1", col.start + col.width);
               colLine.attr("x2", col.start + col.width);
               colLine.attr("y1", -3);
@@ -203,30 +203,30 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
             return section
         }
 
-        var addTreatments = function(){
+        let addTreatments = function(){
           /*
           * treatments come from the server are started/ended via trial num
           * so we translate that to column num
           */
-          var cols = getColStartWidths();
-          var topLayer = addTopLayer();
+          let cols = getColStartWidths();
+          let topLayer = addTopLayer();
           Object.keys(data.treatments).forEach((treatmentName, treatmentIdx) => {
 
-            var treatmentSection = addRow(topLayer, treatmentIdx, treatmentName, cls)
-            var cls = "treatment-" + treatmentIdx % 3;
+            let cls = "treatment-" + treatmentIdx % 3;
+            let treatmentSection = addRow(topLayer, treatmentIdx, treatmentName, cls);
 
             data.treatments[treatmentName].forEach(treatmentObj => {
 
               // we bring through treatment with start and stop
               // as the treatment days so we need to translate
               // it to arra  index
-              var columns = cols.slice(treatmentObj.start - 1, treatmentObj.end );
-              var x1 = columns[0].start;
-              var width = columns.reduce((accumulator, column) => {
+              let columns = cols.slice(treatmentObj.start - 1, treatmentObj.end );
+              let x1 = columns[0].start;
+              let width = columns.reduce((accumulator, column) => {
                 return accumulator + column.width;
               }, 0);
 
-              var line = prepend(treatmentSection, "line");
+              let line = prepend(treatmentSection, "line");
               line.attr("x1", x1);
               line.attr("x2", x1 + width);
               line.attr("y1", "-12");
@@ -236,16 +236,16 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
             });
           });
 
-          var variabilityRow = addRow(topLayer, Object.keys(data.treatments).length, "% Variability", "variability");
+          let variabilityRow = addRow(topLayer, Object.keys(data.treatments).length, "% Variability", "variability");
 
           // add variance
           cols.forEach((col, idx) =>{
-            var variability = data.days[idx].variabilty;
+            let variability = data.days[idx].variabilty;
 
             if(!_.isUndefined(variability)){
-              var g = prepend(variabilityRow, "g");
+              let g = prepend(variabilityRow, "g");
               g.attr("transform", "translate(" + col.start + ", -25)");
-              var text = g.append("text");
+              let text = g.append("text");
               // text.attr("width", col.width).attr("height","15");
               text.attr("text-anchor", "middle").attr('alignment-baseline', 'middle');
               text.attr("x", col.width/2).attr("dy", ".82em").attr("dx", "0").classed("variance", true);
@@ -262,7 +262,7 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
           d3.select(element).selectAll(".c3-region.workingday rect").style("fill-opacity", "0.2");
         };
 
-        var calculateGraphAxisAndHeight = function(columns){
+        let calculateGraphAxisAndHeight = function(columns){
           /*
           * Its been requested that the graphs have a fixed axis
           * however the range of values is quite large but often
@@ -276,16 +276,16 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
           */
 
           // defaut mix max vaues
-          var min = 300;
-          var max = 750;
+          let min = 300;
+          let max = 750;
 
           // look at the values actually to be rendered
           // and adjust the min/maxes accordingly.
           columns = columns.filter(column=> column[0] !== 'x');
-          var values = columns.flat();
+          let values = columns.flat();
           values = values.filter(value => !_.isString(value));
-          var minInVaues = Math.min(...values);
-          var maxInValues = Math.max(...values);
+          let minInVaues = Math.min(...values);
+          let maxInValues = Math.max(...values);
 
           if(minInVaues < min){
             min = Math.floor(minInVaues/50) * 50
@@ -296,8 +296,8 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
           }
 
           // the range is the min -50 and the max + 50
-          var range = _.range(min, max+50, 50);
-          var height = max - min;
+          let range = _.range(min, max+50, 50);
+          let height = max - min;
 
           return {
             size: {
@@ -313,9 +313,9 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
           }
         }
 
-        var calculatePadding = function(treatments){
+        let calculatePadding = function(treatments){
           // padding at the top is 25 for each treatment + and additional 25 for variance
-          var paddingTop = (Object.keys(treatments).length * 25) + 25;
+          let paddingTop = (Object.keys(treatments).length * 25) + 25;
           return {
             bottom: 30,
             left: 100,
@@ -323,19 +323,19 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
           }
         }
 
-        var axisDimensions = calculateGraphAxisAndHeight(columns);
+        let axisDimensions = calculateGraphAxisAndHeight(columns);
 
-        var colorsOptions = [
+        let colorsOptions = [
           "#A6143B", "#D9628D", "#C7A368", "#283959"
         ]
 
-        var colors = {}
+        let colors = {}
 
         columns.forEach((column, idx) => {
           colors[column[0]] = colorsOptions[idx];
         });
 
-        var ret = c3.generate({
+        let ret = c3.generate({
           bindto: element[0],
           size: axisDimensions.size,
           padding: calculatePadding(data.treatments),
@@ -375,18 +375,18 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
           regions: regions,
           tooltip: {
             contents: function (d, defaultTitleFormat, defaultValueFormat, color) {
-              var CLASS = this.CLASS;
-              var trialNum = d[0].x;
-              var day = data.days.find(day => day.day_num === trialNum)
+              let CLASS = this.CLASS;
+              let trialNum = d[0].x;
+              let day = data.days.find(day => day.day_num === trialNum)
 
-              var rowTemplate = function(id, name, value){
+              let rowTemplate = function(id, name, value){
                 return `<tr class="${CLASS.tooltipName}-${id}">
                 <td class="name">${name}</td><td class="value">${value}</td>
                 </tr>
                 `
               }
 
-              var rows = d.map(row =>rowTemplate(row.id, row.name, row.value));
+              let rows = d.map(row =>rowTemplate(row.id, row.name, row.value));
               rows.push(rowTemplate("variabilty", "Variabilty", day.variabilty));
               if(day.work_day){
                 rows.push(`<tr class="${CLASS.tooltipName}-workday"><td class="text-center" colspan="2">Work day</td></tr>`)
@@ -440,7 +440,7 @@ directives.directive("reemit", function($parse, $timeout) {
   return {
     scope: false,
     link: function(scope, element, attrs) {
-      var ev = $parse(attrs.reemit)(scope);
+      let ev = $parse(attrs.reemit)(scope);
       scope.$on(ev, function() {
         scope.$broadcast("refocus")
       });
