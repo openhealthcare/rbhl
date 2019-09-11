@@ -40,27 +40,6 @@ class DemographicsSearchTestCase(OpalTestCase):
         self.assertEqual(result["patient"]["id"], patient.id)
         self.assertFalse(import_string.called)
 
-    @override_settings(UPSTREAM_DEMOGRAPHICS_SERVICE="blah")
-    def test_patient_found_in_upstream_service(self, import_string):
-        returned = {
-            "hospital_number": "111",
-            "first_name": "Jane"
-        }
-        import_string.return_value = lambda x: returned
-        expected = self.client.get(self.url)
-        self.assertEqual(
-            expected.status_code, 200
-        )
-        result = expected.data
-        self.assertEqual(
-            result["status"], DemographicsSearch.PATIENT_FOUND_UPSTREAM
-        )
-        self.assertEqual(
-            result["patient"]["demographics"][0]["first_name"],
-            "Jane"
-        )
-        import_string.assert_called_once("blah")
-
     @override_settings(UPSTREAM_DEMOGRAPHICS_SERVICE=None)
     def test_patient_not_found(self, import_string):
         expected = self.client.get(self.url)
