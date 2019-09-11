@@ -9,13 +9,13 @@ class CalculatePEFTestCase(OpalTestCase):
         result = models.calculate_peak_expiratory_flow(
             height=170, age=35, sex="Male"
         )
-        self.assertEqual(result, 630.3)
+        self.assertEqual(result, 630)
 
     def test_calculate_pef_female(self):
         result = models.calculate_peak_expiratory_flow(
             height=140, age=35, sex="Female"
         )
-        self.assertEqual(result, 456.37)
+        self.assertEqual(result, 456)
 
 
 class DemographicsTestCase(OpalTestCase):
@@ -28,14 +28,18 @@ class DemographicsTestCase(OpalTestCase):
         dt.date.today.return_value = datetime.date(2019, 12, 1)
         self.demographics.date_of_birth = datetime.date(1990, 12, 1)
         self.demographics.save()
-        self.assertEqual(self.demographics.get_age(), 20)
+        self.assertEqual(self.demographics.get_age(), 29)
         self.assertEqual(
-            self.demographics.get_age(datetime.date(2019, 1, 1)),
+            self.demographics.get_age(datetime.date(2009, 11, 30)),
+            18
+        )
+        self.assertEqual(
+            self.demographics.get_age(datetime.date(2009, 12, 1)),
             19
         )
         self.assertEqual(
-            self.demographics.get_age(datetime.date(2020, 1, 1)),
-            21
+            self.demographics.get_age(datetime.date(2009, 12, 2)),
+            19
         )
 
     def test_pef(self):
@@ -45,5 +49,5 @@ class DemographicsTestCase(OpalTestCase):
         self.demographics.save()
         expected = self.demographics.get_pef(datetime.date(2019, 12, 1))
         self.assertEqual(
-            expected, 638.36
+            expected, 638
         )
