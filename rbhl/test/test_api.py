@@ -1,6 +1,7 @@
 """
 Unittests for rbhl.api
 """
+import datetime
 from opal.core.test import OpalTestCase
 from rbhl import api
 from rbhl.api import PeakFlowGraphData
@@ -60,6 +61,7 @@ class GetRangesTestCase(OpalTestCase):
 class PeakFlowGraphDataTestCase(OpalTestCase):
     def setUp(self, *args, **kwargs):
         self.api = PeakFlowGraphData()
+        self.patient, self.episode = self.new_patient_and_episode_please()
 
     def test_get_treatments(self):
         pfd = [
@@ -158,3 +160,60 @@ class PeakFlowGraphDataTestCase(OpalTestCase):
             result,
             expected
         )
+
+    def test_trial_data(self):
+        self.episode.peakflowday_set.create(
+            day_num=1,
+            date=datetime.date(2019, 8, 3),
+            flow_1000=500,
+            flow_1100=600,
+            flow_1200=700,
+        )
+
+        self.episode.peakflowday_set.create(
+            day_num=2,
+            date=datetime.date(2019, 8, 4),
+            flow_1000=500,
+            flow_1100=600,
+            flow_1200=700,
+            flow_1300=700
+        )
+        result = self.api.trial_data(
+            self.patient.demographics_set.get(),
+            self.episode.peakflowday_set.all()
+        )
+        expected = {
+            'days': [
+                {
+                    'treatment_taken': None,
+                    'day_num': 1,
+                    'date': datetime.date(2019, 8, 3),
+                    'work_day': False,
+                    'pef_flow': None,
+                    'min_flow': 500,
+                    'mean_flow': 600,
+                    'max_flow': 700,
+                    'variabilty': 29,
+                    'completeness': False
+                },
+                {
+                    'treatment_taken': None,
+                    'day_num': 2,
+                    'date': datetime.date(2019, 8, 4),
+                    'work_day': False,
+                    'pef_flow': None,
+                    'min_flow': 500,
+                    'mean_flow': 625,
+                    'max_flow': 700,
+                    'variabilty': 29,
+                    'completeness': False
+                }
+            ],
+            'completeness': 0,
+            'treatments': {},
+            'overrall_mean': 612,
+            'pef_mean': None,
+            'notes': []
+        }
+
+        self.assertEqual(result, expected)

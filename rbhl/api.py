@@ -32,22 +32,18 @@ class PeakFlowGraphData(LoginRequiredViewset):
         aggregates = peak_flow_day.get_aggregate_data()
 
         result = {
-            "note": peak_flow_day.note,
             "treatment_taken": peak_flow_day.treatment_taken,
             "day_num": peak_flow_day.day_num,
             "date": peak_flow_day.date,
             "work_day": peak_flow_day.work_day,
-            "pef_flow": pef
+            "pef_flow": pef,
+            "min_flow": aggregates.get("min_flow"),
+            "mean_flow": aggregates.get("mean_flow"),
+            "max_flow": aggregates.get("max_flow"),
+            "variabilty": aggregates.get("variabilty"),
+            "completeness": aggregates.get("completeness")
         }
 
-        if not aggregates:
-            return result
-
-        result["min_flow"] = aggregates["min_flow"]
-        result["mean_flow"] = aggregates["mean_flow"]
-        result["max_flow"] = aggregates["max_flow"]
-        result["variabilty"] = aggregates["variabilty"]
-        result["completeness"] = aggregates["completeness"]
         return result
 
     def get_completeness(self, day_dicts):
@@ -68,12 +64,13 @@ class PeakFlowGraphData(LoginRequiredViewset):
         completed_days = len(
             [i for i in day_dicts if "completeness" in i and i["completeness"]]
         )
+
         if total_days:
             completeness = Decimal(completed_days)/Decimal(total_days)
         else:
             completeness = 0
 
-        return round(completeness) * 100
+        return round(completeness * 100)
 
     def get_overrall_mean(self, day_dicts):
         means = [i["mean_flow"] for i in day_dicts if "mean_flow" in i]
@@ -129,10 +126,10 @@ class PeakFlowGraphData(LoginRequiredViewset):
             "detail": pfd.note
         } for pfd in pfds if pfd.note]
 
-    def trial_data(self, trial_num, demographics, pfds):
-        if pfds:
-            pef = demographics.get_pef(pfds[0].date)
-            days = [self.day_to_dict(i, pef) for i in pfds]
+    def trial_data(self, demographics, peak_flow_days):
+        if peak_flow_days:
+            pef = demographics.get_pef(peak_flow_days[0].date)
+            days = [self.day_to_dict(i, pef) for i in peak_flow_days]
 
         return {
             "days": days,
@@ -140,7 +137,7 @@ class PeakFlowGraphData(LoginRequiredViewset):
             "treatments": self.get_treatments(days),
             "overrall_mean": self.get_overrall_mean(days),
             "pef_mean": pef,
-            "notes": self.get_notes(pfds)
+            "notes": self.get_notes(peak_flow_days)
         }
 
     @episode_from_pk
@@ -155,7 +152,7 @@ class PeakFlowGraphData(LoginRequiredViewset):
         result = {}
         for trial_num, pfds in trial_num_to_peak_flow_day.items():
             result[trial_num] = self.trial_data(
-                trial_num, demographics, pfds
+                demographics, pfds
             )
         return json_response(result)
 

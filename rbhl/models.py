@@ -16,8 +16,6 @@ YN = enum('Yes', 'No')
 Core Opal models - these inherit from the abstract data models in
 opal.models but can be customised here with extra / altered fields.
 """
-MALE = "Male"
-FEMALE = "Female"
 
 
 def calculate_peak_expiratory_flow(height, age, sex):
@@ -33,9 +31,9 @@ def calculate_peak_expiratory_flow(height, age, sex):
     AJ Nunn, I Gregg New regression equations for predicting peak
     expiratory flow in adults Br Med J 1989; 298:1068-70
     """
-    if sex == MALE:
+    if sex == Demographics.MALE:
         PEF = 0.544 * (math.log(age)) - (0.0151*age) - 74.7/height + 5.48
-    if sex == FEMALE:
+    if sex == Demographics.FEMALE:
         PEF = 0.376 * (math.log(age)) - (0.0121*age) - 58.8/height + 5.63
 
     return round(math.exp(PEF))
@@ -45,6 +43,8 @@ class Demographics(models.Demographics):
     height = fields.IntegerField(
         blank=True, null=True, verbose_name='Height(cm)'
     )
+    MALE = "Male"
+    FEMALE = "Female"
 
     def get_pef(self, date):
         if not date:
@@ -53,7 +53,7 @@ class Demographics(models.Demographics):
         height = self.height
         sex = self.sex
         if age and height and sex:
-            if sex in [MALE, FEMALE]:
+            if sex in [self.MALE, self.FEMALE]:
                 return calculate_peak_expiratory_flow(height, age, sex)
 
     def get_age(self, date=None):
