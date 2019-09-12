@@ -5,17 +5,41 @@ from rbhl import models
 
 
 class CalculatePEFTestCase(OpalTestCase):
-    def test_calculate_pef_male(self):
+    def test_calculate_pef_male_1(self):
         result = models.calculate_peak_expiratory_flow(
             height=170, age=35, sex="Male"
         )
         self.assertEqual(result, 630)
 
-    def test_calculate_pef_female(self):
+    def test_calculate_pef_male_2(self):
+        result = models.calculate_peak_expiratory_flow(
+            height=180, age=30, sex="Male"
+        )
+        self.assertEqual(result, 641)
+
+    def test_calculate_pef_male_3(self):
+        result = models.calculate_peak_expiratory_flow(
+            height=150, age=64, sex="Male"
+        )
+        self.assertEqual(result, 533)
+
+    def test_calculate_pef_female_1(self):
         result = models.calculate_peak_expiratory_flow(
             height=140, age=35, sex="Female"
         )
         self.assertEqual(result, 456)
+
+    def test_calculate_pef_female_2(self):
+        result = models.calculate_peak_expiratory_flow(
+            height=180, age=30, sex="Female"
+        )
+        self.assertEqual(result, 502)
+
+    def test_calculate_pef_female_3(self):
+        result = models.calculate_peak_expiratory_flow(
+            height=150, age=64, sex="Female"
+        )
+        self.assertEqual(result, 415)
 
 
 class DemographicsTestCase(OpalTestCase):
