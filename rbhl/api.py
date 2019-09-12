@@ -55,22 +55,16 @@ class PeakFlowGraphData(LoginRequiredViewset):
         If they miss a day, that's a day counted as incomplete
         """
 
-        all_total_days = [i["day_num"] for i in day_dicts if "min_flow" in i]
-
-        if not all_total_days:
+        all_total_days = [i["day_num"] for i in day_dicts]
+        if not day_dicts:
             return
-
         total_days = max(all_total_days)
 
         completed_days = len(
-            [i for i in day_dicts if "completeness" in i and i["completeness"]]
+            [i for i in day_dicts if i["completeness"]]
         )
 
-        if total_days:
-            completeness = Decimal(completed_days)/Decimal(total_days)
-        else:
-            completeness = 0
-
+        completeness = Decimal(completed_days)/Decimal(total_days)
         return round(completeness * 100)
 
     def get_overrall_mean(self, days):
@@ -121,12 +115,12 @@ class PeakFlowGraphData(LoginRequiredViewset):
 
         return {t: get_ranges(treatments[t]) for t in treatments}
 
-    def get_notes(self, pfds):
+    def get_notes(self, peak_flow_days):
         return [{
-            "date": pfd.date,
-            "day_num": pfd.day_num,
-            "detail": pfd.note
-        } for pfd in pfds if pfd.note]
+            "date": peak_flow_day.date,
+            "day_num": peak_flow_day.day_num,
+            "detail": peak_flow_day.note
+        } for peak_flow_day in peak_flow_days if peak_flow_day.note]
 
     def trial_data(self, demographics, peak_flow_days):
         if peak_flow_days:
