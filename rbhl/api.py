@@ -122,7 +122,7 @@ class PeakFlowGraphData(LoginRequiredViewset):
     def get_notes(self, pfds):
         return [{
             "date": pfd.date,
-            "trial_num": pfd.trial_num,
+            "day_num": pfd.day_num,
             "detail": pfd.note
         } for pfd in pfds if pfd.note]
 

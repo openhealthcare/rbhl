@@ -161,6 +161,50 @@ class PeakFlowGraphDataTestCase(OpalTestCase):
             expected
         )
 
+    def test_get_notes(self):
+        self.episode.peakflowday_set.create(
+            day_num=1,
+            date=datetime.date(2019, 8, 3),
+            flow_1000=500,
+            flow_1100=600,
+            flow_1200=700,
+        )
+
+        self.episode.peakflowday_set.create(
+            day_num=2,
+            date=datetime.date(2019, 8, 4),
+            flow_1000=500,
+            flow_1100=600,
+            flow_1200=700,
+            flow_1300=700,
+            note="some notes"
+        )
+        self.episode.peakflowday_set.create(
+            day_num=3,
+            date=datetime.date(2019, 8, 5),
+        )
+        self.episode.peakflowday_set.create(
+            day_num=4,
+            date=datetime.date(2019, 8, 6),
+            note="other note"
+        )
+        notes = self.api.get_notes(self.episode.peakflowday_set.all())
+        self.assertEqual(
+            notes,
+            [
+                {
+                    "date": datetime.date(2019, 8, 4),
+                    "day_num": 2,
+                    "detail": "some notes"
+                },
+                {
+                    "date": datetime.date(2019, 8, 6),
+                    "day_num": 4,
+                    "detail": "other note"
+                },
+            ]
+        )
+
     def test_trial_data(self):
         self.episode.peakflowday_set.create(
             day_num=1,

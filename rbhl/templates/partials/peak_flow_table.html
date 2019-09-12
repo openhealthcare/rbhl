@@ -69,8 +69,8 @@
             <strong>Notes:</strong>
           </div>
           <div class="col-md-11">
-            <div ng-mouseover="highlights[trialNum].day_num = note.trial_num" ng-mouseout="highlights[trialNum].day_num = null"  ng-repeat="note in graphDataByPeakFlowNum[trialNum].notes" class="col-md-3 content-offset-below-25 text-left">
-              Trial day [[ note.trial_num ]]([[ note.date | displayDate ]]) <br />[[ note.detail ]]
+            <div ng-mouseover="highlights[trialNum].day_num = note.day_num" ng-mouseout="highlights[trialNum].day_num = null"  ng-repeat="note in graphDataByPeakFlowNum[trialNum].notes" class="col-md-3 content-offset-below-25 text-left">
+              Trial day [[ note.day_num ]]([[ note.date | displayDate ]]) <br />[[ note.detail ]]
             </div>
           </div>
         </div>

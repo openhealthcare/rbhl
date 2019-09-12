@@ -411,10 +411,10 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
         scope.$watch('highlights.day_num', function(){
           if(scope.highlights){
             if(scope.highlights.day_num){
-              ret.tooltip.show({x: scope.highlights.day_num-1});
+              ret.tooltip.show({x: scope.highlights.day_num});
             }
             else{
-              ret.tooltip.hide({x: scope.highlights.day_num-1});
+              ret.tooltip.hide({x: scope.highlights.day_num});
             }
           }
         });
