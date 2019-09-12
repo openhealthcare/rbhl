@@ -2,6 +2,7 @@
 Unittests for rbhl.api
 """
 import datetime
+from rest_framework.reverse import reverse
 from opal.core.test import OpalTestCase
 from rbhl import api
 from rbhl.api import PeakFlowGraphData
@@ -297,3 +298,47 @@ class PeakFlowGraphDataTestCase(OpalTestCase):
             'notes': []
         }
         self.assertEqual(result, expected)
+
+    def test_api(self):
+        request = self.rf.get("/")
+        url = reverse(
+            'peak_flow_graph_data-detail',
+            kwargs=dict(pk=self.episode.id),
+            request=request
+        )
+        self.assertTrue(
+            self.client.login(
+                username=self.user.username, password=self.PASSWORD
+            )
+        )
+        self.episode.peakflowday_set.create(
+            trial_num=1,
+            day_num=1,
+            date=datetime.date(2019, 8, 3),
+            flow_1000=500,
+            flow_1100=600,
+            flow_1200=700,
+        )
+        self.episode.peakflowday_set.create(
+            trial_num=1,
+            day_num=2,
+            date=datetime.date(2019, 8, 4),
+            flow_1000=500,
+            flow_1100=600,
+            flow_1200=700,
+            flow_1300=700
+        )
+        self.episode.peakflowday_set.create(
+            trial_num=2,
+            day_num=1,
+            date=datetime.date(2019, 8, 3),
+            flow_1000=500,
+            flow_1100=600,
+            flow_1200=700,
+        )
+        response = self.client.get(url).json()
+        # we don't want to double check that trial data
+        # works but lets just make sure that
+        # the data looks as we'd expect
+        self.assertEqual(len(response["1"]["days"]), 2)
+        self.assertEqual(len(response["2"]["days"]), 1)

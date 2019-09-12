@@ -132,7 +132,6 @@ class PeakFlowGraphData(LoginRequiredViewset):
         if peak_flow_days:
             pef = demographics.get_pef(peak_flow_days[0].date)
             days = [self.day_to_dict(i, pef) for i in peak_flow_days]
-
         return {
             "days": days,
             "completeness": self.get_completeness(days),
@@ -144,18 +143,18 @@ class PeakFlowGraphData(LoginRequiredViewset):
 
     @episode_from_pk
     def retrieve(self, request, episode):
-        trial_num_to_peak_flow_day = defaultdict(list)
-        for pfd in episode.peakflowday_set.order_by("day_num"):
-            trial_num_to_peak_flow_day[pfd.trial_num].append(pfd)
-
         demographics = Demographics.objects.get(
             patient__episode=episode
         )
-        result = {}
-        for trial_num, pfds in trial_num_to_peak_flow_day.items():
-            result[trial_num] = self.trial_data(
-                demographics, pfds
-            )
+
+        groups = itertools.groupby(
+            episode.peakflowday_set.order_by("trial_num"),
+            key=lambda x: x.trial_num
+        )
+        result = {
+            k: self.trial_data(demographics, list(group))
+            for k, group in groups
+        }
         return json_response(result)
 
 
