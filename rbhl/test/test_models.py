@@ -51,3 +51,71 @@ class DemographicsTestCase(OpalTestCase):
         self.assertEqual(
             expected, 638
         )
+
+
+class PeakFlowDayTestCase(OpalTestCase):
+    def setUp(self):
+        _, self.episode = self.new_patient_and_episode_please()
+
+    def test_get_aggregate_data(self):
+        pfd = self.episode.peakflowday_set.create(
+            flow_1000=400,
+            flow_1100=500,
+            flow_1200=600
+        )
+
+        aggregate_data = pfd.get_aggregate_data()
+        self.assertEqual(
+            aggregate_data["min_flow"], 400
+        )
+
+        self.assertEqual(
+            aggregate_data["max_flow"], 600
+        )
+
+        self.assertEqual(
+            aggregate_data["mean_flow"], 500
+        )
+
+        self.assertEqual(
+            aggregate_data["variabilty"], 33
+        )
+
+        self.assertEqual(
+            aggregate_data["completeness"], False
+        )
+
+    def test_get_aggregate_data_complete(self):
+        pfd = self.episode.peakflowday_set.create(
+            flow_1000=400,
+            flow_1100=500,
+            flow_1200=600,
+            flow_1300=600,
+            flow_1400=600
+        )
+
+        aggregate_data = pfd.get_aggregate_data()
+        self.assertEqual(
+            aggregate_data["min_flow"], 400
+        )
+
+        self.assertEqual(
+            aggregate_data["max_flow"], 600
+        )
+
+        self.assertEqual(
+            aggregate_data["mean_flow"], 540
+        )
+
+        self.assertEqual(
+            aggregate_data["variabilty"], 33
+        )
+
+        self.assertEqual(
+            aggregate_data["completeness"], True
+        )
+
+    def test_get_aggregate_data_none(self):
+        pfd = self.episode.peakflowday_set.create()
+        aggregate_data = pfd.get_aggregate_data()
+        self.assertIsNone(aggregate_data)

@@ -349,7 +349,7 @@ class PeakFlowDay(models.EpisodeSubrecord):
                 flow_values.append(value)
         return flow_values
 
-    def get_min_max_variability_completeness(self):
+    def get_aggregate_data(self):
         flow_values = self.get_flow_values()
 
         if flow_values:
@@ -357,11 +357,17 @@ class PeakFlowDay(models.EpisodeSubrecord):
             max_flow = max(flow_values)
             variabilty = Decimal(max_flow - min_flow)/Decimal(max_flow)
             variabilty_perc = round(variabilty * 100)
-            completeness = len(flow_values) > 5
+            completeness = len(flow_values) > 4
             mean_flow = round(
                 Decimal(sum(flow_values))/Decimal(len(flow_values))
             )
-            return min_flow, max_flow, mean_flow, variabilty_perc, completeness
+            return {
+                "min_flow": min_flow,
+                "max_flow": max_flow,
+                "mean_flow": mean_flow,
+                "variabilty": variabilty_perc,
+                "completeness": completeness
+            }
 
 
 """

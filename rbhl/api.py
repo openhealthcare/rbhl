@@ -28,8 +28,8 @@ def get_ranges(numbers):
 class PeakFlowGraphData(LoginRequiredViewset):
     base_name = "peak_flow_graph_data"
 
-    def day_to_dict(self, peak_flow_day, demographics, pef):
-        aggregates = peak_flow_day.get_min_max_variability_completeness()
+    def day_to_dict(self, peak_flow_day, pef):
+        aggregates = peak_flow_day.get_aggregate_data()
 
         result = {
             "note": peak_flow_day.note,
@@ -42,16 +42,12 @@ class PeakFlowGraphData(LoginRequiredViewset):
 
         if not aggregates:
             return result
-        else:
-            (
-                min_flow, max_flow, mean_flow, variabilty, completeness
-            ) = aggregates
 
-        result["min_flow"] = min_flow
-        result["mean_flow"] = mean_flow
-        result["max_flow"] = max_flow
-        result["variabilty"] = variabilty
-        result["completeness"] = completeness
+        result["min_flow"] = aggregates["min_flow"]
+        result["mean_flow"] = aggregates["mean_flow"]
+        result["max_flow"] = aggregates["max_flow"]
+        result["variabilty"] = aggregates["variabilty"]
+        result["completeness"] = aggregates["completeness"]
         return result
 
     def get_completeness(self, day_dicts):
@@ -136,7 +132,7 @@ class PeakFlowGraphData(LoginRequiredViewset):
     def trial_data(self, trial_num, demographics, pfds):
         if pfds:
             pef = demographics.get_pef(pfds[0].date)
-            days = [self.day_to_dict(i, demographics, pef) for i in pfds]
+            days = [self.day_to_dict(i, pef) for i in pfds]
 
         return {
             "days": days,

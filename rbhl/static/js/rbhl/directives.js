@@ -103,9 +103,11 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
           max,
           min,
           mean,
-          pef
         ];
 
+        if(pef[1]){
+          columns.push(pef)
+        }
         let getColStartWidths = function(){
           /*
           * Returns a list of objects of {start, width}
@@ -277,7 +279,7 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
 
           // defaut mix max vaues
           let min = 300;
-          let max = 750;
+          let max = 650;
 
           // look at the values actually to be rendered
           // and adjust the min/maxes accordingly.
@@ -297,7 +299,7 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
 
           // the range is the min -50 and the max + 50
           let range = _.range(min, max+50, 50);
-          let height = max - min;
+          let height = (max - min) * 1.2;
 
           return {
             size: {
