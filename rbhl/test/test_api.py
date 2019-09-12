@@ -205,6 +205,43 @@ class PeakFlowGraphDataTestCase(OpalTestCase):
             ]
         )
 
+    def test_get_overrall_mean(self):
+        self.episode.peakflowday_set.create(
+            day_num=1,
+            date=datetime.date(2019, 8, 3),
+            flow_1000=500,
+            flow_1100=600,
+            flow_1200=700,
+        )
+
+        self.episode.peakflowday_set.create(
+            day_num=2,
+            date=datetime.date(2019, 8, 4),
+            flow_1000=500,
+            flow_1100=600,
+            flow_1200=700,
+            flow_1300=700,
+            flow_1400=1000,
+            flow_1500=900,
+            flow_1600=900,
+        )
+        self.episode.peakflowday_set.create(
+            day_num=3,
+            date=datetime.date(2019, 8, 5),
+        )
+        m = self.api.get_overrall_mean(self.episode.peakflowday_set.all())
+        self.assertEqual(
+            m, 710
+        )
+
+    def test_get_overrall_mean_no_flows(self):
+        self.episode.peakflowday_set.create(
+            day_num=1,
+            date=datetime.date(2019, 8, 3),
+        )
+        m = self.api.get_overrall_mean(self.episode.peakflowday_set.all())
+        self.assertIsNone(m)
+
     def test_trial_data(self):
         self.episode.peakflowday_set.create(
             day_num=1,
@@ -255,9 +292,8 @@ class PeakFlowGraphDataTestCase(OpalTestCase):
             ],
             'completeness': 0,
             'treatments': {},
-            'overrall_mean': 612,
+            'overrall_mean': 614,
             'pef_mean': None,
             'notes': []
         }
-
         self.assertEqual(result, expected)

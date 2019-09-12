@@ -2,6 +2,7 @@
 API endpoints for RBHL
 """
 from collections import defaultdict
+import itertools
 from decimal import Decimal
 from opal.core.views import json_response
 from opal.core.api import LoginRequiredViewset, episode_from_pk
@@ -72,10 +73,11 @@ class PeakFlowGraphData(LoginRequiredViewset):
 
         return round(completeness * 100)
 
-    def get_overrall_mean(self, day_dicts):
-        means = [i["mean_flow"] for i in day_dicts if "mean_flow" in i]
-        if means:
-            return round(sum(means)/len(means))
+    def get_overrall_mean(self, days):
+        nested_flow_values = [i.get_flow_values() for i in days]
+        flow_values = list(itertools.chain(*nested_flow_values))
+        if flow_values:
+            return round(sum(flow_values)/len(flow_values))
 
     def get_treatments(self, days):
         """
@@ -135,7 +137,7 @@ class PeakFlowGraphData(LoginRequiredViewset):
             "days": days,
             "completeness": self.get_completeness(days),
             "treatments": self.get_treatments(days),
-            "overrall_mean": self.get_overrall_mean(days),
+            "overrall_mean": self.get_overrall_mean(peak_flow_days),
             "pef_mean": pef,
             "notes": self.get_notes(peak_flow_days)
         }
