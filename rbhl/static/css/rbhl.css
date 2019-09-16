@@ -348,26 +348,14 @@ a {
   font-family: 'Lato', sans-serif;
 }
 
-.peak-flow-graph text.treatment-0 {
-  fill: #008C21;
-}
-
 .peak-flow-graph line.treatment-0 {
   fill: rgba(0, 140, 33, 0.7);
   stroke: rgba(0, 140, 33, 0.7);
 }
 
-.peak-flow-graph text.treatment-1 {
-  fill: #00400F;
-}
-
 .peak-flow-graph line.treatment-1 {
   fill: rgba(0, 64, 15, 0.7);
   stroke: rgba(0, 64, 15, 0.7);
-}
-
-.peak-flow-graph text.treatment-2 {
-  fill: #40060B;
 }
 
 .peak-flow-graph line.treatment-2 {

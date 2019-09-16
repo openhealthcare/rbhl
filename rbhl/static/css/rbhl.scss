@@ -381,25 +381,16 @@ a {
         font-family: 'Lato', sans-serif;
     }
 
-    text.treatment-0{
-        fill: #008C21;
-    }
     line.treatment-0{
         fill: scale-color(#008C21, $alpha: -30%);
         stroke: scale-color(#008C21, $alpha: -30%);
     }
 
-    text.treatment-1{
-        fill: #00400F;
-    }
     line.treatment-1{
         fill: scale-color(#00400F, $alpha: -30%);
         stroke: scale-color(#00400F, $alpha: -30%);
     }
 
-    text.treatment-2{
-        fill: #40060B;
-    }
     line.treatment-2{
         fill: scale-color(#40060B, $alpha: -30%);
         stroke: scale-color(#40060B, $alpha: -30%);
