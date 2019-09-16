@@ -32,6 +32,10 @@ class PeakFlowGraphData(LoginRequiredViewset):
     def day_to_dict(self, peak_flow_day, pef):
         aggregates = peak_flow_day.get_aggregate_data()
 
+        # if we have no peak flow days aggregates is None
+        if aggregates is None:
+            aggregates = {}
+
         result = {
             "treatment_taken": peak_flow_day.treatment_taken,
             "day_num": peak_flow_day.day_num,
