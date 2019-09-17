@@ -285,7 +285,7 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
           // and adjust the min/maxes accordingly.
           columns = columns.filter(column=> column[0] !== 'x');
           let values = columns.flat();
-          values = values.filter(value => !_.isString(value));
+          values = values.filter(value => !_.isString(value) && !_.isUndefined(value) && !_.isNull(value));
           let minInVaues = Math.min(...values);
           let maxInValues = Math.max(...values);
 
