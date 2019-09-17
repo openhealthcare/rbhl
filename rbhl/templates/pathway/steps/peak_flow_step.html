@@ -41,7 +41,10 @@
       <div class="col-md-4">
         <div class="form-group">
           <label>Treatment</label>
-          <input ng-model="trialDay.treatment_taken" class="form-control" type="text">
+          <input ng-model="trialDay.treatment_taken" ng-blur="createTreatmentList()" class="form-control" type="text" list="trial-treatment-[[ $index ]]">
+          <datalist id="trial-treatment-[[ $index ]]">
+              <option ng-repeat="treatment in treatments track by $index" value="[[ treatment ]]">
+          </datalist>
         </div>
       </div>
       <div class="col-md-4">

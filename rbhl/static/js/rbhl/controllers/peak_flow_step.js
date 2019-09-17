@@ -148,6 +148,7 @@ angular.module('opal.controllers').controller('PeakFlowStep',
         return;
       }
       scope.initialFormErrors = {};
+
       scope.trialNum = parseInt($location.search().trial_num);
       this.setUpTrialNumbers();
 
@@ -160,7 +161,14 @@ angular.module('opal.controllers').controller('PeakFlowStep',
         scope.startDate = _.min(scope.trialDays, x => {
           return x.date;
         }).date;
+        scope.createTreatmentList();
       }
+    }
+
+    scope.createTreatmentList = function(){
+      let treatments = scope.trialDays.map(td => td.treatment_taken);
+      treatments = _.uniq(treatments.filter(t => t));
+      scope.treatments = treatments;
     }
 
 
