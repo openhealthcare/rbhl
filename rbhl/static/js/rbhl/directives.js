@@ -325,6 +325,30 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
           }
         }
 
+        let getTooltip = function(d, CLASS){
+          let trialNum = d[0].x;
+          let day = data.days.find(day => day.day_num === trialNum)
+          let rowTemplate = function(id, name, value){
+            return `<tr class="${CLASS.tooltipName}-${id}">
+            <td class="name">${name}</td><td class="value">${value}</td>
+            </tr>
+            `
+          }
+
+          let rows = d.map(row =>rowTemplate(row.id, row.name, row.value));
+          rows.push(rowTemplate("variabilty", "Variabilty", day.variabilty));
+          if(day.work_day){
+            rows.push(`<tr class="${CLASS.tooltipName}-workday"><td class="text-center" colspan="2">Work day</td></tr>`)
+          }
+
+          return `
+            <table class="${CLASS.tooltip}">
+              <tr><th colspan='2'>Day ${trialNum} (${displayDateFilter(day.date)})</th></tr>
+              ${rows.join("")}
+            </table>
+          `
+        }
+
         let axisDimensions = calculateGraphAxisAndHeight(columns);
 
         let colorsOptions = [
@@ -378,28 +402,7 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
           tooltip: {
             contents: function (d, defaultTitleFormat, defaultValueFormat, color) {
               let CLASS = this.CLASS;
-              let trialNum = d[0].x;
-              let day = data.days.find(day => day.day_num === trialNum)
-
-              let rowTemplate = function(id, name, value){
-                return `<tr class="${CLASS.tooltipName}-${id}">
-                <td class="name">${name}</td><td class="value">${value}</td>
-                </tr>
-                `
-              }
-
-              let rows = d.map(row =>rowTemplate(row.id, row.name, row.value));
-              rows.push(rowTemplate("variabilty", "Variabilty", day.variabilty));
-              if(day.work_day){
-                rows.push(`<tr class="${CLASS.tooltipName}-workday"><td class="text-center" colspan="2">Work day</td></tr>`)
-              }
-
-              return `
-                <table class="${CLASS.tooltip}">
-                  <tr><th colspan='2'>Day ${trialNum} (${displayDateFilter(day.date)})</th></tr>
-                  ${rows.join("")}
-                </table>
-              `
+              return getTooltip(d, CLASS);
             }
           },
           onrendered: function() {
