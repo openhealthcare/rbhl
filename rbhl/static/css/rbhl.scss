@@ -455,10 +455,12 @@ input[type="date"]::-webkit-input-placeholder{
     font-size: 18px;
 }
 
-.peak-flow-step{
+.panel-pathway .peak-flow-step{
     textarea{
         font-size: 18px;
         resize: vertical;
+        padding: 6px 12px;
+        height: 44px;
     }
 
     .flow-table{

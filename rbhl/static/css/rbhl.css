@@ -422,12 +422,14 @@ input[type="date"]::-webkit-input-placeholder {
   font-size: 18px;
 }
 
-.peak-flow-step textarea {
+.panel-pathway .peak-flow-step textarea {
   font-size: 18px;
   resize: vertical;
+  padding: 6px 12px;
+  height: 44px;
 }
 
-.peak-flow-step .flow-table {
+.panel-pathway .peak-flow-step .flow-table {
   padding-top: 8px;
   padding-bottom: 8px;
   line-height: 1.428571429;
@@ -435,24 +437,24 @@ input[type="date"]::-webkit-input-placeholder {
   border-top: 1px solid #ddd;
 }
 
-.peak-flow-step .remove-flow {
+.panel-pathway .peak-flow-step .remove-flow {
   padding: 0 7px;
   font-size: 16px;
   margin-top: 8px;
   font-weight: 600;
 }
 
-.peak-flow-step .add-flow {
+.panel-pathway .peak-flow-step .add-flow {
   margin-top: 25px;
   padding-top: 10px;
   padding-bottom: 10px;
 }
 
-.peak-flow-step .validation-error {
+.panel-pathway .peak-flow-step .validation-error {
   display: none;
 }
 
-.peak-flow-step .errored-state .validation-error {
+.panel-pathway .peak-flow-step .errored-state .validation-error {
   display: block;
 }
 
