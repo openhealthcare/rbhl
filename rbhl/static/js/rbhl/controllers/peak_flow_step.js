@@ -109,7 +109,7 @@ angular.module('opal.controllers').controller('PeakFlowStep',
         if(this.form.time && _.isNull(this.form.flow)){
           this.form.errors.flow = "Please add a flow"
         }
-        else if(this.form.flow > 1400){
+        else if(this.form.flow > 2000){
           this.form.errors.flow = "Please check the flow value"
         }
         else{
