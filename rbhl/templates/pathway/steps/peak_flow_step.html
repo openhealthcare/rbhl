@@ -56,14 +56,12 @@
       <div class="col-md-4">
         <div class="form-group">
           <div>
-            <label class="control-label">Work day</label>
+              <button type="button" class="btn btn-default work-day" ng-model="trialDay.work_day" uib-btn-checkbox>
+                Work day
+                <i ng-show="trialDay.work_day" class="fa fa-check"></i>
+                <i ng-show="!trialDay.work_day" class="fa fa-times"></i>
+              </button>
           </div>
-          <label class="radio-inline">
-            <input type="radio" ng-model="trialDay.work_day" name="workday_[[ $index ]]" id="workday[[ $index ]]" ng-value="true"> Yes
-          </label>
-          <label class="radio-inline">
-            <input type="radio" ng-model="trialDay.work_day" name="workday_[[ $index ]]" id="workday[[ $index ]]" ng-value="false"> No
-          </label>
         </div>
       </div>
     </div>

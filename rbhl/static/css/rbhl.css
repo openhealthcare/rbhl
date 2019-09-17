@@ -444,10 +444,10 @@ input[type="date"]::-webkit-input-placeholder {
   font-weight: 600;
 }
 
-.panel-pathway .peak-flow-step .add-flow {
+.panel-pathway .peak-flow-step .add-flow, .panel-pathway .peak-flow-step .work-day {
   margin-top: 25px;
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding-top: 11px;
+  padding-bottom: 12px;
 }
 
 .panel-pathway .peak-flow-step .validation-error {

@@ -478,10 +478,10 @@ input[type="date"]::-webkit-input-placeholder{
         font-weight: 600;
     }
 
-    .add-flow{
+    .add-flow, .work-day{
         margin-top: 25px;
-        padding-top: 10px;
-        padding-bottom: 10px
+        padding-top: 11px;
+        padding-bottom: 12px
     }
 
     .validation-error{
@@ -491,7 +491,6 @@ input[type="date"]::-webkit-input-placeholder{
     .errored-state .validation-error{
         display: block;
     }
-
 }
 
 .content-offset-below-100{
