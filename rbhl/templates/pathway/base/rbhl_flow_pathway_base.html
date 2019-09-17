@@ -24,7 +24,7 @@
         {% endfor %}
       </div>
       <div class="col-md-2">
-        <div class="pathway-fixed-button">
+        <div ng-show="pathway.steps[0].scope.trialDays.length" class="pathway-fixed-button">
           <div class="text-center" ng-show="form.$submitted && form.$invalid">
             <strong class="help-block">Please fix errors</strong>
           </div>
