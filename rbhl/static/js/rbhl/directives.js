@@ -329,6 +329,9 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
           let trialNum = d[0].x;
           let day = data.days.find(day => day.day_num === trialNum)
           let rowTemplate = function(id, name, value){
+            if(!value){
+              value = "Unknown";
+            }
             return `<tr class="${CLASS.tooltipName}-${id}">
             <td class="name">${name}</td><td class="value">${value}</td>
             </tr>
@@ -337,13 +340,21 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
 
           let rows = d.map(row =>rowTemplate(row.id, row.name, row.value));
           rows.push(rowTemplate("variabilty", "Variabilty", day.variabilty));
+          let dt = displayDateFilter(day.date);
+          let dtStr;
+          if(dt){
+            dtStr = ` (${dt})`;
+          }
+          else{
+            dtStr = ""
+          }
           if(day.work_day){
             rows.push(`<tr class="${CLASS.tooltipName}-workday"><td class="text-center" colspan="2">Work day</td></tr>`)
           }
 
           return `
             <table class="${CLASS.tooltip}">
-              <tr><th colspan='2'>Day ${trialNum} (${displayDateFilter(day.date)})</th></tr>
+              <tr><th colspan='2'>Day ${trialNum}${dtStr}</th></tr>
               ${rows.join("")}
             </table>
           `
