@@ -42,7 +42,7 @@ class PeakFlowStep(Step):
     """
     step_controller = "PeakFlowStep"
     template = "pathway/steps/peak_flow_step.html"
-    base_template = "pathway/steps/step_base_without_display_name.html"
+    base_template = "pathway/steps/peak_flow_step_base.html"
     model = models.PeakFlowDay
     display_name = "Peak Flow Day"
 
@@ -76,7 +76,7 @@ class PeakFlowDayPathway(PagePathway):
     """
     display_name = 'Peak Flow Day'
     slug = 'peak_flow_day'
-    template = "pathway/base/rbhl_page_pathway_base.html"
+    template = "pathway/base/rbhl_flow_pathway_base.html"
     steps = [
         PeakFlowStep(),
     ]

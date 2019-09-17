@@ -470,4 +470,10 @@ input[type="date"]::-webkit-input-placeholder {
   text-decoration: none;
   color: #4676c5;
 }
+
+.pathway-fixed-button {
+  position: fixed;
+  right: 15%;
+  top: 111px;
+}
 /*# sourceMappingURL=rbhl.css.map */

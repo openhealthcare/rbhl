@@ -505,3 +505,9 @@ input[type="date"]::-webkit-input-placeholder{
         color: $blue;
     }
 }
+
+.pathway-fixed-button{
+    position: fixed;
+    right: 15%;
+    top: 111px
+}
