@@ -146,7 +146,7 @@ class PeakFlowGraphData(LoginRequiredViewset):
         )
 
         groups = itertools.groupby(
-            episode.peakflowday_set.order_by("trial_num"),
+            episode.peakflowday_set.order_by("trial_num", "day_num"),
             key=lambda x: x.trial_num
         )
         result = {
