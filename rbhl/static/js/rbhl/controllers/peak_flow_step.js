@@ -147,6 +147,7 @@ angular.module('opal.controllers').controller('PeakFlowStep',
         $window.location.href = '/404';
         return;
       }
+      scope.initialFormErrors = {};
       scope.trialNum = parseInt($location.search().trial_num);
       this.setUpTrialNumbers();
 
@@ -204,7 +205,21 @@ angular.module('opal.controllers').controller('PeakFlowStep',
       * What happens when you update the form after its rendered
       */
       if(!scope.numOfTrials || !scope.startDate){
-        return
+        return;
+      }
+      scope.initialFormErrors = {};
+      if(scope.startDate < new Date(2000, 0, 1)){
+        scope.initialFormErrors.startDate = "Please enter a recent date";
+      }
+      if(scope.numOfTrials > 365){
+        scope.initialFormErrors.trialDays = "Please enter a number less than 365";
+      }
+      else if(scope.numOfTrials < 1){
+        scope.initialFormErrors.trialDays = "Please enter a number greater than 1";
+      }
+
+      if(Object.keys(scope.initialFormErrors).length){
+        return;
       }
 
       if(!scope.trialDays.length){

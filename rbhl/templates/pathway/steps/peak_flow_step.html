@@ -2,14 +2,32 @@
 
   <div class="row">
     <div class="col-sm-4">
-      <label for="startDate" class="control-label">
-        Start date
-      </label>
-      <input id="startDate" class="form-control" type="date" ng-model="startDate" ng-blur="updateTrialNumbers()">
+      <div ng-class="{'errored-state': initialFormErrors.startDate}" class="form-group">
+        <label for="startDate" class="control-label">
+          Start date
+        </label>
+        <input id="startDate" class="form-control" type="date" ng-model="startDate" ng-blur="updateTrialNumbers()">
+        <div class="row" ng-show="initialFormErrors.startDate">
+          <div class="col-md-12">
+            <span class="help-block" >
+              [[ initialFormErrors.startDate ]]
+            </span>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="col-sm-4">
-      <label for="trialDays" class="control-label">Number of trial days</label>
-      <input id="trialDays" class="form-control" type="number" ng-model="numOfTrials" ng-blur="updateTrialNumbers()">
+      <div ng-class="{'errored-state': initialFormErrors.trialDays}" class="form-group">
+        <label for="trialDays" class="control-label">Number of trial days</label>
+        <input id="trialDays" class="form-control" type="number" ng-model="numOfTrials" ng-blur="updateTrialNumbers()">
+        <div class="row" ng-show="initialFormErrors.trialDays">
+          <div class="col-md-12">
+            <span class="help-block" >
+              [[ initialFormErrors.trialDays ]]
+            </span>
+          </div>
+        </div>
+      </div>
     </div>
 
   </div>
