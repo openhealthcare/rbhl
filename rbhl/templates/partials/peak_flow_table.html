@@ -45,21 +45,24 @@
                   Overall mean:
                 </strong>
                 &nbsp;
-                [[ graphDataByPeakFlowNum[trialNum].overrall_mean ]] litres/minute
+                [[ graphDataByPeakFlowNum[trialNum].overrall_mean ]]
+                <span ng-show="graphDataByPeakFlowNum[trialNum].overrall_mean">litres/minute</span>
           </div>
           <div class="col-md-3">
                 <strong>
                   PEF:
                 </strong>
                 &nbsp;
-                [[ graphDataByPeakFlowNum[trialNum].pef_mean ]] litres/minute
+                [[ graphDataByPeakFlowNum[trialNum].pef_mean ]]
+                <span ng-show="graphDataByPeakFlowNum[trialNum].pef_mean">litres/minute</span>
           </div>
           <div class="col-md-3">
                 <strong>
                   Completeness:
                 </strong>
                 &nbsp;
-                [[ graphDataByPeakFlowNum[trialNum].completeness ]]%
+                [[ graphDataByPeakFlowNum[trialNum].completeness ]]
+                <span ng-show="graphDataByPeakFlowNum[trialNum].completeness">%</span>
           </div>
       </div>
       <div peak-flow-graph data="graphDataByPeakFlowNum[trialNum]" highlights="highlights[trialNum]"></div>

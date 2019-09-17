@@ -18,28 +18,34 @@
         <table class="content-offset-below-25 table">
           <tr>
             <td>
-                <strong>
-                  Start:
-                </strong>
-                [[ graphDataByPeakFlowNum[trialNum].days[0].date | displayDate ]]
+              <strong>
+                Start:
+              </strong>
+              [[ graphDataByPeakFlowNum[trialNum].days[0].date | displayDate ]]
             </td>
             <td>
-                <strong>
-                  Overall mean:
-                </strong>
-                [[ graphDataByPeakFlowNum[trialNum].overrall_mean ]] litres/minute
+              <strong>
+                Overall mean:
+              </strong>
+              &nbsp;
+              [[ graphDataByPeakFlowNum[trialNum].overrall_mean ]]
+              <span ng-show="graphDataByPeakFlowNum[trialNum].overrall_mean">litres/minute</span>
             </td>
             <td>
-                <strong>
-                  PEF mean:
-                </strong>
-                [[ graphDataByPeakFlowNum[trialNum].pef_mean ]] litres/minute
+              <strong>
+                PEF:
+              </strong>
+              &nbsp;
+              [[ graphDataByPeakFlowNum[trialNum].pef_mean ]]
+              <span ng-show="graphDataByPeakFlowNum[trialNum].pef_mean">litres/minute</span>
             </td>
             <td>
-                <strong>
-                  Completeness
-                </strong>
-                [[ graphDataByPeakFlowNum[trialNum].completeness ]]%
+              <strong>
+                Completeness:
+              </strong>
+              &nbsp;
+              [[ graphDataByPeakFlowNum[trialNum].completeness ]]
+              <span ng-show="graphDataByPeakFlowNum[trialNum].completeness">%</span>
             </td>
           </tr>
         </table>
