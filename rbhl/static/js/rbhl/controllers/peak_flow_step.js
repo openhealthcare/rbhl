@@ -66,8 +66,12 @@ angular.module('opal.controllers').controller('PeakFlowStep',
       // this is the data in the two inputs before you
       // add a new peak flow time.
       form = {
-        flow: undefined,
-        time: undefined
+        flow: null,
+        time: null,
+        errors: {
+          flow: null,
+          time: null
+        }
       }
 
       constructor(date, day_num){
@@ -75,8 +79,60 @@ angular.module('opal.controllers').controller('PeakFlowStep',
         this.day_num = day_num;
       }
 
+      validateTimeWhenClosed(isOpen){
+        /*
+        * We only want to validate after the user
+        * has entered data, so the user doesn't
+        * get the warning when they open the
+        * select for the first time.
+        *
+        * the uis-open-close directive passes an argument
+        * that tells us this.
+        */
+       if(!isOpen){
+        this.validateTime();
+       }
+      }
+
+      validate(){
+        if(!this.form.flow && !this.form.time){
+          this.form.errors.time = "Please add a time";
+          this.form.errors.flow = "Please add a flow";
+        }
+        else{
+          this.validateFlow();
+          this.validateTime();;
+        }
+      }
+
+      validateFlow(){
+        if(this.form.time && _.isNull(this.form.flow)){
+          this.form.errors.flow = "Please add a flow"
+        }
+        else if(this.form.flow > 1400){
+          this.form.errors.flow = "Please check the flow value"
+        }
+        else{
+          this.form.errors.flow = null;
+        }
+      }
+
+      validateTime(){
+        if(this.form.flow && _.isNull(this.form.time)){
+          this.form.errors.time = "Please add a time"
+        }
+        else{
+          this.form.errors.time = null;
+        }
+      }
+
+      hasError(){
+        return Object.values(this.form.errors).some(x => x);
+      }
+
       addFlow(idx){
-        if(!this.form.time || !this.form.flow){
+        this.validate();
+        if(this.hasError()){
           return;
         }
         this.peakFlowTimes = this.peakFlowTimes.filter(oldPft => {

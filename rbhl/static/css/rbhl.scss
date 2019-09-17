@@ -482,6 +482,14 @@ input[type="date"]::-webkit-input-placeholder{
         padding-bottom: 10px
     }
 
+    .validation-error{
+        display: none;
+    }
+
+    .errored-state .validation-error{
+        display: block;
+    }
+
 }
 
 .content-offset-below-100{

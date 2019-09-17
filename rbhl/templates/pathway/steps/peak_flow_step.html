@@ -7,9 +7,9 @@
           Start date
         </label>
         <input id="startDate" class="form-control" type="date" ng-model="startDate" ng-blur="updateTrialNumbers()">
-        <div class="row" ng-show="initialFormErrors.startDate">
+        <div class="row">
           <div class="col-md-12">
-            <span class="help-block" >
+            <span class="help-block validation-error" >
               [[ initialFormErrors.startDate ]]
             </span>
           </div>
@@ -20,9 +20,9 @@
       <div ng-class="{'errored-state': initialFormErrors.trialDays}" class="form-group">
         <label for="trialDays" class="control-label">Number of trial days</label>
         <input id="trialDays" class="form-control" type="number" ng-model="numOfTrials" ng-blur="updateTrialNumbers()">
-        <div class="row" ng-show="initialFormErrors.trialDays">
+        <div class="row">
           <div class="col-md-12">
-            <span class="help-block" >
+            <span class="help-block validation-error">
               [[ initialFormErrors.trialDays ]]
             </span>
           </div>
@@ -75,24 +75,38 @@
     <div class="row">
       <form ng-submit="trialDay.addFlow($index)" class="form">
         <div class="col-md-4">
-          <div listen class="form-group">
+          <div listen class="form-group" ng-class="{'errored-state': trialDay.form.errors.time}">
             <label>Time</label>
-            <ui-select reemit="'reset' + $index" focus-on="refocus" ng-model="trialDay.form.time" theme="bootstrap">
+            <ui-select reemit="'reset' + $index" focus-on="refocus" ng-model="trialDay.form.time" uis-open-close="trialDay.validateTimeWhenClosed(isOpen)" theme="bootstrap">
               <ui-select-match>[[ $select.selected ]]</ui-select-match>
               <ui-select-choices repeat="i in timeOptions | filter:$select.search track by $index">
                 <div ng-bind-html="i | highlight: $select.search"></div>
               </ui-select-choices>
             </ui-select>
+            <div class="row">
+              <div class="col-md-12">
+                <span class="help-block validation-error" >
+                  [[ trialDay.form.errors.time ]]
+                </span>
+              </div>
+            </div>
           </div>
         </div>
         <div class="col-md-4">
-          <div class="form-group">
+          <div class="form-group"  ng-class="{'errored-state': trialDay.form.errors.flow}">
             <label>Flow</label>
-            <input ng-model="trialDay.form.flow" class="form-control" type="number">
+            <input ng-model="trialDay.form.flow" class="form-control" ng-class="{'errored-state': trialDay.hasError()}" ng-blur="trialDay.validateFlow()" type="number">
+            <div class="row">
+              <div class="col-md-12">
+                <span class="help-block validation-error" >
+                  [[ trialDay.form.errors.flow ]]
+                </span>
+              </div>
+            </div>
           </div>
         </div>
         <div class="col-md-4">
-          <button ng-click="trialDay.addFlow($index)" type="submit" class="btn btn-default add-flow">Add flow</button>
+          <button type="submit" class="btn btn-default add-flow">Add flow</button>
         </div>
       </form>
     </div>
