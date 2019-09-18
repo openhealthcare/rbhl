@@ -1,3 +1,4 @@
+{% load forms %}
 <div class="peak-flow-step">
 
   <div class="row">
@@ -54,13 +55,17 @@
         </div>
       </div>
       <div class="col-md-4">
-        <div class="form-group">
-          <div>
-              <button type="button" class="btn btn-default work-day" ng-model="trialDay.work_day" uib-btn-checkbox>
-                Work day
-                <i ng-show="trialDay.work_day" class="fa fa-check"></i>
-                <i ng-show="!trialDay.work_day" class="fa fa-times"></i>
-              </button>
+        <div class="form-group form-horizontal" >
+          <label class="control-label">Work day</label>
+          <div class="rbhl-radio">
+            <label class="radio-inline">
+              <input class="work-day" type="radio" ng-model="trialDay.work_day" name="workday_[[ $index ]]" id="workday[[ $index ]]" ng-value="true">
+              <div class="label-text">Yes</div>
+            </label>
+            <label class="radio-inline">
+              <input class="work-day" type="radio" ng-model="trialDay.work_day" name="workday_[[ $index ]]" id="workday[[ $index ]]" ng-value="false">
+              <div class="label-text">No</div>
+            </label>
           </div>
         </div>
       </div>

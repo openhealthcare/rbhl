@@ -422,6 +422,26 @@ input[type="date"]::-webkit-input-placeholder {
   font-size: 18px;
 }
 
+.rbhl-radio input.work-day {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  padding: 8px;
+  border-radius: 50%;
+  border: 2px solid #999;
+}
+
+.rbhl-radio input.work-day:checked {
+  border: 7px solid #4676c5;
+  padding: 3px;
+}
+
+.rbhl-radio .label-text {
+  display: inline-block;
+  padding-left: 10px;
+  margin-top: 3px;
+}
+
 .panel-pathway .peak-flow-step textarea {
   font-size: 18px;
   resize: vertical;
@@ -444,7 +464,7 @@ input[type="date"]::-webkit-input-placeholder {
   font-weight: 600;
 }
 
-.panel-pathway .peak-flow-step .add-flow, .panel-pathway .peak-flow-step .work-day {
+.panel-pathway .peak-flow-step .add-flow {
   margin-top: 25px;
   padding-top: 11px;
   padding-bottom: 12px;
