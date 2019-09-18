@@ -9,7 +9,11 @@ def forwards(apps, schema_editor):
     PeakFlowDay.objects.exclude(
         work_end=0
     ).exclude(
+        work_end=None
+    ).exclude(
         work_start=0
+    ).exclude(
+        work_start=None
     ).update(work_day=True)
 
 
