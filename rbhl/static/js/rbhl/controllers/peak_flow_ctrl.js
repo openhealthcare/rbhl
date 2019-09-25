@@ -1,25 +1,37 @@
 angular
   .module("opal.controllers")
-  .controller("PeakFlowCtrl", function($scope, $timeout) {
+  .controller("PeakFlowCtrl", function($scope, PeakFlowGraphDataLoader, $routeParams) {
     "use strict";
     // split the peak flow by trial numbers
-    var peakFlowDaysBytrialNum = {};
+    $scope.graphDataByPeakFlowNum = {};
+    $scope.trialNums = [];
 
-    _.each($scope.episode.peak_flow_day, function(pfd) {
-      var trialNum = String(pfd.trial_num);
-      if (!peakFlowDaysBytrialNum[trialNum]) {
-        peakFlowDaysBytrialNum[trialNum] = [];
-      }
+    // used by the graph full page view
+    if($routeParams.trial_num){
+      $scope.trialNum = $routeParams.trial_num;
+    }
+    // highlights notes when you mouse over
+    $scope.highlights = {}
 
-      peakFlowDaysBytrialNum[trialNum].push(pfd);
-    });
+    var loadData = function(){
+      PeakFlowGraphDataLoader.load($scope.episode.id).then(function(data){
+        $scope.graphDataByPeakFlowNum = data
+        $scope.trialNums = Object.keys($scope.graphDataByPeakFlowNum).sort();
+        $scope.trialNums.forEach(trialNum=> {
+          $scope.highlights[trialNum] = {day_num: null};
+        });
 
-    var trialNums = Object.keys(peakFlowDaysBytrialNum)
-      .sort()
-      .reverse();
-    $scope.peakFlowDaysByTrial = [];
+        // calculate what trial number to use when creating a new peak flow day trial
+        // trial nums are a strings because they're object keys so translate them
+        if($scope.trialNums.length){
+          let trialNums = $scope.trialNums.map(trialNum => parseInt(trialNum))
+          $scope.newTrialNum = Math.max(...trialNums) + 1;
+        }
+        else{
+          $scope.newTrialNum = 1;
+        }
+      });
+    }
 
-    _.each(trialNums, function(tn) {
-      $scope.peakFlowDaysByTrial.push(peakFlowDaysBytrialNum[tn]);
-    });
+    loadData();
   });

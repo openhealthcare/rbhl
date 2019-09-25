@@ -32,8 +32,8 @@ class Application(application.OpalApplication):
         'js/opal/controllers/discharge.js',
         'js/rbhl/directives.js',
         'js/rbhl/controllers/peak_flow_ctrl.js',
-        # Uncomment this if you want to implement custom dynamic flows.
-        # 'js/rbhl/flow.js',
+        'js/rbhl/services/peak_flow_graph_data_loader.js',
+        'js/rbhl/controllers/peak_flow_step.js',
     ]
     styles = [
         'css/rbhl.css'

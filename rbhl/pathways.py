@@ -33,9 +33,59 @@ class NewReferral(WizardPathway):
         return patient, episode
 
 
+class PeakFlowStep(Step):
+    """
+    The peak flow step assumes an arbitrary key of `trial_num`
+    that is the trial num for the peak flow days we are looking at.
+
+    We delete all ids that are not in the current peak flow set.
+    """
+    step_controller = "PeakFlowStep"
+    template = "pathway/steps/peak_flow_step.html"
+    base_template = "pathway/steps/peak_flow_step_base.html"
+    model = models.PeakFlowDay
+    display_name = "Peak Flow Day"
+
+    def pre_save(self, data, user, patient=None, episode=None):
+        """
+        The Peak flow step does not look at all an episodes peak flows
+        just those related to a specific trial number.
+
+        So when we are looking at which dates have been deleted we need
+        the qs in question to be limitted by that trial number.
+        """
+        trial_num = int(data.pop("trial_num")[0])
+        qs = episode.peakflowday_set.all()
+        existing_ids = [i.get("id") for i in data[
+            models.PeakFlowDay.get_api_name()
+        ]]
+        existing_ids = [i for i in existing_ids if i]
+        to_remove = qs.exclude(
+            id__in=existing_ids
+        ).filter(
+            trial_num=trial_num
+        )
+        to_remove.delete()
+
+
 class PeakFlowDayPathway(PagePathway):
+    """
+    The peak flow pathway allows you to enter data for a specific
+    trial which is added as a get parameter and passed through
+    to the data on post.
+    """
     display_name = 'Peak Flow Day'
     slug = 'peak_flow_day'
+    template = "pathway/base/rbhl_flow_pathway_base.html"
     steps = [
-        models.PeakFlowDay
+        PeakFlowStep(),
+    ]
+
+
+class PeakFlowGraphFullPage(PagePathway):
+    display_name = 'Peak Graph View'
+    slug = 'peak_graph_view'
+    template = "pathway/base/rbhl_graph_base.html"
+    steps = [
+        models.Demographics,
     ]

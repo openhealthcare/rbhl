@@ -4,6 +4,7 @@ rbhl models.
 import datetime
 import math
 from django.db.models import fields
+from decimal import Decimal
 
 from opal import models
 from opal.core.fields import enum
@@ -30,18 +31,40 @@ def calculate_peak_expiratory_flow(height, age, sex):
     AJ Nunn, I Gregg New regression equations for predicting peak
     expiratory flow in adults Br Med J 1989; 298:1068-70
     """
-    if sex == "Male":
+    if sex == Demographics.MALE:
         PEF = 0.544 * (math.log(age)) - (0.0151*age) - 74.7/height + 5.48
-    if sex == "Female":
+    if sex == Demographics.FEMALE:
         PEF = 0.376 * (math.log(age)) - (0.0121*age) - 58.8/height + 5.63
 
-    return round(math.exp(PEF), 2)
+    return round(math.exp(PEF))
 
 
 class Demographics(models.Demographics):
     height = fields.IntegerField(
         blank=True, null=True, verbose_name='Height(cm)'
     )
+    MALE = "Male"
+    FEMALE = "Female"
+
+    def get_pef(self, date):
+        if not date:
+            return
+        age = self.get_age(date)
+        height = self.height
+        sex = self.sex
+        if age and height and sex:
+            if sex in [self.MALE, self.FEMALE]:
+                return calculate_peak_expiratory_flow(height, age, sex)
+
+    def get_age(self, date=None):
+        if date is None:
+            date = datetime.date.today()
+
+        if self.date_of_birth:
+            born = self.date_of_birth
+            return date.year - born.year - (
+                (date.month, date.day) < (born.month, born.day)
+            )
 
 
 class Location(models.Location):
@@ -239,8 +262,7 @@ class PeakFlowDay(models.EpisodeSubrecord):
     day_num = fields.IntegerField(blank=True, null=True)
     trial_num = fields.IntegerField(blank=True, null=True)
 
-    work_start = fields.IntegerField(blank=True, null=True)
-    work_end   = fields.IntegerField(blank=True, null=True)
+    work_day = fields.BooleanField(default=False)
 
     flow_0000 = fields.IntegerField(
         blank=True, null=True, verbose_name="00:00"
@@ -314,6 +336,38 @@ class PeakFlowDay(models.EpisodeSubrecord):
     flow_2300 = fields.IntegerField(
         blank=True, null=True, verbose_name="23:00"
     )
+
+    def get_flow_values(self):
+        db_fields = self._meta.get_fields()
+        fields = [
+            i.attname for i in db_fields if i.attname.startswith("flow_")
+        ]
+        flow_values = []
+        for field in fields:
+            value = getattr(self, field)
+            if value:
+                flow_values.append(value)
+        return flow_values
+
+    def get_aggregate_data(self):
+        flow_values = self.get_flow_values()
+
+        if flow_values:
+            min_flow = min(flow_values)
+            max_flow = max(flow_values)
+            variabilty = Decimal(max_flow - min_flow)/Decimal(max_flow)
+            variabilty_perc = round(variabilty * 100)
+            completeness = len(flow_values) > 4
+            mean_flow = round(
+                Decimal(sum(flow_values))/Decimal(len(flow_values))
+            )
+            return {
+                "min_flow": min_flow,
+                "max_flow": max_flow,
+                "mean_flow": mean_flow,
+                "variabilty": variabilty_perc,
+                "completeness": completeness
+            }
 
 
 """

@@ -1,4 +1,4 @@
-from rbhl import views
+from rbhl import views, api
 from django.conf.urls import include, url
 from two_factor.urls import urlpatterns as tf_urls
 
@@ -42,6 +42,7 @@ urlpatterns = [
         views.OtpSetupRelogin.as_view(),
         name="two-factor-setup-redirect"
     ),
+    url(r'indigo/v0.1/', include(api.indigo_router.urls))
 ]
 
 urlpatterns = opatterns + urlpatterns
