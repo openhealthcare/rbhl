@@ -35,7 +35,7 @@
   <div class="content-offset content-offset-below-10" ng-repeat="trialDay in trialDays">
     <div class="row">
       <div class="col-md-4">
-        <h3>Trial day [[ trialDay.day_num ]] <small>[[ trialDay.date | displayDate ]]</small></h3>
+        <h3>Trial day [[ trialDay.day_num ]] <small>[[ trialDay.date | momentDateFormat:'ddd D MMM YYYY' ]]</small></h3>
       </div>
     </div>
     <div class="row">
