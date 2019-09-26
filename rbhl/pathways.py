@@ -74,7 +74,7 @@ class PeakFlowDayPathway(PagePathway):
     trial which is added as a get parameter and passed through
     to the data on post.
     """
-    display_name = 'Peak Flow Day'
+    display_name = 'Peak Flow'
     slug = 'peak_flow_day'
     template = "pathway/base/rbhl_flow_pathway_base.html"
     steps = [
