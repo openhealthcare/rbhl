@@ -255,7 +255,7 @@ class PeakFlowGraphDataTestCase(OpalTestCase):
                 'mean_flow': 600,
                 'max_flow': 700,
                 'variabilty': 29,
-                'completeness': True
+                'num_entries': 6
             },
             {
                 'treatment_taken': None,
@@ -267,7 +267,7 @@ class PeakFlowGraphDataTestCase(OpalTestCase):
                 'mean_flow': 625,
                 'max_flow': 700,
                 'variabilty': 29,
-                'completeness': False
+                'num_entries': 0
             }
         ]
         self.assertEqual(self.api.get_completeness(day_dicts), 50)
@@ -284,7 +284,7 @@ class PeakFlowGraphDataTestCase(OpalTestCase):
                 'mean_flow': 600,
                 'max_flow': 700,
                 'variabilty': 29,
-                'completeness': True
+                'num_entries': 6
             },
             {
                 'treatment_taken': None,
@@ -296,7 +296,7 @@ class PeakFlowGraphDataTestCase(OpalTestCase):
                 'mean_flow': None,
                 'max_flow': None,
                 'variabilty': None,
-                'completeness': None
+                'num_entries': None
             }
         ]
         self.assertEqual(self.api.get_completeness(day_dicts), 50)
@@ -313,7 +313,7 @@ class PeakFlowGraphDataTestCase(OpalTestCase):
                 'mean_flow': None,
                 'max_flow': None,
                 'variabilty': None,
-                'completeness': None
+                'num_entries': None
             }
         ]
         self.assertEqual(self.api.get_completeness(day_dicts), 0)
@@ -351,7 +351,7 @@ class PeakFlowGraphDataTestCase(OpalTestCase):
                     'mean_flow': 600,
                     'max_flow': 700,
                     'variabilty': 29,
-                    'completeness': False
+                    'num_entries': 3
                 },
                 {
                     'treatment_taken': None,
@@ -363,10 +363,10 @@ class PeakFlowGraphDataTestCase(OpalTestCase):
                     'mean_flow': 625,
                     'max_flow': 700,
                     'variabilty': 29,
-                    'completeness': False
+                    'num_entries': 4
                 }
             ],
-            'completeness': 0,
+            'completeness': 58,
             'treatments': {},
             'overrall_mean': 614,
             'pef_mean': None,

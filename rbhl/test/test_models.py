@@ -106,10 +106,10 @@ class PeakFlowDayTestCase(OpalTestCase):
         )
 
         self.assertEqual(
-            aggregate_data["completeness"], False
+            aggregate_data["num_entries"], 3
         )
 
-    def test_get_aggregate_data_complete(self):
+    def test_get_aggregate_data_num_entries(self):
         pfd = self.episode.peakflowday_set.create(
             flow_1000=400,
             flow_1100=500,
@@ -136,7 +136,7 @@ class PeakFlowDayTestCase(OpalTestCase):
         )
 
         self.assertEqual(
-            aggregate_data["completeness"], True
+            aggregate_data["num_entries"], 5
         )
 
     def test_get_aggregate_data_none(self):

@@ -357,7 +357,7 @@ class PeakFlowDay(models.EpisodeSubrecord):
             max_flow = max(flow_values)
             variabilty = Decimal(max_flow - min_flow)/Decimal(max_flow)
             variabilty_perc = round(variabilty * 100)
-            completeness = len(flow_values) > 4
+            num_entries = len(flow_values)
             mean_flow = round(
                 Decimal(sum(flow_values))/Decimal(len(flow_values))
             )
@@ -366,7 +366,7 @@ class PeakFlowDay(models.EpisodeSubrecord):
                 "max_flow": max_flow,
                 "mean_flow": mean_flow,
                 "variabilty": variabilty_perc,
-                "completeness": completeness
+                "num_entries": num_entries
             }
 
 

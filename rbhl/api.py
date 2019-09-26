@@ -46,7 +46,7 @@ class PeakFlowGraphData(LoginRequiredViewset):
             "mean_flow": aggregates.get("mean_flow"),
             "max_flow": aggregates.get("max_flow"),
             "variabilty": aggregates.get("variabilty"),
-            "completeness": aggregates.get("completeness")
+            "num_entries": aggregates.get("num_entries")
         }
 
         return result
@@ -64,11 +64,11 @@ class PeakFlowGraphData(LoginRequiredViewset):
             return
         total_days = max(all_total_days)
 
-        completed_days = len(
-            [i for i in day_dicts if i["completeness"]]
+        entries = sum(
+            [i["num_entries"] for i in day_dicts if i["num_entries"]]
         )
 
-        completeness = Decimal(completed_days)/Decimal(total_days)
+        completeness = Decimal(entries)/Decimal(total_days*6)
         return round(completeness * 100)
 
     def get_overrall_mean(self, days):
