@@ -8,7 +8,8 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
     },
     link: function(scope, element, attrs) {
       let data = scope.data;
-      const UPPER_QUARTILE = 16;
+      // the doctors tell us above 15 is considered significant
+      const UPPER_BOUND = 15;
 
       let getLineData = function(days, title, name){
         let values = _.pluck(days, name);
@@ -253,7 +254,7 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
               text.attr("x", col.width/2).attr("dy", ".82em").attr("dx", "0").classed("variance", true);
               text.classed("variability", true);
               text.text(variability);
-              if(variability > UPPER_QUARTILE){
+              if(variability >= UPPER_BOUND){
                 text.classed("upper-variability", true);
               }
             }
@@ -299,7 +300,7 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
 
           // the range is the min -50 and the max + 50
           let range = _.range(min, max+50, 50);
-          let height = (max - min) * 1.2;
+          let height = (max - min) * 1.6;
 
           return {
             size: {
@@ -363,7 +364,7 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
         let axisDimensions = calculateGraphAxisAndHeight(columns);
 
         let colorsOptions = [
-          "#A6143B", "#D9628D", "#C7A368", "#283959"
+          "#A6143B", "#D9628D", "#283959", "#C7A368"
         ]
 
         let colors = {}
@@ -371,7 +372,6 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
         columns.forEach((column, idx) => {
           colors[column[0]] = colorsOptions[idx];
         });
-
         let ret = c3.generate({
           bindto: element[0],
           size: axisDimensions.size,
