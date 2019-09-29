@@ -61,8 +61,10 @@
                   Completeness:
                 </strong>
                 &nbsp;
-                [[ graphDataByPeakFlowNum[trialNum].completeness ]]
-                <span ng-show="graphDataByPeakFlowNum[trialNum].completeness">%</span>
+                [[ graphDataByPeakFlowNum[trialNum].completeness ]]<span ng-show="graphDataByPeakFlowNum[trialNum].completeness">%</span>
+                <span ng-show="graphDataByPeakFlowNum[trialNum].days.length">
+                ([[ graphDataByPeakFlowNum[trialNum].complete_days]]/[[ graphDataByPeakFlowNum[trialNum].days.length ]] days)
+                </span>
           </div>
       </div>
       <div peak-flow-graph data="graphDataByPeakFlowNum[trialNum]" highlights="highlights[trialNum]"></div>

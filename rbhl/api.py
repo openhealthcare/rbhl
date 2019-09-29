@@ -71,6 +71,15 @@ class PeakFlowGraphData(LoginRequiredViewset):
         completeness = Decimal(entries)/Decimal(total_days*6)
         return round(completeness * 100)
 
+    def get_complete_days(self, day_dicts):
+        """
+        The data is considered significant if there are more than
+        4 results (ideally there are at least 6)
+        """
+        return len([
+            i for i in day_dicts if i["num_entries"] and i["num_entries"] >= 4
+        ])
+
     def get_overrall_mean(self, days):
         nested_flow_values = [i.get_flow_values() for i in days]
         flow_values = list(itertools.chain(*nested_flow_values))
@@ -133,6 +142,7 @@ class PeakFlowGraphData(LoginRequiredViewset):
         return {
             "days": days,
             "completeness": self.get_completeness(days),
+            "complete_days": self.get_complete_days(days),
             "treatments": self.get_treatments(days),
             "overrall_mean": self.get_overrall_mean(peak_flow_days),
             "pef_mean": pef,

@@ -46,6 +46,9 @@
               &nbsp;
               [[ graphDataByPeakFlowNum[trialNum].completeness ]]
               <span ng-show="graphDataByPeakFlowNum[trialNum].completeness">%</span>
+              <span ng-show="graphDataByPeakFlowNum[trialNum].days.length">
+                  ([[ graphDataByPeakFlowNum[trialNum].complete_days]]/[[ graphDataByPeakFlowNum[trialNum].days.length ]] days)
+              </span>
             </td>
           </tr>
         </table>
