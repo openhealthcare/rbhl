@@ -367,6 +367,7 @@ class PeakFlowGraphDataTestCase(OpalTestCase):
                 }
             ],
             'completeness': 58,
+            'complete_days': 1,
             'treatments': {},
             'overrall_mean': 614,
             'pef_mean': None,
