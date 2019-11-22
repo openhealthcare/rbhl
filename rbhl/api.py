@@ -69,7 +69,7 @@ class PeakFlowGraphData(LoginRequiredViewset):
         )
 
         completeness = Decimal(entries)/Decimal(total_days*6)
-        return round(completeness * 100)
+        return min(100, round(completeness * 100))
 
     def get_complete_days(self, day_dicts):
         """

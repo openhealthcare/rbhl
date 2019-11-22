@@ -318,6 +318,29 @@ class PeakFlowGraphDataTestCase(OpalTestCase):
         ]
         self.assertEqual(self.api.get_completeness(day_dicts), 0)
 
+    def test_completeness_with_too_much_data(self):
+        """
+        Make sure completeness never goes over 100%
+        """
+        day_dicts = []
+
+        day_dict = {
+            'treatment_taken': None,
+            'day_num': 1,
+            'date': datetime.date(2019, 8, 3),
+            'work_day': False,
+            'pef_flow': None,
+            'min_flow': 500,
+            'mean_flow': 600,
+            'max_flow': 700,
+            'variabilty': 29,
+            'num_entries': 6
+        }
+
+        for i in range(12):
+            day_dicts.append(day_dict)
+        self.assertEqual(self.api.get_completeness(day_dicts), 100)
+
     def test_trial_data(self):
         self.episode.peakflowday_set.create(
             day_num=1,
