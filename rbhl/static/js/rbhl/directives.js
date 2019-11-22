@@ -260,9 +260,9 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
             }
           });
 
-          // the default fill (0.1) opacity provided by d3 makes it so light you can't see
-          // workdays on the projector
-          d3.select(element).selectAll(".c3-region.workingday rect").style("fill-opacity", "0.2");
+          // // the default fill (0.1) opacity provided by d3 makes it so light you can't see
+          // // workdays on the projector
+          d3.select(element).selectAll(".c3-region.workingday rect").style("fill-opacity", "0.3");
         };
 
         let calculateGraphAxisAndHeight = function(columns){
