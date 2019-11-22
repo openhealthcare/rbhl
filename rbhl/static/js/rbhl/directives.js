@@ -239,7 +239,7 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
             });
           });
 
-          let variabilityRow = addRow(topLayer, Object.keys(data.treatments).length, "% Variability", "variability");
+          let variabilityRow = addRow(topLayer, Object.keys(data.treatments).length, "% Variability", "");
 
           // add variance
           cols.forEach((col, idx) =>{
