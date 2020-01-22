@@ -1,4 +1,7 @@
 {% extends 'patient_detail_base.html' %}
+
+{% load panels %}
+
 {% block content %}
   <div ng-show="episode.category_name == 'Outpatient'">
     {% include 'detail/outpatient.html' %}
@@ -12,4 +15,90 @@
   <div ng-show="episode.category_name == 'OCLD'">
     {% include 'detail/ocld.html' %}
   </div>
+
+  {% if permissions.CAN_SEE_EXTRA_FIELDS %}
+  <div class="row">
+    <div class="col-md-12">
+      {% record_panel models.PatientNumber %}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      {% record_panel models.GP %}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      {% record_panel models.Address %}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      {% record_panel models.Details %}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      {% record_panel models.SuspectOccupationalCategory %}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      {% record_panel models.DiagnosticTesting %}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      {% record_panel models.DiagnosticOutcome %}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      {% record_panel models.DiagnosisAsthma %}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      {% record_panel models.DiagnosticRhinitis %}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      {% record_panel models.DiagnosticOther %}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      {% record_panel models.SkinPrickTest %}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      {% record_panel models.OtherFields %}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      {% record_panel models.BronchialTest %}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      {% record_panel models.RoutineSPT %}
+    </div>
+  </div>
+  {% endif %}
 {% endblock %}

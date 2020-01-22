@@ -154,6 +154,9 @@ class Referral(models.EpisodeSubrecord):
     date_first_appointment = fields.DateField(
         blank=True, null=True, verbose_name="Date of first appointment offered"
     )
+    referral_type = fields.TextField(
+        blank=True, null=True, verbose_name="Type of Referral",
+    )
 
 
 class Employer(lookuplists.LookupList):
