@@ -3,6 +3,7 @@ Management command to import all data to the database
 """
 import csv
 from datetime import date, datetime
+import sys
 
 from django.core.management import BaseCommand
 from django.utils import timezone
@@ -39,8 +40,6 @@ class Command(BaseCommand):
         Load the demographics from the database that talks to the PAS.
         Use these as our basis for matching against.
         """
-        flush()
-
         # Open with utf-8-sig encoding to avoid having a BOM in the first
         # header string.
         with open(options["file_name"], encoding="utf-8-sig") as f:
@@ -49,25 +48,35 @@ class Command(BaseCommand):
         # ignore rows with no DoB
         rows = filter(lambda r: r["Dateofbirth"] != "00-Jan-00", rows)
 
+        # ignore rows with no Hospital Number
+        rows = filter(lambda r: r["Hospital Number"] != "", rows)
+
         patients_imported = 0
         for row in rows:
-            patient = Patient.objects.create()
-            patient.create_episode(
-                category_name=OccupationalLungDiseaseEpisode.display_name
-            )
-            patient.demographics_set.get().update_from_dict(
-                {
-                    "created": timezone.now(),
-                    "hospital_number": row["Hospital Number"],
-                    "nhs_number": row["NHSnumber"].replace(" ", ""),
-                    "surname": row["Surname"],
-                    "first_name": row["Firstname"],
-                    "post_code": row["Postcode"],
-                    "sex": sexLUT.get(row["Sex"], None),
-                    "date_of_birth": date_to_dob(row["Dateofbirth"]),
-                },
-                user=None,
-            )
+            # patient = Patient.objects.create()
+            # patient.create_episode(
+            #     category_name=OccupationalLungDiseaseEpisode.display_name
+            # )
+            # patient.demographics_set.get().update_from_dict(
+            #     {
+            #         "created": timezone.now(),
+            #         "hospital_number": row["Hospital Number"],
+            #         "nhs_number": row["NHSnumber"].replace(" ", ""),
+            #         "surname": row["Surname"],
+            #         "first_name": row["Firstname"],
+            #         "post_code": row["Postcode"],
+            #         "sex": sexLUT.get(row["Sex"], None),
+            #         "date_of_birth": date_to_dob(row["Dateofbirth"]),
+            #     },
+            #     user=None,
+            # )
+
+
+
+            if Patient.objects.filter(demographics__hospital_number=row['Hospital Number']).count() > 1:
+                print(row)
+                sys.exit()
+            patient = Patient.objects.get(demographics__hospital_number=row["Hospital Number"])
 
             patient.patientnumber_set.get().update_from_dict(
                 {

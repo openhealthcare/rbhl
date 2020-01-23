@@ -5,7 +5,7 @@ from django.utils import timezone
 
 def to_bool(s):
     boolLUT = {"no": False, "yes": True}
-    return boolLUT.get(s, None)
+    return boolLUT.get(s.lower(), None)
 
 
 def to_date(s):

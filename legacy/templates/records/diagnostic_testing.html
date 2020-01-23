@@ -1,96 +1,128 @@
-<span ng-show="item.antihistimines">
-    antihistimines: [[ item.antihistimines ]]
-   <br />
-</span>
-<span ng-show="item.skin_prick_test">
-    skin_prick_test: [[ item.skin_prick_test ]]
-   <br />
-</span>
-<span ng-show="item.atopic">
-    atopic: [[ item.atopic ]]
-   <br />
-</span>
-<span ng-show="item.specific_skin_prick">
-    specific_skin_prick: [[ item.specific_skin_prick ]]
-   <br />
-</span>
-<span ng-show="item.serum_antibodies">
-    serum_antibodies: [[ item.serum_antibodies ]]
-   <br />
-</span>
-<span ng-show="item.bronchial_prov_test">
-    bronchial_prov_test: [[ item.bronchial_prov_test ]]
-   <br />
-</span>
-<span ng-show="item.change_pc_20">
-    change_pc_20: [[ item.change_pc_20 ]]
-   <br />
-</span>
-<span ng-show="item.nasal_prov_test">
-    nasal_prov_test: [[ item.nasal_prov_test ]]
-   <br />
-</span>
-<span ng-show="item.positive_reaction">
-    positive_reaction: [[ item.positive_reaction ]]
-   <br />
-</span>
-<span ng-show="item.height">
-    height: [[ item.height ]]
-   <br />
-</span>
-<span ng-show="item.fev_1">
-    fev_1: [[ item.fev_1 ]]
-   <br />
-</span>
-<span ng-show="item.fev_1_post_ventolin">
-    fev_1_post_ventolin: [[ item.fev_1_post_ventolin ]]
-   <br />
-</span>
-<span ng-show="item.fev_1_percentage_protected">
-    fev_1_percentage_protected: [[ item.fev_1_percentage_protected ]]
-   <br />
-</span>
-<span ng-show="item.fvc">
-    fvc: [[ item.fvc ]]
-   <br />
-</span>
-<span ng-show="item.fvc_post_ventolin">
-    fvc_post_ventolin: [[ item.fvc_post_ventolin ]]
-   <br />
-</span>
-<span ng-show="item.fvc_percentage_protected">
-    fvc_percentage_protected: [[ item.fvc_percentage_protected ]]
-   <br />
-</span>
-<span ng-show="item.is_serial_peak_flows_requested">
-    is_serial_peak_flows_requested: [[ item.is_serial_peak_flows_requested ]]
-   <br />
-</span>
-<span ng-show="item.has_spefr_variability">
-    has_spefr_variability: [[ item.has_spefr_variability ]]
-   <br />
-</span>
-<span ng-show="item.is_returned">
-    is_returned: [[ item.is_returned ]]
-   <br />
-</span>
-<span ng-show="item.is_spefr_work_related">
-    is_spefr_work_related: [[ item.is_spefr_work_related ]]
-   <br />
-</span>
-<span ng-show="item.ct_chest_scan">
-    ct_chest_scan: [[ item.ct_chest_scan ]]
-   <br />
-</span>
-<span ng-show="item.ct_chest_scan_date">
-    ct_chest_scan_date: [[ item.ct_chest_scan_date ]]
-   <br />
-</span>
-<span ng-show="item.full_lung_function">
-    full_lung_function: [[ item.full_lung_function ]]
-   <br />
-</span>
-<span ng-show="item.full_lung_function_date">
-    full_lung_function_date: [[ item.full_lung_function_date ]]
-   <br />
-</span>
+<div class="row">
+  <div class="col-md-6">
+    <h3>Skin Prick Tests</h3>
+    <p><b>Antihistimines:</b>[[ item.antihistimines ]]</p>
+    <p><b>Skin Prick Test:</b>[[ item.skin_prick_test ]]</p>
+    <p><b>Atopic:</b>[[ item.atopic ]]</p>
+    <p><b>Specific Skin Prick Test:</b>[[ item.specific_skin_prick ]]</p>
+    <p><b>Serum Antibodies:</b>[[ item.serum_antibodies ]]</p>
+  </div>
+  <div class="col-md-6">
+    <h3>Spirometry</h3>
+    <p><b>Height:</b> [[ item.height ]]</p>
+
+    <div class="row">
+      <div class="col-md-2">
+        <p><b>FEV1:</b> [[ item.fev_1 ]]</p>
+      </div>
+      <div class="col-md-5">
+        <p><b>FEV1 Post Ventolin:</b> <br />[[ item.fev_1_post_ventolin ]]</p>
+      </div>
+      <div class="col-md-5">
+        <p><b>FEV1 % Predicted</b>
+        <br/>
+        [[ item.fev_1_percentage_protected ]]
+        </p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-2">
+        <p><b>FVC:</b> [[ item.fvc ]]</p>
+      </div>
+      <div class="col-md-5">
+        <p><b>FVC Post Ventolin:</b> <br/>[[ item.fvc_post_ventolin ]]</p>
+      </div>
+      <div class="col-md-5">
+        <p><b>FVC % Predicted</b>
+        <br/>
+        [[ item.fvc_percentage_protected ]]
+        </p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-7">
+        <p>
+          <b>Serial Peak Flows Requested?</b>
+          </br>
+          [[ item.is_serial_peak_flows_requested ]]
+        </p>
+      </div>
+      <div class="col-md-4">
+        <p>
+          <b>Returned?</b>
+          </br>
+          [[ item.is_returned ]]
+        </p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-7">
+        <p>
+          <b>SPEFR Variability?</b>
+          </br>
+          [[ item.has_spefr_variability ]]
+        </p>
+      </div>
+      <div class="col-md-5">
+        <p>
+          <b>Work Related?</b>
+          </br>
+          [[ item.is_spefr_work_related ]]
+        </p>
+      </div>
+    </div>
+
+
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <h3>Occupational Challenge Testing</h3>
+    <p><b>Bronchial Prov Test:</b>[[ item.bronchial_prov_test ]]</p>
+    <p><b>Change PC 20:</b>[[ item.change_pc_20 ]]</p>
+    <p><b>Nasal Prov Test:</b>[[ item.nasal_prov_test ]]</p>
+    <p><b>Positive Reaction:</b>[[ item.positive_reaction ]]</p>
+  </div>
+  <div class="col-md-6">
+    <h3>Other Investigations</h3>
+
+    <div class="row">
+      <div class="col-md-6">
+        <p>
+          <b>CT Chest Scan:</b>
+          <br />
+          [[ item.ct_chest_scan ]]
+        </p>
+      </div>
+      <div class="col-md-6">
+        <p>
+          <b>CT Chest Scan Date:</b>
+          <br />
+          [[ item.ct_chest_scan_date | displayDate ]]
+        </p>
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="col-md-6">
+        <p>
+          <b>Full Lung Function:</b>
+          <br />
+          [[ item.full_lung_function ]]
+        </p>
+      </div>
+      <div class="col-md-6">
+        <p>
+          <b>Lung Function Date:</b>
+          <br />
+          [[ item.full_lung_function_date | displayDate ]]
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

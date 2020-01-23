@@ -1,40 +1,64 @@
-<span ng-show="item.is_currently_employed">
-    is_currently_employed: [[ item.is_currently_employed ]]
-   <br />
-</span>
-<span ng-show="item.suspect_occupational_category">
-    suspect_occupational_category: [[ item.suspect_occupational_category ]]
-   <br />
-</span>
-<span ng-show="item.job_title">
-    job_title: [[ item.job_title ]]
-   <br />
-</span>
-<span ng-show="item.exposures">
-    exposures: [[ item.exposures ]]
-   <br />
-</span>
-<span ng-show="item.employer_name">
-    employer_name: [[ item.employer_name ]]
-   <br />
-</span>
-<span ng-show="item.is_employed_in_suspect_occupation">
-    is_employed_in_suspect_occupation: [[ item.is_employed_in_suspect_occupation ]]
-   <br />
-</span>
-<span ng-show="item.year_started_exposure">
-    year_started_exposure: [[ item.year_started_exposure ]]
-   <br />
-</span>
-<span ng-show="item.month_started_exposure">
-    month_started_exposure: [[ item.month_started_exposure ]]
-   <br />
-</span>
-<span ng-show="item.year_finished_exposure">
-    year_finished_exposure: [[ item.year_finished_exposure ]]
-   <br />
-</span>
-<span ng-show="item.month_finished_exposure">
-    month_finished_exposure: [[ item.month_finished_exposure ]]
-   <br />
-</span>
+<div class="row">
+  <div class="col-md-6">
+
+    <p>
+      <b>Currently Employed?</b> [[ item.is_currently_employed ]]
+    </p>
+
+    <p>
+      <b>Suspect Occupational Category</b> [[ item.suspect_occupational_category ]]
+    </p>
+
+    <p>
+      <b>Job Title:</b> [[ item.job_title ]]
+    </p>
+
+    <p>
+      <b>Exposures:</b> [[ item.exposures ]]
+    </p>
+
+  </div>
+  <div class="col-md-6">
+
+    <p>
+      <b>Name Of Employer: </b> [[ episode.employment[0].employer ]]
+    </p>
+
+    <p>
+      <b>Currently Employed In Suspect Occupation</b>
+      WHERE IS THIS STUFF?
+    </p>
+
+
+    <div class="row">
+
+      <div class="col-md-6">
+        <p>-</p>
+        <p><b>Date Started Exposure: </b></p>
+        <p><b>Date Finished Exposure:</b></p>
+      </div>
+
+      <div class="col-md-3">
+        <p><b>Month</b></p>
+        <p>
+          [[ item.month_started_exposure ]]
+        </p>
+        <p>
+           [[ item.month_finished_exposure ]]
+        </p>
+      </div>
+
+      <div class="col-md-3">
+        <p><b>Year</b></p>
+        <p>
+          [[ item.year_finished_exposure ]]
+        </p>
+        <p>
+          [[ item.year_started_exposure ]]
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+</div>

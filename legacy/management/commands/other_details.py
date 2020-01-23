@@ -1,6 +1,7 @@
 import csv
+import sys
 
-from django.core.management import BaseCommand
+from django.core.management import BaseCommand, call_command
 from django.db import transaction
 from django.utils import timezone
 
@@ -25,13 +26,18 @@ class Command(BaseCommand):
         parser.add_argument("file_name", help="Specify import file")
 
     def build_details(self, patientLUT, rows):
+
         for row in rows:
+
             patient = patientLUT.get(row["Patient_num"], None)
 
             if patient is None:
                 continue
 
             date_referral_received = to_date(row["Date referral written"])
+
+
+
             yield Details(
                 patient=patient,
                 created=timezone.now(),
@@ -261,6 +267,7 @@ class Command(BaseCommand):
 
         # REMAINING FIELDS
         Details.objects.bulk_create(self.build_details(patientLUT, rows))
+
         SuspectOccupationalCategory.objects.bulk_create(
             self.build_suspect_occupational_category(patientLUT, rows)
         )
@@ -297,7 +304,11 @@ class Command(BaseCommand):
 
             clinic_log = episode.cliniclog_set.get()
             clinic_log.clinic_date = to_date(row["Attendance_date"])
-            clinic_log.seen_by = to_upper(row["Specialist_Dr"])
+
+            seen_by = to_upper(row["Specialist_Dr"])
+            if seen_by:
+                clinic_log.seen_by = seen_by
+
             clinic_log.save()
 
             employment = episode.employment_set.get()
@@ -310,3 +321,6 @@ class Command(BaseCommand):
 
         msg = "Imported {} other details rows".format(len(rows))
         self.stdout.write(self.style.SUCCESS(msg))
+
+        # We deleted things that were singletons in the "Flush step"
+   #     call_command('create_singletons')
