@@ -1,76 +1,39 @@
-<span ng-show="item.copd">
-    copd: [[ item.copd ]]
-   <br />
-</span>
-<span ng-show="item.emphysema">
-    emphysema: [[ item.emphysema ]]
-   <br />
-</span>
-<span ng-show="item.copd_with_emphysema">
-    copd_with_emphysema: [[ item.copd_with_emphysema ]]
-   <br />
-</span>
-<span ng-show="item.copd_is_occupational">
-    copd_is_occupational: [[ item.copd_is_occupational ]]
-   <br />
-</span>
-<span ng-show="item.malignancy">
-    malignancy: [[ item.malignancy ]]
-   <br />
-</span>
-<span ng-show="item.malignancy_is_occupational">
-    malignancy_is_occupational: [[ item.malignancy_is_occupational ]]
-   <br />
-</span>
-<span ng-show="item.malignancy_type">
-    malignancy_type: [[ item.malignancy_type ]]
-   <br />
-</span>
-<span ng-show="item.malignancy_type_other">
-    malignancy_type_other: [[ item.malignancy_type_other ]]
-   <br />
-</span>
-<span ng-show="item.NAD">
-    NAD: [[ item.NAD ]]
-   <br />
-</span>
-<span ng-show="item.diffuse_lung_disease">
-    diffuse_lung_disease: [[ item.diffuse_lung_disease ]]
-   <br />
-</span>
-<span ng-show="item.diffuse_lung_disease_is_occupational">
-    diffuse_lung_disease_is_occupational: [[ item.diffuse_lung_disease_is_occupational ]]
-   <br />
-</span>
-<span ng-show="item.diffuse_lung_disease_type">
-    diffuse_lung_disease_type: [[ item.diffuse_lung_disease_type ]]
-   <br />
-</span>
-<span ng-show="item.diffuse_lung_disease_type_other">
-    diffuse_lung_disease_type_other: [[ item.diffuse_lung_disease_type_other ]]
-   <br />
-</span>
-<span ng-show="item.benign_pleural_disease">
-    benign_pleural_disease: [[ item.benign_pleural_disease ]]
-   <br />
-</span>
-<span ng-show="item.benign_pleural_disease_type">
-    benign_pleural_disease_type: [[ item.benign_pleural_disease_type ]]
-   <br />
-</span>
-<span ng-show="item.other_diagnosis">
-    other_diagnosis: [[ item.other_diagnosis ]]
-   <br />
-</span>
-<span ng-show="item.other_diagnosis_is_occupational">
-    other_diagnosis_is_occupational: [[ item.other_diagnosis_is_occupational ]]
-   <br />
-</span>
-<span ng-show="item.other_diagnosis_type">
-    other_diagnosis_type: [[ item.other_diagnosis_type ]]
-   <br />
-</span>
-<span ng-show="item.other_diagnosis_type_other">
-    other_diagnosis_type_other: [[ item.other_diagnosis_type_other ]]
-   <br />
-</span>
+<div class="row">
+  <div class="col-md-6">
+    <h3>Chronic air flow limitation</h3>
+    <p><b>COPD:</b> [[ item.copd ]]</p>
+    <p><b>Emphysema:</b> [[ item.emphysema ]]</p>
+    <p><b>COPD with Emphysema:</b> [[ item.copd_with_emphysema ]]</p>
+    <p><b>Occupational:</b> [[ item.copd_is_occupational ]]</p>
+  </div>
+  <div class="col-md-6">
+    <h3>Diffuse Lung Disease</h3>
+    <p><b>Diffuse Lung Disease:</b> [[ item.diffuse_lung_disease ]]</p>
+    <p><b>Occupational:</b> [[ item.diffuse_lung_disease_is_occupational ]]</p>
+    <p><b>Type of disease:</b> [[ item.diffuse_lung_disease_type ]]</p>
+    <p><b>Other:</b> [[ item.diffuse_lung_disease_type_other ]]</p>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-6">
+    <h3>Malignancy</h3>
+    <p><b>Malignancy:</b> [[ item.malignancy ]]</p>
+    <p><b>Occupational:</b> [[ item.malignancy_is_occupational ]]</p>
+    <p><b>Type of Malignancy:</b> [[ item.malignancy_type ]]</p>
+    <p><b>Other</b> [[ item.malignancy_type_other ]]</p>
+  </div>
+  <div class="col-md-6">
+    <h3>Benign Pleural Disease</h3>
+    <p><b>Benign Pleural Disease:</b> [[ item.benign_pleural_disease ]]</p>
+    <p><b>Type of Disease:</b> [[ item.benign_pleural_disease_type ]]</p>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-6">
+    <h3>Other Diagnosis</h3>
+    <p><b>Other Diagnosis:</b> [[ item.other_diagnosis ]]</p>
+    <p><b>Occupational</b> [[ item.other_diagnosis_is_occupational ]]</p>
+    <p><b>Type of disease</b> [[ item.other_diagnosis_type ]]</p>
+    <p><b>Other</b> [[ item.other_diagnosis_type_other ]]</p>
+  </div>
+</div>

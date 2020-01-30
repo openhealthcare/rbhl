@@ -1,40 +1,21 @@
-<span ng-show="item.bronchial_num">
-    bronchial_num: [[ item.bronchial_num ]]
-   <br />
-</span>
-<span ng-show="item.substance">
-    substance: [[ item.substance ]]
-   <br />
-</span>
-<span ng-show="item.last_exposed">
-    last_exposed: [[ item.last_exposed ]]
-   <br />
-</span>
-<span ng-show="item.duration_exposed">
-    duration_exposed: [[ item.duration_exposed ]]
-   <br />
-</span>
-<span ng-show="item.date_of_challenge">
-    date_of_challenge: [[ item.date_of_challenge ]]
-   <br />
-</span>
-<span ng-show="item.foo">
-    foo: [[ item.foo ]]
-   <br />
-</span>
-<span ng-show="item.other_type">
-    other_type: [[ item.other_type ]]
-   <br />
-</span>
-<span ng-show="item.other">
-    other: [[ item.other ]]
-   <br />
-</span>
-<span ng-show="item.baseline_pc290">
-    baseline_pc290: [[ item.baseline_pc290 ]]
-   <br />
-</span>
-<span ng-show="item.lowest_pc20">
-    lowest_pc20: [[ item.lowest_pc20 ]]
-   <br />
-</span>
+<div class="row">
+  <div class="col-md-2">
+    <b>Challenge</b><br />
+    [[ item.date_of_challenge | displayDate ]]
+  </div>
+  <div class="col-md-2">
+    # [[ item.bronchial_num ]]
+  </div>
+  <div class="col-md-4">
+    <b>Substance:</b> [[ item.substance ]]
+    <br/>
+    <b>Last exposed</b> [[ item.last_exposed | displayDate ]]
+    <br />
+    <b>Duration exposed</b> [[ item.duration_exposed ]]
+  </div>
+  <div class="col-md-4">
+    <b>Baseline PC290:</b><br /> [[ item.baseline_pc290 ]]<br />
+    <b>Lowest PC20:</b><br /> [[ item.lowest_pc20 ]]
+  </div>
+
+</div>
