@@ -129,11 +129,7 @@ class PeakFlowGraphData(LoginRequiredViewset):
         return {t: get_ranges(treatments[t]) for t in treatments}
 
     def get_notes(self, peak_flow_days):
-        return [{
-            "date": peak_flow_day.date,
-            "day_num": peak_flow_day.day_num,
-            "detail": peak_flow_day.note
-        } for peak_flow_day in peak_flow_days if peak_flow_day.note]
+        return peak_flow_days[0].note
 
     def trial_data(self, demographics, peak_flow_days):
         if peak_flow_days:

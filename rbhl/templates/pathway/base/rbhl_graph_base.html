@@ -54,14 +54,13 @@
         </table>
         <div peak-flow-graph data="graphDataByPeakFlowNum[trialNum]" highlights="highlights[trialNum]"></div>
         <div ng-show="graphDataByPeakFlowNum[trialNum].notes.length" class="row content-offset-below">
-          <div class="col-md-12">
-            <div class="col-md-1">
+          <div class="row">
+            <div class="col-md-1 text-right">
               <strong>Notes:</strong>
             </div>
-            <div class="col-md-11">
-              <div ng-mouseover="highlights[trialNum].day_num = note.day_num" ng-mouseout="highlights[trialNum].day_num = null"  ng-repeat="note in graphDataByPeakFlowNum[trialNum].notes" class="col-md-3 content-offset-below-25 text-left">
-                Trial day [[ note.day_num ]] <span ng-show="note.date">([[ note.date | displayDate ]])</span> <br />[[ note.detail ]]
-              </div>
+            {# The markdown directive requires a field that is item[directive arg] #}
+            <div ng-repeat="item in [graphDataByPeakFlowNum[trialNum]]" class="col-md-10">
+              <div markdown="notes"></div>
             </div>
           </div>
         </div>
