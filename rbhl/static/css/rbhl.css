@@ -350,6 +350,11 @@ a {
 .peak-flow-graph .c3 svg {
   font-size: 15px;
   font-family: 'Lato', sans-serif;
+  overflow: visible !important;
+}
+
+.peak-flow-graph.thin-graph .c3 svg {
+  margin-left: 55px;
 }
 
 .peak-flow-graph line.treatment-0 {

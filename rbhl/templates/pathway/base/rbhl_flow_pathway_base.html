@@ -28,7 +28,7 @@
           <div class="text-center" ng-show="form.$submitted && form.$invalid">
             <strong class="help-block">Please fix errors</strong>
           </div>
-          <button class="btn btn-lg btn-primary btn-save"
+          <button ng-disabled="pathway.steps[0].scope.hasError()" class="btn btn-lg btn-primary btn-save"
           ng-click="pathway.finish(editing)"
           >
             <i class="[[ pathway.finish_button_icon ]]"></i>

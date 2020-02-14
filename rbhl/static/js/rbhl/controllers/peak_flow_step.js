@@ -68,9 +68,11 @@ angular.module('opal.controllers').controller('PeakFlowStep',
       form = {
         flow: null,
         time: null,
+        treatment_taken: null,
         errors: {
           flow: null,
-          time: null
+          time: null,
+          treatment_taken: null
         }
       }
 
@@ -102,6 +104,15 @@ angular.module('opal.controllers').controller('PeakFlowStep',
         else{
           this.validateFlow();
           this.validateTime();;
+        }
+      }
+
+      validateTreatment(){
+        if(this.treatment_taken && this.treatment_taken.length > 26){
+          this.form.errors.treatment_taken = "Maximum length is 26";
+        }
+        else{
+          this.form.errors.treatment_taken = null;
         }
       }
 
@@ -194,6 +205,10 @@ angular.module('opal.controllers').controller('PeakFlowStep',
         pfd.peakFlowTimes = pfts;
         return pfd;
       }
+    }
+
+    scope.hasError = function(){
+      return _.filter(scope.trialDays, x => {return x.hasError()}).length;
     }
 
     scope.initialise = function(){

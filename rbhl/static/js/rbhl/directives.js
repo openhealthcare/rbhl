@@ -213,8 +213,11 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
           */
           let cols = getColStartWidths();
           let topLayer = addTopLayer();
+          let maxWidth = 0;
           Object.keys(data.treatments).forEach((treatmentName, treatmentIdx) => {
-
+            if(treatmentName.length > 20){
+              $(".peak-flow-graph").addClass("thin-graph");
+            }
             let cls = "treatment-" + treatmentIdx % 3;
             let treatmentSection = addRow(topLayer, treatmentIdx, treatmentName, cls);
 

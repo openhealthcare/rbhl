@@ -40,12 +40,19 @@
     </div>
     <div class="row">
       <div class="col-md-4">
-        <div class="form-group">
+        <div listen class="form-group" ng-class="{'errored-state': trialDay.form.errors.treatment_taken}">
           <label>Treatment</label>
-          <input ng-model="trialDay.treatment_taken" ng-blur="createTreatmentList()" class="form-control" type="text" list="trial-treatment-[[ $index ]]">
+          <input ng-change="trialDay.validateTreatment()" ng-model="trialDay.treatment_taken" ng-blur="createTreatmentList()" class="form-control" type="text" list="trial-treatment-[[ $index ]]">
           <datalist id="trial-treatment-[[ $index ]]">
               <option ng-repeat="treatment in treatments track by $index" value="[[ treatment ]]">
           </datalist>
+          <div class="row">
+            <div class="col-md-12">
+              <span class="help-block validation-error" >
+                [[ trialDay.form.errors.treatment_taken ]]
+              </span>
+            </div>
+          </div>
         </div>
       </div>
       <div class="col-md-4">

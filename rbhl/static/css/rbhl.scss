@@ -383,6 +383,13 @@ a {
     .c3 svg{
         font-size: 15px;
         font-family: 'Lato', sans-serif;
+        overflow: visible !important;
+    }
+
+    &.thin-graph{
+        .c3 svg{
+            margin-left: 55px;
+        }
     }
 
     line.treatment-0{
