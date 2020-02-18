@@ -405,6 +405,7 @@ class PeakFlowGraphDataTestCase(OpalTestCase):
             flow_1000=500,
             flow_1100=600,
             flow_1200=700,
+            note="A note about trial 1"
         )
         self.episode.peakflowday_set.create(
             trial_num=1,
@@ -422,6 +423,7 @@ class PeakFlowGraphDataTestCase(OpalTestCase):
             flow_1000=500,
             flow_1100=600,
             flow_1200=700,
+            note="A note about trial 2"
         )
         response = self.client.get(url).json()
         # we don't want to double check that trial data
@@ -429,3 +431,9 @@ class PeakFlowGraphDataTestCase(OpalTestCase):
         # the data looks as we'd expect
         self.assertEqual(len(response["1"]["days"]), 2)
         self.assertEqual(len(response["2"]["days"]), 1)
+        self.assertEqual(
+            response["1"]["notes"], "A note about trial 1"
+        )
+        self.assertEqual(
+            response["2"]["notes"], "A note about trial 2"
+        )
