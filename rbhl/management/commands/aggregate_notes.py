@@ -20,7 +20,7 @@ class Command(BaseCommand):
                 pfd.day_num, pfd.note
             ) for pfd in pfds if pfd.note
         ]
-        return ", ".join(pfd_strs)
+        return "\n".join(pfd_strs)
 
     def handle(self, *args, **kwargs):
         episodes = self.get_queryset()

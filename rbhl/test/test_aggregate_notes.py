@@ -41,7 +41,7 @@ class AggregateNotesTestCase(OpalTestCase):
         self.command.handle()
         self.assertEqual(
             self.episode.peakflowday_set.first().note,
-            "Day 1: hello, Day 2: there"
+            "Day 1: hello\nDay 2: there"
         )
         self.assertEqual(
             self.episode.peakflowday_set.last().note, ""
@@ -60,7 +60,7 @@ class AggregateNotesTestCase(OpalTestCase):
         self.command.handle()
         self.assertEqual(
             self.episode.peakflowday_set.first().note,
-            "Day 1: hello, Day 2: there"
+            "Day 1: hello\nDay 2: there"
         )
         self.assertEqual(
             self.episode.peakflowday_set.last().note, ""
