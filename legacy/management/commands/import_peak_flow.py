@@ -106,11 +106,16 @@ class Command(BaseCommand):
                     print('Missed identifier - skipping')
                     continue
 
-                print('Creating Peak Flow Days')
                 patient = patients[0].patient
 
                 episode = patient.episode_set.get()
 
+                if episode.peakflowday_set.exists():
+                    raise ValueError(
+                        'Manually entered peak flow exists for this patient'
+                    )
+
+                print('Creating Peak Flow Days')
                 day = PeakFlowDay(episode=episode)
                 data = row["TRIAL_DATA"].split(',')[:-1]
 
