@@ -130,8 +130,9 @@ class Command(BaseCommand):
 
                 day.day_num    = int(row["DAY_NUM"])
                 day.trial_num  = int(row["TRIAL_NUM"])
-                day.work_start = int(row["WORK_START"])
-                day.work_end   = int(row["WORK_FINISH"])
+                work_start = bool(int(row["WORK_START"]))
+                work_end = bool(int(row["WORK_FINISH"]))
+                day.work_day = work_start or work_end
                 day.save()
                 self.flow_days_imported += 1
 
