@@ -11,6 +11,10 @@ from rbhl.models import PeakFlowDay
 from legacy.models import PeakFlowIdentifier
 
 
+DEMOGRAPHICS_FILE = "demographics.csv"
+TRIAL_DAY = "trial_day.csv"
+
+
 class Matcher(match.Matcher):
     direct_match_field = match.Mapping('CRN', 'hospital_number')
 
@@ -24,23 +28,19 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **kwargs):
+        dir_name = kwargs.get("directory_name")
+        demographics_file_name = os.path.join(dir_name, DEMOGRAPHICS_FILE)
+        flow_data_file_name = os.path.join(dir_name, TRIAL_DAY)
+
+        for file_name in [DEMOGRAPHICS_FILE, TRIAL_DAY]:
+            if not os.path.exists(os.path.join(dir_name, file_name)):
+                raise ValueError(
+                    "We expect a file called {}".format(file_name)
+                )
+
         print('Deleting non user created Peak Flow objects')
         PeakFlowDay.objects.filter(created_by=None).delete()
         PeakFlowIdentifier.objects.all().delete()
-
-        dir_name = kwargs.get("directory_name")
-        demographics_file_name = os.path.join(dir_name, "demographics.csv")
-        flow_data_file_name = os.path.join(dir_name, "trial_day.csv")
-
-        if not os.path.exists(demographics_file_name):
-            raise ValueError(
-                "We expect a demographics file called demographics.csv"
-            )
-
-        if not os.path.exists(flow_data_file_name):
-            raise ValueError(
-                "We expect a demographics file called trial_day.csv"
-            )
 
         self.patients_imported = 0
         self.flow_days_imported = 0
