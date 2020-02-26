@@ -24,8 +24,8 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **kwargs):
-        print('Deleting all existing Peak Flow objects')
-        PeakFlowDay.objects.all().delete()
+        print('Deleting non user created Peak Flow objects')
+        PeakFlowDay.objects.filter(created_by=None).delete()
         PeakFlowIdentifier.objects.all().delete()
 
         dir_name = kwargs.get("directory_name")
@@ -132,7 +132,6 @@ class Command(BaseCommand):
                 day.trial_num  = int(row["TRIAL_NUM"])
                 day.work_start = int(row["WORK_START"])
                 day.work_end   = int(row["WORK_FINISH"])
-
                 day.save()
                 self.flow_days_imported += 1
 
