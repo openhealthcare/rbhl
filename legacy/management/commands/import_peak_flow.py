@@ -91,6 +91,8 @@ class Command(BaseCommand):
             PeakFlowIdentifier.objects.all().count())
         )
 
+        peak_flow_days = []
+
         print('Import peak flow measurements')
         with open(flow_data_file_name) as f:
             reader = csv.DictReader(f)
@@ -138,8 +140,9 @@ class Command(BaseCommand):
                 work_start = bool(int(row["WORK_START"]))
                 work_end = bool(int(row["WORK_FINISH"]))
                 day.work_day = work_start or work_end
-                day.save()
+                peak_flow_days.append(day)
                 self.flow_days_imported += 1
+            PeakFlowDay.objecs.bulk_create(peak_flow_days)
 
         print('Missed {}'.format(self.patients_missed))
         print('Skipped {} (no hosp num)'.format(self.no_hosp_num))
