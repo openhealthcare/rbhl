@@ -40,7 +40,8 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     '.herokuapp.com',
-    '192.168.1.10'
+    '192.168.1.10',
+    '10.0.0.112',
 ]
 
 # Local time zone for this installation. Choices can be found here:

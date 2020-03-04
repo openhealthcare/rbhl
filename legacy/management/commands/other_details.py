@@ -42,9 +42,10 @@ class Command(BaseCommand):
                 patient=patient,
                 created=timezone.now(),
                 date_referral_received=date_referral_received,
-                referral_type=row["Referral_reason"],
+                referral_type=row["referral"],
+                referral_reason=row["Referral_reason"],
                 fire_service_applicant=row["Fireapplicant"],
-                # "systems_presenting_compliant": row[""],
+                systems_presenting_compliant=row["reason_other"],
                 referral_disease=row["Referral_disease"],
                 geographical_area=row["Geographical_area"],
                 geographical_area_other=row["Geographical_area"],
@@ -71,9 +72,9 @@ class Command(BaseCommand):
                 created=timezone.now(),
                 is_currently_employed=to_bool(row["Employed"]),
                 suspect_occupational_category=row["Occupation_category"],
-                job_title=row["Current_employment"],
+                job_title=row["Occupation_other"],
                 exposures=row["Exposures"],
-                # is_employed_in_suspect_occupation=row[""],
+                is_employed_in_suspect_occupation=row["Current_employment"],
                 month_started_exposure=row["Date started"],
                 year_started_exposure=row["Dates_st_Exposure_Y"],
                 month_finished_exposure=row["Date Finished"],
@@ -229,8 +230,8 @@ class Command(BaseCommand):
                 other_det_num=row["OtherDet_Num"],
                 attendance_date=row["Attendance_date"],
                 referral=row["referral"],
-                reason_other=row["reason_other"],
-                occupation_other=row["Occupation_other"],
+                # reason_other=row["reason_other"],
+                # occupation_other=row["Occupation_other"],
                 asthma_relate_work=row["AsthmaRelateWork"],
                 chronic_air_flow=row["ChronicAirFlow"],
                 chronic_air_flow_choice=row["ChronicAirFlowChoice"],
@@ -315,9 +316,10 @@ class Command(BaseCommand):
             employment.employer = row["Employer"]
             employment.save()
 
-            # referral = episode.referral_set.get()
-            # referral.referrer_name = row["Referring_doctor"]
-            # referral.save()
+            referral = episode.referral_set.get()
+            if not referral.referrer_name:
+                referral.referrer_name = row["Referring_doctor"]
+                referral.save()
 
         msg = "Imported {} other details rows".format(len(rows))
         self.stdout.write(self.style.SUCCESS(msg))

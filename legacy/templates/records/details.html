@@ -12,7 +12,7 @@
 
     <p>
       <b>Referring Doctor:</b>
-      [[ item.referring_doctor ]]
+      [[ episode.referral[0].referrer_name ]]
     </p>
 
     <p>
@@ -24,6 +24,10 @@
       <b>Type Of Referral:</b>
       [[ item.referral_type ]]
     </p>
+    <p>
+      <b>Referral Reason</b>
+      [[ item.referral_reason ]]
+    </p>
 
     <p>
       <b>Fire Service Applicant:</b>
@@ -32,7 +36,7 @@
 
     <p>
       <b>Symptoms / Presenting Complaint:</b>
-      WHERE IS THIS STUFF?
+      [[ item.systems_presenting_compliant ]]
     </p>
 
     <p>

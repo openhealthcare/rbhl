@@ -191,37 +191,22 @@ class Address(PatientSubrecord):
 class Details(PatientSubrecord):
     _is_singleton = True
 
-    # UI Field: Date referral received
     date_referral_received = models.DateTimeField(null=True, blank=True)
-    # UI Field: Type of referral
     referral_type = models.TextField(null=True, blank=True)
-    # UI Field: Fire Service Applicant
+    referral_reason = models.TextField(blank=True, null=True)
     fire_service_applicant = models.TextField(null=True, blank=True)
-    # UI Field: Symptoms / presenting compliant
     systems_presenting_compliant = models.TextField(null=True, blank=True)
-    # UI Field: Referral disease
     referral_disease = models.TextField(null=True, blank=True)
-    # UI Field: Georgraphical area
     geographical_area = models.TextField(null=True, blank=True)
-    # UI Field: Other
     geographical_area_other = models.TextField(null=True, blank=True)
-    # UI Field: Site of Clinic
     site_of_clinic = models.TextField(null=True, blank=True)
-    # UI Field: Other Clinic Site
     other_clinic_site = models.TextField(null=True, blank=True)
-    # UI Field: Clinic status
     clinic_status = models.TextField(null=True, blank=True)
-    # UI Field: Previous atopic disease
     previous_atopic_disease = models.TextField(null=True, blank=True)
-    # UI Field: Asthma
     has_asthma = models.NullBooleanField(null=True, blank=True)
-    # UI Field: Hayfever
     has_hayfever = models.NullBooleanField(null=True, blank=True)
-    # UI Field: Eczema
     has_eczema = models.NullBooleanField(null=True, blank=True)
-    # UI Field: Smoker
     is_smoker = models.TextField(null=True, blank=True)
-    # UI Field: How many a day?
     smokes_per_day = models.IntegerField(null=True, blank=True)
 
 
