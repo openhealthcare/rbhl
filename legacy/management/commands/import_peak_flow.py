@@ -4,12 +4,13 @@ Management command to bring in historic Peak Flow data
 import os
 import csv
 from django.core.management.base import BaseCommand
+from django.db import transaction
 from plugins.trade import match
-from plugins.trade.exceptions import PatientNotFoundError
 import datetime
 
 
-from rbhl.models import PeakFlowDay
+from opal.models import Patient
+from rbhl.models import PeakFlowDay, ImportedFromPreviousDatabase
 from legacy.models import PeakFlowIdentifier
 
 
@@ -36,27 +37,47 @@ class Command(BaseCommand):
         with open(file_name) as f:
             reader = csv.DictReader(f)
             for row in reader:
-                if row["START_DATE"] == "NULL":
+                occmedno = int(row["OCCMEDNO"])
+                trial_num = int(row["TRIAL_NUM"])
+                key = (occmedno, trial_num)
+
+                # these patients have duplicate trials
+                # lets ignore them for the time being
+                if occmedno in (104, 280, 289,):
+                    result[key] = DELETED
                     continue
+
+                # this patient has a start date of null
+                # so lets mark it as deleted and not
+                # add it
+                if occmedno == 34:
+                    result[key] = DELETED
+                    continue
+
+                if row["START_DATE"] == "NULL":
+                    raise ValueError("start date is null for {}".format(key))
 
                 start_dt = datetime.datetime.strptime(
                     row["START_DATE"], "%Y-%m-%d %H:%M:%S.000"
                 )
 
                 start = start_dt.date()
-                occmedno = int(row["OCCMEDNO"])
-                trial_num = int(row["TRIAL_NUM"])
-
-                # these patients have duplicate trials but
-                # don't match any existing patients
-                if occmedno in (104, 280):
-                    continue
-                key = (occmedno, trial_num)
 
                 existing_result = result.get(key)
+
+                # if there are multiple occmedno/trial id and they are
+                # different we should error
                 if existing_result and not existing_result == start:
                     raise ValueError(
                         "Duplicate row found in {}".format(file_name)
+                    )
+
+                if int(row["TRIAL_DELETED"]):
+                    start = DELETED
+
+                if key in result and not result[key] == start:
+                    raise ValueError(
+                        "Inconsistent start date found for {}".format(key)
                     )
 
                 # ignore deleted rows
@@ -66,6 +87,7 @@ class Command(BaseCommand):
                     result[key] = start
         return result
 
+    @transaction.atomic
     def handle(self, *args, **kwargs):
         dir_name = kwargs.get("directory_name")
         demographics_file_name = os.path.join(dir_name, DEMOGRAPHICS_FILE)
@@ -81,8 +103,30 @@ class Command(BaseCommand):
             dir_name
         )
 
-        print('Deleting non user created Peak Flow objects')
-        PeakFlowDay.objects.filter(created_by=None).delete()
+        # deleting all patients that have information
+        # imported from the peak flow database but
+        # no clinic logs beside them.
+        created_patients = Patient.objects.filter(
+            episode__importedfrompreviousdatabase__isnull=False
+        )
+        created_patients = created_patients.filter(
+            episode__cliniclog=None
+        )
+        print('Delete {} patients created by the importer'.format(
+            created_patients.count())
+        )
+        created_patients.delete()
+
+        imported_records = ImportedFromPreviousDatabase.objects.all()
+        imported_records = imported_records.select_related('episode')
+
+        print('Delete all imported records created by the importer')
+        for imported in imported_records:
+            imported.epsiode.peakflowday_set.filter(
+                trial_num=imported.trial_num
+            ).delete()
+
+        print('Delete all peak flow identifiers')
         PeakFlowIdentifier.objects.all().delete()
 
         self.patients_imported = 0
@@ -101,14 +145,17 @@ class Command(BaseCommand):
                     continue
 
                 matcher = Matcher(row)
-                try:
-                    patient = matcher.direct_match()
-                except PatientNotFoundError:
-                    self.patients_missed += 1
-                    continue
+                patient, created = matcher.match_or_create()
+                demographics = patient.demographics()
+
+                if created:
+                    first_name, surname = row["PAT_NAME"].rsplit(" ", 1)
+                    demographics.first_name = first_name
+                    demographics.surname = surname
+                    demographics.save()
+                    patient.create_episode()
 
                 print("Updating demographics")
-                demographics = patient.demographics()
                 demographics_changed = False
 
                 if row["HEIGHT"] and int(row["HEIGHT"]):
@@ -126,7 +173,13 @@ class Command(BaseCommand):
                     demographics.save()
 
                 print('Creating Peak Flow Identifier')
-                identifier = PeakFlowIdentifier(patient=patient)
+                age = int(row["AGE"])
+                if not age:
+                    age = None
+
+                identifier = PeakFlowIdentifier(
+                    patient=patient, age=age
+                )
                 identifier.occmendo = int(row["OCCMEDNO"])
                 peak_flow_idenitifiers.append(identifier)
 
@@ -139,18 +192,22 @@ class Command(BaseCommand):
         peak_flow_days = []
 
         print('Import peak flow measurements')
-        expected_unique = set()
+
+        # for a given occmedno/day num/trial num
+        # if there are multiple rows in the csv
+        # and those rows are different we should error
+        expected_unique = {}
         with open(flow_data_file_name) as f:
             reader = csv.DictReader(f)
 
             for row in reader:
-                patients = PeakFlowIdentifier.objects.filter(
+                identifier = PeakFlowIdentifier.objects.filter(
                     occmendo=int(row["OCCMEDNO"])
                 )
-                if patients.count() > 1:
+                if identifier.count() > 1:
                     print(row)
                     raise ValueError('Too many identifiers')
-                if patients.count() == 0:
+                if identifier.count() == 0:
                     print('Missed identifier - skipping')
                     continue
 
@@ -160,16 +217,35 @@ class Command(BaseCommand):
                 # we don't expect duplicates of occmedno, trial_num, day_num
                 key = (occmedno, trial_num, day_num,)
                 if key in expected_unique:
+                    if expected_unique[key] == row["TRIAL_DATA"]:
+                        continue
                     raise ValueError('Duplicate trial day found')
-                expected_unique.add(key)
 
-                patient = patients[0].patient
+                start_date = occ_med_no_and_trial_num_to_start_date[
+                    (occmedno, trial_num,)
+                ]
+
+                if start_date == DELETED:
+                    print('{} has been deleted, skipping'.format(key))
+                    continue
+
+                expected_unique[key] = row["TRIAL_DATA"]
+
+                patient = identifier[0].patient
 
                 episode = patient.episode_set.get()
 
                 if episode.peakflowday_set.exists():
                     raise ValueError(
                         'Manually entered peak flow exists for this patient'
+                    )
+
+                if not patient.demographics().date_of_birth:
+                    age = identifier[0].age
+                    ImportedFromPreviousDatabase.objects.get_or_create(
+                        episode=episode,
+                        trial_number=trial_num,
+                        age=age
                     )
 
                 print('Creating Peak Flow Days')
@@ -186,14 +262,6 @@ class Command(BaseCommand):
                     'flow_1800', 'flow_1900', 'flow_2000',
                     'flow_2100', 'flow_2200', 'flow_2300',
                 ]
-
-                start_date = occ_med_no_and_trial_num_to_start_date[
-                    (occmedno, trial_num,)
-                ]
-
-                if start_date == DELETED:
-                    print('{} has been deleted, skipping'.format(key))
-                    continue
 
                 for i, field in enumerate(flow_fields):
                     setattr(day, field, data[i])
