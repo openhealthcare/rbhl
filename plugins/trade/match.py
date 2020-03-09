@@ -108,7 +108,9 @@ class Matcher(object):
         try:
             return self.direct_match()
         except exceptions.PatientNotFoundError:
-            return self.attribute_match()
+            if self.attribute_match_fields:
+                return self.attribute_match()
+            raise
 
     def create(self, user=None):
         """
