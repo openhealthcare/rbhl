@@ -425,3 +425,8 @@ class DiagnosisRhinitis(models.EpisodeSubrecord):
         max_length=200, blank=True, null=True,
         choices=YN
     )
+
+
+class ImportedFromPreviousDatabase(models.EpisodeSubrecord):
+    age = fields.IntegerField(blank=True, null=True)
+    trial_number = fields.IntegerField(blank=True, null=True)
