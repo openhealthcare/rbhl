@@ -14,9 +14,9 @@ from rbhl.models import PeakFlowDay, ImportedFromPreviousDatabase
 from legacy.models import PeakFlowIdentifier
 
 
-DEMOGRAPHICS_FILE = "demographics.csv"
-TRIAL_DAY = "trial_day.csv"
-TRIAL_START_DAY = "OCC_TRIAL.csv"
+DEMOGRAPHICS_FILE = "OCC_PATIENT.CSV"
+TRIAL_DAY = "OCC_TRIAL_DAY.CSV"
+TRIAL_START_DAY = "OCC_TRIAL.CSV"
 DELETED = "DELETED"
 
 
@@ -34,7 +34,7 @@ class Command(BaseCommand):
     def get_start_date_map(self, dir_name):
         result = {}
         file_name = os.path.join(dir_name, TRIAL_START_DAY)
-        with open(file_name) as f:
+        with open(file_name, mode="r", encoding='utf-8-sig') as f:
             reader = csv.DictReader(f)
             for row in reader:
                 occmedno = int(row["OCCMEDNO"])
@@ -137,7 +137,7 @@ class Command(BaseCommand):
 
         peak_flow_idenitifiers = []
 
-        with open(demographics_file_name) as f:
+        with open(demographics_file_name, mode="r", encoding='utf-8-sig') as f:
             reader = csv.DictReader(f)
             for row in reader:
                 if row["CRN"] == 'NULL':
@@ -197,7 +197,7 @@ class Command(BaseCommand):
         # if there are multiple rows in the csv
         # and those rows are different we should error
         expected_unique = {}
-        with open(flow_data_file_name) as f:
+        with open(flow_data_file_name, mode="r", encoding='utf-8-sig') as f:
             reader = csv.DictReader(f)
 
             for row in reader:
