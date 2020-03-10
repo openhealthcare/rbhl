@@ -3,8 +3,9 @@ Management command to bring in historic Peak Flow data
 """
 import os
 import csv
+from collections import defaultdict
 from django.core.management.base import BaseCommand
-from django.db import transaction
+from django.db import transaction, Max
 from plugins.trade import match
 import datetime
 
@@ -86,6 +87,41 @@ class Command(BaseCommand):
                 else:
                     result[key] = start
         return result
+
+    def raise_trial_numbers(self, peak_flow_days):
+        """
+        Trial number is a 1 indexed numeric sequence starting
+        with the oldest peak flow day.
+
+        The peak flow days that we are importing are all older than
+        the peak flows that currently exist.
+
+        Bump the existing trial numbers so that they are above
+        the ones that we are importing.
+
+        We could do this in a more database efficient way
+        but given its only a few and a one off import
+        this is hopefully clearer.
+        """
+        episode_id_to_trial_num = defaultdict(int)
+
+        for peak_flow_day in peak_flow_days:
+            trial_num = peak_flow_day.trial_num
+            if episode_id_to_trial_num[peak_flow_day.episode_id] < trial_num:
+                episode_id_to_trial_num[peak_flow_day.episode_id] = trial_num
+
+        for episode_id, trial_num in episode_id_to_trial_num.items():
+            max_trial_num = PeakFlowDay.objects.filter(
+                episode_id=episode_id
+            ).aggregate(max_trial_num=Max('trial_num'))
+            if max_trial_num["max_trial_num"]:
+                existing_peak_flows = PeakFlowDay.objects.filter(
+                    episode_id=episode_id
+                )
+                for existing_peak_flow in existing_peak_flows:
+                    new_trial_num = existing_peak_flow.trial_num + trial_num
+                    existing_peak_flow.trial_num = new_trial_num
+                    existing_peak_flow.save()
 
     @transaction.atomic
     def handle(self, *args, **kwargs):
@@ -235,11 +271,6 @@ class Command(BaseCommand):
 
                 episode = patient.episode_set.get()
 
-                if episode.peakflowday_set.exists():
-                    raise ValueError(
-                        'Manually entered peak flow exists for this patient'
-                    )
-
                 if not patient.demographics().date_of_birth:
                     age = identifier[0].age
                     ImportedFromPreviousDatabase.objects.get_or_create(
@@ -274,6 +305,7 @@ class Command(BaseCommand):
                 day.work_day = work_start or work_end
                 peak_flow_days.append(day)
                 self.flow_days_imported += 1
+            self.raise_trial_numbers(peak_flow_days)
             PeakFlowDay.objects.bulk_create(peak_flow_days)
 
         print('Missed {}'.format(self.patients_missed))

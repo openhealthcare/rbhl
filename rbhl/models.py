@@ -337,6 +337,9 @@ class PeakFlowDay(models.EpisodeSubrecord):
         blank=True, null=True, verbose_name="23:00"
     )
 
+    class Meta:
+        unique_together = [['day_num', 'trial_num', 'episode']]
+
     def get_flow_values(self):
         db_fields = self._meta.get_fields()
         fields = [
