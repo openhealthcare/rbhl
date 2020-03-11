@@ -5,7 +5,8 @@ import os
 import csv
 from collections import defaultdict
 from django.core.management.base import BaseCommand
-from django.db import transaction, Max
+from django.db import transaction
+from django.db.models import Max
 from plugins.trade import match
 import datetime
 
@@ -19,6 +20,14 @@ DEMOGRAPHICS_FILE = "OCC_PATIENT.CSV"
 TRIAL_DAY = "OCC_TRIAL_DAY.CSV"
 TRIAL_START_DAY = "OCC_TRIAL.CSV"
 DELETED = "DELETED"
+
+DRUG_LOOKUP = {
+    0: None,
+    1: "Beta 2 Only",
+    2: "Inhaled Steroid",
+    3: "Oral Steroid",
+    4: "Other"
+}
 
 
 class Matcher(match.Matcher):
@@ -158,9 +167,10 @@ class Command(BaseCommand):
 
         print('Delete all imported records created by the importer')
         for imported in imported_records:
-            imported.epsiode.peakflowday_set.filter(
-                trial_num=imported.trial_num
+            imported.episode.peakflowday_set.filter(
+                trial_num=imported.trial_number
             ).delete()
+        imported_records.delete()
 
         print('Delete all peak flow identifiers')
         PeakFlowIdentifier.objects.all().delete()
@@ -240,10 +250,11 @@ class Command(BaseCommand):
                 identifier = PeakFlowIdentifier.objects.filter(
                     occmendo=int(row["OCCMEDNO"])
                 )
-                if identifier.count() > 1:
+                identifier_count = identifier.count()
+                if identifier_count > 1:
                     print(row)
                     raise ValueError('Too many identifiers')
-                if identifier.count() == 0:
+                if identifier_count == 0:
                     print('Missed identifier - skipping')
                     continue
 
@@ -270,6 +281,8 @@ class Command(BaseCommand):
                 patient = identifier[0].patient
 
                 episode = patient.episode_set.get()
+                if episode.peakflowday_set.exists():
+                    print("Duplicate peak flow found for {}".format(episode.id))
 
                 if not patient.demographics().date_of_birth:
                     age = identifier[0].age
@@ -279,9 +292,10 @@ class Command(BaseCommand):
                         age=age
                     )
 
-                print('Creating Peak Flow Days')
                 day = PeakFlowDay(episode=episode)
-                data = row["TRIAL_DATA"].split(',')[:-1]
+                data = [
+                    int(float(i.rstrip("."))) for i in row["TRIAL_DATA"].split(',')[:-1]
+                ]
 
                 flow_fields = [
                     'flow_0000', 'flow_0100', 'flow_0200',
@@ -300,6 +314,7 @@ class Command(BaseCommand):
                 day.day_num    = day_num
                 day.date = start_date + datetime.timedelta(day.day_num - 1)
                 day.trial_num  = int(row["TRIAL_NUM"])
+                day.treatment_taken = DRUG_LOOKUP[int(row["DRUG_CODE"])]
                 work_start = bool(int(row["WORK_START"]))
                 work_end = bool(int(row["WORK_FINISH"]))
                 day.work_day = work_start or work_end
