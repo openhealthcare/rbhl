@@ -3,7 +3,7 @@ rbhl models.
 """
 import datetime
 import math
-from django.db.models import fields
+from django.db import models as fields
 from decimal import Decimal
 
 from opal import models
@@ -437,3 +437,10 @@ class ImportedFromOccupationalLungDatabase(models.EpisodeSubrecord):
     """
     age = fields.IntegerField(blank=True, null=True)
     trial_number = fields.IntegerField(blank=True, null=True)
+
+
+class PatientSource(fields.Model):
+    patient = fields.OneToOneField(models.Patient, on_delete=fields.CASCADE)
+    occupational_lung_database = fields.BooleanField(
+        default=False, blank=True
+    )

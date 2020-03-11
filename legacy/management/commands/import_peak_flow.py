@@ -12,7 +12,9 @@ import datetime
 
 
 from opal.models import Patient
-from rbhl.models import PeakFlowDay, ImportedFromOccupationalLungDatabase
+from rbhl.models import (
+    PeakFlowDay, ImportedFromOccupationalLungDatabase, PatientSource
+)
 from legacy.models import PeakFlowIdentifier
 
 
@@ -200,6 +202,10 @@ class Command(BaseCommand):
                     demographics.surname = surname
                     demographics.save()
                     patient.create_episode()
+                    PatientSource.create(
+                        patient=patient,
+                        occupational_lung_database=True
+                    )
 
                 print("Updating demographics")
                 demographics_changed = False
