@@ -172,7 +172,12 @@ class Command(BaseCommand):
             imported.episode.peakflowday_set.filter(
                 trial_num=imported.trial_number
             ).delete()
+            print('deleting {} {}'.format(imported.episode_id, imported.trial_number))
         imported_records.delete()
+
+        Patient.objects.filter(
+            patientsource__occupational_lung_database=True
+        ).delete()
 
         print('Delete all peak flow identifiers')
         PeakFlowIdentifier.objects.all().delete()
@@ -202,12 +207,11 @@ class Command(BaseCommand):
                     demographics.surname = surname
                     demographics.save()
                     patient.create_episode()
-                    PatientSource.create(
+                    PatientSource.objects.create(
                         patient=patient,
                         occupational_lung_database=True
                     )
 
-                print("Updating demographics")
                 demographics_changed = False
 
                 if row["HEIGHT"] and int(row["HEIGHT"]):
@@ -224,7 +228,6 @@ class Command(BaseCommand):
                 if demographics_changed:
                     demographics.save()
 
-                print('Creating Peak Flow Identifier')
                 age = int(row["AGE"])
                 if not age:
                     age = None
@@ -290,13 +293,12 @@ class Command(BaseCommand):
                 if episode.peakflowday_set.exists():
                     print("Duplicate peak flow found for {}".format(episode.id))
 
-                if not patient.demographics().date_of_birth:
-                    age = identifier[0].age
-                    ImportedFromOccupationalLungDatabase.objects.get_or_create(
-                        episode=episode,
-                        trial_number=trial_num,
-                        age=age
-                    )
+                age = identifier[0].age
+                ImportedFromOccupationalLungDatabase.objects.get_or_create(
+                    episode=episode,
+                    trial_number=trial_num,
+                    age=age
+                )
 
                 day = PeakFlowDay(episode=episode)
                 data = [
