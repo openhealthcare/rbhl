@@ -290,9 +290,6 @@ class Command(BaseCommand):
                 patient = identifier[0].patient
 
                 episode = patient.episode_set.get()
-                if episode.peakflowday_set.exists():
-                    print("Duplicate peak flow found for {}".format(episode.id))
-
                 age = identifier[0].age
                 ImportedFromOccupationalLungDatabase.objects.get_or_create(
                     episode=episode,
