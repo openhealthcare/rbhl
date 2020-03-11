@@ -17,6 +17,7 @@ To get started, run the following commands:
     python manage.py other_details <file name>
     python manage.py bronchial_test <file name>
     python manage.py routine_spts <file name>
+    python manage.py skin_prick_tests
 ```
 
 
@@ -54,4 +55,3 @@ e.g.
 ```
 
 Will display the below field verbose name and value in `col-md-4` for the label and `col-md-8` respectively.
-

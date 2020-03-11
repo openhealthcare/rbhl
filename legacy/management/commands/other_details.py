@@ -248,7 +248,6 @@ class Command(BaseCommand):
         DiagnosticAsthma.objects.all().delete()
         DiagnosticRhinitis.objects.all().delete()
         DiagnosticOther.objects.all().delete()
-        SkinPrickTest.objects.all().delete()
         OtherFields.objects.all().delete()
 
     @transaction.atomic()
@@ -261,7 +260,7 @@ class Command(BaseCommand):
             rows = list(csv.DictReader(f))
 
         patient_ids = (row["Patient_num"] for row in rows)
-        patient_nums = PatientNumber.objects.filter(id__in=patient_ids)
+        patient_nums = PatientNumber.objects.filter(value__in=patient_ids)
         patientLUT = {p.value: p.patient for p in patient_nums}
 
         # TODO: print missing patient IDs here
