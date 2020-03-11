@@ -23,6 +23,8 @@ TRIAL_DAY = "OCC_TRIAL_DAY.CSV"
 TRIAL_START_DAY = "OCC_TRIAL.CSV"
 DELETED = "DELETED"
 
+TO_IGNORE = [1955, 2123, 860, 926, 2041]
+
 DRUG_LOOKUP = {
     0: None,
     1: "Beta 2 Only",
@@ -63,6 +65,12 @@ class Command(BaseCommand):
                 # so lets mark it as deleted and not
                 # add it
                 if occmedno == 34:
+                    result[key] = DELETED
+                    continue
+
+                # The users have told us that these rows
+                # can be ignored
+                if occmedno in TO_IGNORE:
                     result[key] = DELETED
                     continue
 
@@ -205,6 +213,10 @@ class Command(BaseCommand):
                     first_name, surname = row["PAT_NAME"].rsplit(" ", 1)
                     demographics.first_name = first_name
                     demographics.surname = surname
+
+                    # this patient exists with a different hospital number
+                    if row["CRN"] == "Y83781":
+                        demographics.hospital_number = "K03096"
                     demographics.save()
                     patient.create_episode()
                     PatientSource.objects.create(
