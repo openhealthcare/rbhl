@@ -383,6 +383,7 @@ a {
     .c3 svg{
         font-size: 15px;
         font-family: 'Lato', sans-serif;
+        overflow: visible !important;
     }
 
     line.treatment-0{
@@ -491,7 +492,6 @@ input[type="date"]::-webkit-input-placeholder{
         font-size: 18px;
         resize: vertical;
         padding: 6px 12px;
-        height: 44px;
     }
 
     .flow-table{
@@ -521,6 +521,10 @@ input[type="date"]::-webkit-input-placeholder{
 
     .errored-state .validation-error{
         display: block;
+    }
+
+    .form-horizontal .control-label.radio-label{
+        padding-top: 0;
     }
 }
 

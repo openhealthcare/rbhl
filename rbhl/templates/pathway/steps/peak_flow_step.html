@@ -30,7 +30,12 @@
         </div>
       </div>
     </div>
-
+  </div>
+  <div ng-if="trialDays.length" class="row">
+    <div class="col-sm-8">
+      <label>Notes</label>
+      <textarea class="form-control" rows="5" ng-model="trialDays[0].note"></textarea>
+    </div>
   </div>
   <div class="content-offset content-offset-below-10" ng-repeat="trialDay in trialDays">
     <div class="row">
@@ -49,14 +54,8 @@
         </div>
       </div>
       <div class="col-md-4">
-        <div class="form-group">
-          <label>Note</label>
-          <textarea ng-model="trialDay.note" rows="1" class="form-control"></textarea>
-        </div>
-      </div>
-      <div class="col-md-4">
         <div class="form-group form-horizontal" >
-          <label class="control-label">Work day</label>
+          <label class="control-label radio-label">Work day</label>
           <div class="rbhl-radio">
             <label class="radio-inline">
               <input class="work-day" type="radio" ng-model="trialDay.work_day" name="workday_[[ $index ]]" id="workday[[ $index ]]" ng-value="true">

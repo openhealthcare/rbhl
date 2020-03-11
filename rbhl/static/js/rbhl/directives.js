@@ -186,7 +186,15 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
             text.attr("y", "-8");
             text.attr("text-anchor", "end");
             text.classed(cls, true);
+            let threshold = 15;
+            let titleText = ytext;
+            if(ytext && ytext.length > threshold){
+              ytext = ytext.substr(0, threshold).concat("...");
+            }
             text.text(ytext);
+
+            let title = section.append("title");
+            title.text(titleText);
 
             // extend all of the other columns up accordingly
             cols.forEach((col, idx) =>{
@@ -234,6 +242,7 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
               line.attr("x2", x1 + width);
               line.attr("y1", "-12");
               line.attr("y2", "-12");
+
               line.attr("stroke-width", "14");
               line.classed(cls, true);
             });

@@ -169,6 +169,7 @@ class PeakFlowGraphDataTestCase(OpalTestCase):
             flow_1000=500,
             flow_1100=600,
             flow_1200=700,
+            note="some notes"
         )
 
         self.episode.peakflowday_set.create(
@@ -178,7 +179,6 @@ class PeakFlowGraphDataTestCase(OpalTestCase):
             flow_1100=600,
             flow_1200=700,
             flow_1300=700,
-            note="some notes"
         )
         self.episode.peakflowday_set.create(
             day_num=3,
@@ -191,19 +191,7 @@ class PeakFlowGraphDataTestCase(OpalTestCase):
         )
         notes = self.api.get_notes(self.episode.peakflowday_set.all())
         self.assertEqual(
-            notes,
-            [
-                {
-                    "date": datetime.date(2019, 8, 4),
-                    "day_num": 2,
-                    "detail": "some notes"
-                },
-                {
-                    "date": datetime.date(2019, 8, 6),
-                    "day_num": 4,
-                    "detail": "other note"
-                },
-            ]
+            notes, "some notes"
         )
 
     def test_get_overrall_mean(self):
@@ -394,7 +382,7 @@ class PeakFlowGraphDataTestCase(OpalTestCase):
             'treatments': {},
             'overrall_mean': 614,
             'pef_mean': None,
-            'notes': []
+            'notes': ""
         }
         self.assertEqual(result, expected)
 
@@ -417,6 +405,7 @@ class PeakFlowGraphDataTestCase(OpalTestCase):
             flow_1000=500,
             flow_1100=600,
             flow_1200=700,
+            note="A note about trial 1"
         )
         self.episode.peakflowday_set.create(
             trial_num=1,
@@ -434,6 +423,7 @@ class PeakFlowGraphDataTestCase(OpalTestCase):
             flow_1000=500,
             flow_1100=600,
             flow_1200=700,
+            note="A note about trial 2"
         )
         response = self.client.get(url).json()
         # we don't want to double check that trial data
@@ -441,3 +431,9 @@ class PeakFlowGraphDataTestCase(OpalTestCase):
         # the data looks as we'd expect
         self.assertEqual(len(response["1"]["days"]), 2)
         self.assertEqual(len(response["2"]["days"]), 1)
+        self.assertEqual(
+            response["1"]["notes"], "A note about trial 1"
+        )
+        self.assertEqual(
+            response["2"]["notes"], "A note about trial 2"
+        )
