@@ -13,7 +13,7 @@ import datetime
 
 from opal.models import Patient
 from rbhl.models import (
-    PeakFlowDay, ImportedFromOccupationalLungDatabase, PatientSource
+    PeakFlowDay, ImportedFromPeakFlowDatabase, PatientSource
 )
 from legacy.models import PeakFlowIdentifier
 
@@ -159,10 +159,10 @@ class Command(BaseCommand):
         )
 
         # deleting all patients that have information
-        # imported from the occupational lung database but
+        # imported from the peak flow database but
         # no clinic logs beside them.
         created_patients = Patient.objects.filter(
-            episode__importedfromoccupationallungdatabase__isnull=False
+            episode__importedfrompeakflowdatabase__isnull=False
         )
         created_patients = created_patients.filter(
             episode__cliniclog=None
@@ -172,7 +172,7 @@ class Command(BaseCommand):
         )
         created_patients.delete()
 
-        imported_records = ImportedFromOccupationalLungDatabase.objects.all()
+        imported_records = ImportedFromPeakFlowDatabase.objects.all()
         imported_records = imported_records.select_related('episode')
 
         print('Delete all imported records created by the importer')
@@ -184,7 +184,7 @@ class Command(BaseCommand):
         imported_records.delete()
 
         Patient.objects.filter(
-            patientsource__occupational_lung_database=True
+            patientsource__peak_flow_database=True
         ).delete()
 
         print('Delete all peak flow identifiers')
@@ -221,7 +221,7 @@ class Command(BaseCommand):
                     patient.create_episode()
                     PatientSource.objects.create(
                         patient=patient,
-                        occupational_lung_database=True
+                        peak_flow_database=True
                     )
 
                 demographics_changed = False
@@ -303,7 +303,7 @@ class Command(BaseCommand):
 
                 episode = patient.episode_set.get()
                 age = identifier[0].age
-                ImportedFromOccupationalLungDatabase.objects.get_or_create(
+                ImportedFromPeakFlowDatabase.objects.get_or_create(
                     episode=episode,
                     trial_number=trial_num,
                     age=age

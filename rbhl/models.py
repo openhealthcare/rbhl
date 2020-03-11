@@ -51,7 +51,7 @@ def get_peak_expiratory_flow(date, episode, trial_num):
     if not height or not sex:
         return
 
-    imported = ImportedFromOccupationalLungDatabase.objects.filter(
+    imported = ImportedFromPeakFlowDatabase.objects.filter(
         episode=episode, trial_number=trial_num
     ).first()
 
@@ -442,7 +442,7 @@ class DiagnosisRhinitis(models.EpisodeSubrecord):
     )
 
 
-class ImportedFromOccupationalLungDatabase(models.EpisodeSubrecord):
+class ImportedFromPeakFlowDatabase(models.EpisodeSubrecord):
     """
     The occupational lung database was the database before
     Indigo that was used to store peak flows
@@ -453,6 +453,6 @@ class ImportedFromOccupationalLungDatabase(models.EpisodeSubrecord):
 
 class PatientSource(fields.Model):
     patient = fields.OneToOneField(models.Patient, on_delete=fields.CASCADE)
-    occupational_lung_database = fields.BooleanField(
+    peak_flow_database = fields.BooleanField(
         default=False, blank=True
     )
