@@ -39,22 +39,34 @@ def calculate_peak_expiratory_flow(height, age, sex):
     return round(math.exp(PEF))
 
 
+def get_peak_expiratory_flow(date, episode, trial_num):
+    demographics = episode.patient.demographics()
+    height = demographics.height
+    sex = demographics.sex
+    age = demographics.get_age(date)
+
+    if height and sex and age:
+        return calculate_peak_expiratory_flow(height, age, sex)
+
+    if not height or not sex:
+        return
+
+    imported = ImportedFromOccupationalLungDatabase.objects.filter(
+        episode=episode, trial_number=trial_num
+    ).first()
+
+    if imported and imported.age:
+        return calculate_peak_expiratory_flow(
+            height, imported.age, sex
+        )
+
+
 class Demographics(models.Demographics):
     height = fields.IntegerField(
         blank=True, null=True, verbose_name='Height(cm)'
     )
     MALE = "Male"
     FEMALE = "Female"
-
-    def get_pef(self, date):
-        if not date:
-            return
-        age = self.get_age(date)
-        height = self.height
-        sex = self.sex
-        if age and height and sex:
-            if sex in [self.MALE, self.FEMALE]:
-                return calculate_peak_expiratory_flow(height, age, sex)
 
     def get_age(self, date=None):
         if date is None:

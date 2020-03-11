@@ -347,7 +347,8 @@ class PeakFlowGraphDataTestCase(OpalTestCase):
             flow_1300=700
         )
         result = self.api.trial_data(
-            self.patient.demographics_set.get(),
+            self.episode,
+            "1",
             self.episode.peakflowday_set.all()
         )
         expected = {

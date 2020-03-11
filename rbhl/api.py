@@ -6,7 +6,7 @@ import itertools
 from decimal import Decimal
 from opal.core.views import json_response
 from opal.core.api import LoginRequiredViewset, episode_from_pk
-from rbhl.models import Demographics
+from rbhl import models
 from opal.core.api import OPALRouter
 
 
@@ -131,9 +131,11 @@ class PeakFlowGraphData(LoginRequiredViewset):
     def get_notes(self, peak_flow_days):
         return peak_flow_days[0].note
 
-    def trial_data(self, demographics, peak_flow_days):
+    def trial_data(self, episode, trial_num, peak_flow_days):
         if peak_flow_days:
-            pef = demographics.get_pef(peak_flow_days[0].date)
+            pef = models.get_peak_expiratory_flow(
+                peak_flow_days[0].date, episode, trial_num
+            )
             days = [self.day_to_dict(i, pef) for i in peak_flow_days]
         return {
             "days": days,
@@ -147,17 +149,13 @@ class PeakFlowGraphData(LoginRequiredViewset):
 
     @episode_from_pk
     def retrieve(self, request, episode):
-        demographics = Demographics.objects.get(
-            patient__episode=episode
-        )
-
         groups = itertools.groupby(
             episode.peakflowday_set.order_by("trial_num", "day_num"),
             key=lambda x: x.trial_num
         )
         result = {
-            k: self.trial_data(demographics, list(group))
-            for k, group in groups
+            trial_num: self.trial_data(episode, trial_num, list(group))
+            for trial_num, group in groups
         }
         return json_response(result)
 
