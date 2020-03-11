@@ -12,7 +12,7 @@ import datetime
 
 
 from opal.models import Patient
-from rbhl.models import PeakFlowDay, ImportedFromPreviousDatabase
+from rbhl.models import PeakFlowDay, ImportedFromOccupationalLungDatabase
 from legacy.models import PeakFlowIdentifier
 
 
@@ -149,10 +149,10 @@ class Command(BaseCommand):
         )
 
         # deleting all patients that have information
-        # imported from the peak flow database but
+        # imported from the occupational lung database but
         # no clinic logs beside them.
         created_patients = Patient.objects.filter(
-            episode__importedfrompreviousdatabase__isnull=False
+            episode__importedfromoccupationallungdatabase__isnull=False
         )
         created_patients = created_patients.filter(
             episode__cliniclog=None
@@ -162,7 +162,7 @@ class Command(BaseCommand):
         )
         created_patients.delete()
 
-        imported_records = ImportedFromPreviousDatabase.objects.all()
+        imported_records = ImportedFromOccupationalLungDatabase.objects.all()
         imported_records = imported_records.select_related('episode')
 
         print('Delete all imported records created by the importer')
@@ -286,7 +286,7 @@ class Command(BaseCommand):
 
                 if not patient.demographics().date_of_birth:
                     age = identifier[0].age
-                    ImportedFromPreviousDatabase.objects.get_or_create(
+                    ImportedFromOccupationalLungDatabase.objects.get_or_create(
                         episode=episode,
                         trial_number=trial_num,
                         age=age

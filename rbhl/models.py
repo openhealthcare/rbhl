@@ -430,6 +430,10 @@ class DiagnosisRhinitis(models.EpisodeSubrecord):
     )
 
 
-class ImportedFromPreviousDatabase(models.EpisodeSubrecord):
+class ImportedFromOccupationalLungDatabase(models.EpisodeSubrecord):
+    """
+    The occupational lung database was the database before
+    Indigo that was used to store peak flows
+    """
     age = fields.IntegerField(blank=True, null=True)
     trial_number = fields.IntegerField(blank=True, null=True)
