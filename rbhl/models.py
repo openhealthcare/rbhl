@@ -233,6 +233,10 @@ class ClinicLog(models.EpisodeSubrecord):
         verbose_name="Work samples"
     )
 
+    outstanding_tests_required = fields.BooleanField(
+        default=False
+    )
+
     active              = fields.NullBooleanField()
 
     class Meta:
