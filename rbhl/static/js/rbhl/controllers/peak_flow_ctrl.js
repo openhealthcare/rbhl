@@ -13,9 +13,9 @@ angular
     // highlights notes when you mouse over
     $scope.highlights = {}
 
-    $scope.isOccLunDBPeakFlow = function(trial_num){
+    $scope.isFromPeakFlowDB = function(trial_num){
       var trialNum = parseInt(trial_num);
-      var result = _.findWhere($scope.episode.imported_from_occupational_lung_database, {
+      var result = _.findWhere($scope.episode.imported_from_peak_flow_database, {
         trial_number: trialNum
       });
       return result;

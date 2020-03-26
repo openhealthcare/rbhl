@@ -14,12 +14,12 @@
       </div>
     </div>
     <div ng-repeat="trialNum in trialNums" ng-show="graphDataByPeakFlowNum[trialNum].days.length > 3">
-      <div ng-show="isOccLunDBPeakFlow(trialNum)">
-      {% if permissions.CAN_SEE_OCC_LUNG_PEAK_FLOW %}
+      <div ng-show="isFromPeakFlowDB(trialNum)">
+      {% if permissions.CAN_SEE_TRIALS_FROM_PEAK_FLOW_DB %}
         {% include "partials/peak_flow_graph.html" %}
       {% endif %}
       </div>
-      <div ng-show="!isOccLunDBPeakFlow(trialNum)">
+      <div ng-show="!isFromPeakFlowDB(trialNum)">
         {% include "partials/peak_flow_graph.html" %}
       </div>
     </div>

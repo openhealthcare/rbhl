@@ -8,14 +8,14 @@ def forwards(apps, schema_editor):
     Role = apps.get_model(
         'opal', 'Role'
     )
-    Role.objects.create(name=constants.CAN_SEE_OCC_LUNG_PEAK_FLOW)
+    Role.objects.create(name=constants.CAN_SEE_TRIALS_FROM_PEAK_FLOW_DB)
 
 
 def backwards(apps, schema_editor):
     Role = apps.get_model(
         'opal', 'Role'
     )
-    Role.objects.filter(name=constants.CAN_SEE_OCC_LUNG_PEAK_FLOW).delete()
+    Role.objects.filter(name=constants.CAN_SEE_TRIALS_FROM_PEAK_FLOW_DB).delete()
 
 
 class Migration(migrations.Migration):
