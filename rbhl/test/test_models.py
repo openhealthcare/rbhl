@@ -64,7 +64,7 @@ class GetPeakExpiratoryFlowTestCase(OpalTestCase):
         self.demographics.sex = "Male"
         self.demographics.height = 180
         self.demographics.save()
-        self.episode.importedfromoccupationallungdatabase_set.create(
+        self.episode.importedfrompeakflowdatabase_set.create(
             age="29", trial_number="1"
         )
         expected = models.get_peak_expiratory_flow(
