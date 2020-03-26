@@ -25,6 +25,17 @@ DELETED = "DELETED"
 
 TO_IGNORE = [1955, 2123, 860, 926, 2041]
 
+REMAP = {
+    # All entries on 61 should be put on patient 517 with trial id 3
+    (61, 1,): (517, 3,),
+    (874, 1,): (886, 1,),
+    (874, 2,): (886, 2,),
+    (886, 1,): (886, 3,),
+}
+
+# we should not create patients for the below
+REMAPPED = [61, 874]
+
 DRUG_LOOKUP = {
     0: None,
     1: "Beta 2 Only",
@@ -45,6 +56,15 @@ class Command(BaseCommand):
             help="Specify import directory",
         )
 
+    def remap_patient_trial(self, occmedno, trial_num):
+        # If the person is duplicated returns
+        # the new occmedno/trial num for the
+        # patient.
+        if (occmedno, trial_num,) in REMAP:
+            return REMAP[(occmedno, trial_num,)]
+        else:
+            return (occmedno, trial_num,)
+
     def get_start_date_map(self, dir_name):
         result = {}
         file_name = os.path.join(dir_name, TRIAL_START_DAY)
@@ -53,6 +73,7 @@ class Command(BaseCommand):
             for row in reader:
                 occmedno = int(row["OCCMEDNO"])
                 trial_num = int(row["TRIAL_NUM"])
+                occmedno, trial_num = self.remap_patient_trial(occmedno, trial_num)
                 key = (occmedno, trial_num)
 
                 # these patients have duplicate trials
@@ -181,6 +202,7 @@ class Command(BaseCommand):
                 trial_num=imported.trial_number
             ).delete()
             print('deleting {} {}'.format(imported.episode_id, imported.trial_number))
+
         imported_records.delete()
 
         Patient.objects.filter(
@@ -205,7 +227,19 @@ class Command(BaseCommand):
                     self.no_hosp_num += 1
                     continue
 
-                matcher = Matcher(row)
+                # this hospital number needs to be repointed to the other
+                if row["CRN"] == "Y83781":
+                    hospital_number = "K03096"
+                else:
+                    hospital_number = row["CRN"]
+
+                # Some patients were duplicate, we repoint these
+                # we don't need to make patients connected to their
+                # old CRNs
+                if int(row["OCCMEDNO"]) in REMAPPED:
+                    continue
+
+                matcher = Matcher({"CRN": hospital_number})
                 patient, created = matcher.match_or_create()
                 demographics = patient.demographics()
 
@@ -213,10 +247,6 @@ class Command(BaseCommand):
                     first_name, surname = row["PAT_NAME"].rsplit(" ", 1)
                     demographics.first_name = first_name
                     demographics.surname = surname
-
-                    # this patient exists with a different hospital number
-                    if row["CRN"] == "Y83781":
-                        demographics.hospital_number = "K03096"
                     demographics.save()
                     patient.create_episode()
                     PatientSource.objects.create(
@@ -268,8 +298,13 @@ class Command(BaseCommand):
             reader = csv.DictReader(f)
 
             for row in reader:
+                trial_num = int(row["TRIAL_NUM"])
+                occmedno = int(row["OCCMEDNO"])
+                day_num = int(row["DAY_NUM"])
+                occmedno, trial_num = self.remap_patient_trial(occmedno, trial_num)
+
                 identifier = PeakFlowIdentifier.objects.filter(
-                    occmendo=int(row["OCCMEDNO"])
+                    occmendo=occmedno
                 )
                 identifier_count = identifier.count()
                 if identifier_count > 1:
@@ -279,9 +314,6 @@ class Command(BaseCommand):
                     print('Missed identifier - skipping')
                     continue
 
-                trial_num = int(row["TRIAL_NUM"])
-                occmedno = int(row["OCCMEDNO"])
-                day_num = int(row["DAY_NUM"])
                 # we don't expect duplicates of occmedno, trial_num, day_num
                 key = (occmedno, trial_num, day_num,)
                 if key in expected_unique:
@@ -330,7 +362,7 @@ class Command(BaseCommand):
 
                 day.day_num    = day_num
                 day.date = start_date + datetime.timedelta(day.day_num - 1)
-                day.trial_num  = int(row["TRIAL_NUM"])
+                day.trial_num  = trial_num
                 day.treatment_taken = DRUG_LOOKUP[int(row["DRUG_CODE"])]
                 work_start = bool(int(row["WORK_START"]))
                 work_end = bool(int(row["WORK_FINISH"]))
