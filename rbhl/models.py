@@ -3,7 +3,7 @@ rbhl models.
 """
 import datetime
 import math
-from django.db.models import fields
+from django.db import models as fields
 from decimal import Decimal
 
 from opal import models
@@ -39,22 +39,34 @@ def calculate_peak_expiratory_flow(height, age, sex):
     return round(math.exp(PEF))
 
 
+def get_peak_expiratory_flow(date, episode, trial_num):
+    demographics = episode.patient.demographics()
+    height = demographics.height
+    sex = demographics.sex
+    age = demographics.get_age(date)
+
+    if height and sex and age:
+        return calculate_peak_expiratory_flow(height, age, sex)
+
+    if not height or not sex:
+        return
+
+    imported = ImportedFromPeakFlowDatabase.objects.filter(
+        episode=episode, trial_number=trial_num
+    ).first()
+
+    if imported and imported.age:
+        return calculate_peak_expiratory_flow(
+            height, imported.age, sex
+        )
+
+
 class Demographics(models.Demographics):
     height = fields.IntegerField(
         blank=True, null=True, verbose_name='Height(cm)'
     )
     MALE = "Male"
     FEMALE = "Female"
-
-    def get_pef(self, date):
-        if not date:
-            return
-        age = self.get_age(date)
-        height = self.height
-        sex = self.sex
-        if age and height and sex:
-            if sex in [self.MALE, self.FEMALE]:
-                return calculate_peak_expiratory_flow(height, age, sex)
 
     def get_age(self, date=None):
         if date is None:
@@ -341,6 +353,9 @@ class PeakFlowDay(models.EpisodeSubrecord):
         blank=True, null=True, verbose_name="23:00"
     )
 
+    class Meta:
+        unique_together = [['day_num', 'trial_num', 'episode']]
+
     def get_flow_values(self):
         db_fields = self._meta.get_fields()
         fields = [
@@ -428,4 +443,20 @@ class DiagnosisRhinitis(models.EpisodeSubrecord):
     non_occupational_rhinitis = fields.CharField(
         max_length=200, blank=True, null=True,
         choices=YN
+    )
+
+
+class ImportedFromPeakFlowDatabase(models.EpisodeSubrecord):
+    """
+    The occupational lung database was the database before
+    Indigo that was used to store peak flows
+    """
+    age = fields.IntegerField(blank=True, null=True)
+    trial_number = fields.IntegerField(blank=True, null=True)
+
+
+class PatientSource(fields.Model):
+    patient = fields.OneToOneField(models.Patient, on_delete=fields.CASCADE)
+    peak_flow_database = fields.BooleanField(
+        default=False, blank=True
     )

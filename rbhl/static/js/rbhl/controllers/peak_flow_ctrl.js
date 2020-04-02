@@ -13,6 +13,14 @@ angular
     // highlights notes when you mouse over
     $scope.highlights = {}
 
+    $scope.isFromPeakFlowDB = function(trial_num){
+      var trialNum = parseInt(trial_num);
+      var result = _.findWhere($scope.episode.imported_from_peak_flow_database, {
+        trial_number: trialNum
+      });
+      return result;
+    }
+
     var loadData = function(){
       PeakFlowGraphDataLoader.load($scope.episode.id).then(function(data){
         $scope.graphDataByPeakFlowNum = data

@@ -165,3 +165,4 @@ Peak Flow DB
 
 class PeakFlowIdentifier(PatientSubrecord):
     occmendo = models.IntegerField(blank=True, null=True)
+    age = models.IntegerField(blank=True, null=True)
