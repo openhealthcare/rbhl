@@ -144,8 +144,24 @@ class PeakFlowGraphData(LoginRequiredViewset):
             "treatments": self.get_treatments(days),
             "overrall_mean": self.get_overrall_mean(peak_flow_days),
             "pef_mean": pef,
-            "notes": self.get_notes(peak_flow_days)
+            "notes": self.get_notes(peak_flow_days),
         }
+
+    def get_order(self, by_trial):
+        """
+        In some of the import data trial number is not
+        correlated to trial start date.
+
+        This will return a list of trial numbers as ordered by start date.
+        """
+        trial_num_and_min_date = []
+        for trial_num, trial_data in by_trial.items():
+            trial_num_and_min_date.append({
+                "trial_num": trial_num,
+                "start_date": min([i["date"] for i in trial_data["days"]])
+            })
+        sorted_by_date = sorted(trial_num_and_min_date, key=lambda x: x["start_date"])
+        return [i["trial_num"] for i in sorted_by_date]
 
     @episode_from_pk
     def retrieve(self, request, episode):
@@ -153,11 +169,14 @@ class PeakFlowGraphData(LoginRequiredViewset):
             episode.peakflowday_set.order_by("trial_num", "day_num"),
             key=lambda x: x.trial_num
         )
-        result = {
+        by_trial = {
             trial_num: self.trial_data(episode, trial_num, list(group))
             for trial_num, group in groups
         }
-        return json_response(result)
+        return json_response({
+            "by_trial": by_trial,
+            "order": self.get_order(by_trial)
+        })
 
 
 indigo_router = OPALRouter()

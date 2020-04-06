@@ -385,7 +385,44 @@ class PeakFlowGraphDataTestCase(OpalTestCase):
             'pef_mean': None,
             'notes': ""
         }
+
         self.assertEqual(result, expected)
+
+    def test_by_order_when_first_is_earlier(self):
+        by_trial = {
+            "1": {
+                "days": [
+                    {'date': datetime.date(2019, 7, 2)},
+                    {'date': datetime.date(2019, 7, 3)},
+                ]
+            },
+            "2": {
+                "days": [
+                    {'date': datetime.date(2019, 8, 3)},
+                    {'date': datetime.date(2019, 8, 2)},
+                ]
+            }
+        }
+        result = self.api.get_order(by_trial)
+        self.assertEqual(result, ["1", "2"])
+
+    def test_by_order_when_second_is_earlier(self):
+        by_trial = {
+            "1": {
+                "days": [
+                    {'date': datetime.date(2019, 8, 3)},
+                    {'date': datetime.date(2019, 8, 2)},
+                ]
+            },
+            "2": {
+                "days": [
+                    {'date': datetime.date(2019, 7, 2)},
+                    {'date': datetime.date(2019, 7, 3)},
+                ]
+            }
+        }
+        result = self.api.get_order(by_trial)
+        self.assertEqual(result, ["2", "1"])
 
     def test_api(self):
         request = self.rf.get("/")
@@ -430,11 +467,11 @@ class PeakFlowGraphDataTestCase(OpalTestCase):
         # we don't want to double check that trial data
         # works but lets just make sure that
         # the data looks as we'd expect
-        self.assertEqual(len(response["1"]["days"]), 2)
-        self.assertEqual(len(response["2"]["days"]), 1)
+        self.assertEqual(len(response["by_trial"]["1"]["days"]), 2)
+        self.assertEqual(len(response["by_trial"]["2"]["days"]), 1)
         self.assertEqual(
-            response["1"]["notes"], "A note about trial 1"
+            response["by_trial"]["1"]["notes"], "A note about trial 1"
         )
         self.assertEqual(
-            response["2"]["notes"], "A note about trial 2"
+            response["by_trial"]["2"]["notes"], "A note about trial 2"
         )
