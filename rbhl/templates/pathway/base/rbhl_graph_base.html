@@ -9,7 +9,7 @@
               <h3>
                 [[ episode.demographics[0].first_name ]] [[ episode.demographics[0].surname ]]
                 <small>[[ episode.demographics[0].hospital_number ]]</small>
-                <span ng-show="trialNums.length > 1">- Peak flow trial [[ trialNum ]]</span>
+                <span ng-show="trialNums.length > 1">- Peak flow trial [[ graphDataByPeakFlowNum[trialNum].days[0].date | displayDate ]]</span>
               </h3>
             </div>
           </div>
@@ -17,12 +17,6 @@
         {# use a table so printers understand #}
         <table class="content-offset-below-25 table">
           <tr>
-            <td>
-              <strong>
-                Start:
-              </strong>
-              [[ graphDataByPeakFlowNum[trialNum].days[0].date | displayDate ]]
-            </td>
             <td>
               <strong>
                 Overall PF mean:
