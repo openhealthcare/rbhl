@@ -23,8 +23,9 @@ angular
 
     var loadData = function(){
       PeakFlowGraphDataLoader.load($scope.episode.id).then(function(data){
-        $scope.graphDataByPeakFlowNum = data
-        $scope.trialNums = Object.keys($scope.graphDataByPeakFlowNum).sort();
+        $scope.graphDataByPeakFlowNum = data.by_trial
+        $scope.trialNums = data.order;
+
         $scope.trialNums.forEach(trialNum=> {
           $scope.highlights[trialNum] = {day_num: null};
         });
