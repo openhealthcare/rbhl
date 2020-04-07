@@ -13,13 +13,13 @@
         </h3>
       </div>
     </div>
-    <div ng-repeat="trialNum in trialNums" ng-show="graphDataByPeakFlowNum[trialNum].days.length > 3">
-      <div ng-show="isFromPeakFlowDB(trialNum)">
+    <div ng-repeat="peakFlowTrial in graphData" ng-show="peakFlowTrial.days.length > 3">
+      <div ng-show="isFromPeakFlowDB(peakFlowTrial.trialNum)">
       {% if permissions.CAN_SEE_TRIALS_FROM_PEAK_FLOW_DB %}
         {% include "partials/peak_flow_graph.html" %}
       {% endif %}
       </div>
-      <div ng-show="!isFromPeakFlowDB(trialNum)">
+      <div ng-show="!isFromPeakFlowDB(peakFlowTrial.trialNum)">
         {% include "partials/peak_flow_graph.html" %}
       </div>
     </div>

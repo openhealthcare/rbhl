@@ -63,6 +63,17 @@ class PeakFlowGraphDataTestCase(OpalTestCase):
     def setUp(self, *args, **kwargs):
         self.api = PeakFlowGraphData()
         self.patient, self.episode = self.new_patient_and_episode_please()
+        request = self.rf.get("/")
+        self.url = reverse(
+            'peak_flow_graph_data-detail',
+            kwargs=dict(pk=self.episode.id),
+            request=request
+        )
+        self.assertTrue(
+            self.client.login(
+                username=self.user.username, password=self.PASSWORD
+            )
+        )
 
     def test_get_treatments(self):
         pfd = [
@@ -348,7 +359,7 @@ class PeakFlowGraphDataTestCase(OpalTestCase):
         )
         result = self.api.trial_data(
             self.episode,
-            "1",
+            1,
             self.episode.peakflowday_set.all()
         )
         expected = {
@@ -383,59 +394,14 @@ class PeakFlowGraphDataTestCase(OpalTestCase):
             'treatments': {},
             'overrall_mean': 614,
             'pef_mean': None,
-            'notes': ""
+            'notes': "",
+            'start_date': datetime.date(2019, 8, 3),
+            'trial_num': 1
         }
 
         self.assertEqual(result, expected)
 
-    def test_by_order_when_first_is_earlier(self):
-        by_trial = {
-            "1": {
-                "days": [
-                    {'date': datetime.date(2019, 7, 2)},
-                    {'date': datetime.date(2019, 7, 3)},
-                ]
-            },
-            "2": {
-                "days": [
-                    {'date': datetime.date(2019, 8, 3)},
-                    {'date': datetime.date(2019, 8, 2)},
-                ]
-            }
-        }
-        result = self.api.get_order(by_trial)
-        self.assertEqual(result, ["1", "2"])
-
-    def test_by_order_when_second_is_earlier(self):
-        by_trial = {
-            "1": {
-                "days": [
-                    {'date': datetime.date(2019, 8, 3)},
-                    {'date': datetime.date(2019, 8, 2)},
-                ]
-            },
-            "2": {
-                "days": [
-                    {'date': datetime.date(2019, 7, 2)},
-                    {'date': datetime.date(2019, 7, 3)},
-                ]
-            }
-        }
-        result = self.api.get_order(by_trial)
-        self.assertEqual(result, ["2", "1"])
-
     def test_api(self):
-        request = self.rf.get("/")
-        url = reverse(
-            'peak_flow_graph_data-detail',
-            kwargs=dict(pk=self.episode.id),
-            request=request
-        )
-        self.assertTrue(
-            self.client.login(
-                username=self.user.username, password=self.PASSWORD
-            )
-        )
         self.episode.peakflowday_set.create(
             trial_num=1,
             day_num=1,
@@ -457,21 +423,55 @@ class PeakFlowGraphDataTestCase(OpalTestCase):
         self.episode.peakflowday_set.create(
             trial_num=2,
             day_num=1,
-            date=datetime.date(2019, 8, 3),
+            date=datetime.date(2019, 9, 3),
             flow_1000=500,
             flow_1100=600,
             flow_1200=700,
             note="A note about trial 2"
         )
-        response = self.client.get(url).json()
+        response = self.client.get(self.url).json()
         # we don't want to double check that trial data
         # works but lets just make sure that
         # the data looks as we'd expect
-        self.assertEqual(len(response["by_trial"]["1"]["days"]), 2)
-        self.assertEqual(len(response["by_trial"]["2"]["days"]), 1)
-        self.assertEqual(
-            response["by_trial"]["1"]["notes"], "A note about trial 1"
+        self.assertEqual(len(response[0]["days"]), 2)
+        self.assertEqual(response[0]["trial_num"], 1)
+        self.assertEqual(response[0]["notes"], "A note about trial 1")
+
+        self.assertEqual(len(response[1]["days"]), 1)
+        self.assertEqual(response[1]["trial_num"], 2)
+        self.assertEqual(response[1]["notes"], "A note about trial 2")
+
+    def test_api_ordering(self):
+        """
+        The list we return should be ordered by trial start date
+        """
+        self.episode.peakflowday_set.create(
+            trial_num=1,
+            day_num=1,
+            date=datetime.date(2019, 10, 3),
+            flow_1000=500,
+            flow_1100=600,
+            flow_1200=700,
+            note="A note about trial 1"
         )
-        self.assertEqual(
-            response["by_trial"]["2"]["notes"], "A note about trial 2"
+        self.episode.peakflowday_set.create(
+            trial_num=1,
+            day_num=2,
+            date=datetime.date(2019, 10, 4),
+            flow_1000=500,
+            flow_1100=600,
+            flow_1200=700,
+            flow_1300=700
         )
+        self.episode.peakflowday_set.create(
+            trial_num=2,
+            day_num=1,
+            date=datetime.date(2019, 9, 3),
+            flow_1000=500,
+            flow_1100=600,
+            flow_1200=700,
+            note="A note about trial 2"
+        )
+        response = self.client.get(self.url).json()
+        self.assertEqual(response[0]["trial_num"], 2)
+        self.assertEqual(response[1]["trial_num"], 1)
