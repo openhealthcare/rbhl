@@ -1,3 +1,4 @@
+opal==0.16.2
 # cryptography is required for heroku deployment
 coverage==3.6
 dj-database-url==0.2.1
@@ -9,4 +10,3 @@ django-two-factor-auth==1.8.0
 django-formtools==2.1
 flake8==3.6.0
 boto3==1.9.178
-opal==0.16.2
