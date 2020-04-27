@@ -43,7 +43,7 @@ class Command(BaseCommand):
                 systems_presenting_compliant=row["reason_other"],
                 referral_disease=row["Referral_disease"],
                 geographical_area=row["Geographical_area"],
-                geographical_area_other=row["Geographical_area"],
+                geographical_area_other=row["Geographical_other"],
                 site_of_clinic=row["Site of Clinic"],
                 other_clinic_site=row["Other Clinic Site"],
                 clinic_status=row["Clinic_status"],
