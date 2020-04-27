@@ -1,7 +1,5 @@
 import csv
-import sys
-
-from django.core.management import BaseCommand, call_command
+from django.core.management import BaseCommand
 from django.db import transaction
 from django.utils import timezone
 
@@ -14,7 +12,6 @@ from legacy.models import (
     DiagnosticTesting,
     OtherFields,
     PatientNumber,
-    SkinPrickTest,
     SuspectOccupationalCategory,
 )
 
@@ -35,8 +32,6 @@ class Command(BaseCommand):
                 continue
 
             date_referral_received = to_date(row["Date referral written"])
-
-
 
             yield Details(
                 patient=patient,
@@ -67,6 +62,20 @@ class Command(BaseCommand):
             if patient is None:
                 continue
 
+            def get_year(some_str):
+                if some_str and len(some_str) == 2:
+                    as_int = int(some_str)
+                    if as_int < 21:
+                        return "20{}".format(some_str)
+                    else:
+                        return "19{}".format(some_str)
+                return some_str
+
+            def none_if_0(some_str):
+                if some_str == 0:
+                    return
+                return some_str
+
             yield SuspectOccupationalCategory(
                 patient=patient,
                 created=timezone.now(),
@@ -75,10 +84,10 @@ class Command(BaseCommand):
                 job_title=row["Occupation_other"],
                 exposures=row["Exposures"],
                 is_employed_in_suspect_occupation=row["Current_employment"],
-                month_started_exposure=row["Date started"],
-                year_started_exposure=row["Dates_st_Exposure_Y"],
-                month_finished_exposure=row["Date Finished"],
-                year_finished_exposure=row["Dates_f_Exposure_Y"],
+                month_started_exposure=none_if_0(row["Date started"]),
+                year_started_exposure=get_year(none_if_0(row["Dates_st_Exposure_Y"])),
+                month_finished_exposure=none_if_0(row["Date Finished"]),
+                year_finished_exposure=get_year(none_if_0(row["Dates_f_Exposure_Y"])),
             )
 
     def build_diagnostic_testing(self, patientLUT, rows):
@@ -324,4 +333,4 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(msg))
 
         # We deleted things that were singletons in the "Flush step"
-   #     call_command('create_singletons')
+        # call_command('create_singletons')
