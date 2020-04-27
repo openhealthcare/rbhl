@@ -12,6 +12,12 @@ To get started, run the following commands:
     python manage.py construct_lookup_lists
     python manage.py import_peak_flow # currently needs work
     python manage.py import_blood_book # currently needs work
+
+    # import extra data files
+    python manage.py other_details <file name>
+    python manage.py bronchial_test <file name>
+    python manage.py routine_spts <file name>
+    python manage.py skin_prick_tests
 ```
 
 
@@ -49,4 +55,3 @@ e.g.
 ```
 
 Will display the below field verbose name and value in `col-md-4` for the label and `col-md-8` respectively.
-

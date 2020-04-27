@@ -166,6 +166,9 @@ class Referral(models.EpisodeSubrecord):
     date_first_appointment = fields.DateField(
         blank=True, null=True, verbose_name="Date of first appointment offered"
     )
+    referral_type = fields.TextField(
+        blank=True, null=True, verbose_name="Type of Referral",
+    )
 
 
 class Employer(lookuplists.LookupList):
@@ -192,7 +195,7 @@ class ClinicLog(models.EpisodeSubrecord):
     _is_singleton = True
 
     seen_by           = fields.CharField(
-        blank=True, default="", max_length=100, verbose_name="Seen by"
+        null=True, blank=True, default="", max_length=100, verbose_name="Seen by"
     )
     clinic_date        = fields.DateField(blank=True, null=True)
     diagnosis_made    = fields.NullBooleanField(verbose_name="Diagnosis made")
