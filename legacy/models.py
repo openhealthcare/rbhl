@@ -192,7 +192,7 @@ class Address(PatientSubrecord):
 class Details(PatientSubrecord):
     _is_singleton = True
 
-    date_referral_received = models.DateTimeField(null=True, blank=True)
+    date_referral_received = models.DateField(null=True, blank=True)
     referral_type = models.TextField(null=True, blank=True)
     referral_reason = models.TextField(blank=True, null=True)
     fire_service_applicant = models.TextField(null=True, blank=True)
@@ -211,9 +211,8 @@ class Details(PatientSubrecord):
     smokes_per_day = models.IntegerField(null=True, blank=True)
     referring_doctor = models.TextField(null=True, blank=True)
 
-    # the doctor from the rbhl
+    # the doctor from the rbhl, UI field Seen by which Dr
     specialist_doctor = models.TextField(null=True, blank=True)
-    employer = models.TextField(null=True, blank=True)
 
 
 class SuspectOccupationalCategory(PatientSubrecord):
