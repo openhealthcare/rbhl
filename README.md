@@ -17,7 +17,7 @@ To get started, run the following commands:
     python manage.py other_details <file name>
     python manage.py bronchial_test <file name>
     python manage.py routine_spts <file name>
-    python manage.py skin_prick_tests
+    python manage.py skin_prick_tests <file name>
 ```
 
 
