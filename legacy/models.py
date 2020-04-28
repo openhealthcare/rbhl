@@ -209,6 +209,11 @@ class Details(PatientSubrecord):
     has_eczema = models.NullBooleanField(null=True, blank=True)
     is_smoker = models.TextField(null=True, blank=True)
     smokes_per_day = models.IntegerField(null=True, blank=True)
+    referring_doctor = models.TextField(null=True, blank=True)
+
+    # the doctor from the rbhl
+    specialist_doctor = models.TextField(null=True, blank=True)
+    employer = models.TextField(null=True, blank=True)
 
 
 class SuspectOccupationalCategory(PatientSubrecord):

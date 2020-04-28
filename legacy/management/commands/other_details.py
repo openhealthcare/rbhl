@@ -16,7 +16,7 @@ from legacy.models import (
     SuspectOccupationalCategory,
 )
 
-from ..utils import to_bool, to_date, to_float, to_int, to_upper
+from ..utils import to_bool, to_date, to_float, to_int
 
 
 class Command(BaseCommand):
@@ -54,6 +54,9 @@ class Command(BaseCommand):
                 has_eczema=to_bool(row["Eczema"]),
                 is_smoker=row["Smoker"],
                 smokes_per_day=to_int(row["No_cigarettes"]),
+                referring_doctor=row["Referring_doctor"],
+                specialist_doctor=row["Specialist_Dr"],
+                employer=row["Employer"]
             )
 
     def build_suspect_occupational_category(self, patientLUT, rows):
@@ -339,37 +342,37 @@ class Command(BaseCommand):
         OtherFields.objects.bulk_create(self.build_other(patientLUT, rows))
         self.report_count(OtherFields)
 
-        for row in rows:
-            patient = patientLUT.get(row["Patient_num"], None)
+        # for row in rows:
+        #     patient = patientLUT.get(row["Patient_num"], None)
 
-            if patient is None:
-                continue
+        #     if patient is None:
+        #         continue
 
-            episode = patient.episode_set.get()
+        # episode = patient.episode_set.get()
 
-            # CONVERTED FIELDS
+        # CONVERTED FIELDS
 
-            demographics = patient.demographics_set.get()
-            demographics.hospital_number = row["Hospital Number"]
-            demographics.save()
+        # demographics = patient.demographics_set.get()
+        # demographics.hospital_number = row["Hospital Number"]
+        # demographics.save()
 
-            clinic_log = episode.cliniclog_set.get()
-            clinic_log.clinic_date = to_date(row["Attendance_date"])
+        # clinic_log = episode.cliniclog_set.get()
+        # clinic_log.clinic_date = to_date(row["Attendance_date"])
 
-            seen_by = to_upper(row["Specialist_Dr"])
-            if seen_by:
-                clinic_log.seen_by = seen_by
+        # seen_by = to_upper(row["Specialist_Dr"])
+        # if seen_by:
+        #     clinic_log.seen_by = seen_by
 
-            clinic_log.save()
+        # clinic_log.save()
 
-            employment = episode.employment_set.get()
-            employment.employer = row["Employer"]
-            employment.save()
+        # employment = episode.employment_set.get()
+        # employment.employer = row["Employer"]
+        # employment.save()
 
-            referral = episode.referral_set.get()
-            if not referral.referrer_name:
-                referral.referrer_name = row["Referring_doctor"]
-                referral.save()
+        # referral = episode.referral_set.get()
+        # if not referral.referrer_name:
+        #     referral.referrer_name = row["Referring_doctor"]
+        #     referral.save()
 
         msg = "Imported {} other details rows".format(len(rows))
         self.stdout.write(self.style.SUCCESS(msg))
