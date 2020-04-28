@@ -2,6 +2,7 @@ import csv
 from django.core.management import BaseCommand
 from django.db import transaction
 from django.utils import timezone
+from opal.models import Patient
 
 from legacy.models import (
     Details,
@@ -249,7 +250,25 @@ class Command(BaseCommand):
                 ],
             )
 
+    def build_patient_number(self, rows):
+        patient_numbers = []
+        for row in rows:
+            patient = Patient.objects.filter(
+                demographics__hospital_number=row["Hospital Number"]
+            ).first()
+            if not patient:
+                msg = "failed to find {}".format(row["Hospital Number"])
+                self.stdout.write(self.style.ERROR(msg))
+            else:
+                patient_number = PatientNumber(
+                    patient=patient,
+                    value=row["Patient_num"]
+                )
+                patient_numbers.append(patient_number)
+        return patient_numbers
+
     def flush(self):
+        PatientNumber.objects.all().delete()
         Details.objects.all().delete()
         SuspectOccupationalCategory.objects.all().delete()
         DiagnosticTesting.objects.all().delete()
@@ -258,6 +277,12 @@ class Command(BaseCommand):
         DiagnosticRhinitis.objects.all().delete()
         DiagnosticOther.objects.all().delete()
         OtherFields.objects.all().delete()
+
+    def report_count(self, model):
+        msg = "Imported {} {}".format(
+            model.objects.count(), model.__name__
+        )
+        self.stdout.write(self.style.SUCCESS(msg))
 
     @transaction.atomic()
     def handle(self, *args, **options):
@@ -268,34 +293,51 @@ class Command(BaseCommand):
         with open(options["file_name"], encoding="utf-8-sig") as f:
             rows = list(csv.DictReader(f))
 
-        patient_ids = (row["Patient_num"] for row in rows)
-        patient_nums = PatientNumber.objects.filter(value__in=patient_ids)
-        patientLUT = {p.value: p.patient for p in patient_nums}
+        PatientNumber.objects.bulk_create(
+            self.build_patient_number(rows)
+        )
+        self.stdout.write(self.style.ERROR("Failed to find {} patients".format(
+            len(rows) - PatientNumber.objects.count()
+        )))
 
-        # TODO: print missing patient IDs here
+        patientLUT = {p.value: p.patient for p in PatientNumber.objects.all()}
 
         # REMAINING FIELDS
         Details.objects.bulk_create(self.build_details(patientLUT, rows))
+        self.report_count(Details)
 
         SuspectOccupationalCategory.objects.bulk_create(
             self.build_suspect_occupational_category(patientLUT, rows)
         )
+        self.report_count(SuspectOccupationalCategory)
+
         DiagnosticTesting.objects.bulk_create(
             self.build_diagnostic_testing(patientLUT, rows)
         )
+        self.report_count(DiagnosticTesting)
+
         DiagnosticOutcome.objects.bulk_create(
             self.build_diagnostic_outcome(patientLUT, rows)
         )
+        self.report_count(DiagnosticOutcome)
+
         DiagnosticAsthma.objects.bulk_create(
             self.build_diagnostic_asthma(patientLUT, rows)
         )
+        self.report_count(DiagnosticAsthma)
+
         DiagnosticRhinitis.objects.bulk_create(
             self.build_diagnostic_rhinitis(patientLUT, rows)
         )
+        self.report_count(DiagnosticRhinitis)
+
         DiagnosticOther.objects.bulk_create(
             self.build_diagnostic_other(patientLUT, rows)
         )
+        self.report_count(DiagnosticOther)
+
         OtherFields.objects.bulk_create(self.build_other(patientLUT, rows))
+        self.report_count(OtherFields)
 
         for row in rows:
             patient = patientLUT.get(row["Patient_num"], None)
