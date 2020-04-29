@@ -132,7 +132,15 @@ class ContactDetails(models.PatientSubrecord):
         verbose_name = "Contact details"
 
 
-class RBHReferrer(lookuplists.LookupList):
+class RbhReferralType(lookuplists.LookupList):
+    pass
+
+
+class ReferralReason(lookuplists.LookupList):
+    pass
+
+
+class ReferralDisease(lookuplists.LookupList):
     pass
 
 
@@ -166,12 +174,22 @@ class Referral(models.EpisodeSubrecord):
     date_first_appointment = fields.DateField(
         blank=True, null=True, verbose_name="Date of first appointment offered"
     )
-    referral_type = fields.TextField(
-        blank=True, null=True, verbose_name="Type of Referral",
+    referral_type = models.ForeignKeyOrFreeText(
+        RbhReferralType, verbose_name="Type of referral",
+    )
+    referral_reason = models.ForeignKeyOrFreeText(
+        ReferralReason, verbose_name="Reason referral",
+    )
+    referral_disease = models.ForeignKeyOrFreeText(
+        ReferralDisease, verbose_name="Referral disease",
     )
 
 
-class Employer(lookuplists.LookupList):
+class EmployerCategory(lookuplists.LookupList):
+    pass
+
+
+class JobTitle(lookuplists.LookupList):
     pass
 
 
@@ -183,11 +201,23 @@ class Employment(models.EpisodeSubrecord):
     _icon         = 'fa fa-building-o'
     _is_singleton = True
 
+    job_title = models.ForeignKeyOrFreeText(
+        JobTitle
+    )
     employer = fields.CharField(blank=True, null=True, max_length=100)
+    employment_category = models.ForeignKeyOrFreeText(
+        EmployerCategory
+    )
+    employed_in_suspect_occupation = fields.NullBooleanField()
+    exposures = fields.TextField(blank=True, default="")
     oh_provider = fields.CharField(
         blank=True, null=True, max_length=100, verbose_name="OH provider"
     )
     firefighter = fields.NullBooleanField()
+
+
+class ClinicSite(lookuplists.LookupList):
+    pass
 
 
 class ClinicLog(models.EpisodeSubrecord):
@@ -250,6 +280,9 @@ class ClinicLog(models.EpisodeSubrecord):
 
     outstanding_tests_required = fields.BooleanField(
         default=False
+    )
+    clinic_site = models.ForeignKeyOrFreeText(
+        ClinicSite
     )
 
     active              = fields.NullBooleanField()
@@ -463,3 +496,75 @@ class PatientSource(fields.Model):
     peak_flow_database = fields.BooleanField(
         default=False, blank=True
     )
+
+
+class RbhlSubrecord(fields.Model):
+    class Meta:
+        abstract = True
+
+    @classmethod
+    def _get_field_title(cls, name):
+        field = cls._get_field(name)
+        if isinstance(field, fields.ManyToOneRel):
+            field_name = field.related_model._meta.verbose_name_plural
+        else:
+            field_name = field.verbose_name
+
+        if field_name.islower():
+            field_name = field_name.capitalize()
+
+        return field_name
+
+    @classmethod
+    def get_display_name(cls):
+        if cls._meta.verbose_name.islower():
+            return cls._meta.verbose_name.capitalize()
+        return cls._meta.verbose_name
+
+
+class RbhlDiagnosticTesting(RbhlSubrecord, models.EpisodeSubrecord):
+    _is_singleton = True
+
+    ATOPIC_CHOICES = enum("Yes", "No", "Dermatographic")
+    antihistimines = fields.NullBooleanField(null=True, blank=True)
+
+    skin_prick_test = fields.NullBooleanField(null=True, blank=True)
+    atopic = fields.TextField(null=True, blank=True, choices=ATOPIC_CHOICES)
+    specific_skin_prick = fields.NullBooleanField(null=True, blank=True)
+
+    immunology_oem = fields.NullBooleanField(
+        null=True, blank=True, verbose_name="Immunology OEM"
+    )
+
+    # TODO seperate section
+    # bronchial_prov_test = models.NullBooleanField(null=True, blank=True)
+
+    fev_1 = fields.FloatField(
+        null=True, blank=True, verbose_name="FEV1"
+    )
+    fev_1_post_ventolin = fields.FloatField(
+        null=True, blank=True, verbose_name="FEV1 post Ventolin"
+    )
+    fev_1_percentage_protected = fields.IntegerField(
+        null=True, blank=True, verbose_name="FEV1 predicted %"
+    )
+    fvc = fields.FloatField(
+        null=True, blank=True, verbose_name="FVC"
+    )
+    fvc_post_ventolin = fields.FloatField(
+        null=True, blank=True, verbose_name="FVC post Ventolin"
+    )
+    fvc_percentage_protected = fields.IntegerField(
+        null=True, blank=True, verbose_name="FVC predicted %"
+    )
+    ct_chest_scan = fields.NullBooleanField(
+        null=True, blank=True, verbose_name="CT chest scan"
+    )
+    ct_chest_scan_date = fields.DateTimeField(
+        null=True, blank=True, verbose_name="CT chest scan date"
+    )
+    full_lung_function = fields.NullBooleanField(null=True, blank=True)
+    full_lung_function_date = fields.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        verbose_name = "Diagnostic testing"

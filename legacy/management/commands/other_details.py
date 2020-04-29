@@ -1,5 +1,5 @@
 import csv
-from django.core.management import BaseCommand
+from django.core.management import BaseCommand, call_command
 from django.db import transaction
 from django.utils import timezone
 from opal.models import Patient
@@ -33,6 +33,8 @@ class Command(BaseCommand):
                 continue
 
             date_referral_received = to_date(row["Date referral written"])
+            if date_referral_received:
+                date_referral_received = date_referral_received.date()
 
             yield Details(
                 patient=patient,
@@ -56,7 +58,7 @@ class Command(BaseCommand):
                 smokes_per_day=to_int(row["No_cigarettes"]),
                 referring_doctor=row["Referring_doctor"],
                 specialist_doctor=row["Specialist_Dr"],
-                employer=row["Employer"]
+
             )
 
     def build_suspect_occupational_category(self, patientLUT, rows):
@@ -84,6 +86,7 @@ class Command(BaseCommand):
                 patient=patient,
                 created=timezone.now(),
                 is_currently_employed=to_bool(row["Employed"]),
+                employer_name=row["Employer"],
                 suspect_occupational_category=row["Occupation_category"],
                 job_title=row["Occupation_other"],
                 exposures=row["Exposures"],
@@ -287,13 +290,203 @@ class Command(BaseCommand):
         )
         self.stdout.write(self.style.SUCCESS(msg))
 
-    @transaction.atomic()
-    def handle(self, *args, **options):
-        self.flush()
+    # Conversion functions that transfer legacy data to rbhl data
+    def convert_details(self, patient):
+        """
+        Maps
+        Details.date_referral_received" -> "Referral.date_referral_received
+        Details.referral_type -> Referral.referral_type
+        Details.date_referral_received -> Referral.date_referral_received
+        Details.referral_type -> Referral.referral_type
+        Details.referral_reason -> Referral.referral_reason
+        Details.fire_service_applicant -> Employment.firefighter
+        Details.systems_presenting_compliant -> Referral.comments
+        Details.referral_disease -> Referral.referral_disease
+        Details.specialist_doctor -> ClinicLog.seen_by
+        Details.referring_doctor -> Referral.referrer_name
 
+        TODO
+        Details.geographic_area
+        Details.geographic_area_other
+        Details.is_smoker
+        Details.smokes_per_day
+        """
+
+        details = patient.details_set.first()
+        clinic_log = patient.episode_set.get().cliniclog_set.get()
+
+        if not clinic_log.seen_by:
+            if details.specialist_doctor:
+                clinic_log.seen_by = details.specialist_doctor
+                clinic_log.save()
+
+        if details and details.site_of_clinic:
+            if details.site_of_clinic == "Other":
+                clinic_log.clinic_site = details.site_of_clinic
+            else:
+                clinic_log.clinic_set = details.other_clinic_site
+            clinic_log.save()
+
+        REFERRAL_FIELDS = [
+            "date_referral_received",
+            "referral_type",
+            "referral_reason",
+            "referral_disease"
+        ]
+
+        referral = patient.episode_set.get().referral_set.get()
+
+        for referral_field in REFERRAL_FIELDS:
+            if not getattr(referral, referral_field):
+                details_value = getattr(details, referral_field)
+                if details_value:
+                    setattr(referral, details_value)
+                    referral.save()
+
+        if not referral.referrer_name:
+            if details.referring_doctor:
+                referral.referrer_name = details.referring_doctor
+                referral.save()
+
+        employment = patient.episode_set.get().employment_set.get()
+        if employment.firefighter is None:
+            fsa = details.fire_service_applicant
+            if fsa:
+                fire_service_lut = {"no": False, "yes": True}
+                employment.firefighter = fire_service_lut.get(fsa.lower())
+                employment.save()
+
+    def convert_suspect_occupational_category(self, patient):
+        """
+        Maps
+
+        SuspectOccupationalCategory.job_title
+            -> Employment.job_title
+        SuspectOccupationalCategory.employer_name
+            -> Employment.employer
+        SuspectOccupationalCategory.suspect_occupational_category
+            -> Employment.employment_category
+        SuspectOccupationalCategory.is_employed_in_suspect_occupation
+            -> Employment.employed_in_suspect_occupation
+        SuspectOccupationalCategory.exposures
+            -> Employment.exposures
+        """
+        # TODO this sometimes returns multiple
+        suspect_occupational_category = patient.suspectoccupationalcategory_set.first()
+        employment = patient.episode_set.get().employment_set.get()
+        if not employment.job_title:
+            employment.job_title = suspect_occupational_category.job_title
+
+        if not employment.employment_category:
+            emp_cat = suspect_occupational_category.suspect_occupational_category
+            employment.employment_category = emp_cat
+
+        if not employment.employer:
+            emp_name = suspect_occupational_category.employer_name
+            employment.employment_category = emp_name
+
+        if employment.employed_in_suspect_occupation is None:
+            employed_lut = {
+                'Yes-employed in suspect occupation': True,
+                'Yes': True,
+                'Yes-other occupation': False,  # Only used very few times
+                'No': False,
+                '': None
+            }
+            sus = suspect_occupational_category.is_employed_in_suspect_occupation
+            employment.employed_in_suspect_occupation = employed_lut[sus]
+
+        if employment.exposures is None:
+            exposures = suspect_occupational_category.exposures
+            employment.is_employed_in_suspect_occupation = exposures
+        employment.save()
+
+    def convert_diagnostic_testing(self, patient):
+        """
+        Maps
+
+        DiagnosticTesting.height
+            -> Demographics.height
+        DiagnosticTesting.antihistimines
+            -> RbhlDiagnosticTesting.antihistimines
+        DiagnosticTesting.skin_prick_test
+            -> RbhlDiagnosticTesting.employment_category
+        DiagnosticTesting.atopic
+            -> RbhlDiagnosticTesting.atopic
+        DiagnosticTesting.specific_skin_prick
+            -> RbhlDiagnosticTesting.specific_skin_prick
+        DiagnosticTesting.serum_antibodies
+            -> RbhlDiagnosticTesting.immunology_oem
+        DiagnosticTesting.fev_1
+            -> RbhlDiagnosticTesting.fev_1
+        DiagnosticTesting.fev_1_post_ventolin
+            -> RbhlDiagnosticTesting.fev_1_post_ventolin
+        DiagnosticTesting.fev_1_percentage_protected
+            -> RbhlDiagnosticTesting.fev_1_percentage_protected
+        DiagnosticTesting.fvc
+            -> RbhlDiagnosticTesting.fvc
+        DiagnosticTesting.fvc_post_ventolin
+            -> RbhlDiagnosticTesting.fvc_post_ventolin
+        DiagnosticTesting.ct_chest_scan
+            -> RbhlDiagnosticTesting.ct_chest_scan
+        DiagnosticTesting.ct_chest_scan_date
+            -> RbhlDiagnosticTesting.ct_chest_scan_date
+        DiagnosticTesting.full_lung_function
+            -> RbhlDiagnosticTesting.full_lung_function
+        DiagnosticTesting.full_lung_function_date
+            -> RbhlDiagnosticTesting.full_lung_function_date
+        """
+        # TODO this sometimes returns multiple
+        legacy_diagnostic_testing = patient.diagnostictesting_set.first()
+        diagnosistic_testing = patient.episode_set.get().rbhldiagnostictesting_set.get()
+
+        if patient.demographics_set.filter(height=None).exists():
+            if legacy_diagnostic_testing.height:
+                patient.demographics_set.update(
+                    height=legacy_diagnostic_testing.height
+                )
+
+        FIELDS = [
+            "antihistimines",
+            "skin_prick_test",
+            "atopic",
+            "specific_skin_prick",
+            "fev_1",
+            "fev_1_post_ventolin",
+            "fev_1_percentage_protected",
+            "fvc",
+            "fvc_post_ventolin",
+            "fvc_percentage_protected",
+            "ct_chest_scan",
+            "ct_chest_scan_date",
+            "full_lung_function",
+            "full_lung_function_date"
+        ]
+
+        for field in FIELDS:
+            legacy_value = getattr(legacy_diagnostic_testing, field)
+            setattr(diagnosistic_testing, field, legacy_value)
+        diagnosistic_testing.immunology_oem = legacy_diagnostic_testing.serum_antibodies
+        diagnosistic_testing.save()
+
+    @transaction.atomic()
+    def transfer_to_rbhl(self):
+        total = 0
+        for patient in Patient.objects.filter(
+            id__in=set(Details.objects.values_list("patient_id", flat=True))
+        ):
+            self.convert_details(patient)
+            self.convert_suspect_occupational_category(patient)
+            self.convert_diagnostic_testing(patient)
+            total += 1
+        self.stdout.write(self.style.SUCCESS("Mapped {}".format(total)))
+
+    @transaction.atomic()
+    def create_legacy(self, file_name):
         # Open with utf-8-sig encoding to avoid having a BOM in the first
         # header string.
-        with open(options["file_name"], encoding="utf-8-sig") as f:
+        self.flush()
+        with open(file_name, encoding="utf-8-sig") as f:
             rows = list(csv.DictReader(f))
 
         PatientNumber.objects.bulk_create(
@@ -305,7 +498,6 @@ class Command(BaseCommand):
 
         patientLUT = {p.value: p.patient for p in PatientNumber.objects.all()}
 
-        # REMAINING FIELDS
         Details.objects.bulk_create(self.build_details(patientLUT, rows))
         self.report_count(Details)
 
@@ -342,40 +534,12 @@ class Command(BaseCommand):
         OtherFields.objects.bulk_create(self.build_other(patientLUT, rows))
         self.report_count(OtherFields)
 
-        # for row in rows:
-        #     patient = patientLUT.get(row["Patient_num"], None)
-
-        #     if patient is None:
-        #         continue
-
-        # episode = patient.episode_set.get()
-
-        # CONVERTED FIELDS
-
-        # demographics = patient.demographics_set.get()
-        # demographics.hospital_number = row["Hospital Number"]
-        # demographics.save()
-
-        # clinic_log = episode.cliniclog_set.get()
-        # clinic_log.clinic_date = to_date(row["Attendance_date"])
-
-        # seen_by = to_upper(row["Specialist_Dr"])
-        # if seen_by:
-        #     clinic_log.seen_by = seen_by
-
-        # clinic_log.save()
-
-        # employment = episode.employment_set.get()
-        # employment.employer = row["Employer"]
-        # employment.save()
-
-        # referral = episode.referral_set.get()
-        # if not referral.referrer_name:
-        #     referral.referrer_name = row["Referring_doctor"]
-        #     referral.save()
-
         msg = "Imported {} other details rows".format(len(rows))
         self.stdout.write(self.style.SUCCESS(msg))
 
+    def handle(self, *args, **options):
+        self.create_legacy(options["file_name"])
+        self.transfer_to_rbhl()
+
         # We deleted things that were singletons in the "Flush step"
-        # call_command('create_singletons')
+        call_command('create_singletons')
