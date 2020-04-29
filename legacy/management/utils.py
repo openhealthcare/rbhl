@@ -4,7 +4,12 @@ from django.utils import timezone
 
 
 def to_bool(s):
+    if s.lower() in ["unknown", "not applicable", "0"]:
+        return
+
     boolLUT = {"no": False, "yes": True}
+    if s and s.lower() not in boolLUT:
+        print("Unable to find a boolean for {}".format(s))
     return boolLUT.get(s.lower(), None)
 
 
