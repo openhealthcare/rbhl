@@ -190,8 +190,6 @@ class Address(PatientSubrecord):
 
 
 class Details(PatientSubrecord):
-    _is_singleton = True
-
     date_referral_received = models.DateField(null=True, blank=True)
     referral_type = models.TextField(null=True, blank=True)
     referral_reason = models.TextField(blank=True, null=True)
@@ -216,8 +214,6 @@ class Details(PatientSubrecord):
 
 
 class SuspectOccupationalCategory(PatientSubrecord):
-    _is_singleton = True
-
     # UI Field: Currently Employed?
     is_currently_employed = models.NullBooleanField(null=True, blank=True)
     # UI Field: Suspect occupation Category
@@ -241,8 +237,6 @@ class SuspectOccupationalCategory(PatientSubrecord):
 
 
 class DiagnosticTesting(PatientSubrecord):
-    _is_singleton = True
-
     # UI Field: Antihistimines
     antihistimines = models.NullBooleanField(null=True, blank=True)
     # UI Field: SkinPrick test
