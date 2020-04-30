@@ -61,6 +61,30 @@ def get_peak_expiratory_flow(date, episode, trial_num):
         )
 
 
+class RbhlSubrecord(fields.Model):
+    class Meta:
+        abstract = True
+
+    @classmethod
+    def _get_field_title(cls, name):
+        field = cls._get_field(name)
+        if isinstance(field, fields.ManyToOneRel):
+            field_name = field.related_model._meta.verbose_name_plural
+        else:
+            field_name = field.verbose_name
+
+        if field_name.islower():
+            field_name = field_name.capitalize()
+
+        return field_name
+
+    @classmethod
+    def get_display_name(cls):
+        if cls._meta.verbose_name.islower():
+            return cls._meta.verbose_name.capitalize()
+        return cls._meta.verbose_name
+
+
 class Demographics(models.Demographics):
     height = fields.IntegerField(
         blank=True, null=True, verbose_name='Height(cm)'
@@ -149,7 +173,7 @@ class GeographicArea(lookuplists.LookupList):
     pass
 
 
-class Referral(models.EpisodeSubrecord):
+class Referral(RbhlSubrecord, models.EpisodeSubrecord):
     _icon         = 'fa fa-level-up'
     _is_singleton = True
 
@@ -191,7 +215,7 @@ class Referral(models.EpisodeSubrecord):
     geographic_area = models.ForeignKeyOrFreeText(GeographicArea)
 
 
-class SocialHistory(models.PatientSubrecord):
+class SocialHistory(RbhlSubrecord, models.PatientSubrecord):
     _is_singleton = True
     SMOKING_CHOICES = enum("Currently", "Ex-smoker", "Never")
     smoker = fields.CharField(
@@ -216,7 +240,7 @@ class JobTitle(lookuplists.LookupList):
     pass
 
 
-class Employment(models.EpisodeSubrecord):
+class Employment(RbhlSubrecord, models.EpisodeSubrecord):
     _icon         = 'fa fa-building-o'
     _is_singleton = True
 
@@ -232,7 +256,7 @@ class Employment(models.EpisodeSubrecord):
     firefighter = fields.NullBooleanField()
 
 
-class ClinicLog(models.EpisodeSubrecord):
+class ClinicLog(RbhlSubrecord, models.EpisodeSubrecord):
     _icon         = 'fa fa-hospital-o'
     _is_singleton = True
 
