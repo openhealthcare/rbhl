@@ -16,7 +16,7 @@ from legacy.models import (
     SuspectOccupationalCategory,
 )
 
-from ..utils import to_bool, to_date, to_float, to_int, to_upper
+from ..utils import to_bool, to_date, to_float, to_int
 
 
 class Command(BaseCommand):
@@ -266,12 +266,8 @@ class Command(BaseCommand):
         OtherFields.objects.all().delete()
 
     @transaction.atomic()
-    def handle(self, *args, **options):
-        self.flush()
-
-        # Open with utf-8-sig encoding to avoid having a BOM in the first
-        # header string.
-        with open(options["file_name"], encoding="utf-8-sig") as f:
+    def create_legacy(self, file_name):
+        with open(file_name, encoding="utf-8-sig") as f:
             rows = list(csv.DictReader(f))
 
         patient_ids = (row["Patient_num"] for row in rows)
@@ -308,35 +304,14 @@ class Command(BaseCommand):
 
             if patient is None:
                 continue
-
-            episode = patient.episode_set.get()
-
             # CONVERTED FIELDS
 
             demographics = patient.demographics_set.get()
             demographics.hospital_number = row["Hospital Number"]
             demographics.save()
 
-            clinic_log = episode.cliniclog_set.get()
-            clinic_log.clinic_date = to_date(row["Attendance_date"])
-
-            seen_by = to_upper(row["Specialist_Dr"])
-            if seen_by:
-                clinic_log.seen_by = seen_by
-
-            clinic_log.save()
-
-            employment = episode.employment_set.get()
-            employment.employer = row["Employer"]
-            employment.save()
-
-            referral = episode.referral_set.get()
-            if not referral.referrer_name:
-                referral.referrer_name = row["Referring_doctor"]
-                referral.save()
-
         msg = "Imported {} other details rows".format(len(rows))
         self.stdout.write(self.style.SUCCESS(msg))
 
-        # We deleted things that were singletons in the "Flush step"
-        # call_command('create_singletons')
+    def handle(self, *args, **options):
+        self.create_legacy(options["file_name"])
