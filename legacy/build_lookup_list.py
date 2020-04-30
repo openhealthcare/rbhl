@@ -3,7 +3,7 @@ from django.db.models import Count
 from opal.core.fields import ForeignKeyOrFreeText
 
 
-THRESHOLD = 5
+THRESHOLD = 10
 
 
 def get_distinct_count(case_sensitive_count):
