@@ -193,6 +193,10 @@ class JobTitle(lookuplists.LookupList):
     pass
 
 
+class Employer(lookuplists.LookupList):
+    pass
+
+
 class OHProvider(lookuplists.LookupList):
     pass
 
