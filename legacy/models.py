@@ -192,7 +192,7 @@ class Address(PatientSubrecord):
 class Details(PatientSubrecord):
     _is_singleton = True
 
-    date_referral_received = models.DateTimeField(null=True, blank=True)
+    date_referral_received = models.DateField(null=True, blank=True)
     referral_type = models.TextField(null=True, blank=True)
     referral_reason = models.TextField(blank=True, null=True)
     fire_service_applicant = models.TextField(null=True, blank=True)
@@ -209,11 +209,15 @@ class Details(PatientSubrecord):
     has_eczema = models.NullBooleanField(null=True, blank=True)
     is_smoker = models.TextField(null=True, blank=True)
     smokes_per_day = models.IntegerField(null=True, blank=True)
+    referring_doctor = models.TextField(null=True, blank=True)
+    specialist_doctor = models.TextField(null=True, blank=True)
 
 
 class SuspectOccupationalCategory(PatientSubrecord):
     _is_singleton = True
 
+    # UI Field: Employer
+    employer = models.TextField(null=True, blank=True)
     # UI Field: Currently Employed?
     is_currently_employed = models.NullBooleanField(null=True, blank=True)
     # UI Field: Suspect occupation Category

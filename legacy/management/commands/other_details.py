@@ -1,7 +1,6 @@
 import csv
-import sys
 
-from django.core.management import BaseCommand, call_command
+from django.core.management import BaseCommand
 from django.db import transaction
 from django.utils import timezone
 
@@ -14,7 +13,6 @@ from legacy.models import (
     DiagnosticTesting,
     OtherFields,
     PatientNumber,
-    SkinPrickTest,
     SuspectOccupationalCategory,
 )
 
@@ -35,8 +33,8 @@ class Command(BaseCommand):
                 continue
 
             date_referral_received = to_date(row["Date referral written"])
-
-
+            if date_referral_received:
+                date_referral_received = date_referral_received.date()
 
             yield Details(
                 patient=patient,
@@ -48,7 +46,7 @@ class Command(BaseCommand):
                 systems_presenting_compliant=row["reason_other"],
                 referral_disease=row["Referral_disease"],
                 geographical_area=row["Geographical_area"],
-                geographical_area_other=row["Geographical_area"],
+                geographical_area_other=row["Geographical_other"],
                 site_of_clinic=row["Site of Clinic"],
                 other_clinic_site=row["Other Clinic Site"],
                 clinic_status=row["Clinic_status"],
@@ -58,6 +56,8 @@ class Command(BaseCommand):
                 has_eczema=to_bool(row["Eczema"]),
                 is_smoker=row["Smoker"],
                 smokes_per_day=to_int(row["No_cigarettes"]),
+                referring_doctor=row["Referring_doctor"],
+                specialist_doctor=row["Specialist_Dr"],
             )
 
     def build_suspect_occupational_category(self, patientLUT, rows):
@@ -67,6 +67,20 @@ class Command(BaseCommand):
             if patient is None:
                 continue
 
+            def get_year(some_str):
+                if some_str and len(some_str) == 2:
+                    as_int = int(some_str)
+                    if as_int < 21:
+                        return "20{}".format(some_str)
+                    else:
+                        return "19{}".format(some_str)
+                return some_str
+
+            def none_if_0(some_str):
+                if some_str == 0:
+                    return
+                return some_str
+
             yield SuspectOccupationalCategory(
                 patient=patient,
                 created=timezone.now(),
@@ -74,6 +88,7 @@ class Command(BaseCommand):
                 suspect_occupational_category=row["Occupation_category"],
                 job_title=row["Occupation_other"],
                 exposures=row["Exposures"],
+                employer=row["Employer"],
                 is_employed_in_suspect_occupation=row["Current_employment"],
                 month_started_exposure=row["Date started"],
                 year_started_exposure=row["Dates_st_Exposure_Y"],
@@ -324,4 +339,4 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(msg))
 
         # We deleted things that were singletons in the "Flush step"
-   #     call_command('create_singletons')
+        # call_command('create_singletons')
