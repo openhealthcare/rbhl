@@ -127,12 +127,25 @@ class ContactDetails(models.PatientSubrecord):
     mobile = fields.CharField(blank=True, null=True, max_length=100)
     phone  = fields.CharField(blank=True, null=True, max_length=100)
     email  = fields.CharField(blank=True, null=True, max_length=100)
+    address = fields.TextField(blank=True, default="")
 
     class Meta:
         verbose_name = "Contact details"
 
 
 class RBHReferrer(lookuplists.LookupList):
+    pass
+
+
+class ReferralReason(lookuplists.LookupList):
+    pass
+
+
+class ReferralDisease(lookuplists.LookupList):
+    pass
+
+
+class GeographicArea(lookuplists.LookupList):
     pass
 
 
@@ -169,6 +182,22 @@ class Referral(models.EpisodeSubrecord):
     referral_type = fields.TextField(
         blank=True, null=True, verbose_name="Type of Referral",
     )
+    referral_reason = models.ForeignKeyOrFreeText(
+        ReferralReason, verbose_name="Reason referral",
+    )
+    referral_disease = models.ForeignKeyOrFreeText(
+        ReferralDisease, verbose_name="Referral disease",
+    )
+    geographic_area = models.ForeignKeyOrFreeText(GeographicArea)
+
+
+class SocialHistory(models.PatientSubrecord):
+    _is_singleton = True
+    SMOKING_CHOICES = enum("Currently", "Ex-smoker", "Never")
+    smoker = fields.CharField(
+        blank=True, null=True, max_length=256, choices=SMOKING_CHOICES
+    )
+    cigerettes_per_day = fields.IntegerField(null=True, blank=True)
 
 
 class Employer(lookuplists.LookupList):
@@ -179,11 +208,24 @@ class OHProvider(lookuplists.LookupList):
     pass
 
 
+class EmploymentCategory(lookuplists.LookupList):
+    pass
+
+
+class JobTitle(lookuplists.LookupList):
+    pass
+
+
 class Employment(models.EpisodeSubrecord):
     _icon         = 'fa fa-building-o'
     _is_singleton = True
 
     employer = fields.CharField(blank=True, null=True, max_length=100)
+    employment_category = models.ForeignKeyOrFreeText(
+        EmploymentCategory
+    )
+    employed_in_suspect_occupation = fields.NullBooleanField()
+    exposures = fields.TextField(blank=True, default="")
     oh_provider = fields.CharField(
         blank=True, null=True, max_length=100, verbose_name="OH provider"
     )
@@ -198,6 +240,9 @@ class ClinicLog(models.EpisodeSubrecord):
         null=True, blank=True, default="", max_length=100, verbose_name="Seen by"
     )
     clinic_date        = fields.DateField(blank=True, null=True)
+    clinic_site        = fields.CharField(
+        blank=True, null=True, max_length=256, default="OCLD"
+    )
     diagnosis_made    = fields.NullBooleanField(verbose_name="Diagnosis made")
     follow_up_planned = fields.NullBooleanField(
         verbose_name="Follow up planned"

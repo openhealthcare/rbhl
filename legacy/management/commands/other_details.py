@@ -60,6 +60,79 @@ class Command(BaseCommand):
                 specialist_doctor=row["Specialist_Dr"],
             )
 
+    def convert_details(self, patient):
+        """
+        Maps
+        Details.date_referral_received" -> "Referral.date_referral_received
+        Details.referral_type -> Referral.referral_type
+        Details.date_referral_received -> Referral.date_referral_received
+        Details.referral_type -> Referral.referral_type
+        Details.referral_reason -> Referral.referral_reason
+        Details.fire_service_applicant -> Employment.firefighter
+        Details.systems_presenting_compliant -> Referral.comments
+        Details.referral_disease -> Referral.referral_disease
+        Details.specialist_doctor -> ClinicLog.seen_by
+        Details.referring_doctor -> Referral.referrer_name
+        Details.geographic_area or Details.geographic_area_other ->
+            Referral.geographic_area
+        Details.is_smoker = SocialHistory.smoker
+        Details.smokes_per_day = SocialHistory.cigerettes_per_day
+        """
+
+        details = patient.details_set.first()
+        clinic_log = patient.episode_set.get().cliniclog_set.get()
+
+        if not clinic_log.seen_by:
+            if details.specialist_doctor:
+                clinic_log.seen_by = details.specialist_doctor
+                clinic_log.save()
+
+        if details and details.site_of_clinic:
+            if details.site_of_clinic == "Other":
+                clinic_log.clinic_site = details.site_of_clinic
+            else:
+                clinic_log.clinic_set = details.other_clinic_site
+            clinic_log.save()
+
+        REFERRAL_FIELDS = [
+            "date_referral_received",
+            "referral_type",
+            "referral_reason",
+            "referral_disease"
+        ]
+
+        referral = patient.episode_set.get().referral_set.get()
+
+        for referral_field in REFERRAL_FIELDS:
+            if not getattr(referral, referral_field):
+                details_value = getattr(details, referral_field)
+                if details_value:
+                    setattr(referral, details_value)
+                    referral.save()
+
+        if not referral.referrer_name:
+            if details.referring_doctor:
+                referral.referrer_name = details.referring_doctor
+                referral.save()
+
+        employment = patient.episode_set.get().employment_set.get()
+        if employment.firefighter is None:
+            fsa = details.fire_service_applicant
+            if fsa:
+                fire_service_lut = {"no": False, "yes": True}
+                employment.firefighter = fire_service_lut.get(fsa.lower())
+                employment.save()
+
+        social_history = patient.socialhistory_set.get()
+        if not social_history.smoker:
+            if details.is_smoker:
+                social_history.smoker = details.is_smoker
+
+        if not social_history.cigerettes_per_day:
+            if details.smokes_per_day:
+                social_history.cigerettes_per_day = details.smokes_per_day
+        social_history.save()
+
     def build_suspect_occupational_category(self, patientLUT, rows):
         for row in rows:
             patient = patientLUT.get(row["Patient_num"], None)

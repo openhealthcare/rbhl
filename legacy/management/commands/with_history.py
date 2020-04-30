@@ -9,8 +9,6 @@ from django.core.management import BaseCommand
 from django.utils import timezone
 from opal.models import Patient
 
-from legacy.management.commands.flush_database import flush
-from rbhl.episode_categories import OccupationalLungDiseaseEpisode
 
 sexLUT = {"F": "Female", "M": "Male", "U": "Not Known"}
 
@@ -36,13 +34,17 @@ class Command(BaseCommand):
         parser.add_argument("file_name", help="Specify import file")
 
     def handle(self, *args, **options):
+        self.create_legacy(options["file_name"])
+        self.convert_details()
+
+    def create_legacy(self, file_name):
         """
         Load the demographics from the database that talks to the PAS.
         Use these as our basis for matching against.
         """
         # Open with utf-8-sig encoding to avoid having a BOM in the first
         # header string.
-        with open(options["file_name"], encoding="utf-8-sig") as f:
+        with open(file_name, encoding="utf-8-sig") as f:
             rows = list(csv.DictReader(f))
 
         # ignore rows with no DoB
@@ -70,13 +72,14 @@ class Command(BaseCommand):
             #     },
             #     user=None,
             # )
-
-
-
-            if Patient.objects.filter(demographics__hospital_number=row['Hospital Number']).count() > 1:
+            if Patient.objects.filter(
+                demographics__hospital_number=row['Hospital Number']
+            ).count() > 1:
                 print(row)
                 sys.exit()
-            patient = Patient.objects.get(demographics__hospital_number=row["Hospital Number"])
+            patient = Patient.objects.get(
+                demographics__hospital_number=row["Hospital Number"]
+            )
 
             patient.patientnumber_set.get().update_from_dict(
                 {
@@ -105,12 +108,12 @@ class Command(BaseCommand):
                     user=None
                 )
 
-            address = ", ".join([
+            address = ", ".join(i for i in [
                 row["ADDRESS1"],
                 row["Address2"],
                 row["Address3"],
                 row["Address4"],
-            ])
+            ] if i)
             patient.address_set.get().update_from_dict(
                 {
                     "created": timezone.now(),
@@ -123,3 +126,22 @@ class Command(BaseCommand):
             patients_imported += 1
 
         print("Imported {} patients".format(patients_imported))
+
+    def convert_details(self):
+        patients = Patient.objects.all().prefetch_related(
+            "contactdetails_set", "address_set"
+        )
+        for patient in patients:
+            contact_details = patient.contactdetails_set.all()[0]
+            address = patient.address_set.all()[0]
+            changed = False
+            if not contact_details.phone and address.telephone:
+                contact_details.phone = address.telephone
+                changed = True
+
+            if not contact_details.address and address.address:
+                contact_details.address = address.address
+                changed = True
+
+            if changed:
+                contact_details.save()
