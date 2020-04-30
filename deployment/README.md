@@ -30,17 +30,6 @@ To restore from a back up. (Back ups run everyday at 20:00)
 ansible-playbook restore.yml --extra-vars "S3_KEY={{LATEST S3 KEY}}"
 ```
 
-To deploy to prod
-```
-ansible-playbook deploy_prod.yml
-```
-
-To deploy to dev
-```
-ansible-playbook deploy_dev.yml
-```
-
-
 ## Cheatsheat: Incantations you may not remember
 
 In this section we record various useful terminal incantations related to working

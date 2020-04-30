@@ -165,6 +165,7 @@ Peak Flow DB
 
 class PeakFlowIdentifier(PatientSubrecord):
     occmendo = models.IntegerField(blank=True, null=True)
+    age = models.IntegerField(blank=True, null=True)
 
 
 class GP(PatientSubrecord):
@@ -445,3 +446,4 @@ class RoutineSPT(PatientSubrecord):
     grass_pollen = models.FloatField(null=True, blank=True)
     cat = models.FloatField(null=True, blank=True)
     d_pter = models.FloatField(null=True, blank=True)
+    age = models.IntegerField(blank=True, null=True)

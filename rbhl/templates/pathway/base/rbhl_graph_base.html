@@ -2,14 +2,14 @@
 <div class="container-fluid content-offset">
 <div class="row">
     <div class="peak-flow-graph" ng-controller="PeakFlowCtrl" class="col-md-12">
-      <div class="col-md-12" ng-if="graphDataByPeakFlowNum[trialNum].days.length > 3">
+      <div class="col-md-12" ng-if="peakFlowTrial.days.length > 3">
         <h4>
           <div class="row">
             <div class="col-md-12">
               <h3>
                 [[ episode.demographics[0].first_name ]] [[ episode.demographics[0].surname ]]
                 <small>[[ episode.demographics[0].hospital_number ]]</small>
-                <span ng-show="trialNums.length > 1">- Peak flow trial [[ trialNum ]]</span>
+                - Peak flow trial [[ peakFlowTrial.start_date | displayDate ]]
               </h3>
             </div>
           </div>
@@ -19,47 +19,41 @@
           <tr>
             <td>
               <strong>
-                Start:
-              </strong>
-              [[ graphDataByPeakFlowNum[trialNum].days[0].date | displayDate ]]
-            </td>
-            <td>
-              <strong>
                 Overall PF mean:
               </strong>
               &nbsp;
-              [[ graphDataByPeakFlowNum[trialNum].overrall_mean ]]
-              <span ng-show="graphDataByPeakFlowNum[trialNum].overrall_mean">litres/minute</span>
+              [[ peakFlowTrial.overrall_mean ]]
+              <span ng-show="peakFlowTrial.overrall_mean">litres/minute</span>
             </td>
             <td>
               <strong>
                 Predicted PEF:
               </strong>
               &nbsp;
-              [[ graphDataByPeakFlowNum[trialNum].pef_mean ]]
-              <span ng-show="graphDataByPeakFlowNum[trialNum].pef_mean">litres/minute</span>
+              [[ peakFlowTrial.pef_mean ]]
+              <span ng-show="peakFlowTrial.pef_mean">litres/minute</span>
             </td>
             <td>
               <strong>
                 Completeness:
               </strong>
               &nbsp;
-              [[ graphDataByPeakFlowNum[trialNum].completeness ]]
-              <span ng-show="graphDataByPeakFlowNum[trialNum].completeness">%</span>
-              <span ng-show="graphDataByPeakFlowNum[trialNum].days.length">
-                  ([[ graphDataByPeakFlowNum[trialNum].complete_days]]/[[ graphDataByPeakFlowNum[trialNum].days.length ]] days)
+              [[ peakFlowTrial.completeness ]]
+              <span ng-show="peakFlowTrial.completeness">%</span>
+              <span ng-show="peakFlowTrial.days.length">
+                  ([[ peakFlowTrial.complete_days]]/[[ peakFlowTrial.days.length ]] days)
               </span>
             </td>
           </tr>
         </table>
-        <div peak-flow-graph data="graphDataByPeakFlowNum[trialNum]" highlights="highlights[trialNum]"></div>
-        <div ng-show="graphDataByPeakFlowNum[trialNum].notes.length" class="row content-offset-below">
+        <div peak-flow-graph data="peakFlowTrial" highlights="highlights[trialNum]"></div>
+        <div ng-show="peakFlowTrial.notes.length" class="row content-offset-below">
           <div class="row">
             <div class="col-md-1 text-right">
               <strong>Notes:</strong>
             </div>
             {# The markdown directive requires a field that is item[directive arg] #}
-            <div ng-repeat="item in [graphDataByPeakFlowNum[trialNum]]" class="col-md-10">
+            <div ng-repeat="item in [peakFlowTrial]" class="col-md-10">
               <div markdown="notes"></div>
             </div>
           </div>

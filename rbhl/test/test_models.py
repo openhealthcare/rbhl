@@ -42,6 +42,69 @@ class CalculatePEFTestCase(OpalTestCase):
         self.assertEqual(result, 415)
 
 
+class GetPeakExpiratoryFlowTestCase(OpalTestCase):
+    def setUp(self):
+        patient, self.episode = self.new_patient_and_episode_please()
+        self.demographics = patient.demographics()
+
+    def test_with_demographics_age(self):
+        self.demographics.date_of_birth = datetime.date(1990, 12, 1)
+        self.demographics.sex = "Male"
+        self.demographics.height = 180
+        self.demographics.save()
+        expected = models.get_peak_expiratory_flow(
+            datetime.date(2019, 12, 1), self.episode, "1"
+        )
+        self.assertEqual(
+            expected, 638
+        )
+
+    def test_with_imported_from_database_age(self):
+        self.demographics.date_of_birth = None
+        self.demographics.sex = "Male"
+        self.demographics.height = 180
+        self.demographics.save()
+        self.episode.importedfrompeakflowdatabase_set.create(
+            age="29", trial_number="1"
+        )
+        expected = models.get_peak_expiratory_flow(
+            datetime.date(2019, 12, 1), self.episode, "1"
+        )
+        self.assertEqual(
+            expected, 638
+        )
+
+    def test_with_no_age(self):
+        self.demographics.date_of_birth = None
+        self.demographics.sex = "Male"
+        self.demographics.height = 180
+        self.demographics.save()
+        expected = models.get_peak_expiratory_flow(
+            datetime.date(2019, 12, 1), self.episode, "1"
+        )
+        self.assertIsNone(expected)
+
+    def test_with_no_sex(self):
+        self.demographics.date_of_birth = datetime.date(1990, 12, 1)
+        self.demographics.sex = None
+        self.demographics.height = 180
+        self.demographics.save()
+        expected = models.get_peak_expiratory_flow(
+            datetime.date(2019, 12, 1), self.episode, "1"
+        )
+        self.assertIsNone(expected)
+
+    def test_with_no_height(self):
+        self.demographics.date_of_birth = datetime.date(1990, 12, 1)
+        self.demographics.sex = "Male"
+        self.demographics.height = None
+        self.demographics.save()
+        expected = models.get_peak_expiratory_flow(
+            datetime.date(2019, 12, 1), self.episode, "1"
+        )
+        self.assertIsNone(expected)
+
+
 class DemographicsTestCase(OpalTestCase):
     def setUp(self):
         patient, _ = self.new_patient_and_episode_please()
@@ -64,16 +127,6 @@ class DemographicsTestCase(OpalTestCase):
         self.assertEqual(
             self.demographics.get_age(datetime.date(2009, 12, 2)),
             19
-        )
-
-    def test_pef(self):
-        self.demographics.date_of_birth = datetime.date(1990, 12, 1)
-        self.demographics.sex = "Male"
-        self.demographics.height = 180
-        self.demographics.save()
-        expected = self.demographics.get_pef(datetime.date(2019, 12, 1))
-        self.assertEqual(
-            expected, 638
         )
 
 
