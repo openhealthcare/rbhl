@@ -3,7 +3,9 @@ import csv
 from django.core.management import BaseCommand
 from django.db import transaction
 from django.utils import timezone
-
+from opal import models as opal_models
+from rbhl import models
+from legacy.build_lookup_list import build_lookup_list
 from legacy.models import (
     Details,
     DiagnosticAsthma,
@@ -101,6 +103,27 @@ class Command(BaseCommand):
             "referral_disease"
         ]
 
+        referral_types = [
+            'Company or Group OHS doctor',
+            'GP',
+            'Hospital Doctor(Brompton)',
+            'Hospital Doctor(Other)',
+            'Medico-legal',
+            'Other doctor',
+            'self',
+            'Occ Health',
+            'Other (self)',
+            'Company or Group OHS nurse',
+            'Self',
+            'resp nurse community',
+            'Other doctor- GP'
+        ]
+
+        for referral_type in referral_types:
+            opal_models.ReferralType.objects.get_or_create(
+                name=referral_type
+            )
+
         referral = patient.episode_set.get().referral_set.get()
 
         for referral_field in REFERRAL_FIELDS:
@@ -114,6 +137,9 @@ class Command(BaseCommand):
             if details.referring_doctor:
                 referral.referrer_name = details.referring_doctor
                 referral.save()
+
+        build_lookup_list(models.Referral, models.Referral.referral_reason)
+        build_lookup_list(models.Referral, models.Referral.referral_disease)
 
         employment = patient.episode_set.get().employment_set.get()
         if employment.firefighter is None:
@@ -154,7 +180,7 @@ class Command(BaseCommand):
                     return
                 return some_str
 
-            yield SuspectOccupationalCategory(
+            SuspectOccupationalCategory(
                 patient=patient,
                 created=timezone.now(),
                 is_currently_employed=to_bool(row["Employed"]),

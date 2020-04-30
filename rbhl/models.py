@@ -203,9 +203,7 @@ class Referral(RbhlSubrecord, models.EpisodeSubrecord):
     date_first_appointment = fields.DateField(
         blank=True, null=True, verbose_name="Date of first appointment offered"
     )
-    referral_type = fields.TextField(
-        blank=True, null=True, verbose_name="Type of Referral",
-    )
+    referral_type = models.ForeignKeyOrFreeText(models.ReferralType)
     referral_reason = models.ForeignKeyOrFreeText(
         ReferralReason, verbose_name="Reason referral",
     )
