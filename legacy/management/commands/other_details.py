@@ -75,13 +75,15 @@ class Command(BaseCommand):
         Details.referral_disease -> Referral.referral_disease
         Details.specialist_doctor -> ClinicLog.seen_by
         Details.referring_doctor -> Referral.referrer_name
-        Details.geographic_area or Details.geographic_area_other ->
-            Referral.geographic_area
+        Details.geographical_area or Details.geographical_area_other ->
+            Referral.geographical_area
         Details.is_smoker = SocialHistory.smoker
         Details.smokes_per_day = SocialHistory.cigerettes_per_day
         """
 
         details = patient.details_set.first()
+        if not details:
+            return
         clinic_log = patient.episode_set.get().cliniclog_set.get()
 
         if not clinic_log.seen_by:
@@ -102,20 +104,50 @@ class Command(BaseCommand):
             "date_referral_received",
             "referral_type",
             "referral_reason",
-            "referral_disease"
         ]
 
         for referral_field in REFERRAL_FIELDS:
             if not getattr(referral, referral_field):
                 details_value = getattr(details, referral_field)
                 if details_value:
-                    setattr(referral, details_value)
-                    referral.save()
+                    setattr(referral, referral_field, details_value)
+
+        if not referral.referral_disease:
+            referral_disease = details.referral_disease
+            # this is a strangely common error
+            if referral_disease == "Pulmonary fibrosis(eg: Asbestos related disease":
+                referral_disease = "Pulmonary fibrosis(eg: Asbestos related disease)"
+            referral.referral_disease = referral_disease
+
+        if not referral.referral_type:
+            referral_type = details.referral_type
+            if referral_type.lower() == 'other (self)':
+                referral_type = "Self"
+            if referral_type == "self":
+                referral_type = "Self"
+            referral.referral_type = referral_type
+
+        area_lut = {
+            "north thames": "London",
+            "south thames": "London",
+            "souththames": "London",
+            "anglia & oxford": "South East",
+            "northwest & mersey": "North West",
+            "west midlands": "West Midlands"
+        }
+
+        if not referral.geographical_area:
+            area = details.geographical_area
+            if area.lower() in area_lut:
+                area = area_lut[area.lower()]
+            elif area.lower() == "other" and details.geographical_area_other:
+                area = details.geographical_area_other
+            referral.geographical_area = area
 
         if not referral.referrer_name:
             if details.referring_doctor:
                 referral.referrer_name = details.referring_doctor
-                referral.save()
+        referral.save()
 
         employment = patient.episode_set.get().employment_set.get()
         if employment.firefighter is None:
@@ -349,27 +381,34 @@ class Command(BaseCommand):
             'Hospital Doctor(Other)',
             'Medico-legal',
             'Other doctor',
-            'self',
             'Occ Health',
-            'Other (self)',
-            'Company or Group OHS nurse',
             'Self',
-            'resp nurse community',
+            'Company or Group OHS nurse',
+            'Resp nurse community',
             'Other doctor- GP'
         ]
 
         for referral_type in referral_types:
-            opal_models.ReferralType.objects.get_or_create(
-                name=referral_type
-            )
+            if not opal_models.ReferralType.objects.filter(
+                name__iexact=referral_type
+            ).exists():
+                opal_models.ReferralType.objects.get_or_create(
+                    name=referral_type
+                )
 
         for patient in opal_models.Patient.objects.all():
             self.convert_details(patient)
+
         build_lookup_list(models.Referral, models.Referral.referral_reason)
+        models.ReferralReason.objects.get_or_create(name="Environmental")
         build_lookup_list(models.Referral, models.Referral.referral_disease)
+
+        # TODO we need to remap geographical area
+        build_lookup_list(models.Referral, models.Referral.geographical_area)
 
     @transaction.atomic
     def create_legacy(self, file_name):
+        self.flush()
         with open(file_name, encoding="utf-8-sig") as f:
             rows = list(csv.DictReader(f))
 

@@ -36,6 +36,14 @@ def is_boolean(field):
 def field_display(
     context, field, **kwargs
 ):
+    """
+    Displays a field on the page, errors if the field does not exist.
+    args: field -> same as in forms {{ model.__name__ }}.{{ field_name }}
+    kwargs:
+          label -> the label to put next to the form
+          parenthesis_field -> An optional field to put in brackets after the value
+                               if its populated
+    """
     ctx = {}
     model_and_field_name = field
     ctx["field_name"] = model_and_field_name.split(".")[1]

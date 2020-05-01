@@ -9,6 +9,30 @@
 <div class="row">
   <div class="col-md-6">
     <div class="horizontal-form">
+      {% select field="Referral.referral_type" style="vertical" %}
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="horizontal-form">
+      {% select field="Referral.referral_reason" style="vertical" %}
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-6">
+    <div class="horizontal-form">
+      {% select field="Referral.referral_disease" style="vertical" %}
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="horizontal-form">
+      {% input field="Referral.geographical_area" style="vertical" %}
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-6">
+    <div class="horizontal-form">
       {% datepicker field="Referral.date_of_referral" style="vertical" %}
     </div>
   </div>

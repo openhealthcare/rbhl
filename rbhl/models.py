@@ -169,7 +169,7 @@ class ReferralDisease(lookuplists.LookupList):
     pass
 
 
-class GeographicArea(lookuplists.LookupList):
+class GeographicalArea(lookuplists.LookupList):
     pass
 
 
@@ -210,7 +210,7 @@ class Referral(RbhlSubrecord, models.EpisodeSubrecord):
     referral_disease = models.ForeignKeyOrFreeText(
         ReferralDisease, verbose_name="Referral disease",
     )
-    geographic_area = models.ForeignKeyOrFreeText(GeographicArea)
+    geographical_area = models.ForeignKeyOrFreeText(GeographicalArea)
 
 
 class SocialHistory(RbhlSubrecord, models.PatientSubrecord):
