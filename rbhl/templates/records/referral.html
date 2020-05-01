@@ -1,15 +1,48 @@
 {% load rbhl_panels %}
-{% field_display "Referral.referrer_name" %}
-{% field_display "Referral.referral_type" %}
-{% field_display "Referral.referral_reason" %}
-{% field_display "Referral.referral_disease" %}
-{% field_display "Referral.geographical_area" %}
-{% field_display "Referral.date_of_referral" %}
-{% field_display "Referral.date_referral_received" %}
-{% field_display "Referral.attendance" %}
-{% field_display "Referral.date_first_appointment" %}
+<div class="row">
+  <div class="col-md-6">
+    {% field_display "Referral.referrer_name" %}
+  </div>
+  <div class="col-md-6">
+    {% field_display "Referral.referral_disease" %}
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-6">
+    {% field_display "Referral.referral_type" %}
+  </div>
+  <div class="col-md-6">
+    {% field_display "Referral.referral_reason" %}
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-6">
+    {% field_display "Referral.geographical_area" %}
+  </div>
+</div>
+<hr />
+<div class="row">
+  <div class="col-md-6">
+    {% field_display "Referral.date_of_referral" %}
+  </div>
+  <div class="col-md-6">
+    {% field_display "Referral.date_referral_received" %}
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-6">
+    {% field_display "Referral.attendance" %}
+  </div>
+  <div class="col-md-6">
+    {% field_display "Referral.date_first_appointment" %}
+  </div>
+</div>
 <span ng-show="item.comments">
-  <h4>Comments</h4>
-  <div markdown="comments"></div>
-  <br />
+  <hr>
+  <div class="row">
+    <div class="col-md-12">
+      <h4>Comments</h4>
+      <div markdown="comments"></div>
+    </div>
+  </div>
 </span>

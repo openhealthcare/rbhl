@@ -5,6 +5,11 @@
       {% input field="Referral.referrer_name" lookuplist="rbhreferrer_list" style="vertical" %}
     </div>
   </div>
+  <div class="col-md-6">
+    <div class="horizontal-form">
+      {% select field="Referral.referral_disease" style="vertical" %}
+    </div>
+  </div>
 </div>
 <div class="row">
   <div class="col-md-6">
@@ -21,15 +26,11 @@
 <div class="row">
   <div class="col-md-6">
     <div class="horizontal-form">
-      {% select field="Referral.referral_disease" style="vertical" %}
-    </div>
-  </div>
-  <div class="col-md-6">
-    <div class="horizontal-form">
       {% input field="Referral.geographical_area" style="vertical" %}
     </div>
   </div>
 </div>
+<hr>
 <div class="row">
   <div class="col-md-6">
     <div class="horizontal-form">
@@ -54,6 +55,7 @@
     </div>
   </div>
 </div>
+<hr>
 <div class="row">
   <div class="col-md-12">
     <div class="horizontal-form">
