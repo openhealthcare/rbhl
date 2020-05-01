@@ -1,16 +1,23 @@
 {% load forms %}
 
 <div class="row form-row">
-    <div class="col-md-6">
-        <div class="horizontal-form">
-            {% input field="ClinicLog.seen_by" %}
-        </div>
+  <div class="col-md-6">
+      <div class="horizontal-form">
+          {% input field="ClinicLog.seen_by" %}
+      </div>
+  </div>
+  <div class="col-md-6">
+      <div class="horizontal-form">
+          {% datepicker field="ClinicLog.clinic_date" %}
+      </div>
+  </div>
+</div>
+<div class="row form-row">
+  <div class="col-md-6">
+    <div class="horizontal-form">
+      {% input field="ClinicLog.clinic_site" %}
     </div>
-    <div class="col-md-6">
-        <div class="horizontal-form">
-            {% datepicker field="ClinicLog.clinic_date" %}
-        </div>
-    </div>
+  </div>
 </div>
 <hr>
 
