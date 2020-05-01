@@ -1,5 +1,5 @@
 from opal.core.test import OpalTestCase
-from rbhl.models import ClinicLog, ClinicSite
+from rbhl.models import Employment, EmploymentCategory
 from legacy import build_lookup_list
 
 
@@ -32,35 +32,37 @@ class BuildLookupListTestCase(OpalTestCase):
         equal to the threshold
         """
         for i in range(build_lookup_list.THRESHOLD):
-            cl = ClinicLog.objects.create(episode=self.episode)
-            cl.clinic_site = "somewhere"
-            cl.save()
-        cl = ClinicLog.objects.create(episode=self.episode)
-        cl.clinic_site = "nowhere"
-        cl.save()
+            emp = Employment.objects.create(episode=self.episode)
+            emp.employment_category = "some job"
+            emp.save()
+        emp = Employment.objects.create(episode=self.episode)
+        emp.employment_category = "no job"
+        emp.save()
 
         result = build_lookup_list.get_values_to_add(
-            ClinicLog, ClinicLog.clinic_site
+            Employment, Employment.employment_category
         )
-        self.assertEqual(result, ["somewhere"])
+        self.assertEqual(result, ["some job"])
 
     def test_add_values_to_lookup_lists(self):
-        ClinicSite.objects.create(name="Scunthorpe")
+        EmploymentCategory.objects.create(name="Baker")
         build_lookup_list.add_values_to_lookup_lists(
-            ClinicSite, ["scunthorpe", "Blackpool"]
+            EmploymentCategory, ["baker", "candle stick maker"]
         )
         self.assertEqual(
-            list(ClinicSite.objects.order_by('name').values_list('name', flat=True)),
-            ["Blackpool", "Scunthorpe"]
+            list(EmploymentCategory.objects.order_by('name').values_list(
+                'name', flat=True)
+            ),
+            ["Baker", "candle stick maker"]
         )
 
     def test_resave_models(self):
-        cl = self.episode.cliniclog_set.get()
-        cl.clinic_site = "scunthorpe"
-        cl.save()
-        cs = ClinicSite.objects.create(name="Scunthorpe")
-        build_lookup_list.resave_models(ClinicLog, ClinicLog.clinic_site)
+        emp = self.episode.employment_set.get()
+        emp.employment_category = "baker"
+        emp.save()
+        category = EmploymentCategory.objects.create(name="baker")
+        build_lookup_list.resave_models(Employment, Employment.employment_category)
         self.assertEqual(
-            ClinicLog.objects.get().clinic_site_fk_id,
-            cs.id
+            Employment.objects.get().employment_category_fk_id,
+            category.id
         )
