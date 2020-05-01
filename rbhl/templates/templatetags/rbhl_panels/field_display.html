@@ -11,5 +11,14 @@
         {% else %}
             [[ item.{{ field_name }} ]]
         {% endif %}
+        {% if parenthesis_field_name %}
+          <span ng-if="item.{{ parenthesis_field_name }}">
+          {% if parenthesis_field_is_date %}
+          ([[ item.{{ parenthesis_field_name }}|displayDate ]])
+          {% else %}
+          ([[ item.{{ parenthesis_field_name }} ]])
+          {% endif %}
+          </span>
+        {% endif %}
     </div>
 </div>

@@ -43,6 +43,13 @@ def field_display(
     ctx["label"] = kwargs.get(
         "label", model._get_field_title(ctx["field_name"])
     )
+
+    if "parenthesis_field" in kwargs:
+        p_model, p_field = _model_and_field_from_path(kwargs["parenthesis_field"])
+        ctx["parenthesis_field_name"] = kwargs["parenthesis_field"].split(".")[1]
+        if is_date(p_field):
+            ctx["parenthesis_field_is_date"] = True
+
     ctx["label_size"] = kwargs.get(
         "label_size", context.get("label_size", 8)
     )
