@@ -96,35 +96,14 @@ class Command(BaseCommand):
                 clinic_log.clinic_set = details.other_clinic_site
             clinic_log.save()
 
+        referral = patient.episode_set.get().referral_set.get()
+
         REFERRAL_FIELDS = [
             "date_referral_received",
             "referral_type",
             "referral_reason",
             "referral_disease"
         ]
-
-        referral_types = [
-            'Company or Group OHS doctor',
-            'GP',
-            'Hospital Doctor(Brompton)',
-            'Hospital Doctor(Other)',
-            'Medico-legal',
-            'Other doctor',
-            'self',
-            'Occ Health',
-            'Other (self)',
-            'Company or Group OHS nurse',
-            'Self',
-            'resp nurse community',
-            'Other doctor- GP'
-        ]
-
-        for referral_type in referral_types:
-            opal_models.ReferralType.objects.get_or_create(
-                name=referral_type
-            )
-
-        referral = patient.episode_set.get().referral_set.get()
 
         for referral_field in REFERRAL_FIELDS:
             if not getattr(referral, referral_field):
@@ -137,9 +116,6 @@ class Command(BaseCommand):
             if details.referring_doctor:
                 referral.referrer_name = details.referring_doctor
                 referral.save()
-
-        build_lookup_list(models.Referral, models.Referral.referral_reason)
-        build_lookup_list(models.Referral, models.Referral.referral_disease)
 
         employment = patient.episode_set.get().employment_set.get()
         if employment.firefighter is None:
@@ -364,7 +340,35 @@ class Command(BaseCommand):
         DiagnosticOther.objects.all().delete()
         OtherFields.objects.all().delete()
 
-    @transaction.atomic()
+    @transaction.atomic
+    def convert_legacy_to_rbhl(self):
+        referral_types = [
+            'Company or Group OHS doctor',
+            'GP',
+            'Hospital Doctor(Brompton)',
+            'Hospital Doctor(Other)',
+            'Medico-legal',
+            'Other doctor',
+            'self',
+            'Occ Health',
+            'Other (self)',
+            'Company or Group OHS nurse',
+            'Self',
+            'resp nurse community',
+            'Other doctor- GP'
+        ]
+
+        for referral_type in referral_types:
+            opal_models.ReferralType.objects.get_or_create(
+                name=referral_type
+            )
+
+        for patient in opal_models.Patient.objects.all():
+            self.convert_details(patient)
+        build_lookup_list(models.Referral, models.Referral.referral_reason)
+        build_lookup_list(models.Referral, models.Referral.referral_disease)
+
+    @transaction.atomic
     def create_legacy(self, file_name):
         with open(file_name, encoding="utf-8-sig") as f:
             rows = list(csv.DictReader(f))
@@ -414,3 +418,4 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         self.create_legacy(options["file_name"])
+        self.convert_legacy_to_rbhl()
