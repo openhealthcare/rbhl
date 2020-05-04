@@ -412,7 +412,7 @@ class Command(BaseCommand):
         geographical_areas = [
             "London",
             "South East",
-            "Eastern",
+            "East",
             "Northern Yorkshire",
             "South West",
             "West Midlands",
