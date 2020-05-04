@@ -99,7 +99,7 @@ class Command(BaseCommand):
             if details.site_of_clinic == "Other":
                 clinic_log.clinic_site = details.site_of_clinic
             else:
-                clinic_log.clinic_set = details.other_clinic_site
+                clinic_log.clinic_site = details.other_clinic_site
             clinic_log.save()
 
         referral = patient.episode_set.get().referral_set.get()
@@ -157,14 +157,17 @@ class Command(BaseCommand):
         social_history = patient.episode_set.get().socialhistory_set.get()
         if not social_history.smoker:
             if details.is_smoker:
-                social_history.smoker = details.is_smoker
+                if details.is_smoker == "Currently":
+                    social_history.smoker = "Current"
+                else:
+                    social_history.smoker = details.is_smoker
 
         if not social_history.cigerettes_per_day:
             if details.smokes_per_day:
                 social_history.cigerettes_per_day = details.smokes_per_day
         social_history.save()
 
-        clinic_log = patient.episode_set.get().clinic_set.get()
+        clinic_log = patient.episode_set.get().cliniclog_set.get()
         if not clinic_log.presenting_complaint:
             clinic_log.presenting_complaint = details.systems_presenting_compliant
         clinic_log.save()
@@ -404,7 +407,7 @@ class Command(BaseCommand):
         build_lookup_list(models.Referral, models.Referral.referral_reason)
         models.ReferralReason.objects.get_or_create(name="Environmental")
         build_lookup_list(models.Referral, models.Referral.referral_disease)
-        build_lookup_list(models.ClinicLog, models.Referral.presenting_complaint)
+        build_lookup_list(models.ClinicLog, models.ClinicLog.presenting_complaint)
 
         geographical_areas = [
             "London",
