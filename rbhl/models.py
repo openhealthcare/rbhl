@@ -213,8 +213,10 @@ class Referral(RbhlSubrecord, models.EpisodeSubrecord):
     geographical_area = models.ForeignKeyOrFreeText(GeographicalArea)
 
 
-class SocialHistory(RbhlSubrecord, models.PatientSubrecord):
+class SocialHistory(RbhlSubrecord, models.EpisodeSubrecord):
     _is_singleton = True
+    _icon = 'fa fa-clock-o'
+
     SMOKING_CHOICES = enum("Currently", "Ex-smoker", "Never")
     smoker = fields.CharField(
         blank=True, null=True, max_length=256, choices=SMOKING_CHOICES
@@ -254,6 +256,10 @@ class Employment(RbhlSubrecord, models.EpisodeSubrecord):
     firefighter = fields.NullBooleanField()
 
 
+class PresentingComplaint(lookuplists.LookupList):
+    pass
+
+
 class ClinicLog(RbhlSubrecord, models.EpisodeSubrecord):
     _icon         = 'fa fa-hospital-o'
     _is_singleton = True
@@ -265,6 +271,7 @@ class ClinicLog(RbhlSubrecord, models.EpisodeSubrecord):
     clinic_site        = fields.CharField(
         blank=True, null=True, max_length=256, default="OCLD"
     )
+    presenting_complaint = models.ForeignKeyOrFreeText(PresentingComplaint)
     diagnosis_made    = fields.NullBooleanField(verbose_name="Diagnosis made")
     follow_up_planned = fields.NullBooleanField(
         verbose_name="Follow up planned"
