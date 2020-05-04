@@ -211,6 +211,7 @@ class Details(PatientSubrecord):
     smokes_per_day = models.IntegerField(null=True, blank=True)
     referring_doctor = models.TextField(null=True, blank=True)
     specialist_doctor = models.TextField(null=True, blank=True)
+    attendance_date = models.DateField(null=True, blank=True)
 
 
 class SuspectOccupationalCategory(PatientSubrecord):
@@ -410,7 +411,6 @@ class OtherFields(PatientSubrecord):
     _is_singleton = True
 
     other_det_num = models.TextField(null=True, blank=True)
-    attendance_date = models.TextField(null=True, blank=True)
     referral = models.TextField(null=True, blank=True)
     reason_other = models.TextField(null=True, blank=True)
     occupation_other = models.TextField(null=True, blank=True)

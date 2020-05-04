@@ -38,6 +38,10 @@ class Command(BaseCommand):
             if date_referral_received:
                 date_referral_received = date_referral_received.date()
 
+            attendance_date = to_date(row["Attendance_date"])
+            if attendance_date:
+                attendance_date = attendance_date.date()
+
             yield Details(
                 patient=patient,
                 created=timezone.now(),
@@ -60,6 +64,7 @@ class Command(BaseCommand):
                 smokes_per_day=to_int(row["No_cigarettes"]),
                 referring_doctor=row["Referring_doctor"],
                 specialist_doctor=row["Specialist_Dr"],
+                attendance_date=attendance_date,
             )
 
     def convert_details(self, patient):
@@ -67,11 +72,10 @@ class Command(BaseCommand):
         Maps
         Details.date_referral_received" -> "Referral.date_referral_received
         Details.referral_type -> Referral.referral_type
-        Details.date_referral_received -> Referral.date_referral_received
         Details.referral_type -> Referral.referral_type
         Details.referral_reason -> Referral.referral_reason
         Details.fire_service_applicant -> Employment.firefighter
-        Details.systems_presenting_compliant -> Referral.comments
+        Details.systems_presenting_compliant ->     Referral.comments
         Details.referral_disease -> Referral.referral_disease
         Details.specialist_doctor -> ClinicLog.seen_by
         Details.referring_doctor -> Referral.referrer_name
@@ -127,19 +131,12 @@ class Command(BaseCommand):
                 referral_type = "Self"
             referral.referral_type = referral_type
 
-        area_lut = {
-            "north thames": "London",
-            "south thames": "London",
-            "souththames": "London",
-            "anglia & oxford": "South East",
-            "northwest & mersey": "North West",
-            "west midlands": "West Midlands"
-        }
-
         if not referral.geographical_area:
             area = details.geographical_area
-            if area.lower() in area_lut:
-                area = area_lut[area.lower()]
+            if area == "SouthThames":
+                area = "South Thames"
+            elif area == "North thames":
+                area = "North Thames"
             elif area.lower() == "other" and details.geographical_area_other:
                 area = details.geographical_area_other
             referral.geographical_area = area
@@ -157,7 +154,7 @@ class Command(BaseCommand):
                 employment.firefighter = fire_service_lut.get(fsa.lower())
                 employment.save()
 
-        social_history = patient.socialhistory_set.get()
+        social_history = patient.episode_set.get().socialhistory_set.get()
         if not social_history.smoker:
             if details.is_smoker:
                 social_history.smoker = details.is_smoker
@@ -166,6 +163,11 @@ class Command(BaseCommand):
             if details.smokes_per_day:
                 social_history.cigerettes_per_day = details.smokes_per_day
         social_history.save()
+
+        clinic_log = patient.episode_set.get().clinic_set.get()
+        if not clinic_log.presenting_complaint:
+            clinic_log.presenting_complaint = details.systems_presenting_compliant
+        clinic_log.save()
 
     def build_suspect_occupational_category(self, patientLUT, rows):
         for row in rows:
@@ -350,7 +352,7 @@ class Command(BaseCommand):
                 patient=patient,
                 created=timezone.now(),
                 other_det_num=row["OtherDet_Num"],
-                attendance_date=row["Attendance_date"],
+
                 referral=row["referral"],
                 # reason_other=row["reason_other"],
                 # occupation_other=row["Occupation_other"],
@@ -402,9 +404,29 @@ class Command(BaseCommand):
         build_lookup_list(models.Referral, models.Referral.referral_reason)
         models.ReferralReason.objects.get_or_create(name="Environmental")
         build_lookup_list(models.Referral, models.Referral.referral_disease)
+        build_lookup_list(models.ClinicLog, models.Referral.presenting_complaint)
 
-        # TODO we need to remap geographical area
-        build_lookup_list(models.Referral, models.Referral.geographical_area)
+        geographical_areas = [
+            "London",
+            "South East",
+            "Eastern",
+            "Northern Yorkshire",
+            "South West",
+            "West Midlands",
+            "Trent",
+            "North West",
+            "Wales",
+            "Scotland",
+            "Northern Ireland"
+        ]
+
+        for geographical_area in geographical_areas:
+            if not models.GeographicalArea.objects.filter(
+                name__iexact=geographical_area
+            ).exists():
+                models.GeographicalArea.objects.get_or_create(
+                    name=geographical_area
+                )
 
     @transaction.atomic
     def create_legacy(self, file_name):
