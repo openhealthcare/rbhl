@@ -29,6 +29,13 @@
       {% input field="Referral.geographical_area" style="vertical" %}
     </div>
   </div>
+  <div class="col-md-6">
+    <div class="text-muted">
+      Options include:
+      <br />
+      <span ng-repeat="area in geographicalarea_list"><span ng-if="!$first && !$last">, </span><span ng-if="$last"> and </span>[[ area ]]</span>
+    </div>
+  </div>
 </div>
 <hr>
 <div class="row">
