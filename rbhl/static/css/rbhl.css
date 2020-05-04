@@ -381,6 +381,10 @@ a {
   font-size: 17px;
 }
 
+.second-column-field .col-md-8 {
+  padding-left: 30px;
+}
+
 .bottom-menu {
   position: absolute;
   left: 0px;
