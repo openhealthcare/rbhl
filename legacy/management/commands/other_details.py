@@ -70,7 +70,8 @@ class Command(BaseCommand):
     def convert_details(self, patient):
         """
         Maps
-        Details.date_referral_received" -> "Referral.date_referral_received
+        Details.date_referral_received" -> Referral.date_referral_received
+        Details.attendance_date -> Referral.date_first_appointment
         Details.referral_type -> Referral.referral_type
         Details.referral_type -> Referral.referral_type
         Details.referral_reason -> Referral.referral_reason
@@ -127,8 +128,10 @@ class Command(BaseCommand):
             referral_type = details.referral_type
             if referral_type.lower() == 'other (self)':
                 referral_type = "Self"
-            if referral_type == "self":
+            elif referral_type == "self":
                 referral_type = "Self"
+            elif referral_type == "Other doctor- GP":
+                referral_type = "GP"
             referral.referral_type = referral_type
 
         if not referral.geographical_area:
@@ -144,6 +147,10 @@ class Command(BaseCommand):
         if not referral.referrer_name:
             if details.referring_doctor:
                 referral.referrer_name = details.referring_doctor
+
+        if not referral.date_first_appointment:
+            if details.attendance_date:
+                referral.date_first_appointment = details.attendance_date
         referral.save()
 
         employment = patient.episode_set.get().employment_set.get()
@@ -390,7 +397,6 @@ class Command(BaseCommand):
             'Self',
             'Company or Group OHS nurse',
             'Resp nurse community',
-            'Other doctor- GP'
         ]
 
         for referral_type in referral_types:
