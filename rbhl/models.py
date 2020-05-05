@@ -247,6 +247,7 @@ class Employment(RbhlSubrecord, models.EpisodeSubrecord):
 
 class RbhlDiagnosticTesting(RbhlSubrecord, models.EpisodeSubrecord):
     _is_singleton = True
+    _icon = "fa fa-hand-paper-o"
 
     ATOPIC_CHOICES = enum("Yes", "No", "Dermatographic")
     antihistimines = fields.NullBooleanField(null=True, blank=True)
