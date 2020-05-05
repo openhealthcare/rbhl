@@ -1,0 +1,19 @@
+<label class="{{ label_class }}">
+  {{ label }}
+</label>
+<div ng-class="{{ formname }}.$submitted && {{ formname }}[{{ element_name }}].$error.required"
+      class="{{ field_class }}"
+>
+<input class="form-control" type="number" ng-model="{{ model }}"
+          autocomplete="off"
+          name="[[ {{ element_name }} ]]"
+          {% if required %}
+          required
+          {% endif %}
+          />
+  {% if required %}
+    <span class="help-block" ng-show="({{ formname }}[{{ element_name }}].$dirty || {{ formname }}.$submitted) && {{ formname }}[{{ element_name }}].$error.required">
+      {{ label }} is required
+    </span>
+  {% endif %}
+</div>

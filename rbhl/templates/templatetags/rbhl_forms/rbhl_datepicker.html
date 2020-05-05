@@ -1,0 +1,24 @@
+<label class="{{ label_class }}">
+  {{ label }}
+</label>
+<div class="{{ field_class }}" >
+  {% if user_options %}
+    <div class="input-group">
+  {% endif %}
+      <input type="date" class="form-control"
+              max="2050-12-01"
+              min="1900-01-01"
+              ng-model="{{ model }}"
+              name="[[ {{ element_name}} ]]"
+              {% if change %}
+              ng-change="{{ change }}"
+              {% endif %}
+              />
+    {% if user_options %}
+        <span class="input-group-btn">
+          <button type="button" class="btn btn-default" ng-click="{{ model }} = dateHelper.now()" href="">Today</a>
+          <button type="button" class="btn btn-default" ng-click="{{ model }} = dateHelper.yesterday()" href="">Yesterday</a>
+        </span>
+      </div>
+    {% endif %}
+</div>
