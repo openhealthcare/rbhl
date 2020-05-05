@@ -200,7 +200,7 @@ class Command(BaseCommand):
                     return
                 return some_str
 
-            SuspectOccupationalCategory(
+            yield SuspectOccupationalCategory(
                 patient=patient,
                 created=timezone.now(),
                 is_currently_employed=to_bool(row["Employed"]),
@@ -214,6 +214,51 @@ class Command(BaseCommand):
                 month_finished_exposure=row["Date Finished"],
                 year_finished_exposure=row["Dates_f_Exposure_Y"],
             )
+
+    def convert_suspect_occupational_category(self, patient):
+        """
+        Maps
+
+        SuspectOccupationalCategory.job_title
+            -> Employment.job_title
+        SuspectOccupationalCategory.employer_name
+            -> Employment.employer
+        SuspectOccupationalCategory.suspect_occupational_category
+            -> Employment.employment_category
+        SuspectOccupationalCategory.is_employed_in_suspect_occupation
+            -> Employment.employed_in_suspect_occupation
+        SuspectOccupationalCategory.exposures
+            -> Employment.exposures
+        """
+        # TODO this sometimes returns multiple
+        suspect_occupational_category = patient.suspectoccupationalcategory_set.first()
+        employment = patient.episode_set.get().employment_set.get()
+        if not employment.job_title:
+            employment.job_title = suspect_occupational_category.job_title
+
+        if not employment.employment_category:
+            emp_cat = suspect_occupational_category.suspect_occupational_category
+            employment.employment_category = emp_cat
+
+        if not employment.employer:
+            emp_name = suspect_occupational_category.employer_name
+            employment.employment_category = emp_name
+
+        if employment.employed_in_suspect_occupation is None:
+            employed_lut = {
+                'Yes-employed in suspect occupation': True,
+                'Yes': True,
+                'Yes-other occupation': False,  # Only used very few times
+                'No': False,
+                '': None
+            }
+            sus = suspect_occupational_category.is_employed_in_suspect_occupation
+            employment.employed_in_suspect_occupation = employed_lut[sus]
+
+        if employment.exposures is None:
+            exposures = suspect_occupational_category.exposures
+            employment.is_employed_in_suspect_occupation = exposures
+        employment.save()
 
     def build_diagnostic_testing(self, patientLUT, rows):
         for row in rows:
@@ -407,13 +452,16 @@ class Command(BaseCommand):
                     name=referral_type
                 )
 
-        for patient in opal_models.Patient.objects.all():
+        for patient in opal_models.Patient.objects.exclude(details=None):
             self.convert_details(patient)
+            self.convert_suspect_occupational_category(patient)
 
         build_lookup_list(models.Referral, models.Referral.referral_reason)
         models.ReferralReason.objects.get_or_create(name="Environmental")
         build_lookup_list(models.Referral, models.Referral.referral_disease)
         build_lookup_list(models.ClinicLog, models.ClinicLog.presenting_complaint)
+        build_lookup_list(models.Employment, models.Employment.employment_category)
+        build_lookup_list(models.Employment, models.Employment.job_title)
 
         geographical_areas = [
             "London",

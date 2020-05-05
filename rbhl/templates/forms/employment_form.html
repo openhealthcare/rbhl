@@ -2,5 +2,15 @@
 <div class="horizontal-form">
     {% input field="Employment.oh_provider" lookuplist="ohprovider_list" style="vertical" %}
     {% input field="Employment.employer" lookuplist="employer_list" style="vertical" %}
-    {% checkbox field="Employment.firefighter" style="vertical" %}
+    {% input field="Employment.job_title" style="vertical" %}
+    {% input field="Employment.employment_category" style="vertical" %}
+    {% textarea field="Employment.exposures" style="vertical" %}
+    <div class="row">
+      <div class="col-md-2">
+        {% checkbox field="Employment.firefighter" style="vertical" %}
+      </div>
+      <div class="col-md-6">
+        {% checkbox field="Employment.employed_in_suspect_occupation" style="vertical" %}
+      </div>
+    </div>
 </div>

@@ -1,8 +1,23 @@
 {% load forms %}
 {% load rbhl_panels %}
 {% with label_size=6 field_size=6 %}
-{% field_display "Employment.employer" %}
 {% field_display "Employment.oh_provider" %}
+{% field_display "Employment.employer" %}
+{% field_display "Employment.job_title" %}
+{% field_display "Employment.employment_category" style="vertical" %}
+
+<div class="row">
+  <div class="col-md-1 text-right">
+    <strong>Exposures:</strong>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <div markdown="exposures"></div>
+  </div>
+</div>
+
+{% field_display "Employment.employed_in_suspect_occupation" %}
 <div class="row">
   <div class="col-md-{{ label_size }}">
     <b>Firefighter <br />pre-employment:</b>

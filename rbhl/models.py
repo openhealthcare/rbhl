@@ -233,6 +233,7 @@ class Employment(RbhlSubrecord, models.EpisodeSubrecord):
     _is_singleton = True
 
     employer = fields.CharField(blank=True, null=True, max_length=100)
+    job_title = models.ForeignKeyOrFreeText(JobTitle)
     employment_category = models.ForeignKeyOrFreeText(
         EmploymentCategory
     )
