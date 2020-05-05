@@ -255,9 +255,9 @@ class Command(BaseCommand):
             sus = suspect_occupational_category.is_employed_in_suspect_occupation
             employment.employed_in_suspect_occupation = employed_lut[sus]
 
-        if employment.exposures is None:
+        if not employment.exposures:
             exposures = suspect_occupational_category.exposures
-            employment.is_employed_in_suspect_occupation = exposures
+            employment.exposures = exposures
         employment.save()
 
     def build_diagnostic_testing(self, patientLUT, rows):
