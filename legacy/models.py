@@ -291,13 +291,13 @@ class DiagnosticTesting(PatientSubrecord):
     # UI Field: CTChestScan
     ct_chest_scan = models.NullBooleanField(null=True, blank=True)
     # UI Field: Date
-    ct_chest_scan_date = models.DateTimeField(null=True, blank=True)
+    ct_chest_scan_date = models.DateField(null=True, blank=True)
 
     # TODO: combine?
     # UI Field: Full lung function
     full_lung_function = models.NullBooleanField(null=True, blank=True)
     # UI Field: Date
-    full_lung_function_date = models.DateTimeField(null=True, blank=True)
+    full_lung_function_date = models.DateField(null=True, blank=True)
 
 
 class DiagnosticOutcome(PatientSubrecord):

@@ -245,6 +245,54 @@ class Employment(RbhlSubrecord, models.EpisodeSubrecord):
     firefighter = fields.NullBooleanField()
 
 
+class RbhlDiagnosticTesting(RbhlSubrecord, models.EpisodeSubrecord):
+    _is_singleton = True
+
+    ATOPIC_CHOICES = enum("Yes", "No", "Dermatographic")
+    antihistimines = fields.NullBooleanField(null=True, blank=True)
+
+    skin_prick_test = fields.NullBooleanField(null=True, blank=True)
+    atopic = fields.TextField(null=True, blank=True, choices=ATOPIC_CHOICES)
+    specific_skin_prick = fields.NullBooleanField(null=True, blank=True)
+
+    immunology_oem = fields.NullBooleanField(
+        null=True, blank=True, verbose_name="Immunology OEM"
+    )
+
+    # TODO seperate section
+    # bronchial_prov_test = models.NullBooleanField(null=True, blank=True)
+
+    fev_1 = fields.FloatField(
+        null=True, blank=True, verbose_name="FEV1"
+    )
+    fev_1_post_ventolin = fields.FloatField(
+        null=True, blank=True, verbose_name="FEV1 post Ventolin"
+    )
+    fev_1_percentage_protected = fields.IntegerField(
+        null=True, blank=True, verbose_name="FEV1 predicted %"
+    )
+    fvc = fields.FloatField(
+        null=True, blank=True, verbose_name="FVC"
+    )
+    fvc_post_ventolin = fields.FloatField(
+        null=True, blank=True, verbose_name="FVC post Ventolin"
+    )
+    fvc_percentage_protected = fields.IntegerField(
+        null=True, blank=True, verbose_name="FVC predicted %"
+    )
+    ct_chest_scan = fields.NullBooleanField(
+        null=True, blank=True, verbose_name="CT chest scan"
+    )
+    ct_chest_scan_date = fields.DateField(
+        null=True, blank=True, verbose_name="CT chest scan date"
+    )
+    full_lung_function = fields.NullBooleanField(null=True, blank=True)
+    full_lung_function_date = fields.DateField(null=True, blank=True)
+
+    class Meta:
+        verbose_name = "Diagnostic testing"
+
+
 class PresentingComplaint(lookuplists.LookupList):
     pass
 

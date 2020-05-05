@@ -34,18 +34,10 @@ class Command(BaseCommand):
             if patient is None:
                 continue
 
-            date_referral_received = to_date(row["Date referral written"])
-            if date_referral_received:
-                date_referral_received = date_referral_received.date()
-
-            attendance_date = to_date(row["Attendance_date"])
-            if attendance_date:
-                attendance_date = attendance_date.date()
-
             yield Details(
                 patient=patient,
                 created=timezone.now(),
-                date_referral_received=date_referral_received,
+                date_referral_received=to_date(row["Date referral written"]),
                 referral_type=row["referral"],
                 referral_reason=row["Referral_reason"],
                 fire_service_applicant=row["Fireapplicant"],
@@ -64,7 +56,7 @@ class Command(BaseCommand):
                 smokes_per_day=to_int(row["No_cigarettes"]),
                 referring_doctor=row["Referring_doctor"],
                 specialist_doctor=row["Specialist_Dr"],
-                attendance_date=attendance_date,
+                attendance_date=to_date(row["Attendance_date"]),
             )
 
     def convert_details(self, patient):
@@ -296,6 +288,75 @@ class Command(BaseCommand):
                 full_lung_function_date=to_date(row["LFTdate"]),
             )
 
+    def convert_diagnostic_testing(self, patient):
+        """
+        Maps
+
+        DiagnosticTesting.height
+            -> Demographics.height
+        DiagnosticTesting.antihistimines
+            -> RbhlDiagnosticTesting.antihistimines
+        DiagnosticTesting.skin_prick_test
+            -> RbhlDiagnosticTesting.employment_category
+        DiagnosticTesting.atopic
+            -> RbhlDiagnosticTesting.atopic
+        DiagnosticTesting.specific_skin_prick
+            -> RbhlDiagnosticTesting.specific_skin_prick
+        DiagnosticTesting.serum_antibodies
+            -> RbhlDiagnosticTesting.immunology_oem
+        DiagnosticTesting.fev_1
+            -> RbhlDiagnosticTesting.fev_1
+        DiagnosticTesting.fev_1_post_ventolin
+            -> RbhlDiagnosticTesting.fev_1_post_ventolin
+        DiagnosticTesting.fev_1_percentage_protected
+            -> RbhlDiagnosticTesting.fev_1_percentage_protected
+        DiagnosticTesting.fvc
+            -> RbhlDiagnosticTesting.fvc
+        DiagnosticTesting.fvc_post_ventolin
+            -> RbhlDiagnosticTesting.fvc_post_ventolin
+        DiagnosticTesting.ct_chest_scan
+            -> RbhlDiagnosticTesting.ct_chest_scan
+        DiagnosticTesting.ct_chest_scan_date
+            -> RbhlDiagnosticTesting.ct_chest_scan_date
+        DiagnosticTesting.full_lung_function
+            -> RbhlDiagnosticTesting.full_lung_function
+        DiagnosticTesting.full_lung_function_date
+            -> RbhlDiagnosticTesting.full_lung_function_date
+        """
+        # TODO this sometimes returns multiple
+        legacy_diagnostic_testing = patient.diagnostictesting_set.first()
+        diagnosistic_testing = patient.episode_set.get().rbhldiagnostictesting_set.get()
+
+        if patient.demographics_set.filter(height=None).exists():
+            if legacy_diagnostic_testing.height:
+                height = to_int(legacy_diagnostic_testing.height)
+                patient.demographics_set.update(
+                    height=height
+                )
+
+        FIELDS = [
+            "antihistimines",
+            "skin_prick_test",
+            "atopic",
+            "specific_skin_prick",
+            "fev_1",
+            "fev_1_post_ventolin",
+            "fev_1_percentage_protected",
+            "fvc",
+            "fvc_post_ventolin",
+            "fvc_percentage_protected",
+            "ct_chest_scan",
+            "ct_chest_scan_date",
+            "full_lung_function",
+            "full_lung_function_date"
+        ]
+
+        for field in FIELDS:
+            legacy_value = getattr(legacy_diagnostic_testing, field)
+            setattr(diagnosistic_testing, field, legacy_value)
+        diagnosistic_testing.immunology_oem = legacy_diagnostic_testing.serum_antibodies
+        diagnosistic_testing.save()
+
     def build_diagnostic_outcome(self, patientLUT, rows):
         for row in rows:
             patient = patientLUT.get(row["Patient_num"], None)
@@ -455,6 +516,7 @@ class Command(BaseCommand):
         for patient in opal_models.Patient.objects.exclude(details=None):
             self.convert_details(patient)
             self.convert_suspect_occupational_category(patient)
+            self.convert_diagnostic_testing(patient)
 
         build_lookup_list(models.Referral, models.Referral.referral_reason)
         models.ReferralReason.objects.get_or_create(name="Environmental")

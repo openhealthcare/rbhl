@@ -17,7 +17,7 @@ def to_date(s):
     except ValueError:
         return
 
-    return timezone.make_aware(dt)
+    return timezone.make_aware(dt).date()
 
 
 def to_float(s):
