@@ -90,7 +90,7 @@ class Command(BaseCommand):
             )
 
             if any([row["GPname"], row["GPPostcode"]]):
-                address = ", ".join(
+                address = "\n".join(
                     [
                         row["GPAddress1"],
                         row["GPAddress2"],

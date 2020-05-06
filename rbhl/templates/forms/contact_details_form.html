@@ -1,7 +1,29 @@
 {% load forms %}
-<div class="horizontal-form">
-    {% input field="ContactDetails.mobile" style="vertical" %}
-    {% input field="ContactDetails.phone" style="vertical" %}
-    {% input field="ContactDetails.email" style="vertical" %}
-    {% textarea field="ContactDetails.address" style="vertical" %}
+<div class="row">
+  <div class="col-md-10 col-md-offset-1">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="horizontal-form">
+          {% input field="ContactDetails.phone" style="vertical" %}
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="horizontal-form">
+          {% input field="ContactDetails.mobile" style="vertical" %}
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="horizontal-form">
+          {% input field="ContactDetails.email" style="vertical" %}
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="horizontal-form">
+          {% textarea field="ContactDetails.address" style="vertical" %}
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
