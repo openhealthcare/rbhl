@@ -3,7 +3,7 @@
     <div class="col-md-{{ label_size }}">
         <b>{{ label }}:</b>
     </div>
-    <div class="col-md-{{ field_size }}" ng-show="item.{{ field_name }}">
+    <div class="col-md-{{ field_size }} text-left" ng-show="item.{{ field_name }}">
         {% if is_boolean %}
             {% icon "fa-check" %}
         {% elif is_date %}

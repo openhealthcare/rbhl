@@ -5,7 +5,7 @@
   </div>
   <div class="second-column-field">
     <div class="col-md-6 ">
-      {% field_display "Referral.referral_disease" %}
+      {% field_display "Referral.date_of_referral" %}
     </div>
   </div>
 </div>
@@ -23,26 +23,24 @@
   <div class="col-md-6">
     {% field_display "Referral.geographical_area" %}
   </div>
+  <div class="col-md-6">
+    {% field_display "Referral.referral_disease" %}
+  </div>
 </div>
 <hr />
 <div class="row">
   <div class="col-md-6">
-    {% field_display "Referral.date_of_referral" %}
+    {% field_display "Referral.date_referral_received" %}
   </div>
   <div class="second-column-field">
     <div class="col-md-6">
-      {% field_display "Referral.date_referral_received" %}
+      {% field_display "Referral.date_first_appointment" %}
     </div>
   </div>
 </div>
 <div class="row">
   <div class="col-md-6">
     {% field_display "Referral.attendance" %}
-  </div>
-  <div class="second-column-field">
-    <div class="col-md-6 ">
-      {% field_display "Referral.date_first_appointment" %}
-    </div>
   </div>
 </div>
 <span ng-show="item.comments">

@@ -1,10 +1,10 @@
 {% load panels %}
 <div class="row">
   <div class="col-md-6">
-    {% record_panel models.Demographics %}
+    {% record_panel models.Demographics full_width=True %}
   </div>
   <div class="col-md-6">
-    {% record_panel models.ContactDetails %}
+    {% record_panel models.ContactDetails full_width=True %}
   </div>
 </div>
 <div class="row">
@@ -15,10 +15,10 @@
 
 <div class="row">
   <div class="col-md-6">
-    {% record_panel models.Employment %}
+    {% record_panel models.Employment full_width=True %}
   </div>
   <div class="col-md-6">
-    {% record_panel models.SocialHistory %}
+    {% record_panel models.SocialHistory full_width=True %}
   </div>
 </div>
 <h2 class="text-center content-offset">Clinic details</h2>
@@ -29,10 +29,10 @@
 </div>
 <div class="row">
   <div class="col-md-6">
-    {% record_panel models.Asthma angular_filter="item.occupational || item.exacerbated_by_work || item.irritant_induced || item.non_occupational || item.other" %}
+    {% record_panel models.Asthma angular_filter="item.occupational_caused_by_sensitisation || item.exacerbated_by_work || item.irritant_induced || item.non_occupational || item.other" %}
   </div>
   <div class="col-md-6">
-    {% record_panel models.Rhinitis angular_filter="item.occupational || item.exacerbated_by_work || item.non_occupational || item.other" %}
+    {% record_panel models.Rhinitis angular_filter="item.occupational_caused_by_sensitisation || item.exacerbated_by_work || item.non_occupational || item.other" %}
   </div>
 </div>
 <div class="row">

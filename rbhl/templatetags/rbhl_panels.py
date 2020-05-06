@@ -59,11 +59,11 @@ def field_display(
             ctx["parenthesis_field_is_date"] = True
 
     ctx["label_size"] = kwargs.get(
-        "label_size", context.get("label_size", 8)
+        "label_size", context.get("label_size", 6)
     )
 
     ctx["field_size"] = kwargs.get(
-        "field_size", context.get("label_field_sizesize", 4)
+        "field_size", context.get("label_field_sizesize", 6)
     )
     ctx["is_boolean"] = is_boolean(field)
     ctx["is_date"] = is_date(field)
