@@ -23,18 +23,20 @@
   <div class="col-md-6">
     {% field_display "Referral.geographical_area" %}
   </div>
-  <div class="col-md-6">
-    {% field_display "Referral.referral_disease" %}
+  <div class="second-column-field">
+    <div class="col-md-6">
+      {% field_display "Referral.referral_disease" %}
+    </div>
   </div>
 </div>
 <hr />
 <div class="row">
   <div class="col-md-6">
-    {% field_display "Referral.date_referral_received" %}
+    {% field_display "Referral.date_referral_received" label="Referral received" %}
   </div>
   <div class="second-column-field">
     <div class="col-md-6">
-      {% field_display "Referral.date_first_appointment" %}
+      {% field_display "Referral.date_first_appointment" label="First appointment" %}
     </div>
   </div>
 </div>
@@ -47,7 +49,7 @@
   <hr>
   <div class="row">
     <div class="col-md-12">
-      <h4>Comments</h4>
+      <strong>Comments:</strong>
       <div markdown="comments"></div>
     </div>
   </div>

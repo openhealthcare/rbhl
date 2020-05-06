@@ -39,10 +39,8 @@
 </div>
 <div class="row">
   <div class="col-md-6">
-    <div class="col-md-6">
-      <div class="horizontal-form">
-        {% select field="Referral.referral_disease" style="vertical" %}
-      </div>
+    <div class="horizontal-form">
+      {% select field="Referral.referral_disease" style="vertical" %}
     </div>
   </div>
 </div>
@@ -53,7 +51,6 @@
       {% datepicker field="Referral.date_referral_received" style="vertical" %}
     </div>
   </div>
-</div>
 <div class="col-md-6">
   <div class="horizontal-form">
     {% datepicker field="Referral.date_first_appointment" style="vertical" %}
@@ -69,8 +66,10 @@
 <hr>
 <div class="row">
   <div class="col-md-12">
-    <div class="horizontal-form">
-      {% textarea field="Referral.comments" style="vertical" %}
+    <div class="col-md-12">
+      <div class="horizontal-form">
+        {% textarea field="Referral.comments" style="vertical" %}
+      </div>
     </div>
   </div>
 </div>
