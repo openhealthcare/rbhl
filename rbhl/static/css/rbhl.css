@@ -495,7 +495,8 @@ input[type="date"]::-webkit-input-placeholder {
 }
 
 .form-horizontal .form-group .control-label {
-  margin-bottom: 5px;
+  margin-top: -5px;
+  margin-bottom: 4px;
 }
 
 .content-offset-below-100 {
