@@ -330,7 +330,8 @@ class Command(BaseCommand):
         legacy_diagnostic_testing = patient.diagnostictesting_set.all()[0]
         diagnosistic_testing = episode.rbhldiagnostictesting_set.all()[0]
 
-        if patient.demographics_set.filter(height=None).exists():
+        height = patient.demographics_set.all()[0].height
+        if height:
             if legacy_diagnostic_testing.height:
                 height = to_int(legacy_diagnostic_testing.height)
                 patient.demographics_set.update(
@@ -757,7 +758,8 @@ class Command(BaseCommand):
             "diagnostictesting_set",
             "diagnosticoutcome_set",
             "diagnosticasthma_set",
-            "diagnosticrhinitis_set"
+            "diagnosticrhinitis_set",
+            "demographics_set",
         )
 
         episodes = opal_models.Episode.objects.filter(
@@ -771,7 +773,7 @@ class Command(BaseCommand):
             "rbhldiagnostictesting_set",
             "employment_set",
             "referral_set",
-            "socialhistory_set"
+            "socialhistory_set",
         )
 
         if not qs.count() == episodes.count():
