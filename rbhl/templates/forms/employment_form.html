@@ -1,41 +1,35 @@
 {% load forms %}
-<div class="row form-row">
-  <div class="col-md-10 col-md-offset-1">
-    <div class="row form-row">
-      <div class="col-md-6">
-          <div class="horizontal-form">
-              {% input field="Employment.employer" style="vertical" %}
-          </div>
-      </div>
-      <div class="col-md-6">
-          <div class="horizontal-form">
-              {% input field="Employment.oh_provider" style="vertical" %}
-          </div>
-      </div>
-    </div>
 
-    <div class="row form-row">
-      <div class="col-md-6">
-          <div class="horizontal-form">
-              {% input field="Employment.job_title" style="vertical" %}
-          </div>
+<div class="row form-row">
+  <div class="col-md-6">
+      <div class="horizontal-form">
+          {% input field="Employment.employer" style="vertical" %}
       </div>
-      <div class="col-md-6">
-          <div class="horizontal-form">
-              {% input field="Employment.employment_category" style="vertical" %}
-          </div>
+  </div>
+  <div class="col-md-6">
+      <div class="horizontal-form">
+          {% input field="Employment.oh_provider" style="vertical" %}
       </div>
-    </div>
   </div>
 </div>
 
 <div class="row form-row">
-  <div class="col-md-10 col-md-offset-1">
-    <div style="padding-left: 20px; padding-right: 20px;">
-      {% textarea field="Employment.exposures" style="vertical" %}
-    </div>
+  <div class="col-md-6">
+      <div class="horizontal-form">
+          {% input field="Employment.job_title" style="vertical" %}
+      </div>
+  </div>
+  <div class="col-md-6">
+      <div class="horizontal-form">
+          {% input field="Employment.employment_category" style="vertical" %}
+      </div>
   </div>
 </div>
+
+<div style="padding-left: 20px; padding-right: 20px;">
+  {% textarea field="Employment.exposures" style="vertical" %}
+</div>
+
 <div class="row form-row">
   <div class="col-md-2 col-md-offset-1">
     {% checkbox field="Employment.firefighter" style="vertical" %}
