@@ -312,7 +312,7 @@ class OtherDiagnosisType(lookuplists.LookupList):
 
 class Asthma(RbhlSubrecord, models.EpisodeSubrecord):
     _is_singleton = True
-    _icon = "fa fa-hand-paper-o"
+    _icon = "fa fa-cloud"
     occupational_caused_by_sensitisation = fields.BooleanField(
         default=False
     )
@@ -334,7 +334,7 @@ class Asthma(RbhlSubrecord, models.EpisodeSubrecord):
 
 class Rhinitis(RbhlSubrecord, models.EpisodeSubrecord):
     _is_singleton = True
-    _icon = "fa fa-hand-paper-o"
+    _icon = "fa fa-sliders"
     occupational_caused_by_sensitisation = fields.BooleanField(default=False)
     exacerbated_by_work = fields.BooleanField(default=False)
     non_occupational = fields.BooleanField(default=False)
@@ -345,7 +345,7 @@ class Rhinitis(RbhlSubrecord, models.EpisodeSubrecord):
 
 class ChronicAirFlowLimitation(RbhlSubrecord, models.EpisodeSubrecord):
     _is_singleton = True
-    _icon = "fa fa-hand-paper-o"
+    _icon = "fa fa-ellipsis-v"
     copd = fields.BooleanField(
         default=False, verbose_name="COPD"
     )
@@ -357,7 +357,7 @@ class ChronicAirFlowLimitation(RbhlSubrecord, models.EpisodeSubrecord):
 
 class Disease(RbhlSubrecord, models.EpisodeSubrecord):
     _is_singleton = True
-    _icon = "fa fa-hand-paper-o"
+    _icon = "fa fa-bug"
     malignancy = models.ForeignKeyOrFreeText(MalignancyType)
     malignancy_occupational = fields.BooleanField(default=False)
     diffuse_lung_disease = models.ForeignKeyOrFreeText(DiffuseLungDisease)
@@ -367,7 +367,7 @@ class Disease(RbhlSubrecord, models.EpisodeSubrecord):
 
 class OtherDiagnostic(RbhlSubrecord, models.EpisodeSubrecord):
     _is_singleton = True
-    _icon = "fa fa-hand-paper-o"
+    _icon = "fa fa-stethoscope"
     other_diagnosis = models.ForeignKeyOrFreeText(OtherDiagnosisType)
     other_diagnosis_occupational = fields.BooleanField(default=False)
     nad = fields.BooleanField(default=False, verbose_name="NaD")
@@ -375,7 +375,7 @@ class OtherDiagnostic(RbhlSubrecord, models.EpisodeSubrecord):
 
 class Sensitivities(RbhlSubrecord, models.EpisodeSubrecord):
     _is_singleton = True
-    _icon = "fa fa-hand-paper-o"
+    _icon = "fa fa-eyedropper"
     sensitivities = fields.TextField(blank=True, default="")
 
 
