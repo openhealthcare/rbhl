@@ -347,7 +347,7 @@ class ChronicAirFlowLimitation(RbhlSubrecord, models.EpisodeSubrecord):
     _is_singleton = True
     _icon = "fa fa-hand-paper-o"
     copd = fields.BooleanField(
-        default=False
+        default=False, verbose_name="COPD"
     )
     emphysema = fields.BooleanField(
         default=False
