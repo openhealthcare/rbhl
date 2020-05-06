@@ -251,8 +251,7 @@ class Command(BaseCommand):
                 employment.employed_in_suspect_occupation = employed_lut[sus]
 
         if not employment.exposures:
-            if employment.exposures == suspect_occupational_category.exposures:
-                employment.exposures = suspect_occupational_category.exposures
+            employment.exposures = suspect_occupational_category.exposures
         employment.save()
 
     def build_diagnostic_testing(self, patientLUT, rows):
@@ -452,9 +451,8 @@ class Command(BaseCommand):
             to_add = [
                 i for i in asthma_sensitivites if i.lower() not in lower_sensitivites
             ]
-            sensitivities.sensitivities = "\n".join(
-                sorted(existing_sensitivities + to_add)
-            )
+            new_values = [i for i in sorted(existing_sensitivities + to_add) if i]
+            sensitivities.sensitivities = "\n".join(new_values)
             sensitivities.save()
 
         asthma.save()
@@ -529,9 +527,9 @@ class Command(BaseCommand):
             to_add = [
                 i for i in rhintis_sensitivites if i.lower() not in lower_sensitivities
             ]
-            sensitivities.sensitivities = "\n".join(
-                sorted(existing_sensitivities + to_add)
-            )
+            new_values = [i for i in sorted(existing_sensitivities + to_add) if i]
+            sensitivities.sensitivities = "\n".join(new_values)
+            sensitivities.save()
             sensitivities.save()
         rhinitis.save()
 
