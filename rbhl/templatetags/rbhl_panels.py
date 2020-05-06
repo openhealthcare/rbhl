@@ -67,4 +67,5 @@ def field_display(
     )
     ctx["is_boolean"] = is_boolean(field)
     ctx["is_date"] = is_date(field)
+    ctx["markdown"] = kwargs.get("markdown", False)
     return ctx
