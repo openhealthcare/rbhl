@@ -1,0 +1,16 @@
+{% load rbhl_forms %}
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
+    <div class="row form-row">
+      {% rbhl_checkbox field="Asthma.occupational_caused_by_sensitisation" label_class="col-md-6" %}
+      {% rbhl_checkbox field="Asthma.exacerbated_by_work" label_class="col-md-6" %}
+    </div>
+    <div class="row form-row">
+      {% rbhl_checkbox field="Asthma.irritant_induced" label_class="col-md-6" %}
+      {% rbhl_checkbox field="Asthma.non_occupational" label_class="col-md-6" %}
+    </div>
+    <div class="row form-row">
+      {% rbhl_checkbox field="Asthma.other" label_class="col-md-6" %}
+    </div>
+  </div>
+</div>

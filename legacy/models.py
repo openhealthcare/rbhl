@@ -306,7 +306,7 @@ class DiagnosticOutcome(PatientSubrecord):
     # UI Field: Diagnosis
     diagnosis = models.TextField(null=True, blank=True)
     # UI Field: Date of Diagnosis
-    diagnosis_date = models.DateTimeField(null=True, blank=True)
+    diagnosis_date = models.DateField(null=True, blank=True)
     # UI Field: If referred, who to?
     referred_to = models.TextField(null=True, blank=True)
 

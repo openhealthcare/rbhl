@@ -1,0 +1,102 @@
+{% load forms %}
+{% load rbhl_forms %}
+<div class="row">
+  <div class="col-md-10 col-md-offset-1">
+    <h3 class="text-center">Asthma</h3>
+    <div class="row form-row">
+      {% rbhl_checkbox field="Diagnostics.asthma_occupational" label_class="col-md-4" %}
+      {% rbhl_checkbox field="Diagnostics.asthma_exacerbated_by_work" label_class="col-md-4" %}
+      {% rbhl_checkbox field="Diagnostics.asthma_irritant_induced" label_class="col-md-4" %}
+    </div>
+    <div class="row"></div>
+    <div class="row form-row">
+      {% rbhl_checkbox field="Diagnostics.asthma_non_occupational" label_class="col-md-4" %}
+      {% rbhl_checkbox field="Diagnostics.asthma_other" label_class="col-md-4" %}
+    </div>
+  </div>
+</div>
+<hr>
+<div class="row">
+  <div class="col-md-10 col-md-offset-1">
+    <h3 class="text-center">Rhinitis</h3>
+    <div class="row form-row">  
+      {% rbhl_checkbox field="Diagnostics.rhinitis_occupational" label_class="col-md-4" %}
+      {% rbhl_checkbox field="Diagnostics.rhinitis_exacerbated_by_work" label_class="col-md-4" %}
+      {% rbhl_checkbox field="Diagnostics.rhinitis_non_occupational" label_class="col-md-4" %}
+    </div>
+    <div class="row form-row">
+      {% rbhl_checkbox field="Diagnostics.rhinitis_other" label_class="col-md-4" %}
+    </div>
+  </div>
+</div>
+<hr>
+<div class="row">
+  <div class="col-md-10 col-md-offset-1">
+    <h3 class="text-center">Other</h3>
+    <div class="row form-row">
+      {% rbhl_checkbox field="Diagnostics.copd" label_class="col-md-4" %}
+      {% rbhl_checkbox field="Diagnostics.emphysema" label_class="col-md-4" %}
+      {% rbhl_checkbox field="Diagnostics.copd_occupational" label_class="col-md-4" %}
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-10 col-md-offset-1">
+    <div class="row form-row">
+      <div class="col-md-8">
+        {% input field="Diagnostics.malignancy" style="vertical" %}
+      </div>
+        {% rbhl_checkbox field="Diagnostics.malignancy_occupational" label_class="col-md-4" %}
+    </div>
+    <div class="row form-row">
+      <div class="col-md-5">
+        {% input field="Diagnostics.diffuse_lung_disease" style="vertical" %}
+      </div>
+      <div class="col-md-5 col-md-offset-1">
+        {% input field="Diagnostics.benign_pleural_disease" style="vertical" %}
+      </div>
+    </div>
+    <div class="row form-row">
+      <div class="col-md-8">
+        {% input field="Diagnostics.other_diagnosis" style="vertical" %}
+      </div>
+        {% rbhl_checkbox field="Diagnostics.other_diagnosis_occupational" label_class="col-md-4" %}
+    </div>
+    <div class="row"></div>
+    <div class="row form-row">
+      {% rbhl_checkbox field="Diagnostics.nad" label_class="col-md-4" %}
+    </div>
+  </div>
+</div>
+<hr>
+<div class="row">
+  <div class="col-md-10 col-md-offset-1">
+    <h3 class="text-center">Sensitivities</h3>
+    <div class="row form-row">
+      <div class="col-md-12">
+        {% textarea field="Diagnostics.sensitivities" label="" style="vertical" %}
+      </div>
+    </div>
+  </div>
+</div>
+{% comment%}
+{% checkbox field="Diagnostics.asthma_occupational" %}
+{% checkbox field="Diagnostics.asthma_exacerbated_by_work" %}
+{% checkbox field="Diagnostics.asthma_irritant_induced" %}
+{% checkbox field="Diagnostics.asthma_non_occupational" %}
+{% checkbox field="Diagnostics.asthma_other" %}
+{% checkbox field="Diagnostics.rhinitis_occupational" %}
+{% checkbox field="Diagnostics.rhinitis_exacerbated_by_work" %}
+{% checkbox field="Diagnostics.rhinitis_non_occupational" %}
+{% checkbox field="Diagnostics.rhinitis_other" %}
+{% checkbox field="Diagnostics.copd" %}
+{% checkbox field="Diagnostics.emphysema" %}
+{% checkbox field="Diagnostics.copd_occupational" %}
+{% checkbox field="Diagnostics.malignancy_occupational" %}
+{% checkbox field="Diagnostics.nad" %}
+{% checkbox field="Diagnostics.other_diagnosis_occupational" %}
+{% input field="Diagnostics.malignancy" %}
+{% input field="Diagnostics.diffuse_lung_disease" %}
+{% input field="Diagnostics.benign_pleural_disease" %}
+{% input field="Diagnostics.other_diagnosis" %}
+{% endcomment %}

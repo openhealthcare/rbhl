@@ -47,11 +47,16 @@
   <div class="col-md-10 col-md-offset-1">
     <div class="row form-row">
       {% rbhl_checkbox field="RbhlDiagnosticTesting.ct_chest_scan" label_class="col-sm-3" %}
-      {% rbhl_datepicker field="RbhlDiagnosticTesting.ct_chest_scan_date" label_class="col-sm-3 col-sm-offset-1" field_class="col-sm-4" %}
+      <div class="col-sm-4 col-sm-offset-1">
+        {% datepicker field="RbhlDiagnosticTesting.ct_chest_scan_date" style="vertical" %}
+      </div>
     </div>
+    <div class="row"></div>
     <div class="row form-row">
       {% rbhl_checkbox field="RbhlDiagnosticTesting.full_lung_function" label_class="col-sm-3"  %}
-      {% rbhl_datepicker field="RbhlDiagnosticTesting.full_lung_function_date" label_class="col-sm-3 col-sm-offset-1" field_class="col-sm-4" %}
+      <div class="col-sm-4 col-sm-offset-1">
+        {% datepicker field="RbhlDiagnosticTesting.full_lung_function_date" style="vertical" %}
+      </div>
     </div>
   </div>
 </div>

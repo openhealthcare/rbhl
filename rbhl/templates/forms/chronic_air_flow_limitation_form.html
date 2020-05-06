@@ -1,0 +1,11 @@
+{% load forms %}
+{% load rbhl_forms %}
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
+    <div class="row form-row">
+      {% rbhl_checkbox field="ChronicAirFlowLimitation.copd" label_class="col-md-4" %}
+      {% rbhl_checkbox field="ChronicAirFlowLimitation.emphysema" label_class="col-md-4" %}
+      {% rbhl_checkbox field="ChronicAirFlowLimitation.occupational" label_class="col-md-4" %}
+    </div>
+  </div>
+</div>

@@ -59,7 +59,7 @@ class Command(BaseCommand):
                 attendance_date=to_date(row["Attendance_date"]),
             )
 
-    def convert_details(self, patient):
+    def convert_details(self, patient, episode):
         """
         Maps
         Details.date_referral_received" -> Referral.date_referral_received
@@ -78,10 +78,10 @@ class Command(BaseCommand):
         Details.smokes_per_day = SocialHistory.cigerettes_per_day
         """
 
-        details = patient.details_set.first()
+        details = patient.details_set.all()[0]
         if not details:
             return
-        clinic_log = patient.episode_set.get().cliniclog_set.get()
+        clinic_log = episode.cliniclog_set.all()[0]
 
         if not clinic_log.seen_by:
             if details.specialist_doctor:
@@ -95,7 +95,7 @@ class Command(BaseCommand):
                 clinic_log.clinic_site = details.other_clinic_site
             clinic_log.save()
 
-        referral = patient.episode_set.get().referral_set.get()
+        referral = episode.referral_set.all()[0]
 
         REFERRAL_FIELDS = [
             "date_referral_received",
@@ -118,23 +118,25 @@ class Command(BaseCommand):
 
         if not referral.referral_type:
             referral_type = details.referral_type
-            if referral_type.lower() == 'other (self)':
-                referral_type = "Self"
-            elif referral_type == "self":
-                referral_type = "Self"
-            elif referral_type == "Other doctor- GP":
-                referral_type = "GP"
-            referral.referral_type = referral_type
+            if referral_type:
+                if referral_type.lower() == 'other (self)':
+                    referral_type = "Self"
+                elif referral_type == "self":
+                    referral_type = "Self"
+                elif referral_type == "Other doctor- GP":
+                    referral_type = "GP"
+                referral.referral_type = referral_type
 
         if not referral.geographical_area:
             area = details.geographical_area
-            if area == "SouthThames":
-                area = "South Thames"
-            elif area == "North thames":
-                area = "North Thames"
-            elif area.lower() == "other" and details.geographical_area_other:
-                area = details.geographical_area_other
-            referral.geographical_area = area
+            if area:
+                if area == "SouthThames":
+                    area = "South Thames"
+                elif area == "North thames":
+                    area = "North Thames"
+                elif area.lower() == "other" and details.geographical_area_other:
+                    area = details.geographical_area_other
+                referral.geographical_area = area
 
         if not referral.referrer_name:
             if details.referring_doctor:
@@ -145,7 +147,7 @@ class Command(BaseCommand):
                 referral.date_first_appointment = details.attendance_date
         referral.save()
 
-        employment = patient.episode_set.get().employment_set.get()
+        employment = episode.employment_set.all()[0]
         if employment.firefighter is None:
             fsa = details.fire_service_applicant
             if fsa:
@@ -153,7 +155,7 @@ class Command(BaseCommand):
                 employment.firefighter = fire_service_lut.get(fsa.lower())
                 employment.save()
 
-        social_history = patient.episode_set.get().socialhistory_set.get()
+        social_history = episode.socialhistory_set.all()[0]
         if not social_history.smoker:
             if details.is_smoker:
                 if details.is_smoker == "Currently":
@@ -166,7 +168,7 @@ class Command(BaseCommand):
                 social_history.cigerettes_per_day = details.smokes_per_day
         social_history.save()
 
-        clinic_log = patient.episode_set.get().cliniclog_set.get()
+        clinic_log = episode.cliniclog_set.all()[0]
         if not clinic_log.presenting_complaint:
             clinic_log.presenting_complaint = details.systems_presenting_compliant
         clinic_log.save()
@@ -207,7 +209,7 @@ class Command(BaseCommand):
                 year_finished_exposure=row["Dates_f_Exposure_Y"],
             )
 
-    def convert_suspect_occupational_category(self, patient):
+    def convert_suspect_occupational_category(self, patient, episode):
         """
         Maps
 
@@ -223,8 +225,8 @@ class Command(BaseCommand):
             -> Employment.exposures
         """
         # TODO this sometimes returns multiple
-        suspect_occupational_category = patient.suspectoccupationalcategory_set.first()
-        employment = patient.episode_set.get().employment_set.get()
+        suspect_occupational_category = patient.suspectoccupationalcategory_set.all()[0]
+        employment = episode.employment_set.all()[0]
         if not employment.job_title:
             employment.job_title = suspect_occupational_category.job_title
 
@@ -245,11 +247,12 @@ class Command(BaseCommand):
                 '': None
             }
             sus = suspect_occupational_category.is_employed_in_suspect_occupation
-            employment.employed_in_suspect_occupation = employed_lut[sus]
+            if sus:
+                employment.employed_in_suspect_occupation = employed_lut[sus]
 
         if not employment.exposures:
-            exposures = suspect_occupational_category.exposures
-            employment.exposures = exposures
+            if employment.exposures == suspect_occupational_category.exposures:
+                employment.exposures = suspect_occupational_category.exposures
         employment.save()
 
     def build_diagnostic_testing(self, patientLUT, rows):
@@ -288,7 +291,7 @@ class Command(BaseCommand):
                 full_lung_function_date=to_date(row["LFTdate"]),
             )
 
-    def convert_diagnostic_testing(self, patient):
+    def convert_diagnostic_testing(self, patient, episode):
         """
         Maps
 
@@ -324,8 +327,8 @@ class Command(BaseCommand):
             -> RbhlDiagnosticTesting.full_lung_function_date
         """
         # TODO this sometimes returns multiple
-        legacy_diagnostic_testing = patient.diagnostictesting_set.first()
-        diagnosistic_testing = patient.episode_set.get().rbhldiagnostictesting_set.get()
+        legacy_diagnostic_testing = patient.diagnostictesting_set.all()[0]
+        diagnosistic_testing = episode.rbhldiagnostictesting_set.all()[0]
 
         if patient.demographics_set.filter(height=None).exists():
             if legacy_diagnostic_testing.height:
@@ -372,6 +375,20 @@ class Command(BaseCommand):
                 referred_to=row["Diagnosis_referral"],
             )
 
+    def convert_diagnostic_outcome(self, patient, episode):
+        """
+        diagnosis -> Clinic Log.diagnosis_outcome
+        referred_to -> Clinic Log.referred_to
+        diagnosis date -> clinic date if not populated
+        """
+        diagnosis_outcome = patient.diagnosticoutcome_set.all()[0]
+        clinic_log = episode.cliniclog_set.all()[0]
+        clinic_log.diagnosis_outcome = diagnosis_outcome.diagnosis
+        clinic_log.referred_to = diagnosis_outcome.referred_to
+        if not clinic_log.clinic_date:
+            clinic_log.clinic_date = diagnosis_outcome.diagnosis_date
+        clinic_log.save()
+
     def build_diagnostic_asthma(self, patientLUT, rows):
         for row in rows:
             patient = patientLUT.get(row["Patient_num"], None)
@@ -391,6 +408,55 @@ class Command(BaseCommand):
                 sensitising_agent=row["AsthmaOccSenCause"],
                 has_non_occupational_asthma=to_bool(row["AsthmaNonOcc"]),
             )
+
+    def convert_diagnostic_asthma(self, patient, episode):
+        """
+        if only DiagnosticAsthma.asthma then Asthma.other = True
+        else
+            DiagnosticAsthma.occupational_asthma_caused_by_sensitisation
+                -> Asthma.occupational_caused_by_sensitisation
+            DiagnosticAsthma.is_exacerbated_by_work -> Asthma.exacerbated_by_work
+            DiagnosticAsthma.has_infant_induced_asthma -> Asthma.irritant_induced
+            DiagnosticAsthma.has_non_occupational_asthma -> Asthma.non_occupational
+        DiagnosticAsthma.sensitising_agent -> Sensitivites.sensitivities
+        """
+        diagnostic_asthma = patient.diagnosticasthma_set.all()[0]
+        asthma = episode.asthma_set.all()[0]
+        sensitivities = episode.sensitivities_set.all()[0]
+
+        changed = False
+        if diagnostic_asthma.occupational_asthma_caused_by_sensitisation:
+            asthma.occupational_caused_by_sensitisation = True
+            changed = True
+        if diagnostic_asthma.is_exacerbated_by_work:
+            asthma.exacerbated_by_work = True
+            changed = True
+        if diagnostic_asthma.has_infant_induced_asthma:
+            asthma.irritant_induced = True
+            changed = True
+        if diagnostic_asthma.has_non_occupational_asthma:
+            asthma.has_non_occupational_asthma = True
+            changed = True
+        if diagnostic_asthma.asthma and not changed:
+            asthma.other = True
+
+        if diagnostic_asthma.sensitising_agent is not None:
+            asthma_sensitivites = [
+                i.strip() for i in diagnostic_asthma.sensitising_agent.split("\n")
+            ]
+            existing_sensitivities = [
+                i.strip() for i in sensitivities.sensitivities.split("\n")
+            ]
+            lower_sensitivites = set([i.lower() for i in existing_sensitivities])
+            to_add = [
+                i for i in asthma_sensitivites if i.lower() not in lower_sensitivites
+            ]
+            sensitivities.sensitivities = "\n".join(
+                sorted(existing_sensitivities + to_add)
+            )
+            sensitivities.save()
+
+        asthma.save()
 
     def build_diagnostic_rhinitis(self, patientLUT, rows):
         for row in rows:
@@ -421,6 +487,52 @@ class Command(BaseCommand):
                 ],
                 has_non_occupational_rhinitis=has_non_occ_rhinitis,
             )
+
+    def convert_diagnostic_rhinitis(self, patient, episode):
+        """
+        if only DiagnosticRhinitis.rhinitis then Rhinitis.other = True
+        else
+            DiagnosticRhinitis.occupational_caused_by_sensitisation
+                -> Rhinitis.occupational
+            DiagnosticRhinitis.work_exacerbated
+                -> Rhinitis.exacerbated_by_work
+            DiagnosticRhinitis.has_non_occupational_rhinitis
+                -> Rhinitis.non_occupational
+        DiagnosticRhinitis.rhinitis_occupational_sensitisation_cause
+            -> Sensitivites.sensitivities
+        """
+        diagnostic_rhinitis = patient.diagnosticrhinitis_set.all()[0]
+        rhinitis = episode.rhinitis_set.all()[0]
+        sensitivities = episode.sensitivities_set.all()[0]
+        changed = False
+        if diagnostic_rhinitis.occupational_rhinitis_caused_by_sensitisation:
+            rhinitis.occupational_caused_by_sensitisation = True
+            changed = True
+        if diagnostic_rhinitis.work_exacerbated:
+            rhinitis.exacerbated_by_work = True
+            changed = True
+        if diagnostic_rhinitis.has_non_occupational_rhinitis:
+            rhinitis.non_occupational = True
+            changed = True
+        if diagnostic_rhinitis.rhinitis and not changed:
+            rhinitis.other = True
+
+        cause_string = diagnostic_rhinitis.rhinitis_occupational_sensitisation_cause
+        if cause_string is not None:
+            causes = cause_string.split("\n")
+            rhintis_sensitivites = [i.strip() for i in causes]
+            existing_sensitivities = [
+                i.strip() for i in sensitivities.sensitivities.split("\n")
+            ]
+            lower_sensitivities = set([i.lower() for i in existing_sensitivities])
+            to_add = [
+                i for i in rhintis_sensitivites if i.lower() not in lower_sensitivities
+            ]
+            sensitivities.sensitivities = "\n".join(
+                sorted(existing_sensitivities + to_add)
+            )
+            sensitivities.save()
+        rhinitis.save()
 
     def build_diagnostic_other(self, patientLUT, rows):
         for row in rows:
@@ -456,6 +568,92 @@ class Command(BaseCommand):
                 other_diagnosis_type=row["OtherDiagChoiceType"],
                 other_diagnosis_type_other=row["OtherDiagOther"],
             )
+
+    def convert_diagnostic_other(self, patient, episode):
+        """
+        DiagnosticOther.copd -> ChronicAirFlowLimitation.copd
+        DiagnosticOther.emphysema -> ChronicAirFlowLimitation.emphysema
+        DiagnosticOther.copd_with_emphysema
+            -> ChronicAirFlowLimitation.copd + ChronicAirFlowLimitation.emphysema
+        DiagnosticOther.copd_is_occupational
+            -> ChronicAirFlowLimitation.occupational
+        DiagnosticOther.malignancy_is_occupational
+            -> Disease.malignancy_is_occupational
+        DiagnosticOther.malignancy_type
+            -> Disease.malignancy
+        DiagnosticOther.malignancy_type_other
+            -> Disease.malignancy
+        DiagnosticOther.diffuse_lung_disease_type
+            -> Disease.diffuse_lung_disease
+        DiagnosticOther.diffuse_lung_disease_type_other
+            -> Disease.diffuse_lung_disease
+        DiagnosticOther.diffuse_lung_disease_is_occupational
+            -> Disease.diffuse_lung_disease_occupational
+        DiagnosticOther.benign_pleural_disease_type
+            -> Disease.benign_pleural_disease
+        DiagnosticOther.other_diagnosis
+            -> OtherDiagnostic.other_diagnosis
+        DiagnosticOther.other_diagnosis_type_other
+            -> OtherDiagnostic.other_diagnosis
+        DiagnosticOther.other_diagnosis_is_occupational
+            -> OtherDiagnostic.other_diagnosis_occupational
+        DiagnosticOther.NAD -> OtherDiagnostic.nad
+        """
+        diagnostic_other = patient.diagnosticother_set.all()[0]
+        chronic_air_flow_limitation = episode.chronicairflowlimitation_set.get()
+        chronic_air_flow_limitation.copd = bool(diagnostic_other.copd)
+        chronic_air_flow_limitation.emphysema = bool(diagnostic_other.emphysema)
+        chronic_air_flow_limitation.occupational = bool(
+            diagnostic_other.copd_is_occupational
+        )
+        chronic_air_flow_limitation.save()
+
+        disease = episode.disease_set.get()
+
+        if diagnostic_other.malignancy_type_other:
+            malignancy_type = diagnostic_other.malignancy_type_other
+        else:
+            malignancy_type = diagnostic_other.malignancy_type
+
+        disease.malignancy = malignancy_type
+        disease.malignancy_occupational = bool(
+            diagnostic_other.malignancy_is_occupational
+        )
+
+        diffuse_lung_disease_type = diagnostic_other.diffuse_lung_disease_type
+        diffuse_lung_disease_other = diagnostic_other.diffuse_lung_disease_type_other
+
+        if diffuse_lung_disease_other:
+            diffuse_lung_disease_type = diffuse_lung_disease_other
+        disease.diffuse_lung_disease = diffuse_lung_disease_type
+
+        is_occ = bool(diagnostic_other.diffuse_lung_disease_is_occupational)
+        disease.diffuse_lung_disease_is_occupational = is_occ
+
+        disease.benign_pleural_disease = diagnostic_other.benign_pleural_disease_type
+        disease.save()
+
+        other_diagnostic = episode.otherdiagnostic_set.get()
+        if diagnostic_other.other_diagnosis_type_other:
+            other_diagnosis = diagnostic_other.other_diagnosis_type_other
+        else:
+            other_diagnosis = diagnostic_other.other_diagnosis_type
+
+        if other_diagnosis:
+            if other_diagnosis.lower() == "acute pneumonitis":
+                other_diagnosis = "Chemical pneumonitis"
+            elif other_diagnosis.lower() == "building related illness":
+                other_diagnosis = "Building related symptoms "
+            elif other_diagnosis.lower() == "hyperventilation":
+                other_diagnosis = "Breathing pattern disorder"
+
+        other_diagnostic.other_diagnosis = other_diagnosis
+
+        other_diagnosis_occupational = diagnostic_other.other_diagnosis_is_occupational
+        other_diagnosis_occupational = bool(other_diagnosis_occupational)
+        other_diagnostic.other_diagnosis_occupational = other_diagnosis_occupational
+        other_diagnostic.nad = bool(diagnostic_other.NAD)
+        other_diagnostic.save()
 
     def build_other(self, patientLUT, rows):
         for row in rows:
@@ -513,10 +711,97 @@ class Command(BaseCommand):
                     name=referral_type
                 )
 
-        for patient in opal_models.Patient.objects.exclude(details=None):
-            self.convert_details(patient)
-            self.convert_suspect_occupational_category(patient)
-            self.convert_diagnostic_testing(patient)
+        malignancy_types = [
+            "Mesothelioma:",
+            "Bronchus - other",
+            "Bronchus with asbestos exposure"
+        ]
+
+        for malignancy_type in malignancy_types:
+            models.MalignancyType.objects.get_or_create(name=malignancy_type)
+
+        diffuse_lung_diseases = [
+            "Asbestosis"
+            "Silicosis"
+            "Hypersensitivity pneumonitis"
+            "ILD Other"
+            "Berylliosis"
+            "Ideopathic Pulmonary Fibrosis"
+            "Sarcodisis"
+        ]
+
+        for diffuse_lung_disease in diffuse_lung_diseases:
+            models.DiffuseLungDisease.objects.get_or_create(name=diffuse_lung_disease)
+
+        other_diagnoses = [
+            "Humidifier fever",
+            "Polymer fume fever",
+            "Infection",
+            "Chemical pneumonitis",
+            "Building related symptoms",
+            "Breathing pattern disorder",
+            "Induced laryngeal obstruction",
+            "Air travel related symptoms",
+            "Medically unexplained symptoms",
+            "Cough due to irritant symptoms "
+        ]
+
+        for other_diagnosis in other_diagnoses:
+            models.OtherDiagnosisType.objects.get_or_create(name=other_diagnosis)
+
+        qs = opal_models.Patient.objects.exclude(details=None)
+        qs = qs.prefetch_related(
+            "diagnosticother_set",
+            "details_set",
+            "suspectoccupationalcategory_set",
+            "diagnostictesting_set",
+            "diagnosticoutcome_set",
+            "diagnosticasthma_set",
+            "diagnosticrhinitis_set"
+        )
+
+        episodes = opal_models.Episode.objects.filter(
+            patient__in=qs
+        ).prefetch_related(
+            "cliniclog_set",
+            "rhinitis_set",
+            "sensitivities_set",
+            "asthma_set",
+            "sensitivities_set",
+            "rbhldiagnostictesting_set",
+            "employment_set",
+            "referral_set",
+            "socialhistory_set"
+        )
+
+        if not qs.count() == episodes.count():
+            raise ValueError("not all patients have a single episode")
+
+        patient_id_to_episode = {
+            i.patient_id: i for i in episodes
+        }
+        for patient in qs:
+            self.convert_details(
+                patient, patient_id_to_episode[patient.id]
+            )
+            self.convert_suspect_occupational_category(
+                patient, patient_id_to_episode[patient.id]
+            )
+            self.convert_diagnostic_testing(
+                patient, patient_id_to_episode[patient.id]
+            )
+            self.convert_diagnostic_outcome(
+                patient, patient_id_to_episode[patient.id]
+            )
+            self.convert_diagnostic_asthma(
+                patient, patient_id_to_episode[patient.id]
+            )
+            self.convert_diagnostic_rhinitis(
+                patient, patient_id_to_episode[patient.id]
+            )
+            self.convert_diagnostic_other(
+                patient, patient_id_to_episode[patient.id]
+            )
 
         build_lookup_list(models.Referral, models.Referral.referral_reason)
         models.ReferralReason.objects.get_or_create(name="Environmental")

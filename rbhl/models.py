@@ -294,7 +294,96 @@ class RbhlDiagnosticTesting(RbhlSubrecord, models.EpisodeSubrecord):
         verbose_name = "Diagnostic testing"
 
 
+class MalignancyType(lookuplists.LookupList):
+    pass
+
+
+class DiffuseLungDisease(lookuplists.LookupList):
+    pass
+
+
+class BenignPleuralDisease(lookuplists.LookupList):
+    pass
+
+
+class OtherDiagnosisType(lookuplists.LookupList):
+    pass
+
+
+class Asthma(RbhlSubrecord, models.EpisodeSubrecord):
+    _is_singleton = True
+    _icon = "fa fa-hand-paper-o"
+    occupational_caused_by_sensitisation = fields.BooleanField(
+        default=False
+    )
+    exacerbated_by_work = fields.BooleanField(
+        default=False
+    )
+    irritant_induced = fields.BooleanField(
+        default=False
+    )
+    non_occupational = fields.BooleanField(
+        default=False
+    )
+    # we are using this for if they tick asthma but
+    # nothing else
+    other = fields.BooleanField(
+        default=False
+    )
+
+
+class Rhinitis(RbhlSubrecord, models.EpisodeSubrecord):
+    _is_singleton = True
+    _icon = "fa fa-hand-paper-o"
+    occupational_caused_by_sensitisation = fields.BooleanField(default=False)
+    exacerbated_by_work = fields.BooleanField(default=False)
+    non_occupational = fields.BooleanField(default=False)
+    # we are using this for if they tick rhinitis but
+    # nothing else
+    other = fields.BooleanField(default=False)
+
+
+class ChronicAirFlowLimitation(RbhlSubrecord, models.EpisodeSubrecord):
+    _is_singleton = True
+    _icon = "fa fa-hand-paper-o"
+    copd = fields.BooleanField(
+        default=False
+    )
+    emphysema = fields.BooleanField(
+        default=False
+    )
+    occupational = fields.BooleanField(default=False)
+
+
+class Disease(RbhlSubrecord, models.EpisodeSubrecord):
+    _is_singleton = True
+    _icon = "fa fa-hand-paper-o"
+    malignancy = models.ForeignKeyOrFreeText(MalignancyType)
+    malignancy_occupational = fields.BooleanField(default=False)
+    diffuse_lung_disease = models.ForeignKeyOrFreeText(DiffuseLungDisease)
+    diffuse_lung_disease_occupational = fields.BooleanField(default=False)
+    benign_pleural_disease = models.ForeignKeyOrFreeText(BenignPleuralDisease)
+
+
+class OtherDiagnostic(RbhlSubrecord, models.EpisodeSubrecord):
+    _is_singleton = True
+    _icon = "fa fa-hand-paper-o"
+    other_diagnosis = models.ForeignKeyOrFreeText(OtherDiagnosisType)
+    other_diagnosis_occupational = fields.BooleanField(default=False)
+    nad = fields.BooleanField(default=False, verbose_name="NaD")
+
+
+class Sensitivities(RbhlSubrecord, models.EpisodeSubrecord):
+    _is_singleton = True
+    _icon = "fa fa-hand-paper-o"
+    sensitivities = fields.TextField(blank=True, default="")
+
+
 class PresentingComplaint(lookuplists.LookupList):
+    pass
+
+
+class DiagnosisOutcome(lookuplists.LookupList):
     pass
 
 
@@ -311,6 +400,10 @@ class ClinicLog(RbhlSubrecord, models.EpisodeSubrecord):
     )
     presenting_complaint = models.ForeignKeyOrFreeText(PresentingComplaint)
     diagnosis_made    = fields.NullBooleanField()
+    diagnosis_outcome = models.ForeignKeyOrFreeText(
+        DiagnosisOutcome
+    )
+    referred_to = fields.CharField(blank=True, null=True, max_length=256)
     follow_up_planned = fields.NullBooleanField()
     date_of_followup  = fields.DateField(blank=True, null=True)
 

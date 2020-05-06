@@ -1,0 +1,14 @@
+{% load forms %}
+{% load rbhl_forms %}
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
+    <div class="row form-row">
+      {% rbhl_checkbox field="Rhinitis.occupational_caused_by_sensitisation" label_class="col-md-6" %}
+      {% rbhl_checkbox field="Rhinitis.exacerbated_by_work" label_class="col-md-6" %}
+    </div>
+    <div class="row form-row">
+      {% rbhl_checkbox field="Rhinitis.non_occupational" label_class="col-md-6" %}
+      {% rbhl_checkbox field="Rhinitis.other" label_class="col-md-6" %}
+    </div>
+  </div>
+</div>

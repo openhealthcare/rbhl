@@ -1,0 +1,21 @@
+{% load forms %}
+{% load rbhl_forms %}
+<div class="row">
+  <div class="col-md-10 col-md-offset-1">
+    <div class="row form-row">
+      <div class="col-md-5">
+        {% input field="OtherDiagnostic.other_diagnosis" style="vertical" %}
+      </div>
+      {% rbhl_checkbox field="OtherDiagnostic.other_diagnosis_occupational" label="Occupational" label_class="col-md-5 col-md-offset-1" %}
+    </div>
+    <div class="row"></div>
+  </div>
+</div>
+<hr>
+<div class="row">
+  <div class="col-md-10 col-md-offset-1">
+    <div class="row form-row">
+      {% rbhl_checkbox field="OtherDiagnostic.nad" label_class="col-md-5" %}
+    </div>
+  </div>
+</div>

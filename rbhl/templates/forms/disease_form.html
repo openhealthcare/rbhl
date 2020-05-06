@@ -1,0 +1,36 @@
+{% load forms %}
+{% load rbhl_forms %}
+<div class="row">
+  <div class="col-md-10 col-md-offset-1">
+    <div class="row form-row">
+      <div class="col-md-7">
+        {% input field="Disease.malignancy" style="vertical" %}
+      </div>
+      {% rbhl_checkbox field="Disease.malignancy_occupational" label="Occupational" label_class="col-md-3 col-md-offset-1" %}
+    </div>
+    <div class="row"></div>
+  </div>
+</div>
+<hr>
+<div class="row">
+  <div class="col-md-10 col-md-offset-1">
+    <div class="row form-row">
+      <div class="col-md-7">
+        {% input field="Disease.diffuse_lung_disease" style="vertical" %}
+      </div>
+      {% rbhl_checkbox field="Disease.diffuse_lung_disease_occupational" label="Occupational" label_class="col-md-3 col-md-offset-1" %}
+    </div>
+    <div class="row"></div>
+  </div>
+</div>
+<hr>
+<div class="row">
+  <div class="col-md-10 col-md-offset-1">
+    <div class="row form-row">
+      <div class="col-md-7">
+        {% input field="Disease.benign_pleural_disease" style="vertical" %}
+      </div>
+    </div>
+    <div class="row"></div>
+  </div>
+</div>
