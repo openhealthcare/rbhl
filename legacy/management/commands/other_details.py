@@ -436,7 +436,7 @@ class Command(BaseCommand):
             asthma.irritant_induced = True
             changed = True
         if diagnostic_asthma.has_non_occupational_asthma:
-            asthma.has_non_occupational_asthma = True
+            asthma.non_occupational = True
             changed = True
         if diagnostic_asthma.asthma and not changed:
             asthma.other = True
@@ -629,8 +629,11 @@ class Command(BaseCommand):
         disease.diffuse_lung_disease = diffuse_lung_disease_type
 
         is_occ = bool(diagnostic_other.diffuse_lung_disease_is_occupational)
-        disease.diffuse_lung_disease_is_occupational = is_occ
+        disease.diffuse_lung_disease_occupational = is_occ
 
+        benign_pleural_disease = diagnostic_other.benign_pleural_disease_type
+        if benign_pleural_disease == "Difuse":
+            benign_pleural_disease = "Diffuse"
         disease.benign_pleural_disease = diagnostic_other.benign_pleural_disease_type
         disease.save()
 
@@ -749,6 +752,15 @@ class Command(BaseCommand):
 
         for other_diagnosis in other_diagnoses:
             models.OtherDiagnosisType.objects.get_or_create(name=other_diagnosis)
+
+        benign_pleural_disease_types = [
+            "Predominantly plaques",
+            "Diffuse"
+        ]
+        for benign_pleural_disease_type in benign_pleural_disease_types:
+            models.BenignPleuralDisease.objects.get_or_create(
+                name=benign_pleural_disease_type
+            )
 
         qs = opal_models.Patient.objects.exclude(details=None)
         qs = qs.prefetch_related(
