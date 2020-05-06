@@ -762,6 +762,20 @@ class Command(BaseCommand):
                 name=benign_pleural_disease_type
             )
 
+        diagnosis_outcomes = [
+            "Known",
+            "Not established referred to someone else",
+            "Not established lost to follow-up",
+            "Not reached despite investigation",
+            "Not established patient withdrew",
+            "Investigations continuing"
+        ]
+
+        for diagnosis_outcome in diagnosis_outcomes:
+            models.DiagnosisOutcome.objects.get_or_create(
+                name=diagnosis_outcome
+            )
+
         qs = opal_models.Patient.objects.exclude(details=None)
         qs = qs.prefetch_related(
             "diagnosticother_set",
