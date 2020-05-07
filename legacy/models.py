@@ -11,6 +11,8 @@ from opal.models import PatientSubrecord, EpisodeSubrecord
 
 
 class ActionLog(EpisodeSubrecord):
+    _icon = "fa fa-sticky-note"
+
     class Meta:
         verbose_name = 'General notes'
     # Now in rbhl.models.Employment
