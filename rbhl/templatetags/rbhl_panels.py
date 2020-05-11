@@ -36,6 +36,14 @@ def is_boolean(field):
 def field_display(
     context, field, **kwargs
 ):
+    """
+    Displays a field on the page, errors if the field does not exist.
+    args: field -> same as in forms {{ model.__name__ }}.{{ field_name }}
+    kwargs:
+          label -> the label to put next to the form
+          parenthesis_field -> An optional field to put in brackets after the value
+                               if its populated
+    """
     ctx = {}
     model_and_field_name = field
     ctx["field_name"] = model_and_field_name.split(".")[1]
@@ -43,13 +51,21 @@ def field_display(
     ctx["label"] = kwargs.get(
         "label", model._get_field_title(ctx["field_name"])
     )
+
+    if "parenthesis_field" in kwargs:
+        p_model, p_field = _model_and_field_from_path(kwargs["parenthesis_field"])
+        ctx["parenthesis_field_name"] = kwargs["parenthesis_field"].split(".")[1]
+        if is_date(p_field):
+            ctx["parenthesis_field_is_date"] = True
+
     ctx["label_size"] = kwargs.get(
-        "label_size", context.get("label_size", 8)
+        "label_size", context.get("label_size", 6)
     )
 
     ctx["field_size"] = kwargs.get(
-        "field_size", context.get("label_field_sizesize", 4)
+        "field_size", context.get("label_field_sizesize", 6)
     )
     ctx["is_boolean"] = is_boolean(field)
     ctx["is_date"] = is_date(field)
+    ctx["markdown"] = kwargs.get("markdown", False)
     return ctx

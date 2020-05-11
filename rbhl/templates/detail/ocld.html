@@ -7,12 +7,20 @@
     {% record_panel models.ContactDetails %}
   </div>
 </div>
+
+<div class="row">
+  <div class="col-md-12">
+    {% record_panel models.Referral full_width=True %}
+  </div>
+</div>
+
+
 <div class="row">
   <div class="col-md-6">
-    {% record_panel models.Employment %}
+    {% record_panel models.Employment full_width=True %}
   </div>
   <div class="col-md-6">
-    {% record_panel models.Referral %}
+    {% record_panel models.SocialHistory full_width=True %}
   </div>
 </div>
 
@@ -26,7 +34,11 @@
 </div>
 
 {% include 'partials/peak_flow_table.html' %}
-
+<div class="row">
+  <div class="col-md-12">
+    {% record_panel models.RbhlDiagnosticTesting full_width=True %}
+  </div>
+</div>
 
 {% comment %}
 <h2 class="text-center">Old Unconverted Details</h2>
