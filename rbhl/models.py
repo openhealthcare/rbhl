@@ -151,6 +151,7 @@ class ContactDetails(models.PatientSubrecord):
     mobile = fields.CharField(blank=True, null=True, max_length=100)
     phone  = fields.CharField(blank=True, null=True, max_length=100)
     email  = fields.CharField(blank=True, null=True, max_length=100)
+    address = fields.TextField(blank=True, default="")
 
     class Meta:
         verbose_name = "Contact details"
