@@ -1,0 +1,128 @@
+<div class="row">
+  <div class="col-md-6">
+    <h3>Skin Prick Tests</h3>
+    <p><b>Antihistimines:</b>[[ item.antihistimines ]]</p>
+    <p><b>Skin Prick Test:</b>[[ item.skin_prick_test ]]</p>
+    <p><b>Atopic:</b>[[ item.atopic ]]</p>
+    <p><b>Specific Skin Prick Test:</b>[[ item.specific_skin_prick ]]</p>
+    <p><b>Serum Antibodies:</b>[[ item.serum_antibodies ]]</p>
+  </div>
+  <div class="col-md-6">
+    <h3>Spirometry</h3>
+    <p><b>Height:</b> [[ item.height ]]</p>
+
+    <div class="row">
+      <div class="col-md-2">
+        <p><b>FEV1:</b> [[ item.fev_1 ]]</p>
+      </div>
+      <div class="col-md-5">
+        <p><b>FEV1 Post Ventolin:</b> <br />[[ item.fev_1_post_ventolin ]]</p>
+      </div>
+      <div class="col-md-5">
+        <p><b>FEV1 % Predicted</b>
+        <br/>
+        [[ item.fev_1_percentage_protected ]]
+        </p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-2">
+        <p><b>FVC:</b> [[ item.fvc ]]</p>
+      </div>
+      <div class="col-md-5">
+        <p><b>FVC Post Ventolin:</b> <br/>[[ item.fvc_post_ventolin ]]</p>
+      </div>
+      <div class="col-md-5">
+        <p><b>FVC % Predicted</b>
+        <br/>
+        [[ item.fvc_percentage_protected ]]
+        </p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-7">
+        <p>
+          <b>Serial Peak Flows Requested?</b>
+          </br>
+          [[ item.is_serial_peak_flows_requested ]]
+        </p>
+      </div>
+      <div class="col-md-4">
+        <p>
+          <b>Returned?</b>
+          </br>
+          [[ item.is_returned ]]
+        </p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-7">
+        <p>
+          <b>SPEFR Variability?</b>
+          </br>
+          [[ item.has_spefr_variability ]]
+        </p>
+      </div>
+      <div class="col-md-5">
+        <p>
+          <b>Work Related?</b>
+          </br>
+          [[ item.is_spefr_work_related ]]
+        </p>
+      </div>
+    </div>
+
+
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <h3>Occupational Challenge Testing</h3>
+    <p><b>Bronchial Prov Test:</b>[[ item.bronchial_prov_test ]]</p>
+    <p><b>Change PC 20:</b>[[ item.change_pc_20 ]]</p>
+    <p><b>Nasal Prov Test:</b>[[ item.nasal_prov_test ]]</p>
+    <p><b>Positive Reaction:</b>[[ item.positive_reaction ]]</p>
+  </div>
+  <div class="col-md-6">
+    <h3>Other Investigations</h3>
+
+    <div class="row">
+      <div class="col-md-6">
+        <p>
+          <b>CT Chest Scan:</b>
+          <br />
+          [[ item.ct_chest_scan ]]
+        </p>
+      </div>
+      <div class="col-md-6">
+        <p>
+          <b>CT Chest Scan Date:</b>
+          <br />
+          [[ item.ct_chest_scan_date | displayDate ]]
+        </p>
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="col-md-6">
+        <p>
+          <b>Full Lung Function:</b>
+          <br />
+          [[ item.full_lung_function ]]
+        </p>
+      </div>
+      <div class="col-md-6">
+        <p>
+          <b>Lung Function Date:</b>
+          <br />
+          [[ item.full_lung_function_date | displayDate ]]
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

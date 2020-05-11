@@ -1,0 +1,113 @@
+<div class="row">
+  <div class="col-md-6">
+    <p>
+      <b>Hospital Number: </b>
+      [[ patient.demographics[0].hospital_number ]]
+    </p>
+
+    <p>
+      <b>Date First Attended:</b>
+      [[ item.attendance_date | displayDate ]]
+    </p>
+
+    <p>
+      <b>Referring Doctor:</b>
+      [[ episode.referral[0].referrer_name ]]
+    </p>
+
+    <p>
+      <b>Date Referral Received</b>
+      [[ item.date_referral_received | displayDate ]]
+    </p>
+
+    <p>
+      <b>Type Of Referral:</b>
+      [[ item.referral_type ]]
+    </p>
+    <p>
+      <b>Referral Reason</b>
+      [[ item.referral_reason ]]
+    </p>
+
+    <p>
+      <b>Fire Service Applicant:</b>
+      [[ item.fire_service_applicant ]]
+    </p>
+
+    <p>
+      <b>Symptoms / Presenting Complaint:</b>
+      [[ item.systems_presenting_compliant ]]
+    </p>
+
+    <p>
+      <b>Referral Disease:</b>
+      [[ item.referral_disease ]]
+    </p>
+
+    <p>
+      <b>Geographical Area:</b>
+      [[ item.geographical_area ]]
+    </p>
+
+    <p>
+      <b>(Geographical Area) Other:</b>
+      [[ item.geographical_area_other ]]
+    </p>
+  </div>
+
+  <div class="col-md-6">
+
+    <p>
+      <b>Site Of Clinic:</b>
+      [[ item.site_of_clinic ]]
+    </p>
+
+    <p>
+      <b>Other Clinic Site:</b>
+      [[ item.other_clinic_site ]]
+    </p>
+
+    <p>
+      <b>Clinic Status:</b>
+      [[ item.clinic_status ]]
+    </p>
+
+    <p>
+      <b>Seen By Which Dr?</b>
+      [[ episode.clinic_log[0].seen_by ]]
+    </p>
+
+    <p>
+      <b>Previous Atopic Disease:</b>
+      [[ item.previous_atopic_disease ]]
+    </p>
+
+    <p>
+      <b>Has Asthma:</b>
+      [[ item.has_asthma ]]
+    </p>
+
+
+    <p>
+      <b>Has Hayfever:</b>
+      [[ item.has_hayfever ]]
+    </p>
+
+    <p>
+      <b>Has Eczema:</b>
+      [[ item.has_eczema ]]
+    </p>
+
+
+    <p>
+      <b>Smoker:</b>
+      [[ item.is_smoker ]]
+    </p>
+
+    <p>
+      <b>How many a day?</b>
+      [[ item.smokes_per_day ]]
+    </p>
+
+  </div>
+</div>
