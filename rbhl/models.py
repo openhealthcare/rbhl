@@ -18,6 +18,30 @@ opal.models but can be customised here with extra / altered fields.
 """
 
 
+class RbhlSubrecord(fields.Model):
+    class Meta:
+        abstract = True
+
+    @classmethod
+    def _get_field_title(cls, name):
+        field = cls._get_field(name)
+        if isinstance(field, fields.ManyToOneRel):
+            field_name = field.related_model._meta.verbose_name_plural
+        else:
+            field_name = field.verbose_name
+
+        if field_name.islower():
+            field_name = field_name.capitalize()
+
+        return field_name
+
+    @classmethod
+    def get_display_name(cls):
+        if cls._meta.verbose_name.islower():
+            return cls._meta.verbose_name.capitalize()
+        return cls._meta.verbose_name
+
+
 def calculate_peak_expiratory_flow(height, age, sex):
     """
     For males
@@ -136,25 +160,16 @@ class RBHReferrer(lookuplists.LookupList):
     pass
 
 
-class Referral(models.EpisodeSubrecord):
+class Referral(RbhlSubrecord, models.EpisodeSubrecord):
     _icon         = 'fa fa-level-up'
     _is_singleton = True
 
     # Deprecated
-    referrer_title         = models.ForeignKeyOrFreeText(
-        models.Title, verbose_name="Referrer title"
-    )
-    referrer_name = fields.CharField(
-        blank=True, null=True, max_length=100, verbose_name="Referrer name"
-    )
-    date_of_referral       = fields.DateField(
-        blank=True, null=True, verbose_name="Date of referral"
-    )
+    referrer_title         = models.ForeignKeyOrFreeText(models.Title)
+    referrer_name = fields.CharField(blank=True, null=True, max_length=100)
+    date_of_referral       = fields.DateField(blank=True, null=True)
+    date_referral_received = fields.DateField(blank=True, null=True)
 
-    # Process tracking for admin staff
-    date_referral_received = fields.DateField(
-        blank=True, null=True, verbose_name="Date referral received"
-    )
     # ??
     date_first_contact     = fields.DateField(
         blank=True, null=True, verbose_name="Date of first contact"
@@ -176,7 +191,7 @@ class OHProvider(lookuplists.LookupList):
     pass
 
 
-class Employment(models.EpisodeSubrecord):
+class Employment(RbhlSubrecord, models.EpisodeSubrecord):
     _icon         = 'fa fa-building-o'
     _is_singleton = True
 
@@ -187,7 +202,7 @@ class Employment(models.EpisodeSubrecord):
     firefighter = fields.NullBooleanField()
 
 
-class ClinicLog(models.EpisodeSubrecord):
+class ClinicLog(RbhlSubrecord, models.EpisodeSubrecord):
     _icon         = 'fa fa-hospital-o'
     _is_singleton = True
 
@@ -195,35 +210,20 @@ class ClinicLog(models.EpisodeSubrecord):
         blank=True, default="", max_length=100, verbose_name="Seen by"
     )
     clinic_date        = fields.DateField(blank=True, null=True)
-    diagnosis_made    = fields.NullBooleanField(verbose_name="Diagnosis made")
-    follow_up_planned = fields.NullBooleanField(
-        verbose_name="Follow up planned"
-    )
+    diagnosis_made    = fields.NullBooleanField()
+    follow_up_planned = fields.NullBooleanField()
     date_of_followup  = fields.DateField(
         blank=True, null=True, verbose_name="Date of follow up"
     )
 
-    lung_function       = fields.NullBooleanField(
-        verbose_name="Lung function"
-    )
-    lung_function_date  = fields.DateField(
-        blank=True, null=True, verbose_name="Lung function date"
-    )
-    lung_function_attendance = fields.NullBooleanField(
-        verbose_name="Lung function attendance"
-    )
+    lung_function       = fields.NullBooleanField()
+    lung_function_date  = fields.DateField(blank=True, null=True)
+    lung_function_attendance = fields.NullBooleanField()
 
     histamine           = fields.NullBooleanField()
-    histamine_date      = fields.DateField(
-        blank=True, null=True, verbose_name="Histamine date"
-    )
-    histamine_attendance = fields.NullBooleanField(
-        verbose_name="Histamine attendance"
-    )
-
-    peak_flow           = fields.NullBooleanField(
-        verbose_name="Peak flow"
-    )
+    histamine_date      = fields.DateField(blank=True, null=True)
+    histamine_attendance = fields.NullBooleanField()
+    peak_flow           = fields.NullBooleanField()
 
     other_rbh_bloods    = fields.NullBooleanField(
         verbose_name="Other RBH bloods"
@@ -232,18 +232,14 @@ class ClinicLog(models.EpisodeSubrecord):
         verbose_name="Immunology OEM"
     )
 
-    other_hospital_info = fields.NullBooleanField(
-        verbose_name="Other hospital info"
-    )
+    other_hospital_info = fields.NullBooleanField()
     other_oh_info       = fields.NullBooleanField(
         verbose_name="Other OH info"
     )
     other_gp_info       = fields.NullBooleanField(
         verbose_name="Other GP info"
     )
-    work_samples        = fields.NullBooleanField(
-        verbose_name="Work samples"
-    )
+    work_samples        = fields.NullBooleanField()
 
     outstanding_tests_required = fields.BooleanField(
         default=False
