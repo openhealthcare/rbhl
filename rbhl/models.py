@@ -87,7 +87,7 @@ def get_peak_expiratory_flow(date, episode, trial_num):
 
 class Demographics(models.Demographics):
     height = fields.IntegerField(
-        blank=True, null=True, verbose_name='Height(cm)'
+        blank=True, null=True, verbose_name='Height (cm)'
     )
     MALE = "Male"
     FEMALE = "Female"
