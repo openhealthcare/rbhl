@@ -160,6 +160,18 @@ class RBHReferrer(lookuplists.LookupList):
     pass
 
 
+class ReferralReason(lookuplists.LookupList):
+    pass
+
+
+class ReferralDisease(lookuplists.LookupList):
+    pass
+
+
+class GeographicalArea(lookuplists.LookupList):
+    pass
+
+
 class Referral(RbhlSubrecord, models.EpisodeSubrecord):
     _icon         = 'fa fa-level-up'
     _is_singleton = True
@@ -181,6 +193,21 @@ class Referral(RbhlSubrecord, models.EpisodeSubrecord):
     date_first_appointment = fields.DateField(
         blank=True, null=True, verbose_name="Date of first appointment offered"
     )
+    referral_type = models.ForeignKeyOrFreeText(models.ReferralType)
+    referral_reason = models.ForeignKeyOrFreeText(ReferralReason)
+    referral_disease = models.ForeignKeyOrFreeText(ReferralDisease)
+    geographical_area = models.ForeignKeyOrFreeText(GeographicalArea)
+
+
+class SocialHistory(RbhlSubrecord, models.EpisodeSubrecord):
+    _is_singleton = True
+    _icon = 'fa fa-clock-o'
+
+    SMOKING_CHOICES = enum("Currently", "Ex-smoker", "Never")
+    smoker = fields.CharField(
+        blank=True, null=True, max_length=256, choices=SMOKING_CHOICES
+    )
+    cigerettes_per_day = fields.IntegerField(null=True, blank=True)
 
 
 class Employer(lookuplists.LookupList):
@@ -191,15 +218,98 @@ class OHProvider(lookuplists.LookupList):
     pass
 
 
+class EmploymentCategory(lookuplists.LookupList):
+    pass
+
+
+class JobTitle(lookuplists.LookupList):
+    pass
+
+
 class Employment(RbhlSubrecord, models.EpisodeSubrecord):
     _icon         = 'fa fa-building-o'
     _is_singleton = True
 
+    SUS_OCC_CHOICES = enum(
+        'Yes-employed in suspect occupation',
+        'Yes',
+        'Yes-other occupation',
+        'No'
+    )
+
     employer = fields.CharField(blank=True, null=True, max_length=100)
+    job_title = models.ForeignKeyOrFreeText(JobTitle)
+    employment_category = models.ForeignKeyOrFreeText(
+        EmploymentCategory
+    )
+    employed_in_suspect_occupation = fields.CharField(
+        blank=True,
+        null=True,
+        max_length=256,
+        choices=SUS_OCC_CHOICES
+    )
+    exposures = fields.TextField(blank=True, default="")
     oh_provider = fields.CharField(
         blank=True, null=True, max_length=100, verbose_name="OH provider"
     )
     firefighter = fields.NullBooleanField()
+
+
+class RbhlDiagnosticTesting(RbhlSubrecord, models.EpisodeSubrecord):
+    _is_singleton = True
+    _icon = "fa fa-hand-paper-o"
+
+    ATOPIC_CHOICES = enum("Yes", "No", "Dermatographic")
+    antihistimines = fields.NullBooleanField(null=True, blank=True)
+
+    skin_prick_test = fields.NullBooleanField(null=True, blank=True)
+    atopic = fields.TextField(null=True, blank=True, choices=ATOPIC_CHOICES)
+    specific_skin_prick = fields.NullBooleanField(null=True, blank=True)
+
+    immunology_oem = fields.NullBooleanField(
+        null=True, blank=True, verbose_name="Immunology OEM"
+    )
+
+    # TODO seperate section
+    # bronchial_prov_test = models.NullBooleanField(null=True, blank=True)
+
+    fev_1 = fields.FloatField(
+        null=True, blank=True, verbose_name="FEV1"
+    )
+    fev_1_post_ventolin = fields.FloatField(
+        null=True, blank=True, verbose_name="FEV1 post Ventolin"
+    )
+    fev_1_percentage_protected = fields.IntegerField(
+        null=True, blank=True, verbose_name="FEV1 predicted %"
+    )
+    fvc = fields.FloatField(
+        null=True, blank=True, verbose_name="FVC"
+    )
+    fvc_post_ventolin = fields.FloatField(
+        null=True, blank=True, verbose_name="FVC post Ventolin"
+    )
+    fvc_percentage_protected = fields.IntegerField(
+        null=True, blank=True, verbose_name="FVC predicted %"
+    )
+    ct_chest_scan = fields.NullBooleanField(
+        null=True, blank=True, verbose_name="CT chest scan"
+    )
+    ct_chest_scan_date = fields.DateField(
+        null=True, blank=True, verbose_name="CT chest scan date"
+    )
+    full_lung_function = fields.NullBooleanField(null=True, blank=True)
+    full_lung_function_date = fields.DateField(null=True, blank=True)
+
+    class Meta:
+        verbose_name = "Diagnostic testing"
+
+
+class PresentingComplaint(lookuplists.LookupList):
+    pass
+
+
+class DiagnosisOutcome(lookuplists.LookupList):
+    pass
 
 
 class ClinicLog(RbhlSubrecord, models.EpisodeSubrecord):
@@ -207,15 +317,20 @@ class ClinicLog(RbhlSubrecord, models.EpisodeSubrecord):
     _is_singleton = True
 
     seen_by           = fields.CharField(
-        blank=True, default="", max_length=100, verbose_name="Seen by"
+        blank=True, default="", max_length=100
     )
     clinic_date        = fields.DateField(blank=True, null=True)
-    diagnosis_made    = fields.NullBooleanField()
-    follow_up_planned = fields.NullBooleanField()
-    date_of_followup  = fields.DateField(
-        blank=True, null=True, verbose_name="Date of follow up"
+    clinic_site        = fields.CharField(
+        blank=True, null=True, max_length=256, default="OCLD"
     )
-
+    diagnosis_made    = fields.NullBooleanField()
+    diagnosis_outcome = models.ForeignKeyOrFreeText(
+        DiagnosisOutcome
+    )
+    referred_to = fields.CharField(blank=True, null=True, max_length=256)
+    follow_up_planned = fields.NullBooleanField()
+    date_of_followup  = fields.DateField(blank=True, null=True)
+    presenting_complaint = models.ForeignKeyOrFreeText(PresentingComplaint)
     lung_function       = fields.NullBooleanField()
     lung_function_date  = fields.DateField(blank=True, null=True)
     lung_function_attendance = fields.NullBooleanField()
