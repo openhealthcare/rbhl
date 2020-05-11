@@ -1,0 +1,17 @@
+{% load forms %}
+{% input field="Diagnosis.condition" %}
+<div class="row" ng-show="editing.diagnosis.condition === '{{ models.Diagnosis.ASTHMA }}'">
+  {% radio field="Diagnosis.asthma_options" %}
+</div>
+<div class="row"  ng-show="editing.diagnosis.condition === '{{ models.Diagnosis.RHINITIS }}'">
+  {% radio field="Diagnosis.rhinitis_options" %}
+</div>
+<div class="row" ng-show="editing.diagnosis.condition === '{{ models.Diagnosis.ASTHMA }}' || editing.diagnosis.condition === '{{ models.Diagnosis.RHINITIS }}'">
+  {% textarea field="Diagnosis.sensitivities" %}
+</div>
+<div class="row" ng-show="editing.diagnosis.condition && editing.diagnosis.condition.length && (editing.diagnosis.condition !== '{{ models.Diagnosis.ASTHMA }}' && editing.diagnosis.condition !== '{{ models.Diagnosis.RHINITIS }}')">
+  {% textarea field="Diagnosis.sensitivities" %}
+</div>
+
+
+

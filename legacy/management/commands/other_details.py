@@ -409,53 +409,43 @@ class Command(BaseCommand):
                 has_non_occupational_asthma=to_bool(row["AsthmaNonOcc"]),
             )
 
-    def convert_diagnostic_asthma(self, patient, episode):
-        """
-        if only DiagnosticAsthma.asthma then Asthma.other = True
-        else
-            DiagnosticAsthma.occupational_asthma_caused_by_sensitisation
-                -> Asthma.occupational_caused_by_sensitisation
-            DiagnosticAsthma.is_exacerbated_by_work -> Asthma.exacerbated_by_work
-            DiagnosticAsthma.has_infant_induced_asthma -> Asthma.irritant_induced
-            DiagnosticAsthma.has_non_occupational_asthma -> Asthma.non_occupational
-        DiagnosticAsthma.sensitising_agent -> Sensitivites.sensitivities
-        """
-        diagnostic_asthma = patient.diagnosticasthma_set.all()[0]
-        asthma = episode.asthma_set.all()[0]
-        sensitivities = episode.sensitivities_set.all()[0]
+    def convert_to_diagnosis_asthma(self, patient, episode):
+        asthma = patient.diagnosticasthma_set.all()[0]
 
-        changed = False
-        if diagnostic_asthma.occupational_asthma_caused_by_sensitisation:
-            asthma.occupational_caused_by_sensitisation = True
-            changed = True
-        if diagnostic_asthma.is_exacerbated_by_work:
-            asthma.exacerbated_by_work = True
-            changed = True
-        if diagnostic_asthma.has_infant_induced_asthma:
-            asthma.irritant_induced = True
-            changed = True
-        if diagnostic_asthma.has_non_occupational_asthma:
-            asthma.non_occupational = True
-            changed = True
-        if diagnostic_asthma.asthma and not changed:
-            asthma.other = True
+        if any([
+            asthma.asthma,
+            asthma.is_exacerbated_by_work,
+            asthma.has_infant_induced_asthma,
+            asthma.occupational_asthma_caused_by_sensitisation,
+            asthma.has_non_occupational_asthma
+        ]):
+            diagnosis = models.Diagnosis.objects.create(episode=episode)
+            diagnosis.condition = models.Diagnosis.ASTHMA
 
-        if diagnostic_asthma.sensitising_agent is not None:
-            asthma_sensitivites = [
-                i.strip() for i in diagnostic_asthma.sensitising_agent.split("\n")
-            ]
-            existing_sensitivities = [
-                i.strip() for i in sensitivities.sensitivities.split("\n")
-            ]
-            lower_sensitivites = set([i.lower() for i in existing_sensitivities])
-            to_add = [
-                i for i in asthma_sensitivites if i.lower() not in lower_sensitivites
-            ]
-            new_values = [i for i in sorted(existing_sensitivities + to_add) if i]
-            sensitivities.sensitivities = "\n".join(new_values)
-            sensitivities.save()
+            sensitivities = asthma.sensitising_agent
 
-        asthma.save()
+            cleaned = [
+                i.strip() for i in sensitivities.split("\n") if i.strip()
+            ]
+
+            diagnosis.sensitivities = "\n".join(cleaned)
+            # order of priority for what overrides
+            # occupational asthma caused by sensitisation > is exacerbated by work >
+            # has irritant induced asthma > has non occupational asthma
+
+            option = ""
+
+            if asthma.occupational_asthma_caused_by_sensitisation:
+                option = models.Diagnosis.OCCUPATIONAL_CAUSED_BY_SENSITISATION
+            elif asthma.is_exacerbated_by_work:
+                option = models.Diagnosis.EXACERBATED_BY_WORK
+            elif asthma.has_infant_induced_asthma:
+                option = models.Diagnosis.IRRITANT_INDUCED
+            elif asthma.has_non_occupational_asthma:
+                option = models.Diagnosis.NON_OCCUPATIONAL
+
+            diagnosis.asthma_options = option
+            diagnosis.save()
 
     def build_diagnostic_rhinitis(self, patientLUT, rows):
         for row in rows:
@@ -487,51 +477,42 @@ class Command(BaseCommand):
                 has_non_occupational_rhinitis=has_non_occ_rhinitis,
             )
 
-    def convert_diagnostic_rhinitis(self, patient, episode):
-        """
-        if only DiagnosticRhinitis.rhinitis then Rhinitis.other = True
-        else
-            DiagnosticRhinitis.occupational_caused_by_sensitisation
-                -> Rhinitis.occupational
-            DiagnosticRhinitis.work_exacerbated
-                -> Rhinitis.exacerbated_by_work
-            DiagnosticRhinitis.has_non_occupational_rhinitis
-                -> Rhinitis.non_occupational
-        DiagnosticRhinitis.rhinitis_occupational_sensitisation_cause
-            -> Sensitivites.sensitivities
-        """
-        diagnostic_rhinitis = patient.diagnosticrhinitis_set.all()[0]
-        rhinitis = episode.rhinitis_set.all()[0]
-        sensitivities = episode.sensitivities_set.all()[0]
-        changed = False
-        if diagnostic_rhinitis.occupational_rhinitis_caused_by_sensitisation:
-            rhinitis.occupational_caused_by_sensitisation = True
-            changed = True
-        if diagnostic_rhinitis.work_exacerbated:
-            rhinitis.exacerbated_by_work = True
-            changed = True
-        if diagnostic_rhinitis.has_non_occupational_rhinitis:
-            rhinitis.non_occupational = True
-            changed = True
-        if diagnostic_rhinitis.rhinitis and not changed:
-            rhinitis.other = True
+    def convert_to_diagnosis_rhinitis(self, patient, episode):
+        rhinitis = patient.diagnosticrhinitis_set.all()[0]
 
-        cause_string = diagnostic_rhinitis.rhinitis_occupational_sensitisation_cause
-        if cause_string is not None:
-            causes = cause_string.split("\n")
-            rhintis_sensitivites = [i.strip() for i in causes]
-            existing_sensitivities = [
-                i.strip() for i in sensitivities.sensitivities.split("\n")
+        if any([
+            rhinitis.rhinitis,
+            rhinitis.work_exacerbated,
+            rhinitis.occupational_rhinitis_caused_by_sensitisation,
+            rhinitis.has_non_occupational_rhinitis
+        ]):
+            diagnosis = models.Diagnosis.objects.create(episode=episode)
+            diagnosis.condition = models.Diagnosis.RHINITIS
+
+            # order of priority for what overrides
+            # occupational_rhinitis_caused_by_sensitisation > work_exacerbated >
+            # has non occupational asthma
+
+            option = ""
+
+            if rhinitis.occupational_rhinitis_caused_by_sensitisation:
+                option = models.Diagnosis.OCCUPATIONAL_CAUSED_BY_SENSITISATION
+            elif rhinitis.work_exacerbated:
+                option = models.Diagnosis.EXACERBATED_BY_WORK
+            elif rhinitis.has_non_occupational_rhinitis:
+                option = models.Diagnosis.NON_OCCUPATIONAL
+
+            diagnosis.rhinitis_options = option
+
+            sensitivities = rhinitis.rhinitis_occupational_sensitisation_cause
+
+            cleaned = [
+                i.strip() for i in sensitivities.split("\n") if i.strip()
             ]
-            lower_sensitivities = set([i.lower() for i in existing_sensitivities])
-            to_add = [
-                i for i in rhintis_sensitivites if i.lower() not in lower_sensitivities
-            ]
-            new_values = [i for i in sorted(existing_sensitivities + to_add) if i]
-            sensitivities.sensitivities = "\n".join(new_values)
-            sensitivities.save()
-            sensitivities.save()
-        rhinitis.save()
+
+            diagnosis.sensitivities = "\n".join(cleaned)
+
+            diagnosis.save()
 
     def build_diagnostic_other(self, patientLUT, rows):
         for row in rows:
@@ -568,94 +549,90 @@ class Command(BaseCommand):
                 other_diagnosis_type_other=row["OtherDiagOther"],
             )
 
-    def convert_diagnostic_other(self, patient, episode):
-        """
-        DiagnosticOther.copd -> ChronicAirFlowLimitation.copd
-        DiagnosticOther.emphysema -> ChronicAirFlowLimitation.emphysema
-        DiagnosticOther.copd_with_emphysema
-            -> ChronicAirFlowLimitation.copd + ChronicAirFlowLimitation.emphysema
-        DiagnosticOther.copd_is_occupational
-            -> ChronicAirFlowLimitation.occupational
-        DiagnosticOther.malignancy_is_occupational
-            -> Disease.malignancy_is_occupational
-        DiagnosticOther.malignancy_type
-            -> Disease.malignancy
-        DiagnosticOther.malignancy_type_other
-            -> Disease.malignancy
-        DiagnosticOther.diffuse_lung_disease_type
-            -> Disease.diffuse_lung_disease
-        DiagnosticOther.diffuse_lung_disease_type_other
-            -> Disease.diffuse_lung_disease
-        DiagnosticOther.diffuse_lung_disease_is_occupational
-            -> Disease.diffuse_lung_disease_occupational
-        DiagnosticOther.benign_pleural_disease_type
-            -> Disease.benign_pleural_disease
-        DiagnosticOther.other_diagnosis
-            -> OtherDiagnostic.other_diagnosis
-        DiagnosticOther.other_diagnosis_type_other
-            -> OtherDiagnostic.other_diagnosis
-        DiagnosticOther.other_diagnosis_is_occupational
-            -> OtherDiagnostic.other_diagnosis_occupational
-        DiagnosticOther.NAD -> OtherDiagnostic.nad
-        """
-        diagnostic_other = patient.diagnosticother_set.all()[0]
-        chronic_air_flow_limitation = episode.chronicairflowlimitation_set.get()
-        chronic_air_flow_limitation.copd = bool(diagnostic_other.copd)
-        chronic_air_flow_limitation.emphysema = bool(diagnostic_other.emphysema)
-        chronic_air_flow_limitation.occupational = bool(
-            diagnostic_other.copd_is_occupational
-        )
-        chronic_air_flow_limitation.save()
+    def convert_to_diagnosis_other(self, patient, episode):
+        other = patient.diagnosticother_set.all()[0]
 
-        disease = episode.disease_set.get()
+        if any([
+            other.copd,
+            other.copd_with_emphysema,
+        ]):
+            diagnosis = models.Diagnosis.objects.create(episode=episode)
+            diagnosis.condition = "COPD"
+            diagnosis.occupational = other.copd_is_occupational
+            diagnosis.save()
 
-        if diagnostic_other.malignancy_type_other:
-            malignancy_type = diagnostic_other.malignancy_type_other
-        else:
-            malignancy_type = diagnostic_other.malignancy_type
+        if any([
+            other.emphysema,
+            other.copd_with_emphysema,
+        ]):
+            diagnosis = models.Diagnosis.objects.create(episode=episode)
+            diagnosis.condition = "Emphysema"
+            # might seem odd but COPD and emphysema are on the same section
+            # and the occupational check box applies to both
+            diagnosis.occupational = other.copd_is_occupational
+            diagnosis.save()
 
-        disease.malignancy = malignancy_type
-        disease.malignancy_occupational = bool(
-            diagnostic_other.malignancy_is_occupational
-        )
+        if any([
+            other.malignancy,
+            other.malignancy_type,
+            other.malignancy_type_other
+        ]):
+            diagnosis = models.Diagnosis.objects.create(episode=episode)
+            if other.malignancy_type_other:
+                diagnosis.condition = other.malignancy_type_other
+            elif other.malignancy_type:
+                diagnosis.condition = other.malignancy_type
+            else:
+                diagnosis.condition = "Malignancy"
+            diagnosis.occupational = other.malignancy_is_occupational
+            diagnosis.save()
 
-        diffuse_lung_disease_type = diagnostic_other.diffuse_lung_disease_type
-        diffuse_lung_disease_other = diagnostic_other.diffuse_lung_disease_type_other
+        if other.NAD:
+            diagnosis = models.Diagnosis.objects.create(episode=episode)
+            diagnosis.condition = "NAD"
+            diagnosis.save()
 
-        if diffuse_lung_disease_other:
-            diffuse_lung_disease_type = diffuse_lung_disease_other
-        disease.diffuse_lung_disease = diffuse_lung_disease_type
+        if any([
+            other.diffuse_lung_disease,
+            other.diffuse_lung_disease_type,
+            other.diffuse_lung_disease_type_other,
+        ]):
+            diagnosis = models.Diagnosis.objects.create(episode=episode)
+            if other.diffuse_lung_disease_type_other:
+                diagnosis.condition = other.diffuse_lung_disease_type_other
+            elif other.diffuse_lung_disease_type:
+                diagnosis.condition = other.diffuse_lung_disease_type
+            else:
+                diagnosis.condition = "Diffuse lung disease"
 
-        is_occ = bool(diagnostic_other.diffuse_lung_disease_is_occupational)
-        disease.diffuse_lung_disease_occupational = is_occ
+            diagnosis.occupational = other.diffuse_lung_disease_is_occupational
+            diagnosis.save()
 
-        benign_pleural_disease = diagnostic_other.benign_pleural_disease_type
-        if benign_pleural_disease == "Difuse":
-            benign_pleural_disease = "Diffuse"
-        disease.benign_pleural_disease = diagnostic_other.benign_pleural_disease_type
-        disease.save()
+        if any([
+            other.benign_pleural_disease,
+            other.benign_pleural_disease_type,
+        ]):
+            diagnosis = models.Diagnosis.objects.create(episode=episode)
+            if other.benign_pleural_disease_type:
+                diagnosis.condition = other.benign_pleural_disease_type
+            else:
+                diagnosis.condition = "Benigin pleural disease"
+            diagnosis.save()
 
-        other_diagnostic = episode.otherdiagnostic_set.get()
-        if diagnostic_other.other_diagnosis_type_other:
-            other_diagnosis = diagnostic_other.other_diagnosis_type_other
-        else:
-            other_diagnosis = diagnostic_other.other_diagnosis_type
-
-        if other_diagnosis:
-            if other_diagnosis.lower() == "acute pneumonitis":
-                other_diagnosis = "Chemical pneumonitis"
-            elif other_diagnosis.lower() == "building related illness":
-                other_diagnosis = "Building related symptoms "
-            elif other_diagnosis.lower() == "hyperventilation":
-                other_diagnosis = "Breathing pattern disorder"
-
-        other_diagnostic.other_diagnosis = other_diagnosis
-
-        other_diagnosis_occupational = diagnostic_other.other_diagnosis_is_occupational
-        other_diagnosis_occupational = bool(other_diagnosis_occupational)
-        other_diagnostic.other_diagnosis_occupational = other_diagnosis_occupational
-        other_diagnostic.nad = bool(diagnostic_other.NAD)
-        other_diagnostic.save()
+        if any([
+            other.other_diagnosis_type,
+            other.other_diagnosis_type_other,
+            other.other_diagnosis,
+        ]):
+            diagnosis = models.Diagnosis.objects.create(episode=episode)
+            if other.other_diagnosis_type_other:
+                diagnosis.condition = other.other_diagnosis_type_other
+            elif other.other_diagnosis_type:
+                diagnosis.condition = other.other_diagnosis_type
+            else:
+                diagnosis.condition = "Other"
+            diagnosis.occupational = other.other_diagnosis_is_occupational
+            diagnosis.save()
 
     def build_other(self, patientLUT, rows):
         for row in rows:
@@ -713,53 +690,6 @@ class Command(BaseCommand):
                     name=referral_type
                 )
 
-        malignancy_types = [
-            "Mesothelioma:",
-            "Bronchus - other",
-            "Bronchus with asbestos exposure"
-        ]
-
-        for malignancy_type in malignancy_types:
-            models.MalignancyType.objects.get_or_create(name=malignancy_type)
-
-        diffuse_lung_diseases = [
-            "Asbestosis"
-            "Silicosis"
-            "Hypersensitivity pneumonitis"
-            "ILD Other"
-            "Berylliosis"
-            "Ideopathic Pulmonary Fibrosis"
-            "Sarcodisis"
-        ]
-
-        for diffuse_lung_disease in diffuse_lung_diseases:
-            models.DiffuseLungDisease.objects.get_or_create(name=diffuse_lung_disease)
-
-        other_diagnoses = [
-            "Humidifier fever",
-            "Polymer fume fever",
-            "Infection",
-            "Chemical pneumonitis",
-            "Building related symptoms",
-            "Breathing pattern disorder",
-            "Induced laryngeal obstruction",
-            "Air travel related symptoms",
-            "Medically unexplained symptoms",
-            "Cough due to irritant symptoms "
-        ]
-
-        for other_diagnosis in other_diagnoses:
-            models.OtherDiagnosisType.objects.get_or_create(name=other_diagnosis)
-
-        benign_pleural_disease_types = [
-            "Predominantly plaques",
-            "Diffuse"
-        ]
-        for benign_pleural_disease_type in benign_pleural_disease_types:
-            models.BenignPleuralDisease.objects.get_or_create(
-                name=benign_pleural_disease_type
-            )
-
         diagnosis_outcomes = [
             "Known",
             "Not established referred to someone else",
@@ -783,6 +713,7 @@ class Command(BaseCommand):
             "diagnosticoutcome_set",
             "diagnosticasthma_set",
             "diagnosticrhinitis_set",
+            "diagnosticother_set",
             "demographics_set",
         )
 
@@ -790,10 +721,6 @@ class Command(BaseCommand):
             patient__in=qs
         ).prefetch_related(
             "cliniclog_set",
-            "rhinitis_set",
-            "sensitivities_set",
-            "asthma_set",
-            "sensitivities_set",
             "rbhldiagnostictesting_set",
             "employment_set",
             "referral_set",
@@ -819,19 +746,20 @@ class Command(BaseCommand):
             self.convert_diagnostic_outcome(
                 patient, patient_id_to_episode[patient.id]
             )
-            self.convert_diagnostic_asthma(
+            self.convert_to_diagnosis_asthma(
                 patient, patient_id_to_episode[patient.id]
             )
-            self.convert_diagnostic_rhinitis(
+            self.convert_to_diagnosis_rhinitis(
                 patient, patient_id_to_episode[patient.id]
             )
-            self.convert_diagnostic_other(
+            self.convert_to_diagnosis_other(
                 patient, patient_id_to_episode[patient.id]
             )
 
         build_lookup_list(models.Referral, models.Referral.referral_reason)
         models.ReferralReason.objects.get_or_create(name="Environmental")
         build_lookup_list(models.Referral, models.Referral.referral_disease)
+        build_lookup_list(models.Diagnosis, models.Diagnosis.condition)
         build_lookup_list(models.ClinicLog, models.ClinicLog.presenting_complaint)
         build_lookup_list(models.Employment, models.Employment.employment_category)
         build_lookup_list(models.Employment, models.Employment.job_title)

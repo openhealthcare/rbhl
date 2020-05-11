@@ -111,10 +111,6 @@ class Allergies(models.Allergies):
     pass
 
 
-class Diagnosis(models.Diagnosis):
-    _title = 'Diagnosis'
-
-
 class PastMedicalHistory(models.PastMedicalHistory):
     pass
 
@@ -556,6 +552,49 @@ class DiagnosisRhinitis(models.EpisodeSubrecord):
         max_length=200, blank=True, null=True,
         choices=YN
     )
+
+
+class Diagnosis(RbhlSubrecord, models.Diagnosis):
+    _icon = 'fa fa-stethoscope'
+
+    OCCUPATIONAL_CAUSED_BY_SENSITISATION = "Occupational caused by sensitisation"
+    EXACERBATED_BY_WORK = "Exacerbated by work"
+    IRRITANT_INDUCED = "Irritant induced"
+    NON_OCCUPATIONAL = "Non occupational"
+
+    # if the user chooses asthma as the diagnosis they have
+    # the following options and sensitivities
+    ASTHMA_CHOICES = enum(
+        OCCUPATIONAL_CAUSED_BY_SENSITISATION,
+        EXACERBATED_BY_WORK,
+        IRRITANT_INDUCED,
+        NON_OCCUPATIONAL,
+    )
+
+    ASTHMA = "Asthma"
+    RHINITIS = "Rhinitis"
+
+    # if the user chooses rhinitis as the diagnosis they have
+    # the following options and sensitivities
+    RHINITIS_CHOICES = enum(
+        OCCUPATIONAL_CAUSED_BY_SENSITISATION,
+        EXACERBATED_BY_WORK,
+        NON_OCCUPATIONAL,
+    )
+    asthma_options = fields.TextField(
+        blank=True, default="", choices=ASTHMA_CHOICES
+    )
+    rhinitis_options = fields.TextField(
+        blank=True, default="", choices=RHINITIS_CHOICES
+    )
+
+    # Only shown if the diagnosis is asthma or rhinitis
+    sensitivities = fields.TextField(
+        blank=True, null=True
+    )
+
+    # Only shown if the diganosis is not rhinitis or asthma
+    occupational = fields.NullBooleanField(default=False)
 
 
 class ImportedFromPeakFlowDatabase(models.EpisodeSubrecord):

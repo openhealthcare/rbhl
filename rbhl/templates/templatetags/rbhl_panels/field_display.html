@@ -3,13 +3,24 @@
     <div class="col-md-{{ label_size }}">
         <b>{{ label }}:</b>
     </div>
-    <div class="col-md-{{ field_size }}" ng-show="item.{{ field_name }}">
+    <div class="col-md-{{ field_size }} text-left" ng-show="item.{{ field_name }}">
         {% if is_boolean %}
             {% icon "fa-check" %}
         {% elif is_date %}
             [[ item.{{ field_name }}|displayDate ]]
+        {% elif markdown %}
+            <div markdown="{{ field_name }}"></div>
         {% else %}
             [[ item.{{ field_name }} ]]
+        {% endif %}
+        {% if parenthesis_field_name %}
+          <span ng-if="item.{{ parenthesis_field_name }}">
+          {% if parenthesis_field_is_date %}
+          ([[ item.{{ parenthesis_field_name }}|displayDate ]])
+          {% else %}
+          ([[ item.{{ parenthesis_field_name }} ]])
+          {% endif %}
+          </span>
         {% endif %}
     </div>
 </div>

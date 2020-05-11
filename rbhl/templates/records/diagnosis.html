@@ -1,0 +1,20 @@
+{% load rbhl_panels %}
+<span ng-show="item.condition === '{{ models.Diagnosis.ASTHMA }}'">
+  {% field_display "Diagnosis.condition" parenthesis_field="Diagnosis.asthma_options" %}
+</span>
+<span ng-show="item.condition === '{{ models.Diagnosis.RHINITIS }}'">
+  {% field_display "Diagnosis.condition" parenthesis_field="Diagnosis.rhinitis_options" %}
+</span>
+<div ng-show="item.condition === '{{ models.Diagnosis.ASTHMA }}' || item.condition === '{{ models.Diagnosis.RHINITIS }}'" class="row">
+  {% field_display "Diagnosis.sensitivities" markdown=True %}
+</div>
+<div ng-show="item.condition !== '{{ models.Diagnosis.ASTHMA }}' && item.condition !== '{{ models.Diagnosis.RHINITIS }}'" class="row">
+  <div class="col-md-6">
+    Condition:
+  </div>
+  <div class="col-md-6">
+    [[ item.condition ]] <span ng-show="item.occupational">(Occupational)</span>
+  </div>
+</div>
+
+
