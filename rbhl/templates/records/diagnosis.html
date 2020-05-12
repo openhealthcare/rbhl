@@ -8,17 +8,19 @@
 <span ng-show="item.diagnosis_type === '{{ models.Diagnosis.NAD }}'">
   {% field_display "Diagnosis.diagnosis_type" %}
 </span>
-<div ng-show="item.diagnosis_type === '{{ models.Diagnosis.ASTHMA }}' || item.diagnosis_type === '{{ models.Diagnosis.RHINITIS }}'" class="row">
+<span ng-show="item.diagnosis_type === '{{ models.Diagnosis.ASTHMA }}' || item.diagnosis_type === '{{ models.Diagnosis.RHINITIS }}'">
   {% field_display "Diagnosis.sensitivities" markdown=True %}
-</div>
-<div ng-show="item.diagnosis_type !== '{{ models.Diagnosis.NAD }}' && item.diagnosis_type !== '{{ models.Diagnosis.ASTHMA }}' && item.diagnosis_type !== '{{ models.Diagnosis.RHINITIS }}'" class="row">
+</span>
+<span ng-show="item.diagnosis_type !== '{{ models.Diagnosis.NAD }}' && item.diagnosis_type !== '{{ models.Diagnosis.ASTHMA }}' && item.diagnosis_type !== '{{ models.Diagnosis.RHINITIS }}'">
   {% field_display "Diagnosis.diagnosis_type" %}
-  <div class="col-md-6">
-    Condition:
+  <div class="row">
+    <div class="col-md-6">
+      Condition:
+    </div>
+    <div class="col-md-6">
+      [[ item.condition ]] <span ng-show="item.occupational">(Occupational)</span>
+    </div>
   </div>
-  <div class="col-md-6">
-    [[ item.condition ]] <span ng-show="item.occupational">(Occupational)</span>
-  </div>
-</div>
+</span>
 
 

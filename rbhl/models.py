@@ -681,6 +681,109 @@ class Diagnosis(RbhlSubrecord, models.Diagnosis):
     occupational = fields.NullBooleanField(default=False)
 
 
+class BronchialChallengeSubstance(lookuplists.LookupList):
+    pass
+
+
+class DiagnosticTest(RbhlSubrecord, models.Diagnosis):
+    _icon = "fa fa-hand-paper-o"
+
+    SKIN_PRICK_TEST = "Skin prick test"
+    BRONCHIAL_TEST = "Bronchial test"
+    ROUTINE_SPT = "Routine SPT"
+    SPIROMETRY_TEST = "Spirometry"
+    CT_CHEST_SCAN = "CT chest scan"
+    FULL_LUNG_FUNCTION = "Full lung function"
+
+    test_type_choices = enum(
+        SKIN_PRICK_TEST, BRONCHIAL_TEST, ROUTINE_SPT,
+        SPIROMETRY_TEST, CT_CHEST_SCAN, FULL_LUNG_FUNCTION
+    )
+
+    test_type = fields.CharField(
+        blank=True, null=True, max_length=256, choices=test_type_choices
+    )
+
+    # skin prick tests -----------
+    ATOPIC_CHOICES = enum("Yes", "No", "Dermatographic")
+
+    test_date = fields.DateField(null=True, blank=True)
+    specific_sp_testnum = fields.IntegerField(
+        null=True, blank=True, verbose_name=""
+    )
+    antihistimines = fields.NullBooleanField(null=True, blank=True)
+
+    # stored in the legacy model as serum antibodies
+    immunology_oem = fields.NullBooleanField(
+        null=True, blank=True, choices=ATOPIC_CHOICES, verbose_name="Immunology OEM"
+    )
+    specifc_skin_prick_test = fields.NullBooleanField(null=True, blank=True)
+    atopic = fields.TextField(
+        null=True, blank=True, choices=ATOPIC_CHOICES
+    )
+    spt = fields.TextField(default="", blank=True, verbose_name="SPT")
+    wheal = fields.FloatField(null=True, blank=True)
+
+    # bronchial tests -----------
+    BRONCHIAL_TEST_RESULTS = enum(
+        'Positive',
+        'Negative',
+        'Inconclusive',
+        'Irritant reaction',
+        'Positive rhinitis',
+        'Laryngeal /vocal cord dysfunction',
+        'coughing',
+        'VCD',
+        'recreated symptoms',
+    )
+
+    BRONCHIAL_RESPONSE_TYPES = enum(
+        'Dual',
+        'Late',
+        'Early',
+        'Other',
+    )
+
+    bronchial_test_num = fields.IntegerField(null=True, blank=True)
+    date_of_challenge = fields.DateField(blank=True, null=True)
+    substance = models.ForeignKeyOrFreeText(BronchialChallengeSubstance)
+    last_exposed = fields.DateField(blank=True, null=True)
+    duration_exposed = fields.CharField(blank=True, null=True, max_length=256)
+
+    # a combination of the legacy models fields foo and other
+    result = fields.CharField(
+        blank=True, null=True, max_length=256, choices=BRONCHIAL_TEST_RESULTS
+    )
+    # from the response field other_type
+    response_type = fields.CharField(
+        blank=True, null=True, max_length=256, choices=BRONCHIAL_RESPONSE_TYPES
+    )
+    baseline_pc20 = fields.CharField(blank=True, null=True, max_length=256)
+    lowest_pc20 = fields.CharField(blank=True, null=True, max_length=256)
+
+    # routine spt -----------
+    neg_control = fields.FloatField(null=True, blank=True)
+    pos_control = fields.FloatField(null=True, blank=True)
+    asp_fumigatus = fields.FloatField(null=True, blank=True)
+    grass_pollen = fields.FloatField(null=True, blank=True)
+    cat = fields.FloatField(null=True, blank=True)
+    d_pter = fields.FloatField(null=True, blank=True)
+
+    # SPIROMETRY_TEST  -----------
+    fev_1 = fields.FloatField(null=True, blank=True)
+    fev_1_post_ventolin = fields.FloatField(null=True, blank=True)
+    fev_1_percentage_predicted = fields.IntegerField(null=True, blank=True)
+    fvc = fields.FloatField(null=True, blank=True)
+    fvc_post_ventolin = fields.FloatField(null=True, blank=True)
+    fvc_percentage_predicted = fields.IntegerField(null=True, blank=True)
+
+    # Chest CT scan  ----------
+    ct_chest_scan_date = fields.DateField(null=True, blank=True)
+
+    # Full lung function  ----------
+    full_lung_function_date = fields.DateField(null=True, blank=True)
+
+
 class ImportedFromPeakFlowDatabase(models.EpisodeSubrecord):
     """
     The occupational lung database was the database before

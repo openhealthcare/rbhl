@@ -20,13 +20,11 @@
   {% checkbox field="Diagnosis.occupational" %}
 </div>
 
-
 {# diagnosis type is MALIGNANCY #}
 <div class="row"  ng-show="editing.diagnosis.diagnosis_type === '{{ models.Diagnosis.MALIGNANCY }}'">
   {% input field="Diagnosis.condition" lookuplist=models.Diagnosis.malignancy_conditions_json %}
   {% checkbox field="Diagnosis.occupational" %}
 </div>
-
 
 {# diagnosis type is DIFFUSE #}
 <div class="row"  ng-show="editing.diagnosis.diagnosis_type === '{{ models.Diagnosis.DIFFUSE }}'">

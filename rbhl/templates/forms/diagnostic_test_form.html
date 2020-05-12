@@ -1,0 +1,225 @@
+{% load forms %}
+
+{% select field="DiagnosticTest.test_type" %}
+
+{# test type is SKIN_PRICK_TEST #}
+<span ng-show="editing.diagnostic_test.test_type === '{{ models.DiagnosticTest.SKIN_PRICK_TEST }}'">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="horizontal-form">
+        {% select field="DiagnosticTest.atopic" style="vertical" %}
+      </div>
+    </div>
+  </div>
+
+  <div class="row form-row">
+    <div class="col-md-4">
+        <div class="row">
+            <div class="col-sm-9 col-sm-push-3">
+                {% checkbox field="DiagnosticTest.antihistimines" style="vertical" %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+      <div class="row">
+          <div class="col-sm-9 col-sm-push-3">
+              {% checkbox field="DiagnosticTest.immunology_oem" style="vertical" %}
+          </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="row">
+          <div class="col-sm-9 col-sm-push-3">
+              {% checkbox field="DiagnosticTest.specifc_skin_prick_test" style="vertical" %}
+          </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row form-row">
+    <div class="col-md-6">
+      <div class="horizontal-form">
+        {% datepicker field="DiagnosticTest.test_date" style="vertical" %}
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="horizontal-form">
+        {% input field="DiagnosticTest.specific_sp_testnum" style="vertical" %}
+      </div>
+    </div>
+  </div>
+  <div class="row"></div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="horizontal-form">
+        {% input field="DiagnosticTest.spt" style="vertical" %}
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="horizontal-form">
+        {% input field="DiagnosticTest.wheal" style="vertical" %}
+      </div>
+    </div>
+  </div>
+</span>
+
+{# test type is BRONCHIAL_TEST #}
+<span ng-show="editing.diagnostic_test.test_type === '{{ models.DiagnosticTest.BRONCHIAL_TEST }}'">
+  <div class="row" >
+    <div class="col-md-6">
+      <div class="horizontal-form">
+        {% input field="DiagnosticTest.bronchial_test_num" style="vertical" %}
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="horizontal-form">
+        {% datepicker field="DiagnosticTest.date_of_challenge" style="vertical" %}
+      </div>
+    </div>
+  </div>
+  <div class="row" >
+    <div class="col-md-6">
+      <div class="horizontal-form">
+        {% input field="DiagnosticTest.substance" style="vertical" %}
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="horizontal-form">
+        {% select field="DiagnosticTest.result" style="vertical" %}
+      </div>
+    </div>
+  </div>
+  <div class="row" >
+    <div class="col-md-6">
+      <div class="horizontal-form">
+        {% input field="DiagnosticTest.response_type" style="vertical" %}
+      </div>
+    </div>
+  </div>
+  <div class="row" >
+    <div class="col-md-6">
+      <div class="horizontal-form">
+        {% datepicker field="DiagnosticTest.last_exposed" style="vertical" %}
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="horizontal-form">
+        {% input field="DiagnosticTest.duration_exposed" style="vertical" %}
+      </div>
+    </div>
+  </div>
+  <div class="row" >
+    <div class="col-md-6">
+      <div class="horizontal-form">
+        {% input field="DiagnosticTest.baseline_pc20" style="vertical" %}
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="horizontal-form">
+        {% input field="DiagnosticTest.lowest_pc20" style="vertical" %}
+      </div>
+    </div>
+  </div>
+</span>
+
+
+{# test type is ROUTINE_SPT #}
+<span ng-show="editing.diagnostic_test.test_type === '{{ models.DiagnosticTest.ROUTINE_SPT }}'">
+  <div class="row" >
+    <div class="col-md-6">
+      <div class="horizontal-form">
+        {% input field="DiagnosticTest.neg_control" style="vertical" %}
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="horizontal-form">
+        {% input field="DiagnosticTest.pos_control" style="vertical" %}
+      </div>
+    </div>
+  </div>
+
+  <div class="row" >
+    <div class="col-md-6">
+      <div class="horizontal-form">
+        {% input field="DiagnosticTest.asp_fumigatus" style="vertical" %}
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="horizontal-form">
+        {% input field="DiagnosticTest.grass_pollen" style="vertical" %}
+      </div>
+    </div>
+  </div>
+
+  <div class="row" >
+    <div class="col-md-6">
+      <div class="horizontal-form">
+        {% input field="DiagnosticTest.cat" style="vertical" %}
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="horizontal-form">
+        {% input field="DiagnosticTest.d_pter" style="vertical" %}
+      </div>
+    </div>
+  </div>
+</span>
+
+{# test type is SPIROMETRY_TEST #}
+<span ng-show="editing.diagnostic_test.test_type === '{{ models.DiagnosticTest.SPIROMETRY_TEST }}'">
+  <div class="row" >
+    <div class="col-md-6">
+      <div class="horizontal-form">
+        {% input field="DiagnosticTest.fev_1" style="vertical" %}
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="horizontal-form">
+        {% input field="DiagnosticTest.fvc" style="vertical" %}
+      </div>
+    </div>
+  </div>
+  <div class="row" >
+    <div class="col-md-6">
+      <div class="horizontal-form">
+        {% input field="DiagnosticTest.fev_1_post_ventolin" style="vertical" %}
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="horizontal-form">
+        {% input field="DiagnosticTest.fvc_post_ventolin" style="vertical" %}
+      </div>
+    </div>
+  </div>
+  <div class="row" >
+    <div class="col-md-6">
+      <div class="horizontal-form">
+        {% input field="DiagnosticTest.fev_1_percentage_predicted" style="vertical" %}
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="horizontal-form">
+        {% input field="DiagnosticTest.fvc_percentage_predicted" style="vertical" %}
+      </div>
+    </div>
+  </div>
+</span>
+
+{# test type is CT_CHEST_SCAN #}
+<div class="row" ng-show="editing.diagnostic_test.test_type === '{{ models.DiagnosticTest.CT_CHEST_SCAN }}'">
+  <div class="col-md-6">
+    <div class="horizontal-form">
+      {% datepicker field="DiagnosticTest.ct_chest_scan_date" style="vertical" %}
+    </div>
+  </div>
+</div>
+
+{# test type is FULL_LUNG_FUNCTION #}
+<div class="row" ng-show="editing.diagnostic_test.test_type === '{{ models.DiagnosticTest.FULL_LUNG_FUNCTION }}'">
+  <div class="col-md-6">
+    <div class="horizontal-form">
+      {% datepicker field="DiagnosticTest.full_lung_function_date" style="vertical" %}
+    </div>
+  </div>
+</div>

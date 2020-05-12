@@ -1,0 +1,59 @@
+{% load rbhl_panels %}
+
+{% field_display "DiagnosticTest.test_type" %}
+
+
+{# test type is SKIN_PRICK_TEST #}
+<span ng-show="item.test_type === '{{ models.DiagnosticTest.SKIN_PRICK_TEST }}'">
+  {% field_display "DiagnosticTest.test_date" %}
+  {% field_display "DiagnosticTest.specific_sp_testnum" %}
+  {% field_display "DiagnosticTest.antihistimines" %}
+  {% field_display "DiagnosticTest.immunology_oem" %}
+  {% field_display "DiagnosticTest.specifc_skin_prick_test" %}
+  {% field_display "DiagnosticTest.atopic" %}
+  {% field_display "DiagnosticTest.spt" %}
+  {% field_display "DiagnosticTest.wheal" %}
+</span>
+
+{# test type is BRONCHIAL_TEST #}
+<span ng-show="item.test_type === '{{ models.DiagnosticTest.BRONCHIAL_TEST }}'">
+  {% field_display "DiagnosticTest.bronchial_test_num" %}
+  {% field_display "DiagnosticTest.date_of_challenge" %}
+  {% field_display "DiagnosticTest.substance" %}
+  {% field_display "DiagnosticTest.last_exposed" %}
+  {% field_display "DiagnosticTest.duration_exposed" %}
+  {% field_display "DiagnosticTest.result" %}
+  {% field_display "DiagnosticTest.response_type" %}
+  {% field_display "DiagnosticTest.baseline_pc20" %}
+  {% field_display "DiagnosticTest.lowest_pc20" %}
+</span>
+
+{# test type is ROUTINE_SPT #}
+<span ng-show="item.test_type === '{{ models.DiagnosticTest.ROUTINE_SPT }}'">
+  {% field_display "DiagnosticTest.neg_control" %}
+  {% field_display "DiagnosticTest.pos_control" %}
+  {% field_display "DiagnosticTest.asp_fumigatus" %}
+  {% field_display "DiagnosticTest.grass_pollen" %}
+  {% field_display "DiagnosticTest.cat" %}
+  {% field_display "DiagnosticTest.d_pter" %}
+</span>
+
+{# test type is SPIROMETRY_TEST #}
+<span ng-show="item.test_type === '{{ models.DiagnosticTest.SPIROMETRY_TEST }}'">
+  {% field_display "DiagnosticTest.fev_1" %}
+  {% field_display "DiagnosticTest.fev_1_post_ventolin" %}
+  {% field_display "DiagnosticTest.fev_1_percentage_predicted" %}
+  {% field_display "DiagnosticTest.fvc" %}
+  {% field_display "DiagnosticTest.fvc_post_ventolin" %}
+  {% field_display "DiagnosticTest.fvc_percentage_predicted" %}
+</span>
+
+{# test type is CT_CHEST_SCAN #}
+<span ng-show="item.test_type === '{{ models.DiagnosticTest.CT_CHEST_SCAN }}'">
+  {% field_display "DiagnosticTest.ct_chest_scan_date" %}
+</span>
+
+{# test type is FULL_LUNG_FUNCTION #}
+<span ng-show="item.test_type === '{{ models.DiagnosticTest.FULL_LUNG_FUNCTION }}'">
+  {% field_display "DiagnosticTest.full_lung_function_date" %}
+</span>
