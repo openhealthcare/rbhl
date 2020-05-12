@@ -1,0 +1,22 @@
+{
+  "referraldisease": [
+    {
+      "name": "Asthma"
+    },
+    {
+      "name": "Asthma/Rhinitis"
+    },
+    {
+      "name": "Inhalation injury"
+    },
+    {
+      "name": "Malignancy"
+    },
+    {
+      "name": "Other / Unclear"
+    },
+    {
+      "name": "Pulmonary fibrosis(eg: Asbestos related disease)"
+    }
+  ]
+}

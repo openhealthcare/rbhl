@@ -1,16 +1,17 @@
 {% load forms %}
-{% input field="Diagnosis.condition" %}
-<div class="row" ng-show="editing.diagnosis.condition === '{{ models.Diagnosis.ASTHMA }}'">
+{% select field="Diagnosis.diagnosis_type" %}
+<div class="row" ng-show="editing.diagnosis.diagnosis_type === '{{ models.Diagnosis.ASTHMA }}'">
   {% radio field="Diagnosis.asthma_options" %}
 </div>
-<div class="row"  ng-show="editing.diagnosis.condition === '{{ models.Diagnosis.RHINITIS }}'">
+<div class="row"  ng-show="editing.diagnosis.diagnosis_type === '{{ models.Diagnosis.RHINITIS }}'">
   {% radio field="Diagnosis.rhinitis_options" %}
 </div>
-<div class="row" ng-show="editing.diagnosis.condition === '{{ models.Diagnosis.ASTHMA }}' || editing.diagnosis.condition === '{{ models.Diagnosis.RHINITIS }}'">
+<div class="row" ng-show="editing.diagnosis.diagnosis_type === '{{ models.Diagnosis.ASTHMA }}' || editing.diagnosis.diagnosis_type === '{{ models.Diagnosis.RHINITIS }}'">
   {% textarea field="Diagnosis.sensitivities" %}
 </div>
-<div class="row" ng-show="editing.diagnosis.condition && editing.diagnosis.condition.length && (editing.diagnosis.condition !== '{{ models.Diagnosis.ASTHMA }}' && editing.diagnosis.condition !== '{{ models.Diagnosis.RHINITIS }}')">
-  {% textarea field="Diagnosis.sensitivities" %}
+<div class="row" ng-show="editing.diagnosis.diagnosis_type && editing.diagnosis.diagnosis_type.length && (editing.diagnosis.diagnosis_type !== '{{ models.Diagnosis.ASTHMA }}' && editing.diagnosis.diagnosis_type !== '{{ models.Diagnosis.RHINITIS }}' && editing.diagnosis.diagnosis_type !== '{{ models.Diagnosis.NAD }}')">
+  {% input field="Diagnosis.condition" %}
+  {% checkbox field="Diagnosis.occupational" %}
 </div>
 
 

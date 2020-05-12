@@ -1,0 +1,22 @@
+{
+  "diagnosisoutcome": [
+    {
+      "name": "Investigations continuing"
+    },
+    {
+      "name": "Known"
+    },
+    {
+      "name": "Not established lost to follow-up"
+    },
+    {
+      "name": "Not established patient withdrew"
+    },
+    {
+      "name": "Not established referred to someone else"
+    },
+    {
+      "name": "Not reached despite investigation"
+    }
+  ]
+}

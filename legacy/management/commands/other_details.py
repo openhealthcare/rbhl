@@ -413,6 +413,7 @@ class Command(BaseCommand):
         ]):
             diagnosis = models.Diagnosis.objects.create(episode=episode)
             diagnosis.condition = models.Diagnosis.ASTHMA
+            diagnosis.diagnosis_type = models.Diagnosis.ASTHMA
 
             sensitivities = asthma.sensitising_agent
 
@@ -480,6 +481,7 @@ class Command(BaseCommand):
         ]):
             diagnosis = models.Diagnosis.objects.create(episode=episode)
             diagnosis.condition = models.Diagnosis.RHINITIS
+            diagnosis.diagnosis_type = models.Diagnosis.RHINITIS
 
             # order of priority for what overrides
             # occupational_rhinitis_caused_by_sensitisation > work_exacerbated >
@@ -549,6 +551,7 @@ class Command(BaseCommand):
             other.copd_with_emphysema,
         ]):
             diagnosis = models.Diagnosis.objects.create(episode=episode)
+            diagnosis.diagnosis_type = models.Diagnosis.CHRONIC_AIR_FLOW
             diagnosis.condition = "COPD"
             diagnosis.occupational = other.copd_is_occupational
             diagnosis.save()
@@ -559,6 +562,7 @@ class Command(BaseCommand):
         ]):
             diagnosis = models.Diagnosis.objects.create(episode=episode)
             diagnosis.condition = "Emphysema"
+            diagnosis.diagnosis_type = models.Diagnosis.CHRONIC_AIR_FLOW
             # might seem odd but COPD and emphysema are on the same section
             # and the occupational check box applies to both
             diagnosis.occupational = other.copd_is_occupational
@@ -570,18 +574,20 @@ class Command(BaseCommand):
             other.malignancy_type_other
         ]):
             diagnosis = models.Diagnosis.objects.create(episode=episode)
+            diagnosis.diagnosis_type = models.Diagnosis.MALIGNANCY
             if other.malignancy_type_other:
                 diagnosis.condition = other.malignancy_type_other
             elif other.malignancy_type:
                 diagnosis.condition = other.malignancy_type
             else:
-                diagnosis.condition = "Malignancy"
+                diagnosis.condition = models.Diagnosis.MALIGNANCY
             diagnosis.occupational = other.malignancy_is_occupational
             diagnosis.save()
 
         if other.NAD:
             diagnosis = models.Diagnosis.objects.create(episode=episode)
-            diagnosis.condition = "NAD"
+            diagnosis.diagnosis_type = models.Diagnosis.NAD
+            diagnosis.condition = models.Diagnosis.NAD
             diagnosis.save()
 
         if any([
@@ -590,12 +596,13 @@ class Command(BaseCommand):
             other.diffuse_lung_disease_type_other,
         ]):
             diagnosis = models.Diagnosis.objects.create(episode=episode)
+            diagnosis.diagnosis_type = models.Diagnosis.DIFFUSE
             if other.diffuse_lung_disease_type_other:
                 diagnosis.condition = other.diffuse_lung_disease_type_other
             elif other.diffuse_lung_disease_type:
                 diagnosis.condition = other.diffuse_lung_disease_type
             else:
-                diagnosis.condition = "Diffuse lung disease"
+                diagnosis.condition = models.Diagnosis.DIFFUSE
 
             diagnosis.occupational = other.diffuse_lung_disease_is_occupational
             diagnosis.save()
@@ -605,6 +612,7 @@ class Command(BaseCommand):
             other.benign_pleural_disease_type,
         ]):
             diagnosis = models.Diagnosis.objects.create(episode=episode)
+            diagnosis.diagnosis_type = models.Diagnosis.BENIGN
             if other.benign_pleural_disease_type:
                 diagnosis.condition = other.benign_pleural_disease_type
             else:
@@ -617,6 +625,7 @@ class Command(BaseCommand):
             other.other_diagnosis,
         ]):
             diagnosis = models.Diagnosis.objects.create(episode=episode)
+            diagnosis.diagnosis_type = models.Diagnosis.OTHER
             if other.other_diagnosis_type_other:
                 diagnosis.condition = other.other_diagnosis_type_other
             elif other.other_diagnosis_type:
@@ -748,35 +757,9 @@ class Command(BaseCommand):
                 patient, patient_id_to_episode[patient.id]
             )
 
-        build_lookup_list(models.Referral, models.Referral.referral_reason)
-        models.ReferralReason.objects.get_or_create(name="Environmental")
-        build_lookup_list(models.Referral, models.Referral.referral_disease)
         build_lookup_list(models.Diagnosis, models.Diagnosis.condition)
         build_lookup_list(models.ClinicLog, models.ClinicLog.presenting_complaint)
-        build_lookup_list(models.Employment, models.Employment.employment_category)
         build_lookup_list(models.Employment, models.Employment.job_title)
-
-        geographical_areas = [
-            "London",
-            "South East",
-            "East",
-            "Northern Yorkshire",
-            "South West",
-            "West Midlands",
-            "Trent",
-            "North West",
-            "Wales",
-            "Scotland",
-            "Northern Ireland"
-        ]
-
-        for geographical_area in geographical_areas:
-            if not models.GeographicalArea.objects.filter(
-                name__iexact=geographical_area
-            ).exists():
-                models.GeographicalArea.objects.get_or_create(
-                    name=geographical_area
-                )
 
     @transaction.atomic
     def create_legacy(self, file_name):

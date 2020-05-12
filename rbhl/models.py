@@ -557,6 +557,26 @@ class DiagnosisRhinitis(models.EpisodeSubrecord):
 class Diagnosis(RbhlSubrecord, models.Diagnosis):
     _icon = 'fa fa-stethoscope'
 
+    ASTHMA = "Asthma"
+    RHINITIS = "Rhinitis"
+    CHRONIC_AIR_FLOW = "Chronic air flow limitation"
+    MALIGNANCY = "Malignancy"
+    DIFFUSE = "Diffuse lung disease"
+    BENIGN = "Benign plerual disease"
+    OTHER = "Other diagnosis"
+    NAD = "NAD"
+
+    DIAGNOSIS_TYPE = enum(
+        ASTHMA,
+        RHINITIS,
+        CHRONIC_AIR_FLOW,
+        MALIGNANCY,
+        DIFFUSE,
+        BENIGN,
+        OTHER,
+        NAD
+    )
+
     OCCUPATIONAL_CAUSED_BY_SENSITISATION = "Occupational caused by sensitisation"
     EXACERBATED_BY_WORK = "Exacerbated by work"
     IRRITANT_INDUCED = "Irritant induced"
@@ -571,8 +591,12 @@ class Diagnosis(RbhlSubrecord, models.Diagnosis):
         NON_OCCUPATIONAL,
     )
 
-    ASTHMA = "Asthma"
-    RHINITIS = "Rhinitis"
+    diagnosis_type = fields.CharField(
+        blank=True,
+        null=True,
+        max_length=256,
+        choices=DIAGNOSIS_TYPE
+    )
 
     # if the user chooses rhinitis as the diagnosis they have
     # the following options and sensitivities

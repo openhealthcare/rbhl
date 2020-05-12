@@ -1,0 +1,91 @@
+{
+  "employmentcategory": [
+    {
+      "name": "Agricultural worker"
+    },
+    {
+      "name": "Armed forces"
+    },
+    {
+      "name": "Asbestos worker"
+    },
+    {
+      "name": "Bakery/mill worker"
+    },
+    {
+      "name": "Beauty Industry"
+    },
+    {
+      "name": "Building worker"
+    },
+    {
+      "name": "Cleaner"
+    },
+    {
+      "name": "Electrical engineer"
+    },
+    {
+      "name": "Electronics assembler"
+    },
+    {
+      "name": "Engineer"
+    },
+    {
+      "name": "Enzyme/detergent manufacturer"
+    },
+    {
+      "name": "Factory worker (other)"
+    },
+    {
+      "name": "Fire officer"
+    },
+    {
+      "name": "Food industry"
+    },
+    {
+      "name": "Health care worker"
+    },
+    {
+      "name": "Laboratory animal worker"
+    },
+    {
+      "name": "Mechanic"
+    },
+    {
+      "name": "Not applicable"
+    },
+    {
+      "name": "Other"
+    },
+    {
+      "name": "Other animal worker"
+    },
+    {
+      "name": "Other chemical worker"
+    },
+    {
+      "name": "Other laboratory worker"
+    },
+    {
+      "name": "Pharmaceutical worker"
+    },
+    {
+      "name": "Platinum refiner"
+    },
+    {
+      "name": "Printer"
+    },
+    {
+      "name": "Spray painter"
+    },
+    {
+      "name": "Stonemason"
+    },
+    {
+      "name": "Unknown"
+    },
+    {
+      "name": "Woodworker"
+    }
+  ]
+}

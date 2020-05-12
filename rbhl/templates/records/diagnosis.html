@@ -1,14 +1,18 @@
 {% load rbhl_panels %}
-<span ng-show="item.condition === '{{ models.Diagnosis.ASTHMA }}'">
-  {% field_display "Diagnosis.condition" parenthesis_field="Diagnosis.asthma_options" %}
+<span ng-show="item.diagnosis_type === '{{ models.Diagnosis.ASTHMA }}'">
+  {% field_display "Diagnosis.diagnosis_type" parenthesis_field="Diagnosis.asthma_options" %}
 </span>
-<span ng-show="item.condition === '{{ models.Diagnosis.RHINITIS }}'">
-  {% field_display "Diagnosis.condition" parenthesis_field="Diagnosis.rhinitis_options" %}
+<span ng-show="item.diagnosis_type === '{{ models.Diagnosis.RHINITIS }}'">
+  {% field_display "Diagnosis.diagnosis_type" parenthesis_field="Diagnosis.rhinitis_options" %}
 </span>
-<div ng-show="item.condition === '{{ models.Diagnosis.ASTHMA }}' || item.condition === '{{ models.Diagnosis.RHINITIS }}'" class="row">
+<span ng-show="item.diagnosis_type === '{{ models.Diagnosis.NAD }}'">
+  {% field_display "Diagnosis.diagnosis_type" %}
+</span>
+<div ng-show="item.diagnosis_type === '{{ models.Diagnosis.ASTHMA }}' || item.diagnosis_type === '{{ models.Diagnosis.RHINITIS }}'" class="row">
   {% field_display "Diagnosis.sensitivities" markdown=True %}
 </div>
-<div ng-show="item.condition !== '{{ models.Diagnosis.ASTHMA }}' && item.condition !== '{{ models.Diagnosis.RHINITIS }}'" class="row">
+<div ng-show="item.diagnosis_type !== '{{ models.Diagnosis.NAD }}' && item.diagnosis_type !== '{{ models.Diagnosis.ASTHMA }}' && item.diagnosis_type !== '{{ models.Diagnosis.RHINITIS }}'" class="row">
+  {% field_display "Diagnosis.diagnosis_type" %}
   <div class="col-md-6">
     Condition:
   </div>

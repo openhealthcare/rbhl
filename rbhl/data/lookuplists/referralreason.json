@@ -1,0 +1,16 @@
+{
+  "referralreason": [
+    {
+      "name": "Environmental"
+    },
+    {
+      "name": "Fit to work"
+    },
+    {
+      "name": "Occupational"
+    },
+    {
+      "name": "Other"
+    }
+  ]
+}
