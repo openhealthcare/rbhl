@@ -614,7 +614,10 @@ class Command(BaseCommand):
             diagnosis = models.Diagnosis.objects.create(episode=episode)
             diagnosis.diagnosis_type = models.Diagnosis.BENIGN
             if other.benign_pleural_disease_type:
-                diagnosis.condition = other.benign_pleural_disease_type
+                if other.benign_pleural_disease_type == "Difuse":
+                    diagnosis.condition = "Diffuse"
+                else:
+                    diagnosis.condition = other.benign_pleural_disease_type
             else:
                 diagnosis.condition = "Benigin pleural disease"
             diagnosis.save()
@@ -626,12 +629,21 @@ class Command(BaseCommand):
         ]):
             diagnosis = models.Diagnosis.objects.create(episode=episode)
             diagnosis.diagnosis_type = models.Diagnosis.OTHER
+            condition = "Other"
             if other.other_diagnosis_type_other:
-                diagnosis.condition = other.other_diagnosis_type_other
+                condition = other.other_diagnosis_type_other
             elif other.other_diagnosis_type:
-                diagnosis.condition = other.other_diagnosis_type
-            else:
-                diagnosis.condition = "Other"
+                condition = other.other_diagnosis_type
+            condition = condition.strip()
+
+            if condition.lower() == "acute pneumonitis":
+                condition = "Chemical pneumonitis"
+
+            if condition.lower() == "building related illness":
+                condition = "Building related symptoms"
+
+            if condition.lower() == "hyperventilation":
+                condition = "Breathing pattern disorder"
             diagnosis.occupational = other.other_diagnosis_is_occupational
             diagnosis.save()
 

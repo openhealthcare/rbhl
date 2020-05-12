@@ -629,8 +629,11 @@ class Diagnosis(RbhlSubrecord, models.Diagnosis):
 
     DIFFUSE_LUNG_DISEASE = [
         "Asbestosis",
-        "Extrinsic allergic alveolitis",
-        "Other fibrosing alveolitis",
+        "Hypersensitivity pneumonitis",
+        "ILD Other",
+        "Berylliosis",
+        "Ideopathic Pulmonary Fibrosis",
+        "Sarcodisis",
         "Silicosis",
     ]
 
@@ -639,9 +642,16 @@ class Diagnosis(RbhlSubrecord, models.Diagnosis):
         return json.dumps(cls.DIFFUSE_LUNG_DISEASE)
 
     OTHER_DIAGNOSIS_TYPE = [
+        "Humidifier fever",
+        "Polymer fume fever",
         "Infection",
-        "Hyperventilation",
-        "Acute toxic pneumomitis"
+        "Chemical pneumonitis",
+        "Building related symptoms",
+        "Breathing pattern disorder ",
+        "Induced laryngeal obstruction",
+        "Air travel related symptoms",
+        "Medically unexplained symptoms",
+        "Cough due to irritant symptoms "
     ]
 
     @classmethod
