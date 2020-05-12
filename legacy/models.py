@@ -402,7 +402,7 @@ class DiagnosticOther(PatientSubrecord):
     other_diagnosis_type_other = models.TextField(null=True, blank=True)
 
 
-class SkinPrickTest(PatientSubrecord):
+class LegacySkinPrickTest(PatientSubrecord):
     specific_sp_testnum = models.IntegerField(null=True, blank=True)
     spt = models.TextField(null=True, blank=True)
     wheal = models.FloatField(null=True, blank=True)
@@ -422,7 +422,7 @@ class OtherFields(PatientSubrecord):
     chronic_obstructive_brinchitis = models.TextField(null=True, blank=True)
 
 
-class BronchialTest(PatientSubrecord):
+class LegacyBronchialTest(PatientSubrecord):
     # UI Field: ???
     bronchial_num = models.IntegerField(null=True, blank=True)
     # UI Field: Substance
@@ -445,7 +445,7 @@ class BronchialTest(PatientSubrecord):
     lowest_pc20 = models.TextField(null=True, blank=True)
 
 
-class RoutineSPT(PatientSubrecord):
+class LegacyRoutineSPT(PatientSubrecord):
     neg_control = models.FloatField(null=True, blank=True)
     pos_control = models.FloatField(null=True, blank=True)
     asp_fumigatus = models.FloatField(null=True, blank=True)
