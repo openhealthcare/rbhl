@@ -3,6 +3,7 @@ rbhl models.
 """
 import datetime
 import math
+import json
 from django.db import models as fields
 from decimal import Decimal
 
@@ -591,13 +592,6 @@ class Diagnosis(RbhlSubrecord, models.Diagnosis):
         NON_OCCUPATIONAL,
     )
 
-    diagnosis_type = fields.CharField(
-        blank=True,
-        null=True,
-        max_length=256,
-        choices=DIAGNOSIS_TYPE
-    )
-
     # if the user chooses rhinitis as the diagnosis they have
     # the following options and sensitivities
     RHINITIS_CHOICES = enum(
@@ -605,6 +599,62 @@ class Diagnosis(RbhlSubrecord, models.Diagnosis):
         EXACERBATED_BY_WORK,
         NON_OCCUPATIONAL,
     )
+
+    CHRONIC_AIR_FLOW_TYPES = [
+        "COPD", "Emphysema"
+    ]
+
+    @classmethod
+    def chronic_air_flow_types_json(cls):
+        return json.dumps(cls.CHRONIC_AIR_FLOW_TYPES)
+
+    MALIGNANCY_CONDITIONS = [
+        'Mesothelioma',
+        'Bronchus with asbestos exposure',
+        'Bronchus - other'
+    ]
+
+    @classmethod
+    def malignancy_conditions_json(cls):
+        return json.dumps(cls.MALIGNANCY_CONDITIONS)
+
+    BENIGN_PLEURAL_DISEASE = [
+        "Predominantly plaques",
+        "Diffuse"
+    ]
+
+    @classmethod
+    def benign_pleural_disease_json(cls):
+        return json.dumps(cls.BENIGN_PLEURAL_DISEASE)
+
+    DIFFUSE_LUNG_DISEASE = [
+        "Asbestosis",
+        "Extrinsic allergic alveolitis",
+        "Other fibrosing alveolitis",
+        "Silicosis",
+    ]
+
+    @classmethod
+    def diffuse_lung_disease_json(cls):
+        return json.dumps(cls.DIFFUSE_LUNG_DISEASE)
+
+    OTHER_DIAGNOSIS_TYPE = [
+        "Infection",
+        "Hyperventilation",
+        "Acute toxic pneumomitis"
+    ]
+
+    @classmethod
+    def other_diagnosis_type_json(cls):
+        return json.dumps(cls.OTHER_DIAGNOSIS_TYPE)
+
+    diagnosis_type = fields.CharField(
+        blank=True,
+        null=True,
+        max_length=256,
+        choices=DIAGNOSIS_TYPE
+    )
+
     asthma_options = fields.TextField(
         blank=True, default="", choices=ASTHMA_CHOICES
     )
