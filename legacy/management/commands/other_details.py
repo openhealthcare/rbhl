@@ -238,17 +238,9 @@ class Command(BaseCommand):
             emp_name = suspect_occupational_category.employer_name
             employment.employment_category = emp_name
 
-        if employment.employed_in_suspect_occupation is None:
-            employed_lut = {
-                'Yes-employed in suspect occupation': True,
-                'Yes': True,
-                'Yes-other occupation': False,  # Only used very few times
-                'No': False,
-                '': None
-            }
-            sus = suspect_occupational_category.is_employed_in_suspect_occupation
-            if sus:
-                employment.employed_in_suspect_occupation = employed_lut[sus]
+        sus = suspect_occupational_category.is_employed_in_suspect_occupation
+        if sus:
+            employment.employed_in_suspect_occupation = sus
 
         if not employment.exposures:
             employment.exposures = suspect_occupational_category.exposures
