@@ -262,6 +262,7 @@ Diagnostic investigations
 
 
 class Spirometry(RbhlSubrecord, models.EpisodeSubrecord):
+    _icon = "fa fa-hand-paper-o"
     fev_1 = fields.FloatField(null=True, blank=True)
     fev_1_post_ventolin = fields.FloatField(null=True, blank=True)
     fev_1_percentage_predicted = fields.IntegerField(null=True, blank=True)
@@ -271,6 +272,7 @@ class Spirometry(RbhlSubrecord, models.EpisodeSubrecord):
 
 
 class SkinPrickTest(RbhlSubrecord, models.EpisodeSubrecord):
+    _icon = "fa fa-hand-paper-o"
     ATOPIC_CHOICES = enum("Yes", "No", "Dermatographic")
     atopic = fields.TextField(null=True, blank=True, choices=ATOPIC_CHOICES)
     immunology_oem = fields.NullBooleanField(
@@ -280,6 +282,7 @@ class SkinPrickTest(RbhlSubrecord, models.EpisodeSubrecord):
 
 
 class SpecificSkinPrickTest(RbhlSubrecord, models.EpisodeSubrecord):
+    _icon = "fa fa-hand-paper-o"
     antihistimines = fields.NullBooleanField(null=True, blank=True)
     specific_sp_testnum = fields.IntegerField(
         null=True, blank=True, verbose_name="Specific SP test num"
@@ -292,6 +295,7 @@ class SpecificSkinPrickTest(RbhlSubrecord, models.EpisodeSubrecord):
 
 
 class OtherInvestigations(RbhlSubrecord, models.EpisodeSubrecord):
+    _icon = "fa fa-hand-paper-o"
     ct_chest_scan = fields.NullBooleanField(null=True, blank=True)
     ct_chest_scan_date = fields.DateField(null=True, blank=True)
     full_lung_function = fields.NullBooleanField(null=True, blank=True)
@@ -303,6 +307,8 @@ class BronchialChallengeSubstance(lookuplists.LookupList):
 
 
 class BronchialTest(RbhlSubrecord, models.EpisodeSubrecord):
+    _icon = "fa fa-hand-paper-o"
+
     BRONCHIAL_TEST_RESULTS = enum(
         'Positive',
         'Negative',
@@ -333,6 +339,8 @@ class BronchialTest(RbhlSubrecord, models.EpisodeSubrecord):
 
 
 class RoutineSPT(RbhlSubrecord, models.EpisodeSubrecord):
+    _icon = "fa fa-hand-paper-o"
+
     neg_control = fields.FloatField(null=True, blank=True)
     pos_control = fields.FloatField(null=True, blank=True)
     asp_fumigatus = fields.FloatField(null=True, blank=True)
@@ -347,6 +355,8 @@ Diagnosis
 
 
 class Asthma(RbhlSubrecord, models.EpisodeSubrecord):
+    _icon = "fa fa-stethoscope"
+
     ASTHMA_CHOICES = enum(
         "Occupational caused by sensitisation",
         "Exacerbated by work",
@@ -360,6 +370,7 @@ class Asthma(RbhlSubrecord, models.EpisodeSubrecord):
 
 
 class Rhinitis(RbhlSubrecord, models.EpisodeSubrecord):
+    _icon = "fa fa-stethoscope"
     RHINITIS_CHOICES = enum(
         "Occupational caused by sensitisation",
         "Exacerbated by work",
@@ -373,12 +384,14 @@ class Rhinitis(RbhlSubrecord, models.EpisodeSubrecord):
 
 
 class ChronicAirFlowLimitation(RbhlSubrecord, models.EpisodeSubrecord):
+    _icon = "fa fa-stethoscope"
     copd = fields.BooleanField(default=False)
     emphysema = fields.BooleanField(default=False)
     occupational = fields.BooleanField(default=False)
 
 
 class Malignancy(RbhlSubrecord, models.EpisodeSubrecord):
+    _icon = "fa fa-stethoscope"
     MALIGNANCY_CONDITIONS = enum(
         'Mesothelioma',
         'Bronchus with asbestos exposure',
@@ -392,6 +405,7 @@ class Malignancy(RbhlSubrecord, models.EpisodeSubrecord):
 
 
 class DiffuseLungDisease(RbhlSubrecord, models.EpisodeSubrecord):
+    _icon = "fa fa-stethoscope"
     DISEASE_TYPE = enum(
         "Asbestosis",
         "Hypersensitivity pneumonitis",
@@ -408,6 +422,7 @@ class DiffuseLungDisease(RbhlSubrecord, models.EpisodeSubrecord):
 
 
 class BenignPleuralDisease(RbhlSubrecord, models.EpisodeSubrecord):
+    _icon = "fa fa-stethoscope"
     DISEASE_TYPE = enum(
         "Predominantly plaques",
         "Diffuse"
@@ -418,11 +433,14 @@ class BenignPleuralDisease(RbhlSubrecord, models.EpisodeSubrecord):
 
 
 class Nad(RbhlSubrecord, models.EpisodeSubrecord):
+    _icon = "fa fa-stethoscope"
+
     class Meta:
         verbose_name = "NAD"
 
 
 class OtherDiagnosis(RbhlSubrecord, models.EpisodeSubrecord):
+    _icon = "fa fa-stethoscope"
     DIAGNOSIS_TYPE = enum(
         "Humidifier fever",
         "Polymer fume fever",

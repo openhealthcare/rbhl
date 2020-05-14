@@ -1,0 +1,59 @@
+<div class="panel panel-default record-panel">
+  <div class="panel-heading">
+    <h3>
+      <i class="fa fa-hand-paper-o"></i> Diagnosis
+      <i
+        ng-click="showDiagnosis=true"
+        class="fa fa-plus-circle edit pull-right pointer"
+      >
+      </i>
+    </h3>
+  </div>
+  <div ng-show="
+    showDiagnosis ||
+    episode.{{ models.Asthma.get_api_name }}.length ||
+    episode.{{ models.Rhinitis.get_api_name }}.length ||
+    episode.{{ models.ChronicAirFlowLimitation.get_api_name }}.length ||
+    episode.{{ models.Malignancy.get_api_name }}.length ||
+    episode.{{ models.DiffuseLungDisease.get_api_name }}.length ||
+    episode.{{ models.BenignPleuralDisease.get_api_name }}.length ||
+    episode.{{ models.Nad.get_api_name }}.length ||
+    episode.{{ models.DiffuseLungDisease.get_api_name }}.length"
+  class="panel-body">
+    <div ng-show="showDiagnosis" class="row">
+      <div class="col-sm-11">
+        {% include "partials/panels/add_button.html" with subrecord=models.Asthma %}
+        {% include "partials/panels/add_button.html" with subrecord=models.Rhinitis %}
+        {% include "partials/panels/add_button.html" with subrecord=models.ChronicAirFlowLimitation %}
+        {% include "partials/panels/add_button.html" with subrecord=models.Malignancy %}
+        {% include "partials/panels/add_button.html" with subrecord=models.DiffuseLungDisease %}
+        {% include "partials/panels/add_button.html" with subrecord=models.BenignPleuralDisease %}
+        {% include "partials/panels/add_button.html" with subrecord=models.Nad %}
+        {% include "partials/panels/add_button.html" with subrecord=models.OtherDiagnosis %}
+      </div>
+      <div class="col-sm-1">
+        <i
+          ng-click="showDiagnosis=false"
+          class="fa fa-minus-circle edit pull-right pointer"
+        >
+        </i>
+      </div>
+    </div>
+    <div ng-show="showInvestigations" class="row">
+      <div class="col-md-12">
+        <hr />
+      </div>
+    </div>
+    <ul class="list-group">
+      {% include "partials/panels/rows.html" with subrecord=models.Asthma %}
+      {% include "partials/panels/rows.html" with subrecord=models.Rhinitis show_hr=True %}
+      {% include "partials/panels/rows.html" with subrecord=models.ChronicAirFlowLimitation show_hr=True %}
+      {% include "partials/panels/rows.html" with subrecord=models.Malignancy show_hr=True %}
+      {% include "partials/panels/rows.html" with subrecord=models.DiffuseLungDisease show_hr=True %}
+      {% include "partials/panels/rows.html" with subrecord=models.BenignPleuralDisease show_hr=True %}
+      {% include "partials/panels/rows.html" with subrecord=models.Nad show_hr=True %}
+      {% include "partials/panels/rows.html" with subrecord=models.OtherDiagnosis show_hr=True %}
+    </ul>
+  </div>
+
+</div>

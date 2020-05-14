@@ -1,8 +1,20 @@
-<span ng-show="item.trigger">
-    [[ item.trigger ]]
-   <br />
-</span>
-<span ng-show="item.sensitivities">
-    [[ item.sensitivities ]]
-   <br />
-</span>
+<div class="row">
+  <div class="col-md-6">
+    <div class="row">
+      <div class="col-md-6">
+        <b>Asthma:</b>
+      </div>
+      <div class="col-md-6">
+        [[ item.trigger ]]
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="row">
+      <div class="col-md-3">
+        <b>Sensitivites:</b>
+      </div>
+      <div markdown="sensitivities"></div>
+    </div>
+  </div>
+</div>
