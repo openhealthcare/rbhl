@@ -346,7 +346,7 @@ Diagnosis
 """
 
 
-class AsthmaDiagnosis(RbhlSubrecord, models.EpisodeSubrecord):
+class Asthma(RbhlSubrecord, models.EpisodeSubrecord):
     ASTHMA_CHOICES = enum(
         "Occupational caused by sensitisation",
         "Exacerbated by work",
@@ -359,7 +359,7 @@ class AsthmaDiagnosis(RbhlSubrecord, models.EpisodeSubrecord):
     sensitivities = fields.TextField(blank=True, default="")
 
 
-class RhinitisDiagnosis(RbhlSubrecord, models.EpisodeSubrecord):
+class Rhinitis(RbhlSubrecord, models.EpisodeSubrecord):
     RHINITIS_CHOICES = enum(
         "Occupational caused by sensitisation",
         "Exacerbated by work",
