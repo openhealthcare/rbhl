@@ -1,12 +1,18 @@
-<span ng-show="item.atopic">
-    [[ item.atopic ]]
-   <br />
-</span>
-<span ng-show="item.immunology_oem">
-     Immunology OEM
-   <br />
-</span>
-<span ng-show="item.antihistimines">
-     Antihistimines
-   <br />
-</span>
+{% load rbhl_panels %}
+<div class="row">
+  <div class="col-md-3">
+    <b>
+      General skin prick tests:
+    </b>
+  </div>
+  <div class="col-md-3">
+    {% field_display "SkinPrickTest.atopic"  %}
+  </div>
+  <div class="col-md-3">
+    {% field_display "SkinPrickTest.immunology_oem" %}
+  </div>
+  <div class="col-md-3">
+    {% field_display "SkinPrickTest.antihistimines"  %}
+  </div>
+</div>
+

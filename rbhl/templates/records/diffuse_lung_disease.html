@@ -1,8 +1,17 @@
-<span ng-show="item.disease_type">
-    [[ item.disease_type ]]
-   <br />
-</span>
-<span ng-show="item.occupational">
-     Occupational
-   <br />
-</span>
+<div class="row">
+  <div class="col-md-6">
+    <div class="row">
+      <div class="col-md-6">
+        <b>Diffuse lung disease:</b>
+      </div>
+      <div class="col-md-6">
+        <span ng-show="item.disease_type">
+          [[ item.disease_type ]]
+        </span>
+        <span ng-show="item.occupational">
+          (Occupational)
+        </span>
+      </div>
+    </div>
+  </div>
+</div>

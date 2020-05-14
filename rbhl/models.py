@@ -296,8 +296,12 @@ class SpecificSkinPrickTest(RbhlSubrecord, models.EpisodeSubrecord):
 
 class OtherInvestigations(RbhlSubrecord, models.EpisodeSubrecord):
     _icon = "fa fa-hand-paper-o"
-    ct_chest_scan = fields.NullBooleanField(null=True, blank=True)
-    ct_chest_scan_date = fields.DateField(null=True, blank=True)
+    ct_chest_scan = fields.NullBooleanField(
+        null=True, blank=True, verbose_name="CT chest scan"
+    )
+    ct_chest_scan_date = fields.DateField(
+        null=True, blank=True, verbose_name="CT chest scan date"
+    )
     full_lung_function = fields.NullBooleanField(null=True, blank=True)
     full_lung_function_date = fields.DateField(null=True, blank=True)
 
@@ -385,7 +389,7 @@ class Rhinitis(RbhlSubrecord, models.EpisodeSubrecord):
 
 class ChronicAirFlowLimitation(RbhlSubrecord, models.EpisodeSubrecord):
     _icon = "fa fa-stethoscope"
-    copd = fields.BooleanField(default=False)
+    copd = fields.BooleanField(default=False, verbose_name="COPD")
     emphysema = fields.BooleanField(default=False)
     occupational = fields.BooleanField(default=False)
 

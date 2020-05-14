@@ -1,12 +1,23 @@
-<span ng-show="item.copd">
-     Copd
-   <br />
-</span>
-<span ng-show="item.emphysema">
-     Emphysema
-   <br />
-</span>
-<span ng-show="item.occupational">
-     Occupational
-   <br />
-</span>
+<div class="row">
+  <div class="col-md-6">
+    <div class="row">
+      <div class="col-md-6">
+        <b>Chronic air flow limitation:</b>
+      </div>
+      <div class="col-md-6">
+        <span ng-show="item.copd">
+          COPD
+        </span>
+        <span>
+          with
+        </span>
+        <span ng-show="item.emphysema">
+          Emphysema
+        </span>
+        <span ng-show="item.occupational">
+          (Occupational)
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
