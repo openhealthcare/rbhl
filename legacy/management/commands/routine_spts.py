@@ -3,6 +3,7 @@ import csv
 from django.core.management import BaseCommand
 from django.db import transaction
 from django.utils import timezone
+from rbhl.models import DiagnosticTest
 
 from legacy.models import PatientNumber, LegacyRoutineSPT
 
@@ -14,12 +15,12 @@ class Command(BaseCommand):
         parser.add_argument("file_name", help="Specify import file")
 
     @transaction.atomic()
-    def handle(self, *args, **options):
+    def build_routine_spts(self, file_name):
         LegacyRoutineSPT.objects.all().delete()
 
         # Open with utf-8-sig encoding to avoid having a BOM in the first
         # header string.
-        with open(options["file_name"], encoding="utf-8-sig") as f:
+        with open(file_name, encoding="utf-8-sig") as f:
             rows = list(csv.DictReader(f))
 
         self.stdout.write(self.style.SUCCESS("Importing Routine SPTs"))
@@ -50,3 +51,28 @@ class Command(BaseCommand):
         self.stdout.write(
             self.style.SUCCESS("Created {} Routine SPTs".format(len(tests)))
         )
+
+    @transaction.atomic()
+    def convert_routine_spts(self):
+        diagnostic_tests = []
+        for legacy in LegacyRoutineSPT.objects.all():
+            diagnostic_test = DiagnosticTest(
+                episode=legacy.patient.episode_set.get(),
+                test_type=DiagnosticTest.ROUTINE_SPT
+            )
+            fields = [
+                "neg_control", "pos_control", "asp_fumigatus",
+                "grass_pollen", "cat", "d_pter"
+            ]
+
+            for field in fields:
+                setattr(diagnostic_test, field, getattr(legacy, field))
+
+            diagnostic_tests.append(
+                diagnostic_test
+            )
+        DiagnosticTest.objects.bulk_create(diagnostic_tests)
+
+    def handle(self, *args, **options):
+        self.build_routine_spts(options["file_name"])
+        self.convert_routine_spts()

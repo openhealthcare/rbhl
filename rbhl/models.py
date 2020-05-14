@@ -685,7 +685,7 @@ class BronchialChallengeSubstance(lookuplists.LookupList):
     pass
 
 
-class DiagnosticTest(RbhlSubrecord, models.Diagnosis):
+class DiagnosticTest(RbhlSubrecord, models.EpisodeSubrecord):
     _icon = "fa fa-hand-paper-o"
 
     SKIN_PRICK_TEST = "Skin prick test"
@@ -709,7 +709,7 @@ class DiagnosticTest(RbhlSubrecord, models.Diagnosis):
 
     test_date = fields.DateField(null=True, blank=True)
     specific_sp_testnum = fields.IntegerField(
-        null=True, blank=True, verbose_name=""
+        null=True, blank=True, verbose_name="Specific SP Test Num"
     )
     antihistimines = fields.NullBooleanField(null=True, blank=True)
 
@@ -717,7 +717,7 @@ class DiagnosticTest(RbhlSubrecord, models.Diagnosis):
     immunology_oem = fields.NullBooleanField(
         null=True, blank=True, choices=ATOPIC_CHOICES, verbose_name="Immunology OEM"
     )
-    specifc_skin_prick_test = fields.NullBooleanField(null=True, blank=True)
+    specific_skin_prick = fields.NullBooleanField(null=True, blank=True)
     atopic = fields.TextField(
         null=True, blank=True, choices=ATOPIC_CHOICES
     )

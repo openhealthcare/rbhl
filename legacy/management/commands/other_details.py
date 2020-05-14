@@ -329,6 +329,43 @@ class Command(BaseCommand):
                     height=height
                 )
 
+        SPIROMETRY_FIELDS = [
+            "fev_1", "fev_1_post_ventolin", "fev_1_percentage_protected",
+            "fvc", "fvc_post_ventolin", "fvc_percentage_protected"
+        ]
+
+        if any([
+            getattr(legacy_diagnostic_testing, i) for i in SPIROMETRY_FIELDS
+        ]):
+            diagnostic_test = episode.diagnostictest_set.create(
+                test_type=models.DiagnosticTest.SPIROMETRY_TEST
+            )
+            for field in SPIROMETRY_FIELDS:
+                field_value = getattr(legacy_diagnostic_testing, field)
+                setattr(diagnostic_test, field, field_value)
+            diagnostic_test.save()
+
+        if any([
+            legacy_diagnostic_testing.ct_chest_scan,
+            legacy_diagnostic_testing.ct_chest_scan_date
+        ]):
+            diagnostic_test = episode.diagnostictest_set.create(
+                test_type=models.DiagnosticTest.CT_CHEST_SCAN
+            )
+            diagnostic_test.ct_chest_scan_date = diagnostic_test.ct_chest_scan_date
+            diagnostic_test.save()
+
+        if any([
+            legacy_diagnostic_testing.full_lung_function,
+            legacy_diagnostic_testing.full_lung_function_date
+        ]):
+            diagnostic_test = episode.diagnostictest_set.create(
+                test_type=models.DiagnosticTest.FULL_LUNG_FUNCTION
+            )
+            legacy_date = legacy_diagnostic_testing.full_lung_function_date
+            diagnostic_test.full_lung_function_date = legacy_date
+            diagnostic_test.save()
+
         FIELDS = [
             "antihistimines",
             "skin_prick_test",

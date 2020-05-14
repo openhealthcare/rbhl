@@ -6,6 +6,7 @@ from django.db import transaction
 from django.utils import timezone
 
 from legacy.models import LegacyBronchialTest, PatientNumber
+from rbhl.models import DiagnosticTest
 
 
 class Command(BaseCommand):
@@ -57,12 +58,12 @@ class Command(BaseCommand):
         return timezone.make_aware(dt)
 
     @transaction.atomic()
-    def handle(self, *args, **options):
+    def build_legacy_bronchial_test(self, file_name):
         LegacyBronchialTest.objects.all().delete()
 
         # Open with utf-8-sig encoding to avoid having a BOM in the first
         # header string.
-        with open(options["file_name"], encoding="utf-8-sig") as f:
+        with open(file_name, encoding="utf-8-sig") as f:
             rows = list(csv.DictReader(f))
 
         self.stdout.write(self.style.SUCCESS("Importing bronchial tests"))
@@ -102,3 +103,35 @@ class Command(BaseCommand):
         self.stdout.write(
             self.style.SUCCESS("Created {} Bronchial Tests".format(len(tests)))
         )
+
+    @transaction.atomic()
+    def convert_bronchial_tests(self):
+        to_create = []
+        for bronchial_test in LegacyBronchialTest.objects.all():
+            episode = bronchial_test.patient.episode_set.get()
+            diagnostic_test = DiagnosticTest(
+                episode=episode,
+                test_type=DiagnosticTest.BRONCHIAL_TEST
+            )
+
+            diagnostic_test.bronchial_test_num = bronchial_test.bronchial_num
+            diagnostic_test.substance = bronchial_test.substance
+            diagnostic_test.last_exposed = bronchial_test.last_exposed
+            diagnostic_test.duration_exposed = bronchial_test.duration_exposed
+            diagnostic_test.date_of_challenge = bronchial_test.date_of_challenge
+            if bronchial_test.other:
+                diagnostic_test.result = bronchial_test.other
+            else:
+                diagnostic_test.result = bronchial_test.foo
+
+            diagnostic_test.result = bronchial_test.duration_exposed
+            diagnostic_test.response_type = bronchial_test.other_type
+            diagnostic_test.baseline_pc20 = bronchial_test.baseline_pc290
+            diagnostic_test.lowest_pc20 = bronchial_test.lowest_pc20
+            to_create.append(diagnostic_test)
+
+        DiagnosticTest.objects.bulk_create(to_create)
+
+    def handle(self, *args, **options):
+        self.build_legacy_bronchial_test(options["file_name"])
+        self.convert_bronchial_tests()
