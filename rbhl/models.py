@@ -256,53 +256,189 @@ class Employment(RbhlSubrecord, models.EpisodeSubrecord):
     firefighter = fields.NullBooleanField()
 
 
-class RbhlDiagnosticTesting(RbhlSubrecord, models.EpisodeSubrecord):
-    _is_singleton = True
-    _icon = "fa fa-hand-paper-o"
+"""
+Diagnostic investigations
+"""
 
+
+class Spirometry(RbhlSubrecord, models.EpisodeSubrecord):
+    fev_1 = fields.FloatField(null=True, blank=True)
+    fev_1_post_ventolin = fields.FloatField(null=True, blank=True)
+    fev_1_percentage_predicted = fields.IntegerField(null=True, blank=True)
+    fvc = fields.FloatField(null=True, blank=True)
+    fvc_post_ventolin = fields.FloatField(null=True, blank=True)
+    fvc_percentage_predicted = fields.IntegerField(null=True, blank=True)
+
+
+class SkinPrickTest(RbhlSubrecord, models.EpisodeSubrecord):
     ATOPIC_CHOICES = enum("Yes", "No", "Dermatographic")
-    antihistimines = fields.NullBooleanField(null=True, blank=True)
-
-    skin_prick_test = fields.NullBooleanField(null=True, blank=True)
     atopic = fields.TextField(null=True, blank=True, choices=ATOPIC_CHOICES)
-    specific_skin_prick = fields.NullBooleanField(null=True, blank=True)
-
     immunology_oem = fields.NullBooleanField(
         null=True, blank=True, verbose_name="Immunology OEM"
     )
+    antihistimines = fields.NullBooleanField(null=True, blank=True)
 
-    # TODO seperate section
-    # bronchial_prov_test = models.NullBooleanField(null=True, blank=True)
 
-    fev_1 = fields.FloatField(
-        null=True, blank=True, verbose_name="FEV1"
+class SpecificSkinPrickTest(RbhlSubrecord, models.EpisodeSubrecord):
+    antihistimines = fields.NullBooleanField(null=True, blank=True)
+    specific_sp_testnum = fields.IntegerField(
+        null=True, blank=True, verbose_name="Specific SP test num"
     )
-    fev_1_post_ventolin = fields.FloatField(
-        null=True, blank=True, verbose_name="FEV1 post Ventolin"
+    spt = fields.TextField(
+        null=True, blank=True, verbose_name="SPT"
     )
-    fev_1_percentage_protected = fields.IntegerField(
-        null=True, blank=True, verbose_name="FEV1 predicted %"
-    )
-    fvc = fields.FloatField(
-        null=True, blank=True, verbose_name="FVC"
-    )
-    fvc_post_ventolin = fields.FloatField(
-        null=True, blank=True, verbose_name="FVC post Ventolin"
-    )
-    fvc_percentage_protected = fields.IntegerField(
-        null=True, blank=True, verbose_name="FVC predicted %"
-    )
-    ct_chest_scan = fields.NullBooleanField(
-        null=True, blank=True, verbose_name="CT chest scan"
-    )
-    ct_chest_scan_date = fields.DateField(
-        null=True, blank=True, verbose_name="CT chest scan date"
-    )
+    wheal = fields.FloatField(null=True, blank=True)
+    test_date = fields.DateTimeField(null=True, blank=True)
+
+
+class OtherInvestigations(RbhlSubrecord, models.EpisodeSubrecord):
+    ct_chest_scan = fields.NullBooleanField(null=True, blank=True)
+    ct_chest_scan_date = fields.DateField(null=True, blank=True)
     full_lung_function = fields.NullBooleanField(null=True, blank=True)
     full_lung_function_date = fields.DateField(null=True, blank=True)
 
+
+class BronchialChallengeSubstance(lookuplists.LookupList):
+    pass
+
+
+class BronchialTest(RbhlSubrecord, models.EpisodeSubrecord):
+    BRONCHIAL_TEST_RESULTS = enum(
+        'Positive',
+        'Negative',
+        'Inconclusive',
+    )
+
+    BRONCHIAL_RESPONSE_TYPES = enum(
+        'Immediate',
+        'Dual',
+        'Late',
+        'Early',
+        'Other',
+    )
+
+    test_num = fields.IntegerField(null=True, blank=True)
+    result = fields.CharField(
+        blank=True, null=True, max_length=256, choices=BRONCHIAL_TEST_RESULTS
+    )
+    response_type = fields.CharField(
+        blank=True, null=True, max_length=256, choices=BRONCHIAL_RESPONSE_TYPES
+    )
+    last_exposed = fields.DateTimeField(null=True, blank=True)
+    duration_exposed = fields.TextField(null=True, blank=True)
+    date_of_challenge = fields.DateTimeField(null=True, blank=True)
+    substance = models.ForeignKeyOrFreeText(BronchialChallengeSubstance)
+    baseline_pc20 = fields.CharField(blank=True, null=True, max_length=256)
+    lowest_pc20 = fields.CharField(blank=True, null=True, max_length=256)
+
+
+class RoutineSPT(RbhlSubrecord, models.EpisodeSubrecord):
+    neg_control = fields.FloatField(null=True, blank=True)
+    pos_control = fields.FloatField(null=True, blank=True)
+    asp_fumigatus = fields.FloatField(null=True, blank=True)
+    grass_pollen = fields.FloatField(null=True, blank=True)
+    cat = fields.FloatField(null=True, blank=True)
+    house_dust_mite = fields.FloatField(null=True, blank=True)
+
+
+"""
+Diagnosis
+"""
+
+
+class AsthmaDiagnosis(RbhlSubrecord, models.EpisodeSubrecord):
+    ASTHMA_CHOICES = enum(
+        "Occupational caused by sensitisation",
+        "Exacerbated by work",
+        "Irritant induced",
+        "Non occupational",
+    )
+    trigger = fields.CharField(
+        blank=True, null=True, max_length=256, choices=ASTHMA_CHOICES
+    )
+    sensitivities = fields.TextField(blank=True, default="")
+
+
+class RhinitisDiagnosis(RbhlSubrecord, models.EpisodeSubrecord):
+    RHINITIS_CHOICES = enum(
+        "Occupational caused by sensitisation",
+        "Exacerbated by work",
+        "Irritant induced",
+        "Non occupational",
+    )
+    trigger = fields.CharField(
+        blank=True, null=True, max_length=256, choices=RHINITIS_CHOICES
+    )
+    sensitivities = fields.TextField(blank=True, default="")
+
+
+class ChronicAirFlowLimitation(RbhlSubrecord, models.EpisodeSubrecord):
+    copd = fields.BooleanField(default=False)
+    emphysema = fields.BooleanField(default=False)
+    occupational = fields.BooleanField(default=False)
+
+
+class Malignancy(RbhlSubrecord, models.EpisodeSubrecord):
+    MALIGNANCY_CONDITIONS = enum(
+        'Mesothelioma',
+        'Bronchus with asbestos exposure',
+        'Bronchus - other'
+    )
+    malignancy_type = fields.CharField(
+        blank=True, null=True, max_length=256,
+        choices=MALIGNANCY_CONDITIONS
+    )
+    occupational = fields.BooleanField(default=False)
+
+
+class DiffuseLungDisease(RbhlSubrecord, models.EpisodeSubrecord):
+    DISEASE_TYPE = enum(
+        "Asbestosis",
+        "Hypersensitivity pneumonitis",
+        "ILD Other",
+        "Berylliosis",
+        "Ideopathic Pulmonary Fibrosis",
+        "Sarcodisis",
+        "Silicosis",
+    )
+    disease_type = fields.CharField(
+        blank=True, null=True, max_length=256, choices=DISEASE_TYPE
+    )
+    occupational = fields.BooleanField(default=False)
+
+
+class BenignPleuralDisease(RbhlSubrecord, models.EpisodeSubrecord):
+    DISEASE_TYPE = enum(
+        "Predominantly plaques",
+        "Diffuse"
+    )
+    disease_type = fields.CharField(
+        blank=True, null=True, max_length=256, choices=DISEASE_TYPE
+    )
+
+
+class Nad(RbhlSubrecord, models.EpisodeSubrecord):
     class Meta:
-        verbose_name = "Diagnostic testing"
+        verbose_name = "NAD"
+
+
+class OtherDiagnosis(RbhlSubrecord, models.EpisodeSubrecord):
+    DIAGNOSIS_TYPE = enum(
+        "Humidifier fever",
+        "Polymer fume fever",
+        "Infection",
+        "Chemical pneumonitis",
+        "Building related symptoms",
+        "Breathing pattern disorder ",
+        "Induced laryngeal obstruction",
+        "Air travel related symptoms",
+        "Medically unexplained symptoms",
+        "Cough due to irritant symptoms "
+    )
+    diagnosis_type = fields.CharField(
+        blank=True, null=True, max_length=256, choices=DIAGNOSIS_TYPE
+    )
+    occupational = fields.BooleanField(default=False)
 
 
 class PresentingComplaint(lookuplists.LookupList):
