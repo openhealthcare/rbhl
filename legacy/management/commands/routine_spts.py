@@ -3,6 +3,7 @@ import csv
 from django.core.management import BaseCommand
 from django.db import transaction
 from django.utils import timezone
+from rbhl.models import RoutineSPT
 
 from legacy.models import PatientNumber, LegacyRoutineSPT
 
@@ -14,12 +15,12 @@ class Command(BaseCommand):
         parser.add_argument("file_name", help="Specify import file")
 
     @transaction.atomic()
-    def handle(self, *args, **options):
+    def build_routine_spts(self, file_name):
         LegacyRoutineSPT.objects.all().delete()
 
         # Open with utf-8-sig encoding to avoid having a BOM in the first
         # header string.
-        with open(options["file_name"], encoding="utf-8-sig") as f:
+        with open(file_name, encoding="utf-8-sig") as f:
             rows = list(csv.DictReader(f))
 
         self.stdout.write(self.style.SUCCESS("Importing Routine SPTs"))
@@ -50,3 +51,26 @@ class Command(BaseCommand):
         self.stdout.write(
             self.style.SUCCESS("Created {} Routine SPTs".format(len(tests)))
         )
+
+    @transaction.atomic()
+    def convert_routine_spts(self):
+        routine_spts = []
+        for legacy in LegacyRoutineSPT.objects.all():
+            routine_spt = RoutineSPT(
+                episode=legacy.patient.episode_set.get(),
+            )
+            routine_spt.neg_control = legacy.neg_control
+            routine_spt.pos_control = legacy.pos_control
+            routine_spt.asp_fumigatus = legacy.asp_fumigatus
+            routine_spt.grass_pollen = legacy.grass_pollen
+            routine_spt.cat = legacy.cat
+            routine_spt.house_dust_mite = legacy.d_pter
+
+            routine_spts.append(
+                routine_spt
+            )
+        RoutineSPT.objects.bulk_create(routine_spts)
+
+    def handle(self, *args, **options):
+        self.build_routine_spts(options["file_name"])
+        self.convert_routine_spts()

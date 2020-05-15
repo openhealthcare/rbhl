@@ -319,8 +319,10 @@ class BronchialTest(RbhlSubrecord, models.EpisodeSubrecord):
         'Inconclusive',
     )
 
+    IMMEDIATE = 'Immediate'
+
     BRONCHIAL_RESPONSE_TYPES = enum(
-        'Immediate',
+        IMMEDIATE,
         'Dual',
         'Late',
         'Early',
@@ -332,7 +334,11 @@ class BronchialTest(RbhlSubrecord, models.EpisodeSubrecord):
         blank=True, null=True, max_length=256, choices=BRONCHIAL_TEST_RESULTS
     )
     response_type = fields.CharField(
-        blank=True, null=True, max_length=256, choices=BRONCHIAL_RESPONSE_TYPES
+        blank=True,
+        null=True,
+        max_length=256,
+        default=IMMEDIATE,
+        choices=BRONCHIAL_RESPONSE_TYPES
     )
     last_exposed = fields.DateTimeField(null=True, blank=True)
     duration_exposed = fields.TextField(null=True, blank=True)
@@ -361,11 +367,16 @@ Diagnosis
 class Asthma(RbhlSubrecord, models.EpisodeSubrecord):
     _icon = "fa fa-stethoscope"
 
+    OCCUPATIONAL_CAUSED_BY_SENSITISATION = "Occupational caused by sensitisation"
+    EXACERBATED_BY_WORK = "Exacerbated by work"
+    IRRITANT_INDUCED = "Irritant induced"
+    NON_OCCUPATIONAL = "Non occupational"
+
     ASTHMA_CHOICES = enum(
-        "Occupational caused by sensitisation",
-        "Exacerbated by work",
-        "Irritant induced",
-        "Non occupational",
+        OCCUPATIONAL_CAUSED_BY_SENSITISATION,
+        EXACERBATED_BY_WORK,
+        IRRITANT_INDUCED,
+        NON_OCCUPATIONAL,
     )
     trigger = fields.CharField(
         blank=True, null=True, max_length=256, choices=ASTHMA_CHOICES
@@ -375,11 +386,15 @@ class Asthma(RbhlSubrecord, models.EpisodeSubrecord):
 
 class Rhinitis(RbhlSubrecord, models.EpisodeSubrecord):
     _icon = "fa fa-stethoscope"
+
+    OCCUPATIONAL_CAUSED_BY_SENSITISATION = "Occupational caused by sensitisation"
+    EXACERBATED_BY_WORK = "Exacerbated by work"
+    NON_OCCUPATIONAL = "Non occupational"
+
     RHINITIS_CHOICES = enum(
-        "Occupational caused by sensitisation",
-        "Exacerbated by work",
-        "Irritant induced",
-        "Non occupational",
+        OCCUPATIONAL_CAUSED_BY_SENSITISATION,
+        EXACERBATED_BY_WORK,
+        NON_OCCUPATIONAL,
     )
     trigger = fields.CharField(
         blank=True, null=True, max_length=256, choices=RHINITIS_CHOICES

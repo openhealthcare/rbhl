@@ -289,9 +289,9 @@ class Command(BaseCommand):
         DiagnosticTesting.height
             -> Demographics.height
         DiagnosticTesting.antihistimines
-            -> RbhlDiagnosticTesting.antihistimines
+            -> SkinPrickTest.antihistimines
         DiagnosticTesting.skin_prick_test
-            -> RbhlDiagnosticTesting.employment_category
+            -> creates a skin prick test
         DiagnosticTesting.atopic
             -> RbhlDiagnosticTesting.atopic
         DiagnosticTesting.specific_skin_prick
@@ -319,7 +319,6 @@ class Command(BaseCommand):
         """
         # TODO this sometimes returns multiple
         legacy_diagnostic_testing = patient.diagnostictesting_set.all()[0]
-        diagnosistic_testing = episode.rbhldiagnostictesting_set.all()[0]
 
         height = patient.demographics_set.all()[0].height
         if height:
@@ -329,6 +328,17 @@ class Command(BaseCommand):
                     height=height
                 )
 
+        SKIN_PRICK_FIELDS = [
+            "antihistimines", "skin_prick_test", "atopic"
+        ]
+        if any([
+            getattr(legacy_diagnostic_testing, i) for i in SKIN_PRICK_FIELDS
+        ]):
+            skin_prick_test  = models.SkinPrickTest(episode=episode)
+            skin_prick_test.antihistimines = legacy_diagnostic_testing.antihistimines
+            skin_prick_test.atopic = legacy_diagnostic_testing.atopic
+            skin_prick_test.save()
+
         SPIROMETRY_FIELDS = [
             "fev_1", "fev_1_post_ventolin", "fev_1_percentage_protected",
             "fvc", "fvc_post_ventolin", "fvc_percentage_protected"
@@ -337,58 +347,30 @@ class Command(BaseCommand):
         if any([
             getattr(legacy_diagnostic_testing, i) for i in SPIROMETRY_FIELDS
         ]):
-            diagnostic_test = episode.diagnostictest_set.create(
-                test_type=models.DiagnosticTest.SPIROMETRY_TEST
-            )
+            spirometry  = models.Spirometry(episode=episode)
             for field in SPIROMETRY_FIELDS:
                 field_value = getattr(legacy_diagnostic_testing, field)
-                setattr(diagnostic_test, field, field_value)
-            diagnostic_test.save()
+                setattr(spirometry, field, field_value)
+            spirometry.save()
 
         if any([
             legacy_diagnostic_testing.ct_chest_scan,
-            legacy_diagnostic_testing.ct_chest_scan_date
-        ]):
-            diagnostic_test = episode.diagnostictest_set.create(
-                test_type=models.DiagnosticTest.CT_CHEST_SCAN
-            )
-            diagnostic_test.ct_chest_scan_date = diagnostic_test.ct_chest_scan_date
-            diagnostic_test.save()
-
-        if any([
+            legacy_diagnostic_testing.ct_chest_scan_date,
             legacy_diagnostic_testing.full_lung_function,
             legacy_diagnostic_testing.full_lung_function_date
         ]):
-            diagnostic_test = episode.diagnostictest_set.create(
-                test_type=models.DiagnosticTest.FULL_LUNG_FUNCTION
+            other_investigations = models.OtherInvestigations(
+                episode=episode
             )
-            legacy_date = legacy_diagnostic_testing.full_lung_function_date
-            diagnostic_test.full_lung_function_date = legacy_date
-            diagnostic_test.save()
-
-        FIELDS = [
-            "antihistimines",
-            "skin_prick_test",
-            "atopic",
-            "specific_skin_prick",
-            "fev_1",
-            "fev_1_post_ventolin",
-            "fev_1_percentage_protected",
-            "fvc",
-            "fvc_post_ventolin",
-            "fvc_percentage_protected",
-            "ct_chest_scan",
-            "ct_chest_scan_date",
-            "full_lung_function",
-            "full_lung_function_date"
-        ]
-
-        for field in FIELDS:
-            legacy_value = getattr(legacy_diagnostic_testing, field)
-            setattr(diagnosistic_testing, field, legacy_value)
-        diagnosistic_testing.immunology_oem = legacy_diagnostic_testing.serum_antibodies
-
-        diagnosistic_testing.save()
+            ct_scan = legacy_diagnostic_testing.ct_chest_scan
+            ct_scan_date = legacy_diagnostic_testing.ct_chest_scan_date
+            lung_function = legacy_diagnostic_testing.full_lung_function
+            lung_function_date = legacy_diagnostic_testing.full_lung_function_date
+            other_investigations.ct_chest_scan = ct_scan
+            other_investigations.ct_chest_scan_date = ct_scan_date
+            other_investigations.full_lung_function = lung_function
+            other_investigations.full_lung_function_date = lung_function_date
+            other_investigations.save()
 
     def build_diagnostic_outcome(self, patientLUT, rows):
         for row in rows:
@@ -440,43 +422,41 @@ class Command(BaseCommand):
             )
 
     def convert_to_diagnosis_asthma(self, patient, episode):
-        asthma = patient.diagnosticasthma_set.all()[0]
+        legacy_asthma = patient.diagnosticasthma_set.all()[0]
 
         if any([
-            asthma.asthma,
-            asthma.is_exacerbated_by_work,
-            asthma.has_infant_induced_asthma,
-            asthma.occupational_asthma_caused_by_sensitisation,
-            asthma.has_non_occupational_asthma
+            legacy_asthma.asthma,
+            legacy_asthma.is_exacerbated_by_work,
+            legacy_asthma.has_infant_induced_asthma,
+            legacy_asthma.occupational_asthma_caused_by_sensitisation,
+            legacy_asthma.has_non_occupational_asthma
         ]):
-            diagnosis = models.Diagnosis.objects.create(episode=episode)
-            diagnosis.condition = models.Diagnosis.ASTHMA
-            diagnosis.diagnosis_type = models.Diagnosis.ASTHMA
+            asthma = models.Asthma(episode=episode)
 
-            sensitivities = asthma.sensitising_agent
+            sensitivities = legacy_asthma.sensitising_agent
 
             cleaned = [
                 i.strip() for i in sensitivities.split("\n") if i.strip()
             ]
 
-            diagnosis.sensitivities = "\n".join(cleaned)
+            asthma.sensitivities = "\n".join(cleaned)
             # order of priority for what overrides
             # occupational asthma caused by sensitisation > is exacerbated by work >
             # has irritant induced asthma > has non occupational asthma
 
             option = ""
 
-            if asthma.occupational_asthma_caused_by_sensitisation:
-                option = models.Diagnosis.OCCUPATIONAL_CAUSED_BY_SENSITISATION
-            elif asthma.is_exacerbated_by_work:
-                option = models.Diagnosis.EXACERBATED_BY_WORK
-            elif asthma.has_infant_induced_asthma:
-                option = models.Diagnosis.IRRITANT_INDUCED
-            elif asthma.has_non_occupational_asthma:
-                option = models.Diagnosis.NON_OCCUPATIONAL
+            if legacy_asthma.occupational_asthma_caused_by_sensitisation:
+                option = models.Asthma.OCCUPATIONAL_CAUSED_BY_SENSITISATION
+            elif legacy_asthma.is_exacerbated_by_work:
+                option = models.Asthma.EXACERBATED_BY_WORK
+            elif legacy_asthma.has_infant_induced_asthma:
+                option = models.Asthma.IRRITANT_INDUCED
+            elif legacy_asthma.has_non_occupational_asthma:
+                option = models.Asthma.NON_OCCUPATIONAL
 
-            diagnosis.asthma_options = option
-            diagnosis.save()
+            asthma.trigger = option
+            asthma.save()
 
     def build_diagnostic_rhinitis(self, patientLUT, rows):
         for row in rows:
@@ -509,17 +489,15 @@ class Command(BaseCommand):
             )
 
     def convert_to_diagnosis_rhinitis(self, patient, episode):
-        rhinitis = patient.diagnosticrhinitis_set.all()[0]
+        legacy_rhinitis = patient.diagnosticrhinitis_set.all()[0]
 
         if any([
-            rhinitis.rhinitis,
-            rhinitis.work_exacerbated,
-            rhinitis.occupational_rhinitis_caused_by_sensitisation,
-            rhinitis.has_non_occupational_rhinitis
+            legacy_rhinitis.rhinitis,
+            legacy_rhinitis.work_exacerbated,
+            legacy_rhinitis.occupational_rhinitis_caused_by_sensitisation,
+            legacy_rhinitis.has_non_occupational_rhinitis
         ]):
-            diagnosis = models.Diagnosis.objects.create(episode=episode)
-            diagnosis.condition = models.Diagnosis.RHINITIS
-            diagnosis.diagnosis_type = models.Diagnosis.RHINITIS
+            rhinitis = models.Rhinitis(episode=episode)
 
             # order of priority for what overrides
             # occupational_rhinitis_caused_by_sensitisation > work_exacerbated >
@@ -527,24 +505,24 @@ class Command(BaseCommand):
 
             option = ""
 
-            if rhinitis.occupational_rhinitis_caused_by_sensitisation:
-                option = models.Diagnosis.OCCUPATIONAL_CAUSED_BY_SENSITISATION
-            elif rhinitis.work_exacerbated:
-                option = models.Diagnosis.EXACERBATED_BY_WORK
-            elif rhinitis.has_non_occupational_rhinitis:
-                option = models.Diagnosis.NON_OCCUPATIONAL
+            if legacy_rhinitis.occupational_rhinitis_caused_by_sensitisation:
+                option = models.Rhinitis.OCCUPATIONAL_CAUSED_BY_SENSITISATION
+            elif legacy_rhinitis.work_exacerbated:
+                option = models.Rhinitis.EXACERBATED_BY_WORK
+            elif legacy_rhinitis.has_non_occupational_rhinitis:
+                option = models.Rhinitis.NON_OCCUPATIONAL
 
-            diagnosis.rhinitis_options = option
+            rhinitis.trigger = option
 
-            sensitivities = rhinitis.rhinitis_occupational_sensitisation_cause
+            sensitivities = legacy_rhinitis.rhinitis_occupational_sensitisation_cause
 
             cleaned = [
                 i.strip() for i in sensitivities.split("\n") if i.strip()
             ]
 
-            diagnosis.sensitivities = "\n".join(cleaned)
+            rhinitis.sensitivities = "\n".join(cleaned)
 
-            diagnosis.save()
+            rhinitis.save()
 
     def build_diagnostic_other(self, patientLUT, rows):
         for row in rows:
@@ -586,88 +564,74 @@ class Command(BaseCommand):
 
         if any([
             other.copd,
-            other.copd_with_emphysema,
-        ]):
-            diagnosis = models.Diagnosis.objects.create(episode=episode)
-            diagnosis.diagnosis_type = models.Diagnosis.CHRONIC_AIR_FLOW
-            diagnosis.condition = "COPD"
-            diagnosis.occupational = other.copd_is_occupational
-            diagnosis.save()
-
-        if any([
             other.emphysema,
             other.copd_with_emphysema,
         ]):
-            diagnosis = models.Diagnosis.objects.create(episode=episode)
-            diagnosis.condition = "Emphysema"
-            diagnosis.diagnosis_type = models.Diagnosis.CHRONIC_AIR_FLOW
-            # might seem odd but COPD and emphysema are on the same section
-            # and the occupational check box applies to both
-            diagnosis.occupational = other.copd_is_occupational
-            diagnosis.save()
+            chronic_air_flow_limitation = models.ChronicAirFlowLimitation(
+                episode=episode
+            )
+            if other.copd_with_emphysema:
+                chronic_air_flow_limitation.copd = True
+                chronic_air_flow_limitation.emphysema = True
+            else:
+                chronic_air_flow_limitation.copd = bool(other.copd)
+                chronic_air_flow_limitation.emphysema = bool(other.emphysema)
+            chronic_air_flow_limitation.occupational = bool(other.copd_is_occupational)
+            chronic_air_flow_limitation.save()
 
         if any([
             other.malignancy,
             other.malignancy_type,
             other.malignancy_type_other
         ]):
-            diagnosis = models.Diagnosis.objects.create(episode=episode)
-            diagnosis.diagnosis_type = models.Diagnosis.MALIGNANCY
+            malignancy = models.Malignancy(episode=episode)
+
             if other.malignancy_type_other:
-                diagnosis.condition = other.malignancy_type_other
+                malignancy.malignancy_type = other.malignancy_type_other
             elif other.malignancy_type:
-                diagnosis.condition = other.malignancy_type
-            else:
-                diagnosis.condition = models.Diagnosis.MALIGNANCY
-            diagnosis.occupational = other.malignancy_is_occupational
-            diagnosis.save()
+                malignancy.malignancy_type = other.malignancy_type
+
+            malignancy.occupational = bool(other.malignancy_is_occupational)
+            malignancy.save()
 
         if other.NAD:
-            diagnosis = models.Diagnosis.objects.create(episode=episode)
-            diagnosis.diagnosis_type = models.Diagnosis.NAD
-            diagnosis.condition = models.Diagnosis.NAD
-            diagnosis.save()
+            models.Nad.objects.create(episode=episode)
 
         if any([
             other.diffuse_lung_disease,
             other.diffuse_lung_disease_type,
             other.diffuse_lung_disease_type_other,
         ]):
-            diagnosis = models.Diagnosis.objects.create(episode=episode)
-            diagnosis.diagnosis_type = models.Diagnosis.DIFFUSE
-            if other.diffuse_lung_disease_type_other:
-                diagnosis.condition = other.diffuse_lung_disease_type_other
-            elif other.diffuse_lung_disease_type:
-                diagnosis.condition = other.diffuse_lung_disease_type
-            else:
-                diagnosis.condition = models.Diagnosis.DIFFUSE
+            diffuse_lung_disease = models.DiffuseLungDisease(episode=episode)
+            lung_disease_type = other.diffuse_lung_disease_type_other
 
-            diagnosis.occupational = other.diffuse_lung_disease_is_occupational
-            diagnosis.save()
+            if not lung_disease_type:
+                lung_disease_type = other.diffuse_lung_disease_type
+            diffuse_lung_disease.disease_type = lung_disease_type
+            occupational = other.diffuse_lung_disease_is_occupational
+            diffuse_lung_disease.occupational = bool(occupational)
+            diffuse_lung_disease.save()
 
         if any([
             other.benign_pleural_disease,
             other.benign_pleural_disease_type,
         ]):
-            diagnosis = models.Diagnosis.objects.create(episode=episode)
-            diagnosis.diagnosis_type = models.Diagnosis.BENIGN
+            benign_pleural_disease = models.BenignPleuralDisease(episode=episode)
+            disease_type = other.benign_pleural_disease_type
             if other.benign_pleural_disease_type:
                 if other.benign_pleural_disease_type == "Difuse":
-                    diagnosis.condition = "Diffuse"
+                    benign_pleural_disease.disease_type = "Diffuse"
                 else:
-                    diagnosis.condition = other.benign_pleural_disease_type
-            else:
-                diagnosis.condition = "Benigin pleural disease"
-            diagnosis.save()
+                    benign_pleural_disease.disease_type = disease_type
+            benign_pleural_disease.save()
 
         if any([
             other.other_diagnosis_type,
             other.other_diagnosis_type_other,
             other.other_diagnosis,
         ]):
-            diagnosis = models.Diagnosis.objects.create(episode=episode)
-            diagnosis.diagnosis_type = models.Diagnosis.OTHER
-            condition = "Other"
+            other_diagnosis = models.OtherDiagnosis(episode=episode)
+            condition = ""
             if other.other_diagnosis_type_other:
                 condition = other.other_diagnosis_type_other
             elif other.other_diagnosis_type:
@@ -682,8 +646,9 @@ class Command(BaseCommand):
 
             if condition.lower() == "hyperventilation":
                 condition = "Breathing pattern disorder"
-            diagnosis.occupational = other.other_diagnosis_is_occupational
-            diagnosis.save()
+            other_diagnosis.diagnosis_type = condition
+            other_diagnosis.occupational = bool(other.other_diagnosis_is_occupational)
+            other_diagnosis.save()
 
     def build_other(self, patientLUT, rows):
         for row in rows:
@@ -772,7 +737,6 @@ class Command(BaseCommand):
             patient__in=qs
         ).prefetch_related(
             "cliniclog_set",
-            "rbhldiagnostictesting_set",
             "employment_set",
             "referral_set",
             "socialhistory_set",
@@ -807,7 +771,6 @@ class Command(BaseCommand):
                 patient, patient_id_to_episode[patient.id]
             )
 
-        build_lookup_list(models.Diagnosis, models.Diagnosis.condition)
         build_lookup_list(models.ClinicLog, models.ClinicLog.presenting_complaint)
         build_lookup_list(models.Employment, models.Employment.job_title)
 
@@ -863,4 +826,4 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         self.create_legacy(options["file_name"])
-        # self.convert_legacy_to_rbhl()
+        self.convert_legacy_to_rbhl()
