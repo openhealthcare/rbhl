@@ -85,5 +85,7 @@ def test_display(
     ctx["label"] = kwargs.get(
         "label", model._get_field_title(ctx["field_name"])
     )
+    ctx["is_date"] = is_date(field)
+    ctx["is_boolean"] = is_boolean(field)
     ctx["bold_if_truthy"] = bold_if_truthy
     return ctx

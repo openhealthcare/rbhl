@@ -1,35 +1,32 @@
 {% load rbhl_panels %}
 <div class="row">
   <div class="col-md-4">
-    {% field_display "BronchialTest.test_num"  %}
+    {% test_display "BronchialTest.substance" %}
   </div>
   <div class="col-md-4">
-    {% field_display "BronchialTest.result" %}
+    {% test_display "BronchialTest.result" %}
   </div>
   <div class="col-md-4">
-    {% field_display "BronchialTest.response_type"  %}
-  </div>
-</div>
-<div class="row">
-  <div class="col-md-4">
-    {% field_display "BronchialTest.substance" %}
-  </div>
-  <div class="col-md-4">
-    {% field_display "BronchialTest.baseline_pc20" %}
-  </div>
-  <div class="col-md-4">
-    {% field_display "BronchialTest.lowest_pc20" %}
+    {% test_display "BronchialTest.response_type"  %}
   </div>
 </div>
 <div class="row">
   <div class="col-md-4">
-    {% field_display "BronchialTest.date_of_challenge" %}
+    {% test_display "BronchialTest.baseline_pc20" %}
   </div>
   <div class="col-md-4">
-    {% field_display "BronchialTest.last_exposed" %}
+    {% test_display "BronchialTest.lowest_pc20" %}
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-4">
+    {% test_display "BronchialTest.date_of_challenge" %}
   </div>
   <div class="col-md-4">
-    {% field_display "BronchialTest.duration_exposed" %}
+    {% test_display "BronchialTest.last_exposed" %}
+  </div>
+  <div class="col-md-4">
+    {% test_display "BronchialTest.duration_exposed" %}
   </div>
 </div>
 
