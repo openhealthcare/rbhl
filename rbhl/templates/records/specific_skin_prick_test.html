@@ -1,18 +1,43 @@
 {% load rbhl_panels %}
-<div class="row">
-  <div class="col-md-3">
-    <b>
-      Specific skin prick test <span ng-show="item.specific_sp_testnum"> - [[ item.specific_sp_testnum ]]</span>:
-    </b>
+<div ng-show="item.wheal" class="row">
+  <strong>
+    <div class="col-md-4">
+      <div style="margin-bottom: 10px" class="row">
+        <div class="col-md-12">
+          [[ item.test_date | displayDate ]]
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div style="margin-bottom: 10px" class="row">
+        <div class="col-md-6">
+          [[ item.spt ]]:
+        </div>
+        <div class="col-md-6">
+          [[ item.wheal ]]mm
+        </div>
+      </div>
+    </div>
+  </strong>
+</div>
+
+<div ng-hide="item.wheal" class="row">
+  <div class="col-md-4">
+    <div style="margin-bottom: 10px" class="row">
+      <div class="col-md-12">
+        [[ item.test_date | displayDate ]]
+      </div>
+    </div>
   </div>
-  <div class="col-md-3">
-    {% field_display "SpecificSkinPrickTest.test_date"  %}
-  </div>
-  <div class="col-md-3">
-    {% field_display "SpecificSkinPrickTest.wheal" %}
-  </div>
-  <div class="col-md-3">
-    {% field_display "SpecificSkinPrickTest.spt"  %}
+  <div class="col-md-4">
+    <div style="margin-bottom: 10px" class="row">
+      <div class="col-md-6">
+        [[ item.spt ]]:
+      </div>
+      <div class="col-md-6">
+        [[ item.wheal ]]mm
+      </div>
+    </div>
   </div>
 </div>
 

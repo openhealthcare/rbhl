@@ -1,28 +1,21 @@
 {% load rbhl_panels %}
 <div class="row">
-  <div class="col-md-3">
-    <b>
-      Routine SPT:
-    </b>
+  <div class="col-md-4">
+    {% test_display "RoutineSPT.neg_control" bold_if_truthy=True %}
   </div>
-  <div class="col-md-3">
-    {% field_display "RoutineSPT.neg_control"  %}
+  <div class="col-md-4">
+    {% test_display "RoutineSPT.pos_control" bold_if_truthy=True %}
   </div>
-  <div class="col-md-3">
-    {% field_display "RoutineSPT.pos_control" %}
+  <div class="col-md-4">
+    {% test_display "RoutineSPT.asp_fumigatus" bold_if_truthy=True %}
   </div>
-  <div class="col-md-3">
-    {% field_display "RoutineSPT.asp_fumigatus"  %}
+  <div class="col-md-4">
+    {% test_display "RoutineSPT.grass_pollen" bold_if_truthy=True %}
   </div>
-</div>
-<div class="row">
-  <div class="col-md-3 col-md-offset-3">
-    {% field_display "RoutineSPT.grass_pollen" %}
+  <div  class="col-md-4">
+    {% test_display "RoutineSPT.cat" bold_if_truthy=True %}
   </div>
-  <div class="col-md-3">
-    {% field_display "RoutineSPT.cat" %}
-  </div>
-  <div class="col-md-3">
-    {% field_display "RoutineSPT.house_dust_mite" %}
+  <div class="col-md-4">
+    {% test_display "RoutineSPT.house_dust_mite" bold_if_truthy=True %}
   </div>
 </div>

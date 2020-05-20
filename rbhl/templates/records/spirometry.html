@@ -1,26 +1,27 @@
 {% load rbhl_panels %}
 <div class="row">
-  <div class="col-md-3">
-    <strong>Spirometry:</strong>
+  <div class="col-md-4">
+    {% test_display "Spirometry.fev_1" %}
   </div>
-  <div class="col-md-3">
-    {% field_display "Spirometry.fev_1" %}
+  <div class="col-md-4">
+    {% test_display "Spirometry.fev_1_post_ventolin" label="Post ventolin" %}
   </div>
-  <div class="col-md-3">
-    {% field_display "Spirometry.fev_1_post_ventolin" label_size="10"  %}
-  </div>
-  <div class="col-md-3">
-    {% field_display "Spirometry.fev_1_percentage_predicted" label_size="10" %}
+  <div class="col-md-4">
+    {% test_display "Spirometry.fev_1_post_ventolin" label="% prediced" %}
   </div>
 </div>
+
+
 <div class="row">
-  <div class="col-md-3 col-md-offset-3">
-    {% field_display "Spirometry.fvc" %}
+  <div class="col-md-4">
+    {% test_display "Spirometry.fvc" %}
   </div>
-  <div class="col-md-3">
-    {% field_display "Spirometry.fvc_post_ventolin" label_size="10" %}
+  <div class="col-md-4">
+    {% test_display "Spirometry.fvc_post_ventolin" label="Post ventolin" %}
   </div>
-  <div class="col-md-3">
-    {% field_display "Spirometry.fvc_percentage_predicted" label_size="10" %}
+  <div class="col-md-4">
+    {% test_display "Spirometry.fvc_post_ventolin" label="% prediced" %}
   </div>
 </div>
+
+

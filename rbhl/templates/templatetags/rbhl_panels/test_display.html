@@ -1,0 +1,30 @@
+{% load forms %}
+<div style="margin-bottom: 10px" class="row">
+  {% if bold_if_truthy %}
+  <span ng-show="item.{{ field_name }}">
+    <strong>
+      <div class="col-md-6">
+        {{ label }}:
+      </div>
+      <div class="col-md-6">
+        [[ item.{{ field_name }} ]]
+      </div>
+    </strong>
+  </span>
+  <span ng-hide="item.{{ field_name }}">
+    <div class="col-md-6">
+      {{ label }}:
+    </div>
+    <div class="col-md-6">
+      [[ item.{{ field_name }} ]]
+    </div>
+  </span>
+  {% else %}
+  <div class="col-md-6">
+    {{ label }}:
+  </div>
+  <div class="col-md-6">
+    [[ item.{{ field_name }} ]]
+  </div>
+  {% endif %}
+</div>

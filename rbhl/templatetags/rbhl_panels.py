@@ -69,3 +69,21 @@ def field_display(
     ctx["is_date"] = is_date(field)
     ctx["markdown"] = kwargs.get("markdown", False)
     return ctx
+
+
+@register.inclusion_tag(
+    'templatetags/rbhl_panels/test_display.html',
+    takes_context=True
+)
+def test_display(
+    context, field, label=None, bold_if_truthy=False, **kwargs
+):
+    ctx = {}
+    model_and_field_name = field
+    ctx["field_name"] = model_and_field_name.split(".")[1]
+    model, field = _model_and_field_from_path(model_and_field_name)
+    ctx["label"] = kwargs.get(
+        "label", model._get_field_title(ctx["field_name"])
+    )
+    ctx["bold_if_truthy"] = bold_if_truthy
+    return ctx

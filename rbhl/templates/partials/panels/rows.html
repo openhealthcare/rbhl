@@ -1,12 +1,27 @@
-{% if show_hr %}
-<hr ng-show="episode.{{ subrecord.get_api_name }}.length" />
-{% endif %}
-<li style="border: 0" ng-repeat="item in episode.{{ subrecord.get_api_name }}" class="list-group-item">
+<li ng-show="episode.{{ subrecord.get_api_name }}.length" style="border: none" class="list-group-item">
   <div class="row">
-    <div class="col-md-9">
-      {% include subrecord.get_detail_template %}
+    <div class="col-md-10">
+      <hr />
     </div>
-    <div class="col-md-3">
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <h5>
+        <strong style="text-transform: uppercase;">
+          {{ subrecord.get_display_name }}
+        </strong>
+      </h5>
+    </div>
+  </div>
+  <div class="row"  ng-repeat="item in episode.{{ subrecord.get_api_name }}">
+    <div class="col-md-8 col-md-offset-1">
+      <div class="row">
+        <div class="col-md-12">
+          {% include subrecord.get_detail_template %}
+        </div>
+      </div>
+    </div>
+    <div class="col-md-1">
       <i
         class="fa fa-pencil edit pull-right pointer" ng-click="episode.recordEditor.editItem('{{ subrecord.get_api_name }}', item)"
       ></i>
