@@ -290,8 +290,6 @@ class Command(BaseCommand):
             -> Demographics.height
         DiagnosticTesting.skin_prick_test
             -> creates a skin prick test
-        DiagnosticTesting.atopic
-            -> RbhlDiagnosticTesting.atopic
         DiagnosticTesting.serum_antibodies
             -> ClinicLog.immunology_oem
         DiagnosticTesting.atopic
@@ -315,7 +313,6 @@ class Command(BaseCommand):
         DiagnosticTesting.full_lung_function_date
             -> RbhlDiagnosticTesting.full_lung_function_date
         """
-        # TODO this sometimes returns multiple
         legacy_diagnostic_testing = patient.diagnostictesting_set.all()[0]
 
         height = patient.demographics_set.all()[0].height
@@ -326,10 +323,18 @@ class Command(BaseCommand):
                     height=height
                 )
 
-        clinic_log = episode.cliniclog_set.get()
+        clinic_log = None
 
         if legacy_diagnostic_testing.serum_antibodies:
+            clinic_log = episode.cliniclog_set.all()[0]
             clinic_log.immunology_oem = legacy_diagnostic_testing.serum_antibodies
+
+        if legacy_diagnostic_testing.atopic:
+            if not clinic_log:
+                clinic_log = episode.cliniclog_set.all()[0]
+            clinic_log.atopic = legacy_diagnostic_testing.atopic
+
+        if clinic_log:
             clinic_log.save()
 
         if legacy_diagnostic_testing.antihistimines:

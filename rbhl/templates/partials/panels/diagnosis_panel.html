@@ -17,7 +17,6 @@
     episode.{{ models.Malignancy.get_api_name }}.length ||
     episode.{{ models.DiffuseLungDisease.get_api_name }}.length ||
     episode.{{ models.BenignPleuralDisease.get_api_name }}.length ||
-    episode.{{ models.Nad.get_api_name }}.length ||
     episode.{{ models.DiffuseLungDisease.get_api_name }}.length"
   class="panel-body">
     <div ng-show="showDiagnosis" class="row">
@@ -28,7 +27,6 @@
         {% include "partials/panels/add_button.html" with subrecord=models.Malignancy %}
         {% include "partials/panels/add_button.html" with subrecord=models.DiffuseLungDisease %}
         {% include "partials/panels/add_button.html" with subrecord=models.BenignPleuralDisease %}
-        {% include "partials/panels/add_button.html" with subrecord=models.Nad %}
         {% include "partials/panels/add_button.html" with subrecord=models.OtherDiagnosis %}
       </div>
       <div class="col-sm-1">
@@ -51,7 +49,6 @@
       {% include "partials/panels/rows.html" with subrecord=models.Malignancy show_hr=True %}
       {% include "partials/panels/rows.html" with subrecord=models.DiffuseLungDisease show_hr=True %}
       {% include "partials/panels/rows.html" with subrecord=models.BenignPleuralDisease show_hr=True %}
-      {% include "partials/panels/rows.html" with subrecord=models.Nad show_hr=True %}
       {% include "partials/panels/rows.html" with subrecord=models.OtherDiagnosis show_hr=True %}
     </ul>
   </div>

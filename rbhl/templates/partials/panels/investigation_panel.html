@@ -20,9 +20,9 @@
     <div ng-show="showInvestigations" class="row">
       <div class="col-sm-11">
         {% include "partials/panels/add_button.html" with subrecord=models.Spirometry %}
+        {% include "partials/panels/add_button.html" with subrecord=models.RoutineSPT %}
         {% include "partials/panels/add_button.html" with subrecord=models.SpecificSkinPrickTest %}
         {% include "partials/panels/add_button.html" with subrecord=models.BronchialTest %}
-        {% include "partials/panels/add_button.html" with subrecord=models.RoutineSPT %}
         {% include "partials/panels/add_button.html" with subrecord=models.OtherInvestigations %}
       </div>
       <div class="col-sm-1">
@@ -40,9 +40,9 @@
     </div>
     <ul class="list-group">
       {% include "partials/panels/rows.html" with subrecord=models.Spirometry %}
+      {% include "partials/panels/rows.html" with subrecord=models.RoutineSPT show_hr=True %}
       {% include "partials/panels/rows.html" with subrecord=models.SpecificSkinPrickTest show_hr=True %}
       {% include "partials/panels/rows.html" with subrecord=models.BronchialTest show_hr=True %}
-      {% include "partials/panels/rows.html" with subrecord=models.RoutineSPT show_hr=True %}
       {% include "partials/panels/rows.html" with subrecord=models.OtherInvestigations show_hr=True %}
     </ul>
   </div>
