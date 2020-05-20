@@ -1,7 +1,39 @@
 {% load forms %}
-{% input field="Spirometry.fev_1" %}
-{% input field="Spirometry.fev_1_post_ventolin" %}
-{% input field="Spirometry.fev_1_percentage_predicted" %}
-{% input field="Spirometry.fvc" %}
-{% input field="Spirometry.fvc_post_ventolin" %}
-{% input field="Spirometry.fvc_percentage_predicted" %}
+
+<div class="row form-row">
+  <div class="col-md-4">
+    <div class="horizontal-form">
+      {% input field="Spirometry.fev_1" style="vertical" %}
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="horizontal-form">
+      {% input field="Spirometry.fev_1_post_ventolin" style="vertical" %}
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="horizontal-form">
+      {% input field="Spirometry.fev_1_percentage_predicted" label="% predicted" style="vertical" %}
+    </div>
+  </div>
+</div>
+<div class="row"></div>
+<hr>
+<div class="row"></div>
+<div class="row form-row">
+  <div class="col-md-4">
+    <div class="horizontal-form">
+      {% input field="Spirometry.fvc" style="vertical" %}
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="horizontal-form">
+      {% input field="Spirometry.fvc_post_ventolin" style="vertical" %}
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="horizontal-form">
+      {% input field="Spirometry.fvc_percentage_predicted" label="% predicted" style="vertical" %}
+    </div>
+  </div>
+</div>
