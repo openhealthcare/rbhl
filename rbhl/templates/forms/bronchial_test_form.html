@@ -1,10 +1,55 @@
 {% load forms %}
-{% input field="BronchialTest.test_num" %}
-{% input field="BronchialTest.result" %}
-{% input field="BronchialTest.response_type" %}
-{% datetimepicker field="BronchialTest.last_exposed" %}
-{% textarea field="BronchialTest.duration_exposed" %}
-{% datetimepicker field="BronchialTest.date_of_challenge" %}
-{% input field="BronchialTest.baseline_pc20" %}
-{% input field="BronchialTest.lowest_pc20" %}
-{% input field="BronchialTest.substance" %}
+<div class="row form-row">
+  <div class="col-md-4">
+    <div class="horizontal-form">
+      {% input field="BronchialTest.substance" style="vertical" %}
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="horizontal-form">
+      {% input field="BronchialTest.result" style="vertical" %}
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="horizontal-form">
+      {% select field="BronchialTest.response_type" style="vertical" %}
+    </div>
+  </div>
+</div>
+
+<div class="row"></div>
+<hr>
+
+<div class="row form-row">
+  <div class="col-md-4">
+    <div class="horizontal-form">
+      {% input field="BronchialTest.baseline_pc20" style="vertical" %}
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="horizontal-form">
+      {% input field="BronchialTest.lowest_pc20" style="vertical" %}
+    </div>
+  </div>
+</div>
+<div class="row"></div>
+<hr>
+
+<div class="row form-row">
+  <div class="col-md-4">
+    <div class="horizontal-form">
+      {% datepicker field="BronchialTest.date_of_challenge" style="vertical" %}
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="horizontal-form">
+      {% datepicker field="BronchialTest.last_exposed" style="vertical" %}
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="horizontal-form">
+      {% input field="BronchialTest.duration_exposed" style="vertical" %}
+    </div>
+  </div>
+</div>
+

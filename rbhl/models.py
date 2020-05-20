@@ -263,12 +263,23 @@ Diagnostic investigations
 
 class Spirometry(RbhlSubrecord, models.EpisodeSubrecord):
     _icon = "fa fa-hand-paper-o"
-    fev_1 = fields.FloatField(null=True, blank=True)
-    fev_1_post_ventolin = fields.FloatField(null=True, blank=True)
-    fev_1_percentage_predicted = fields.IntegerField(null=True, blank=True)
-    fvc = fields.FloatField(null=True, blank=True)
-    fvc_post_ventolin = fields.FloatField(null=True, blank=True)
-    fvc_percentage_predicted = fields.IntegerField(null=True, blank=True)
+
+    fev_1 = fields.FloatField(
+        null=True, blank=True, verbose_name="FEV 1"
+    )
+    fev_1_post_ventolin = fields.FloatField(
+        null=True, blank=True, verbose_name="FEV post ventolin"
+    )
+    fev_1_percentage_predicted = fields.IntegerField(
+        null=True, blank=True, verbose_name="FEV 1 % predicted"
+    )
+    fvc = fields.FloatField(null=True, blank=True, verbose_name="FVC")
+    fvc_post_ventolin = fields.FloatField(
+        null=True, blank=True, verbose_name="FVC post ventolin"
+    )
+    fvc_percentage_predicted = fields.IntegerField(
+        null=True, blank=True, verbose_name="FVC post ventolin"
+    )
 
 
 class SkinPrickTest(RbhlSubrecord, models.EpisodeSubrecord):
@@ -352,6 +363,7 @@ class RoutineSPT(RbhlSubrecord, models.EpisodeSubrecord):
     grass_pollen = fields.FloatField(null=True, blank=True)
     cat = fields.FloatField(null=True, blank=True)
     house_dust_mite = fields.FloatField(null=True, blank=True)
+    antihistimines = fields.BooleanField(default=False)
 
 
 """
