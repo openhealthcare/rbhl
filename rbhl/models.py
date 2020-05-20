@@ -273,11 +273,6 @@ class Spirometry(RbhlSubrecord, models.EpisodeSubrecord):
 
 class SkinPrickTest(RbhlSubrecord, models.EpisodeSubrecord):
     _icon = "fa fa-hand-paper-o"
-    ATOPIC_CHOICES = enum("Yes", "No", "Dermatographic")
-    atopic = fields.TextField(null=True, blank=True, choices=ATOPIC_CHOICES)
-    immunology_oem = fields.NullBooleanField(
-        null=True, blank=True, verbose_name="Immunology OEM"
-    )
     antihistimines = fields.NullBooleanField(null=True, blank=True)
 
 
@@ -451,13 +446,6 @@ class BenignPleuralDisease(RbhlSubrecord, models.EpisodeSubrecord):
     )
 
 
-class Nad(RbhlSubrecord, models.EpisodeSubrecord):
-    _icon = "fa fa-stethoscope"
-
-    class Meta:
-        verbose_name = "NAD"
-
-
 class OtherDiagnosis(RbhlSubrecord, models.EpisodeSubrecord):
     _icon = "fa fa-stethoscope"
     DIAGNOSIS_TYPE = enum(
@@ -489,6 +477,7 @@ class DiagnosisOutcome(lookuplists.LookupList):
 class ClinicLog(RbhlSubrecord, models.EpisodeSubrecord):
     _icon         = 'fa fa-hospital-o'
     _is_singleton = True
+    ATOPIC_CHOICES = enum("Yes", "No", "Dermatographic")
 
     seen_by           = fields.CharField(
         blank=True, default="", max_length=100
@@ -517,6 +506,8 @@ class ClinicLog(RbhlSubrecord, models.EpisodeSubrecord):
     other_rbh_bloods    = fields.NullBooleanField(
         verbose_name="Other RBH bloods"
     )
+    atopic = fields.TextField(null=True, blank=True, choices=ATOPIC_CHOICES)
+    no_appreciable_disease = fields.NullBooleanField(verbose_name="NAD")
     immunology_oem      = fields.NullBooleanField(
         verbose_name="Immunology OEM"
     )

@@ -28,16 +28,23 @@
 </div>
 
 <hr />
-
+<div class="row">
+  <div class="col-md-4">
+    {% field_display "ClinicLog.no_appreciable_disease" %}
+  </div>
+  <div class="col-md-4">
+    {% field_display "ClinicLog.atopic" %}
+  </div>
+  <div class="col-md-4">
+    {% field_display "ClinicLog.immunology_oem" %}
+  </div>
+</div>
 <div class="row">
   <div class="col-md-4">
     {% field_display "ClinicLog.peak_flow" %}
   </div>
   <div class="col-md-4">
     {% field_display "ClinicLog.other_rbh_bloods" %}
-  </div>
-  <div class="col-md-4">
-    {% field_display "ClinicLog.immunology_oem" %}
   </div>
 </div>
 <div class="row">

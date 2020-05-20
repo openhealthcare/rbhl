@@ -288,16 +288,14 @@ class Command(BaseCommand):
 
         DiagnosticTesting.height
             -> Demographics.height
-        DiagnosticTesting.antihistimines
-            -> SkinPrickTest.antihistimines
         DiagnosticTesting.skin_prick_test
             -> creates a skin prick test
         DiagnosticTesting.atopic
             -> RbhlDiagnosticTesting.atopic
-        DiagnosticTesting.specific_skin_prick
-            -> RbhlDiagnosticTesting.specific_skin_prick
         DiagnosticTesting.serum_antibodies
-            -> RbhlDiagnosticTesting.immunology_oem
+            -> ClinicLog.immunology_oem
+        DiagnosticTesting.atopic
+            -> ClinicLog.atopic
         DiagnosticTesting.fev_1
             -> RbhlDiagnosticTesting.fev_1
         DiagnosticTesting.fev_1_post_ventolin
@@ -328,15 +326,15 @@ class Command(BaseCommand):
                     height=height
                 )
 
-        SKIN_PRICK_FIELDS = [
-            "antihistimines", "skin_prick_test", "atopic"
-        ]
-        if any([
-            getattr(legacy_diagnostic_testing, i) for i in SKIN_PRICK_FIELDS
-        ]):
+        clinic_log = episode.cliniclog_set.get()
+
+        if legacy_diagnostic_testing.serum_antibodies:
+            clinic_log.immunology_oem = legacy_diagnostic_testing.serum_antibodies
+            clinic_log.save()
+
+        if legacy_diagnostic_testing.antihistimines:
             skin_prick_test  = models.SkinPrickTest(episode=episode)
             skin_prick_test.antihistimines = legacy_diagnostic_testing.antihistimines
-            skin_prick_test.atopic = legacy_diagnostic_testing.atopic
             skin_prick_test.save()
 
         SPIROMETRY_FIELDS = [
@@ -595,7 +593,8 @@ class Command(BaseCommand):
             malignancy.save()
 
         if other.NAD:
-            models.Nad.objects.create(episode=episode)
+            clinic_log = episode.cliniclog_set.all()[0]
+            clinic_log.no_appreciable_disease = True
 
         if any([
             other.diffuse_lung_disease,
