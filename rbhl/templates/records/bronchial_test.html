@@ -1,32 +1,14 @@
 {% load rbhl_panels %}
 <div class="row">
-  <div class="col-md-4">
-    {% test_display "BronchialTest.substance" %}
-  </div>
-  <div class="col-md-4">
-    {% test_display "BronchialTest.result" %}
-  </div>
-  <div class="col-md-4">
-    {% test_display "BronchialTest.response_type"  %}
-  </div>
-</div>
-<div class="row">
-  <div class="col-md-4">
-    {% test_display "BronchialTest.baseline_pc20" %}
-  </div>
-  <div class="col-md-4">
-    {% test_display "BronchialTest.lowest_pc20" %}
-  </div>
-</div>
-<div class="row">
-  <div class="col-md-4">
-    {% test_display "BronchialTest.date_of_challenge" %}
-  </div>
-  <div class="col-md-4">
-    {% test_display "BronchialTest.last_exposed" %}
-  </div>
-  <div class="col-md-4">
-    {% test_display "BronchialTest.duration_exposed" %}
+  <div ng-class="{'text-muted': item.result === 'Negative'}" class="col-md-12 test-row">
+    {% test_field "BronchialTest.substance" %}
+    {% test_field "BronchialTest.result" %}
+    {% test_field "BronchialTest.response_type" %}
+    {% test_field "BronchialTest.baseline_pc20" %}
+    {% test_field "BronchialTest.lowest_pc20" %}
+    {% test_field "BronchialTest.date_of_challenge" %}
+    {% test_field "BronchialTest.last_exposed" %}
+    {% test_field "BronchialTest.duration_exposed" %}
   </div>
 </div>
 

@@ -1,43 +1,10 @@
 {% load rbhl_panels %}
-<div ng-show="item.wheal" class="row">
-  <strong>
-    <div class="col-md-4">
-      <div style="margin-bottom: 10px" class="row">
-        <div class="col-md-6">
-          [[ item.spt ]]:
-        </div>
-        <div class="col-md-6">
-          [[ item.wheal ]]mm
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div style="margin-bottom: 10px" class="row">
-        <div class="col-md-12">
-          [[ item.test_date | displayDate ]]
-        </div>
-      </div>
-    </div>
-  </strong>
-</div>
-
-<div ng-hide="item.wheal" class="row">
-  <div class="col-md-4">
-    <div style="margin-bottom: 10px" class="row">
-      <div class="col-md-6">
-        [[ item.spt ]]:
-      </div>
-      <div class="col-md-6">
-        [[ item.wheal ]]mm
-      </div>
-    </div>
+<div  ng-class="{'text-muted': item.wheal === 0}" class="row">
+  <div class="col-md-6">
+    [[ item.spt ]]:
   </div>
-  <div class="col-md-4">
-    <div style="margin-bottom: 10px" class="row">
-      <div class="col-md-12">
-        [[ item.test_date | displayDate ]]
-      </div>
-    </div>
+  <div class="col-md-6">
+    [[ item.wheal ]]mm
   </div>
 </div>
 

@@ -1,27 +1,9 @@
 {% load rbhl_panels %}
-<div class="row">
-  <div class="col-md-4">
-    {% test_display "Spirometry.fev_1" %}
-  </div>
-  <div class="col-md-4">
-    {% test_display "Spirometry.fev_1_post_ventolin" label="Post ventolin" %}
-  </div>
-  <div class="col-md-4">
-    {% test_display "Spirometry.fev_1_percentage_predicted" label="% predicted" %}
-  </div>
-</div>
-
-
-<div class="row">
-  <div class="col-md-4">
-    {% test_display "Spirometry.fvc" %}
-  </div>
-  <div class="col-md-4">
-    {% test_display "Spirometry.fvc_post_ventolin" label="Post ventolin" %}
-  </div>
-  <div class="col-md-4">
-    {% test_display "Spirometry.fvc_percentage_predicted" label="% predicted" %}
-  </div>
-</div>
+{% test_field "Spirometry.fev_1" %}
+{% test_field "Spirometry.fev_1_post_ventolin" %}
+{% test_field "Spirometry.fev_1_percentage_predicted" %}
+{% test_field "Spirometry.fvc" %}
+{% test_field "Spirometry.fvc_post_ventolin" %}
+{% test_field "Spirometry.fvc_percentage_predicted" %}
 
 

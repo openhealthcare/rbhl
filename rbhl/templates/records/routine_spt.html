@@ -1,21 +1,33 @@
 {% load rbhl_panels %}
-<div class="row">
-  <div class="col-md-4">
-    {% test_display "RoutineSPT.neg_control" bold_if_truthy=True %}
-  </div>
-  <div class="col-md-4">
-    {% test_display "RoutineSPT.pos_control" bold_if_truthy=True %}
-  </div>
-  <div class="col-md-4">
-    {% test_display "RoutineSPT.asp_fumigatus" bold_if_truthy=True %}
-  </div>
-  <div class="col-md-4">
-    {% test_display "RoutineSPT.grass_pollen" bold_if_truthy=True %}
-  </div>
-  <div  class="col-md-4">
-    {% test_display "RoutineSPT.cat" bold_if_truthy=True %}
-  </div>
-  <div class="col-md-4">
-    {% test_display "RoutineSPT.house_dust_mite" bold_if_truthy=True %}
+<div class="row test-row">
+  <div ng-class="{'text-muted': item.neg_control === 0}" class="col-md-12">
+    {% test_field "RoutineSPT.neg_control" unit="mm" %}
   </div>
 </div>
+<div class="row test-row">
+  <div ng-class="{'text-muted': item.pos_control === 0}" class="col-md-12">
+    {% test_field "RoutineSPT.pos_control" unit="mm" %}
+  </div>
+</div>
+<div class="row test-row">
+  <div ng-class="{'text-muted': item.asp_fumigatus === 0}" class="col-md-12">
+    {% test_field "RoutineSPT.asp_fumigatus" unit="mm" %}
+  </div>
+</div>
+<div class="row test-row">
+  <div ng-class="{'text-muted': item.grass_pollen === 0}" class="col-md-12">
+    {% test_field "RoutineSPT.grass_pollen" unit="mm" %}
+  </div>
+</div>
+<div class="row test-row">
+  <div ng-class="{'text-muted': item.cat === 0}" class="col-md-12">
+    {% test_field "RoutineSPT.cat" unit="mm" %}
+  </div>
+</div>
+<div class="row test-row">
+  <div ng-class="{'text-muted': item.house_dust_mite === 0}" class="col-md-12">
+    {% test_field "RoutineSPT.house_dust_mite" unit="mm" %}
+  </div>
+</div>
+
+

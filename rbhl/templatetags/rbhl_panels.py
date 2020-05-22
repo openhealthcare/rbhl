@@ -72,11 +72,11 @@ def field_display(
 
 
 @register.inclusion_tag(
-    'templatetags/rbhl_panels/test_display.html',
+    'templatetags/rbhl_panels/test_field.html',
     takes_context=True
 )
-def test_display(
-    context, field, bold_if_truthy=False, **kwargs
+def test_field(
+    context, field, **kwargs
 ):
     ctx = {}
     model_and_field_name = field
@@ -87,5 +87,5 @@ def test_display(
     )
     ctx["is_date"] = is_date(field)
     ctx["is_boolean"] = is_boolean(field)
-    ctx["bold_if_truthy"] = bold_if_truthy
+    ctx["unit"] = kwargs.get("unit", "")
     return ctx

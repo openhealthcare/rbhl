@@ -1,0 +1,15 @@
+{% load forms %}
+<div class="row {{ row_class }}">
+  <div class="col-md-6">
+    {{ label }}:
+  </div>
+  <div class="col-md-6">
+    {% if is_boolean %}
+    {% icon "fa-check" %}
+    {% elif is_date %}
+    [[ item.{{ field_name }}|displayDate ]]
+    {% else %}
+    [[ item.{{ field_name }} ]]{{ unit }}
+    {% endif %}
+  </div>
+</div>
