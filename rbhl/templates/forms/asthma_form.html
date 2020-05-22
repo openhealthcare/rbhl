@@ -1,3 +1,11 @@
 {% load forms %}
-{% input field="Asthma.trigger" %}
-{% textarea field="Asthma.sensitivities" %}
+<div class="row">
+  <div class="col-md-10 col-md-offset-1">
+    {% radio field="Asthma.trigger" style="vertical" %}
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-10 col-md-offset-1">
+    {% textarea field="Asthma.sensitivities" style="vertical" %}
+  </div>
+</div>

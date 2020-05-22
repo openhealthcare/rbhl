@@ -7,6 +7,9 @@ style="
   padding: 5px 10px;
   margin-top: 10px;
 "
+{% if is_singleton %}
+ng-disabled="episode.{{ subrecord.get_api_name }}.length"
+{% endif %}
 ng-click="episode.recordEditor.newItem('{{ subrecord.get_api_name }}')"
 class="btn btn-default btn-xs"
 >

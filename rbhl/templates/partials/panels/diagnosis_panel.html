@@ -1,7 +1,7 @@
 <div class="panel panel-default record-panel">
   <div class="panel-heading">
     <h3>
-      <i class="fa fa-hand-paper-o"></i> Diagnosis
+      <i class="fa fa-stethoscope"></i> Diagnosis
       <i
         ng-click="showDiagnosis=true"
         class="fa fa-plus-circle edit pull-right pointer"
@@ -21,9 +21,9 @@
   class="panel-body">
     <div ng-show="showDiagnosis" class="row">
       <div class="col-sm-11">
-        {% include "partials/panels/add_button.html" with subrecord=models.Asthma %}
-        {% include "partials/panels/add_button.html" with subrecord=models.Rhinitis %}
-        {% include "partials/panels/add_button.html" with subrecord=models.ChronicAirFlowLimitation %}
+        {% include "partials/panels/add_button.html" with subrecord=models.Asthma is_singleton=True %}
+        {% include "partials/panels/add_button.html" with subrecord=models.Rhinitis is_singleton=True %}
+        {% include "partials/panels/add_button.html" with subrecord=models.ChronicAirFlowLimitation is_singleton=True %}
         {% include "partials/panels/add_button.html" with subrecord=models.Malignancy %}
         {% include "partials/panels/add_button.html" with subrecord=models.DiffuseLungDisease %}
         {% include "partials/panels/add_button.html" with subrecord=models.BenignPleuralDisease %}

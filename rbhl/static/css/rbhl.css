@@ -518,4 +518,8 @@ input[type="date"]::-webkit-input-placeholder {
   right: 15%;
   top: 111px;
 }
+
+.diagnosis-row:first-child hr {
+  display: none;
+}
 /*# sourceMappingURL=rbhl.css.map */

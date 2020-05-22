@@ -76,7 +76,7 @@ def field_display(
     takes_context=True
 )
 def test_display(
-    context, field, label=None, bold_if_truthy=False, **kwargs
+    context, field, bold_if_truthy=False, **kwargs
 ):
     ctx = {}
     model_and_field_name = field

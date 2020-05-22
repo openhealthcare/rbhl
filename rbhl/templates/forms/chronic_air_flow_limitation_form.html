@@ -1,4 +1,12 @@
 {% load forms %}
-{% checkbox field="ChronicAirFlowLimitation.copd" %}
-{% checkbox field="ChronicAirFlowLimitation.emphysema" %}
-{% checkbox field="ChronicAirFlowLimitation.occupational" %}
+<div class="row">
+  <div class="col-md-3 col-md-offset-1">
+    {% checkbox field="ChronicAirFlowLimitation.copd" style="vertical" %}
+  </div>
+  <div class="col-md-3">
+    {% checkbox field="ChronicAirFlowLimitation.emphysema" style="vertical" %}
+  </div>
+  <div class="col-md-3">
+    {% checkbox field="ChronicAirFlowLimitation.occupational" style="vertical" %}
+  </div>
+</div>

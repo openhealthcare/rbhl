@@ -278,7 +278,7 @@ class Spirometry(RbhlSubrecord, models.EpisodeSubrecord):
         null=True, blank=True, verbose_name="FVC post ventolin"
     )
     fvc_percentage_predicted = fields.IntegerField(
-        null=True, blank=True, verbose_name="FVC post ventolin"
+        null=True, blank=True, verbose_name="FVC % predicted"
     )
 
 
@@ -298,6 +298,9 @@ class SpecificSkinPrickTest(RbhlSubrecord, models.EpisodeSubrecord):
     )
     wheal = fields.FloatField(null=True, blank=True)
     test_date = fields.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        verbose_name = "Specific SPT"
 
 
 class OtherInvestigations(RbhlSubrecord, models.EpisodeSubrecord):
@@ -364,6 +367,9 @@ class RoutineSPT(RbhlSubrecord, models.EpisodeSubrecord):
     cat = fields.FloatField(null=True, blank=True)
     house_dust_mite = fields.FloatField(null=True, blank=True)
     antihistimines = fields.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = "Routine SPT"
 
 
 """
