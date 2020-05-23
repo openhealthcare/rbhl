@@ -21,6 +21,81 @@ from legacy.models import (
 from ..utils import to_bool, to_date, to_float, to_int
 
 
+_sensitivies_translation = {
+    "Rats": (
+        "animals (rats)", "rat", 'animals - rats', '(rats)', 'animals rats'
+    ),
+    "Mice": (
+        "mouse", 'animals mice', 'animals (mice)', 'animals - mice', '(mice)',
+        'animals- mice', '(mouse)', 'animals (mouse)', 'animals (mice)'
+    ),
+    "Rats and mice": (
+        'animals rats & mice', 'rats & mice', 'animals - rats & mice',
+        'rat /mouse', 'animals rats and mice', '-rats & mice', 'rats and dogs',
+        '(rats & mice)', 'mice/rat', 'animals - rat and mouse',
+        'animals (rats & mice)', 'animals rat & mouse',
+        'animals- mice and rats', 'rat and  mouse', 'rat/mouse',
+        'mouse & rat', '(rat & mouse)', 'animals (rat or mouse)'
+        'rat and mouse', 'animals rats and mice', 'animals rats & mice'
+    ),
+    "Bakers amylase": (
+        '(bakers amylase)',
+        'enzymes - (bakers amylase)',
+        '( bakers amylase)',
+        'enzymes -(bakers amylase)',
+        'enzymes -bakers amylase',
+        'enzymes - bakers amylase',
+        "enzymes - other (bakers amylase)",
+        'enzymes - bakers amylase'
+    ),
+    "Alpha amylase": [
+        'enzymes - alpha amylase',
+        'enzymes - other (alpha amylase)',
+        'enzymes - other - alpha amylase',
+        'enzymes -alpha amylase',
+        'enzymes - (alpha amylase)',
+        'enzymes - other(alpha amylase)',
+        'enzymes - other alpha amylase',
+        '(alpha amylase)',
+        'enzymes  (alpha amylase)',
+        'enzymes - other, alpha amylase',
+        'enzymes alpha amylase',
+    ],
+    "Morphine": [
+        '-morphine',
+        '(morphine)',
+        'pharmaceuticals - morphine'
+    ],
+    "Amylase": [
+        "enzymes - other (amylase)",
+        "enzymes - amylase",
+        "(amylase)",
+        "enzymes - (amylase)"
+    ]
+}
+
+
+def generate_sensitivies_lut():
+    sensitivites_lut = {}
+    for i, v in _sensitivies_translation.items():
+        for y in v:
+            sensitivites_lut[y] = i
+        sensitivites_lut[i.lower()] = i
+    return sensitivites_lut
+
+
+def clean_sensitivies(sensitivities, sensitivities_lut):
+    cleaned = [
+        i.strip() for i in sensitivities.split("\n") if i.strip()
+    ]
+
+    cleaned = [sensitivities_lut.get(i.lower(), i) for i in cleaned]
+    cleaned = list(set([
+        i.strip() for i in sensitivities.split("\n") if i.strip()
+    ]))
+    return "\n".join(sorted(cleaned))
+
+
 class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument("file_name", help="Specify import file")
@@ -209,7 +284,7 @@ class Command(BaseCommand):
                 year_finished_exposure=row["Dates_f_Exposure_Y"],
             )
 
-    def convert_suspect_occupational_category(self, patient, episode):
+    def convert_suspect_occupational_category(self, patient, episode, sensitivites_lut):
         """
         Maps
 
@@ -242,8 +317,14 @@ class Command(BaseCommand):
         if sus:
             employment.employed_in_suspect_occupation = sus
 
-        if not employment.exposures:
-            employment.exposures = suspect_occupational_category.exposures
+        existing_exposures = employment.exposures
+
+        if not existing_exposures:
+            existing_exposures = ""
+
+        employment.exposures = clean_sensitivies("{}\n{}".format(
+            existing_exposures, suspect_occupational_category.exposures,
+        ), sensitivites_lut)
         employment.save()
 
     def build_diagnostic_testing(self, patientLUT, rows):
@@ -424,7 +505,7 @@ class Command(BaseCommand):
                 has_non_occupational_asthma=to_bool(row["AsthmaNonOcc"]),
             )
 
-    def convert_to_diagnosis_asthma(self, patient, episode):
+    def convert_to_diagnosis_asthma(self, patient, episode, sensitivities_lut):
         legacy_asthma = patient.diagnosticasthma_set.all()[0]
 
         if any([
@@ -436,13 +517,9 @@ class Command(BaseCommand):
         ]):
             asthma = models.Asthma(episode=episode)
 
-            sensitivities = legacy_asthma.sensitising_agent
-
-            cleaned = [
-                i.strip() for i in sensitivities.split("\n") if i.strip()
-            ]
-
-            asthma.sensitivities = "\n".join(cleaned)
+            asthma.sensitivities = clean_sensitivies(
+                legacy_asthma.sensitising_agent, sensitivities_lut
+            )
             # order of priority for what overrides
             # occupational asthma caused by sensitisation > is exacerbated by work >
             # has irritant induced asthma > has non occupational asthma
@@ -491,7 +568,7 @@ class Command(BaseCommand):
                 has_non_occupational_rhinitis=has_non_occ_rhinitis,
             )
 
-    def convert_to_diagnosis_rhinitis(self, patient, episode):
+    def convert_to_diagnosis_rhinitis(self, patient, episode, sensitivities_lut):
         legacy_rhinitis = patient.diagnosticrhinitis_set.all()[0]
 
         if any([
@@ -517,13 +594,10 @@ class Command(BaseCommand):
 
             rhinitis.trigger = option
 
-            sensitivities = legacy_rhinitis.rhinitis_occupational_sensitisation_cause
-
-            cleaned = [
-                i.strip() for i in sensitivities.split("\n") if i.strip()
-            ]
-
-            rhinitis.sensitivities = "\n".join(cleaned)
+            rhinitis.sensitivities = clean_sensitivies(
+                legacy_rhinitis.rhinitis_occupational_sensitisation_cause,
+                sensitivities_lut
+            )
 
             rhinitis.save()
 
@@ -752,12 +826,14 @@ class Command(BaseCommand):
         patient_id_to_episode = {
             i.patient_id: i for i in episodes
         }
+        sensitivities_lut = generate_sensitivies_lut()
         for patient in qs:
             self.convert_details(
                 patient, patient_id_to_episode[patient.id]
             )
             self.convert_suspect_occupational_category(
-                patient, patient_id_to_episode[patient.id]
+                patient, patient_id_to_episode[patient.id],
+                sensitivities_lut
             )
             self.convert_diagnostic_testing(
                 patient, patient_id_to_episode[patient.id]
@@ -766,10 +842,12 @@ class Command(BaseCommand):
                 patient, patient_id_to_episode[patient.id]
             )
             self.convert_to_diagnosis_asthma(
-                patient, patient_id_to_episode[patient.id]
+                patient, patient_id_to_episode[patient.id],
+                sensitivities_lut
             )
             self.convert_to_diagnosis_rhinitis(
-                patient, patient_id_to_episode[patient.id]
+                patient, patient_id_to_episode[patient.id],
+                sensitivities_lut
             )
             self.convert_to_diagnosis_other(
                 patient, patient_id_to_episode[patient.id]
