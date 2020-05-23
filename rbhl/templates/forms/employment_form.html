@@ -32,16 +32,10 @@
           {% select field="Employment.employed_in_suspect_occupation" style="vertical" %}
       </div>
   </div>
-</div>
-
-
-<div style="padding-left: 20px; padding-right: 20px;">
-  {% textarea field="Employment.exposures" style="vertical" %}
-</div>
-
-<div class="row form-row">
-  <div class="col-md-2 col-md-offset-1">
+  <div class="col-md-6">
     {% checkbox field="Employment.firefighter" style="vertical" %}
   </div>
 </div>
 <div class="row"></div>
+{% textarea field="Employment.exposures" style="vertical" %}
+

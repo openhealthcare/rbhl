@@ -5,9 +5,13 @@
 {% field_display "Employment.oh_provider" %}
 {% field_display "Employment.job_title" %}
 {% field_display "Employment.employment_category" %}
-{% field_display "Employment.exposures" markdown=True %}
 {% field_display "Employment.employed_in_suspect_occupation" %}
 {% field_display "Employment.firefighter" label="Firefighter pre-employment" %}
+<div class="row">
+  <div class="col-md-12">
+    {% field_display "Employment.exposures" markdown=True %}
+  </div>
+</div>
 {% endwith %}
 
 
