@@ -1,0 +1,32 @@
+<a
+style="
+  font-size: 18px;
+  display: inline-block;
+  margin-right: 20px;
+  padding: 5px 10px;
+  margin-top: 10px;
+"
+ng-show="{{ editing }}.length"
+ng-click="{{ editing }} = {{ editing }} + '\n{{ text }}'"
+class="btn btn-default btn-xs"
+ng-disabled="{{ editing }}.indexOf('{{ text }}') !== -1"
+>
+<i class="fa fa-plus-circle pointer"></i>
+{{ text }}
+</a>
+<a
+style="
+  font-size: 18px;
+  display: inline-block;
+  margin-right: 20px;
+  padding: 5px 10px;
+  margin-top: 10px;
+"
+ng-show="!{{ editing }}.length"
+ng-click="{{ editing }} = '{{ text }}'"
+class="btn btn-default btn-xs"
+ng-disabled="{{ editing }}.indexOf('{{ text }}') !== -1"
+>
+<i class="fa fa-plus-circle pointer"></i>
+{{ text }}
+</a>

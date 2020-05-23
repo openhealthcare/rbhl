@@ -1,4 +1,5 @@
 {% load forms %}
+{% load rbhl_panels %}
 
 <div class="row form-row">
   <div class="col-md-6">
@@ -37,5 +38,16 @@
   </div>
 </div>
 <div class="row"></div>
-{% textarea field="Employment.exposures" style="vertical" %}
+  <div class="col-md-12">
+    {% textarea field="Employment.exposures" style="vertical" %}
+  </div>
+<div class="row">
+  <div class="col-md-12">
+    {% add_to_text_button "Employment.exposures" "Grain/Flour" %}
+    {% add_to_text_button "Employment.exposures" "Latex" %}
+    {% add_to_text_button "Employment.exposures" "Asbestos" %}
+    {% add_to_text_button "Employment.exposures" "Mice" %}
+    {% add_to_text_button "Employment.exposures" "Rats" %}
+  </div>
+</div>
 
