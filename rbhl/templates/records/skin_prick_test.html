@@ -1,18 +1,10 @@
 {% load rbhl_panels %}
-<div class="row">
-  <div class="col-md-3">
-    <b>
-      General skin prick tests:
-    </b>
+<div  ng-class="{'text-muted': item.wheal === 0}" class="row">
+  <div class="col-md-6">
+    [[ item.spt ]]:
   </div>
-  <div class="col-md-3">
-    {% field_display "SkinPrickTest.atopic"  %}
-  </div>
-  <div class="col-md-3">
-    {% field_display "SkinPrickTest.immunology_oem" %}
-  </div>
-  <div class="col-md-3">
-    {% field_display "SkinPrickTest.antihistimines"  %}
+  <div class="col-md-6">
+    [[ item.wheal ]]mm
   </div>
 </div>
 

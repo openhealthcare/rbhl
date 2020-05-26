@@ -285,6 +285,14 @@ class Spirometry(RbhlSubrecord, models.EpisodeSubrecord):
 class SkinPrickTest(RbhlSubrecord, models.EpisodeSubrecord):
     _icon = "fa fa-hand-paper-o"
     antihistimines = fields.NullBooleanField(null=True, blank=True)
+    specific_sp_testnum = fields.IntegerField(
+        null=True, blank=True, verbose_name="Specific SP test num"
+    )
+    spt = fields.TextField(
+        blank=True, verbose_name="SPT", default=""
+    )
+    wheal = fields.FloatField(null=True, blank=True)
+    date = fields.DateField(null=True, blank=True)
 
 
 class SpecificSkinPrickTest(RbhlSubrecord, models.EpisodeSubrecord):
