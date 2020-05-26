@@ -138,3 +138,14 @@ def choice_or_other(**kwargs):
     )
     ctx["change_radio"] = "other.field=''"
     return ctx
+
+
+@register.inclusion_tag(
+    'templatetags/rbhl_panels/test_row.html',
+    takes_context=True
+)
+def test_row(context, subrecord, date_field=None):
+    ctx = {}
+    ctx["subrecord"] = subrecord
+    ctx["date_field"] = date_field
+    return ctx
