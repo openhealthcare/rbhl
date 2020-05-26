@@ -89,3 +89,11 @@ class PeakFlowGraphFullPage(PagePathway):
     steps = [
         models.Demographics,
     ]
+
+
+class SkinPrickTest(PagePathway):
+    display_name = "Skin Prick Test"
+    slug = "skin_prick_test"
+    steps = [
+        models.SkinPrickTest
+    ]

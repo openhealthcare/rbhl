@@ -13,15 +13,15 @@
         </div>
       </div>
       <div class="panel-body">
-        {% include "partials/panels/add_button.html" with subrecord=models.Spirometry %}
-        {% include "partials/panels/add_button.html" with subrecord=models.SkinPrickTest %}
-        {% include "partials/panels/add_button.html" with subrecord=models.RoutineSPT %}
-        {% include "partials/panels/add_button.html" with subrecord=models.SpecificSkinPrickTest %}
-        {% include "partials/panels/add_button.html" with subrecord=models.BronchialTest %}
-        {% include "partials/panels/add_button.html" with subrecord=models.OtherInvestigations %}
+        {% add_button models.Spirometry %}
+        {% add_button models.SkinPrickTest pathway=pathways.SkinPrickTest %}
+        {% add_button models.RoutineSPT %}
+        {% add_button models.SpecificSkinPrickTest %}
+        {% add_button models.BronchialTest %}
+        {% add_button models.OtherInvestigations %}
         <ul class="list-group">
           {% test_row subrecord=models.Spirometry %}
-          {% test_row subrecord=models.SkinPrickTest date_field="date" %}
+          {% test_row subrecord=models.SkinPrickTest date_field="date" pathway=pathways.SkinPrickTest %}
           {% test_row subrecord=models.RoutineSPT %}
           {% test_row subrecord=models.SpecificSkinPrickTest %}
           {% test_row subrecord=models.BronchialTest %}

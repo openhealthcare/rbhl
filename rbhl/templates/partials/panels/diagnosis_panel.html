@@ -1,3 +1,4 @@
+{% load rbhl_panels %}
 <div class="panel panel-default record-panel">
   <div class="panel-heading">
     <h3>
@@ -21,13 +22,13 @@
   class="panel-body">
     <div ng-show="showDiagnosis" class="row">
       <div class="col-sm-11">
-        {% include "partials/panels/add_button.html" with subrecord=models.Asthma is_singleton=True %}
-        {% include "partials/panels/add_button.html" with subrecord=models.Rhinitis is_singleton=True %}
-        {% include "partials/panels/add_button.html" with subrecord=models.ChronicAirFlowLimitation is_singleton=True %}
-        {% include "partials/panels/add_button.html" with subrecord=models.Malignancy %}
-        {% include "partials/panels/add_button.html" with subrecord=models.DiffuseLungDisease %}
-        {% include "partials/panels/add_button.html" with subrecord=models.BenignPleuralDisease %}
-        {% include "partials/panels/add_button.html" with subrecord=models.OtherDiagnosis %}
+        {% add_button models.Asthma is_singleton=True %}
+        {% add_button models.Rhinitis is_singleton=True %}
+        {% add_button models.ChronicAirFlowLimitation is_singleton=True %}
+        {% add_button models.Malignancy %}
+        {% add_button models.DiffuseLungDisease %}
+        {% add_button models.BenignPleuralDisease %}
+        {% add_button models.OtherDiagnosis %}
       </div>
       <div class="col-sm-1">
         <i

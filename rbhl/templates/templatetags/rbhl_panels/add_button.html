@@ -10,7 +10,13 @@ style="
 {% if is_singleton %}
 ng-disabled="episode.{{ subrecord.get_api_name }}.length"
 {% endif %}
+{% if pathway %}
+open-pathway="{{ pathway.slug }}",
+pathway-episode="episode"
+pathway-callback="refresh()"
+{% else %}
 ng-click="episode.recordEditor.newItem('{{ subrecord.get_api_name }}')"
+{% endif %}
 class="btn btn-default btn-xs"
 >
 <i class="fa fa-plus-circle pointer"></i>

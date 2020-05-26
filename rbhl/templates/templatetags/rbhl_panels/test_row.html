@@ -5,12 +5,22 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-8">
       <h5>
         <strong style="text-transform: uppercase;">
           {{ subrecord.get_display_name }}
         </strong>
       </h5>
+    </div>
+    <div class="col-md-2">
+      {% if pathway %}
+      <i
+        class="fa fa-pencil edit pull-right pointer"
+        open-pathway="{{ pathway.slug }}",
+        pathway-episode="episode"
+        pathway-callback="refresh()"
+      ></i>
+      {% endif %}
     </div>
   </div>
   {% if date_field %}
@@ -30,9 +40,11 @@
       {% include subrecord.get_detail_template %}
     </div>
     <div class="col-md-1 content-offset-2">
+      {% if not pathway %}
       <i
         class="fa fa-pencil edit pull-right pointer" ng-click="episode.recordEditor.editItem('{{ subrecord.get_api_name }}', item)"
       ></i>
+      {% endif %}
     </div>
   </div>
 </li>
