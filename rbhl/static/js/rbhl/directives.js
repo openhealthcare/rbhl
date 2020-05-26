@@ -472,3 +472,23 @@ directives.directive("reemit", function($parse, $timeout) {
     }
   };
 });
+
+
+directives.directive("otherField", function($parse) {
+  "use strict";
+
+  return {
+    scope: true,
+    link: function(scope, element, attrs) {
+      var getter = $parse(attrs.field);
+      var options  = JSON.parse(attrs.options);
+      var fieldValue = getter(scope);
+      if(!_.contains(options, fieldValue)){
+        scope.other = {
+          field: fieldValue
+        }
+      }
+    }
+  }
+})
+

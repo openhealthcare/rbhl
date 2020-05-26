@@ -1,6 +1,7 @@
 from opal.core import fields
 from django.db import models
 from opal.core.subrecords import get_subrecord_from_model_name
+from opal.templatetags.forms import extract_common_args
 from django import template
 
 register = template.Library()
@@ -108,4 +109,32 @@ def add_to_text_button(
         "text": text
     }
 
+    return ctx
+
+
+@register.inclusion_tag(
+    'templatetags/rbhl_panels/choice_or_other.html',
+)
+def choice_or_other(**kwargs):
+    """
+    Creates a radio box or other string field.
+
+    It works by using a directive that means the input
+    box is not directly updating the model field but instead
+    only updating it on ng-change handler.
+
+    The radio buttons do update the model but on change they
+    set the field used on the radio button to an empty string.
+    """
+    ctx = extract_common_args(kwargs)
+    model, field = _model_and_field_from_path(kwargs["field"])
+    ctx["field_name"] = kwargs["field"].split(".")[1]
+    ctx["model_and_field"] = kwargs["field"]
+    ctx["input_model"] = "editing.{}._client.{}".format(
+        model.get_api_name(), kwargs["field"].split(".")[1]
+    )
+    ctx["change_input"] = "{}=other.field".format(
+        ctx["model"]
+    )
+    ctx["change_radio"] = "other.field=''"
     return ctx

@@ -526,4 +526,12 @@ input[type="date"]::-webkit-input-placeholder {
 .test-row {
   margin-bottom: 10px;
 }
+
+.choice-or-other {
+  margin-top: -20px;
+}
+
+.choice-or-other .choice-or-other-label {
+  margin-top: 29px;
+}
 /*# sourceMappingURL=rbhl.css.map */
