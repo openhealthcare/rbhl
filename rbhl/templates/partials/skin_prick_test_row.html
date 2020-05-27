@@ -15,7 +15,10 @@
   </div>
   <div class="row" ng-repeat="item in (items = (episode.skin_prick_test | orderBy:'-date'))">
     <div class="col-md-3">
-      <span ng-show="$first || (item.date !== items[$index-1].date)">
+      {% comment %}
+      Show if its the first, if there is a date now and the previous date was null, if the date is different to the previous date
+      {% endcomment %}
+      <span ng-show="$first || (item.date && !items[$index-1].date) || (item.date && !item.date.isSame(items[$index-1].date, 'd'))">
         [[ item.date | displayDate ]]
       </span>
     </div>
@@ -23,7 +26,7 @@
       {% include models.SkinPrickTest.get_detail_template %}
     </div>
     <div class="col-md-1 content-offset-2">
-      <a ng-show="$first || (item.date !== items[$index-1].date)" href="/pathway/#/skin_prick_test/[[ patient.id ]]/[[ episode.id ]]?date=[[ item.date | displayDate ]]">
+      <a ng-show="$first || (item.date && !items[$index-1].date) || (item.date && !item.date.isSame(items[$index-1].date, 'd'))" href="/pathway/#/skin_prick_test/[[ patient.id ]]/[[ episode.id ]]?date=[[ item.date.format('YYYY-MM-DD') ]]">
         <i class="fa fa-pencil edit pull-right pointer" ></i>
       </a>
     </div>
