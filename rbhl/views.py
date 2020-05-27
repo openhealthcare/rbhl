@@ -8,13 +8,16 @@ from django.urls import reverse
 from django.views.generic import FormView, TemplateView, RedirectView, ListView
 from django.contrib.auth import login, logout
 from django.contrib.admin.views.decorators import staff_member_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.decorators import method_decorator
+from django.http import HttpResponseRedirect
 from two_factor.views import core as two_factor_core_views
 from opal.core import serialization
 from opal.models import Episode
 from opal import models as opal_models
 from plugins.trade import match
 from plugins.trade.forms import ImportDataForm
+from rbhl.pathways import SkinPrickTest
 
 
 class StaffRequiredMixin(object):
@@ -129,6 +132,27 @@ class SeenByMeList(BasePatientList):
         ctx = super().get_context_data(*args, **kwargs)
         ctx["initials"] = self.initials()
         return ctx
+
+
+class SkinPrickTestDatePicker(LoginRequiredMixin, TemplateView):
+    template_name = "skin_prick_test_date_picker.html"
+
+    URL = "/pathway/#/{}/{}/{}?date={}&antihistimines={}"
+
+    def get(self, *args, **kwargs):
+        date = self.request.GET.get("date")
+        if date:
+            return HttpResponseRedirect(
+                self.URL.format(
+                    SkinPrickTest.slug,
+                    kwargs["patient_id"],
+                    kwargs["episode_id"],
+                    self.request.GET.get("date"),
+                    json.dumps(self.request.GET.get("antihistimines", "") == "on")
+                )
+            )
+        else:
+            return super().get(*args, **kwargs)
 
 
 class FormSearchRedirectView(RedirectView):

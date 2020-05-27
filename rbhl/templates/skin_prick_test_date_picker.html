@@ -1,0 +1,28 @@
+{% extends 'static_page.html' %}
+
+{% block javascripts %}
+
+{% endblock %}
+{% block angularapp %}
+
+{% endblock %}
+{% block application_javascripts %}
+{% endblock %}
+
+
+{% block static_content %}
+<form class="form-horizontal" action="">
+  <h4>
+    Add Skin prick tests for what date?
+  </h4>
+  <input type="date" name="date" />
+  <h4>
+    Was the patient on anthistimines?
+  </h4>
+  <div class="checkbox checkbox-primary col-sm-offset-3">
+  <input class="" id="antihistimines" type="checkbox" name="antihistimines" />
+  <label for="antihistimines">antihistimines</label>
+  <button class="btn btn-lg btn-primary">Submit</button>
+</form>
+
+{% endblock %}

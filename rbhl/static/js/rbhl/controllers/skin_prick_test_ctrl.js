@@ -1,5 +1,5 @@
 angular.module('opal.controllers').controller(
-  'SkinPrickTestController', function(scope, step, episode, $location, $injector) {
+  'SkinPrickTestController', function(scope, step, episode, $location) {
     /*
     * A patient comes in and undergoes a set of skin prick tests.
     * date is the date they have the tests, antihistimines is if the
@@ -53,10 +53,9 @@ angular.module('opal.controllers').controller(
       * if the data param is empty, by default that will give you
       * an empty string, this function will return null instead.
       */
-      var DATE_DISPLAY_FORMAT = $injector.get('DATE_DISPLAY_FORMAT');
       var date = $location.search().date;
       if(date){
-        date = moment(date, DATE_DISPLAY_FORMAT).toDate()
+        date = new Date(date)
       }
       else{
         date = null;
