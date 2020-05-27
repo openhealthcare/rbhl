@@ -241,6 +241,11 @@ a {
   border: 1px solid #ccc;
 }
 
+.btn.btn-info {
+  background: #345ea4;
+  border-color: #345ea4;
+}
+
 .btn-cancel {
   margin-right: 20px;
   border: 1px solid #ccc;

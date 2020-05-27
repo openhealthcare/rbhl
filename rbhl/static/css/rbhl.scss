@@ -264,6 +264,12 @@ a {
     border: 1px solid $lightgrey;
 }
 
+.btn.btn-info {
+    background: darken($blue, 10%);
+    border-color: darken($blue, 10%);
+}
+
+
 .btn-cancel{
     margin-right: 20px;
     border: 1px solid $lightgrey;
