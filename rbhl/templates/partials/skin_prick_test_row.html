@@ -13,7 +13,7 @@
       </h5>
     </div>
   </div>
-  <div class="row" ng-repeat="item in (items = (episode.skin_prick_test | orderBy:'-date'))">
+  <div class="row" ng-repeat="item in (items = (episode.skin_prick_test | orderBy:['-date', 'spt']))">
     <div class="col-md-3">
       {% comment %}
       Show if its the first, if there is a date now and the previous date was null, if the date is different to the previous date
