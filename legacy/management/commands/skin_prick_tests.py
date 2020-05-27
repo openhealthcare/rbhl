@@ -3,8 +3,9 @@ import csv
 from django.core.management import BaseCommand
 from django.db import transaction
 from django.utils import timezone
+from opal.models import Patient
 from legacy.models import PatientNumber, LegacySkinPrickTest
-from rbhl.models import SpecificSkinPrickTest
+from rbhl.models import SkinPrickTest
 
 from ..utils import to_date, to_float, to_int
 
@@ -48,22 +49,39 @@ class Command(BaseCommand):
         msg = "Created {} Skin Prick Tests".format(len(tests))
         self.stdout.write(self.style.SUCCESS(msg))
 
+    def get_antihistimines(self, patient):
+        diagnostic_testing = patient.diagnostictesting_set.all()
+        if len(diagnostic_testing):
+            return diagnostic_testing[0].antihistimines
+
     @transaction.atomic()
     def convert_legacy_skin_prick_tests(self):
         skin_prick_tests = []
-        for legacy in LegacySkinPrickTest.objects.all():
-            episode = legacy.patient.episode_set.get()
-            specific_skin_prick = SpecificSkinPrickTest(
-                episode=episode
-            )
-            specific_skin_prick.specific_sp_testnum = legacy.specific_sp_testnum
-            specific_skin_prick.spt = legacy.spt
-            specific_skin_prick.wheal = legacy.wheal
-            specific_skin_prick.test_date = legacy.test_date
+        qs = Patient.objects.exclude(legacyskinpricktest=None)
+        qs = qs.prefetch_related(
+            "legacyskinpricktest_set",
+            "diagnosticoutcome_set",
+            "diagnostictesting_set",
+            "episode_set",
+        )
+        for patient in qs:
+            antihistimines = self.get_antihistimines(patient)
+            episode = patient.episode_set.all()[0]
+            for legacy in patient.legacyskinpricktest_set.all():
 
-            skin_prick_tests.append(specific_skin_prick)
+                # there are 181 patients with no spt, they also
+                # have not wheal
+                if not legacy.spt:
+                    continue
+                skin_prick_tests.append(SkinPrickTest(
+                    spt=legacy.spt,
+                    date=legacy.test_date,
+                    wheal=legacy.wheal,
+                    episode=episode,
+                    antihistimines=antihistimines,
+                ))
 
-        SpecificSkinPrickTest.objects.bulk_create(skin_prick_tests)
+        SkinPrickTest.objects.bulk_create(skin_prick_tests)
 
     def handle(self, *args, **kwargs):
         self.build_legacy_skin_prick_test(kwargs["file_name"])

@@ -418,11 +418,6 @@ class Command(BaseCommand):
         if clinic_log:
             clinic_log.save()
 
-        if legacy_diagnostic_testing.antihistimines:
-            skin_prick_test  = models.SkinPrickTest(episode=episode)
-            skin_prick_test.antihistimines = legacy_diagnostic_testing.antihistimines
-            skin_prick_test.save()
-
         SPIROMETRY_FIELDS = [
             "fev_1", "fev_1_post_ventolin", "fev_1_percentage_protected",
             "fvc", "fvc_post_ventolin", "fvc_percentage_protected"

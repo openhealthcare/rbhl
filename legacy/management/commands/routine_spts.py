@@ -3,7 +3,8 @@ import csv
 from django.core.management import BaseCommand
 from django.db import transaction
 from django.utils import timezone
-from rbhl.models import RoutineSPT
+from opal.models import Patient
+from rbhl.models import SkinPrickTest
 
 from legacy.models import PatientNumber, LegacyRoutineSPT
 
@@ -52,24 +53,75 @@ class Command(BaseCommand):
             self.style.SUCCESS("Created {} Routine SPTs".format(len(tests)))
         )
 
+    def get_diagnosis_date(self, patient):
+        diagnostic_outcome = patient.diagnosticoutcome_set.all()
+        if len(diagnostic_outcome):
+            return diagnostic_outcome[0].diagnosis_date
+
+    def get_antihistimines(self, patient):
+        diagnostic_testing = patient.diagnostictesting_set.all()
+        if len(diagnostic_testing):
+            return diagnostic_testing[0].antihistimines
+
     @transaction.atomic()
     def convert_routine_spts(self):
-        routine_spts = []
-        for legacy in LegacyRoutineSPT.objects.all():
-            routine_spt = RoutineSPT(
-                episode=legacy.patient.episode_set.get(),
-            )
-            routine_spt.neg_control = legacy.neg_control
-            routine_spt.pos_control = legacy.pos_control
-            routine_spt.asp_fumigatus = legacy.asp_fumigatus
-            routine_spt.grass_pollen = legacy.grass_pollen
-            routine_spt.cat = legacy.cat
-            routine_spt.house_dust_mite = legacy.d_pter
+        skin_prick_tests = []
+        qs = Patient.objects.exclude(legacyroutinespt=None)
+        qs = qs.prefetch_related(
+            "legacyroutinespt_set",
+            "diagnosticoutcome_set",
+            "diagnostictesting_set",
+            "episode_set",
+        )
+        for patient in qs:
+            diagnosis_date = self.get_diagnosis_date(patient)
+            antihistimines = self.get_antihistimines(patient)
+            episode = patient.episode_set.all()[0]
 
-            routine_spts.append(
-                routine_spt
-            )
-        RoutineSPT.objects.bulk_create(routine_spts)
+            for legacy in patient.legacyroutinespt_set.all():
+                skin_prick_tests.append(SkinPrickTest(
+                    date=diagnosis_date,
+                    antihistimines=antihistimines,
+                    spt="Neg control",
+                    wheal=legacy.neg_control,
+                    episode=episode
+                ))
+                skin_prick_tests.append(SkinPrickTest(
+                    date=diagnosis_date,
+                    antihistimines=antihistimines,
+                    spt="Pos control",
+                    wheal=legacy.pos_control,
+                    episode=episode
+                ))
+                skin_prick_tests.append(SkinPrickTest(
+                    date=diagnosis_date,
+                    antihistimines=antihistimines,
+                    spt="Asp fumigatus",
+                    wheal=legacy.asp_fumigatus,
+                    episode=episode
+                ))
+                skin_prick_tests.append(SkinPrickTest(
+                    date=diagnosis_date,
+                    antihistimines=antihistimines,
+                    spt="Grass pollen",
+                    wheal=legacy.grass_pollen,
+                    episode=episode
+                ))
+                skin_prick_tests.append(SkinPrickTest(
+                    date=diagnosis_date,
+                    antihistimines=antihistimines,
+                    spt="Cat",
+                    wheal=legacy.cat,
+                    episode=episode
+                ))
+                skin_prick_tests.append(SkinPrickTest(
+                    date=diagnosis_date,
+                    antihistimines=antihistimines,
+                    spt="House dust mite",
+                    wheal=legacy.d_pter,
+                    episode=episode
+                ))
+        SkinPrickTest.objects.bulk_create(skin_prick_tests)
 
     def handle(self, *args, **options):
         self.build_routine_spts(options["file_name"])

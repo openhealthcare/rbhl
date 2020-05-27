@@ -15,15 +15,11 @@
       <div class="panel-body">
         {% add_button models.Spirometry %}
         {% add_button models.SkinPrickTest link="/skin-prick-test-date-picker/[[ patient.id ]]/[[ episode.id ]]" %}
-        {% add_button models.RoutineSPT %}
-        {% add_button models.SpecificSkinPrickTest %}
         {% add_button models.BronchialTest %}
         {% add_button models.OtherInvestigations %}
         <ul class="list-group">
           {% test_row subrecord=models.Spirometry %}
           {% include "partials/skin_prick_test_row.html" %}
-          {% test_row subrecord=models.RoutineSPT %}
-          {% test_row subrecord=models.SpecificSkinPrickTest %}
           {% test_row subrecord=models.BronchialTest %}
           {% test_row subrecord=models.OtherInvestigations %}
         </ul>

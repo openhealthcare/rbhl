@@ -295,22 +295,6 @@ class SkinPrickTest(RbhlSubrecord, models.EpisodeSubrecord):
     date = fields.DateField(null=True, blank=True)
 
 
-class SpecificSkinPrickTest(RbhlSubrecord, models.EpisodeSubrecord):
-    _icon = "fa fa-hand-paper-o"
-    antihistimines = fields.NullBooleanField(null=True, blank=True)
-    specific_sp_testnum = fields.IntegerField(
-        null=True, blank=True, verbose_name="Specific SP test num"
-    )
-    spt = fields.TextField(
-        null=True, blank=True, verbose_name="SPT"
-    )
-    wheal = fields.FloatField(null=True, blank=True)
-    test_date = fields.DateTimeField(null=True, blank=True)
-
-    class Meta:
-        verbose_name = "Specific SPT"
-
-
 class OtherInvestigations(RbhlSubrecord, models.EpisodeSubrecord):
     _icon = "fa fa-hand-paper-o"
     ct_chest_scan = fields.NullBooleanField(
@@ -363,21 +347,6 @@ class BronchialTest(RbhlSubrecord, models.EpisodeSubrecord):
     substance = models.ForeignKeyOrFreeText(BronchialChallengeSubstance)
     baseline_pc20 = fields.CharField(blank=True, null=True, max_length=256)
     lowest_pc20 = fields.CharField(blank=True, null=True, max_length=256)
-
-
-class RoutineSPT(RbhlSubrecord, models.EpisodeSubrecord):
-    _icon = "fa fa-hand-paper-o"
-
-    neg_control = fields.FloatField(null=True, blank=True)
-    pos_control = fields.FloatField(null=True, blank=True)
-    asp_fumigatus = fields.FloatField(null=True, blank=True)
-    grass_pollen = fields.FloatField(null=True, blank=True)
-    cat = fields.FloatField(null=True, blank=True)
-    house_dust_mite = fields.FloatField(null=True, blank=True)
-    antihistimines = fields.BooleanField(default=False)
-
-    class Meta:
-        verbose_name = "Routine SPT"
 
 
 """
