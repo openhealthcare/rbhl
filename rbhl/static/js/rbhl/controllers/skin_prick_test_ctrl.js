@@ -43,11 +43,11 @@ angular.module('opal.controllers').controller(
       * {skin_prick_test: {spt: 'mice'}},
       * ]
       */
-      editing.skin_prick_test = args
+      var editing = {skin_prick_test: args}
       scope.skin_prick_tests.push(editing)
     }
 
-    $scope.getDateFromGetParams = function(){
+    scope.getDateFromGetParams = function(){
       /*
       * Get's the date from the GET params and formats it to a date.
       * if the data param is empty, by default that will give you
@@ -66,8 +66,14 @@ angular.module('opal.controllers').controller(
     }
 
     scope.getDefaultArgs = function(){
-      var date = $scope.getDateFromGetParams();
-      var antihistimines = JSON.parse($location.search().antihistimines);
+      var date = scope.getDateFromGetParams();
+      var antihistimines;
+      if($location.search().antihistimines){
+        antihistimines = JSON.parse($location.search().antihistimines);
+      }
+      else{
+        antihistimines = false;
+      }
       return {
         date: date,
         antihistimines: antihistimines
