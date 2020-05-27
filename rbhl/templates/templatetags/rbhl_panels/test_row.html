@@ -13,38 +13,16 @@
       </h5>
     </div>
     <div class="col-md-2">
-      {% if pathway %}
-      <i
-        class="fa fa-pencil edit pull-right pointer"
-        open-pathway="{{ pathway.slug }}",
-        pathway-episode="episode"
-        pathway-callback="refresh()"
-      ></i>
-      {% endif %}
     </div>
   </div>
-  {% if date_field %}
-  <div class="row" ng-repeat="item in episode.{{ subrecord.get_api_name }} | orderBy:'-{{ date_field }}'">
-  {% else %}
   <div class="row" ng-repeat="item in episode.{{ subrecord.get_api_name }}">
-  {% endif %}
-
-    <div class="col-md-3">
-      {% if date_field %}
-      <span ng-show="$first || (episode.{{ subrecord.get_api_name }}[$index].{{ date_field }} !== episode.{{ subrecord.get_api_name }}[$index-1].{{ date_field }})">
-        [[ item.{{ date_field }} | displayDate ]]
-      </span>
-      {% endif %}
-    </div>
-    <div class="col-md-6">
+    <div class="col-md-6 col-md-offset-3">
       {% include subrecord.get_detail_template %}
     </div>
     <div class="col-md-1 content-offset-2">
-      {% if not pathway %}
       <i
         class="fa fa-pencil edit pull-right pointer" ng-click="episode.recordEditor.editItem('{{ subrecord.get_api_name }}', item)"
       ></i>
-      {% endif %}
     </div>
   </div>
 </li>

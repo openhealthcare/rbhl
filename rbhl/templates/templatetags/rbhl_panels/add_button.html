@@ -10,10 +10,8 @@ style="
 {% if is_singleton %}
 ng-disabled="episode.{{ subrecord.get_api_name }}.length"
 {% endif %}
-{% if pathway %}
-open-pathway="{{ pathway.slug }}",
-pathway-episode="episode"
-pathway-callback="refresh()"
+{% if link %}
+href="{{ link }}"
 {% else %}
 ng-click="episode.recordEditor.newItem('{{ subrecord.get_api_name }}')"
 {% endif %}

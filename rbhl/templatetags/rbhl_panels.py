@@ -144,11 +144,9 @@ def choice_or_other(**kwargs):
     'templatetags/rbhl_panels/test_row.html',
     takes_context=True
 )
-def test_row(context, subrecord, pathway=None, date_field=None):
+def test_row(context, subrecord):
     ctx = {}
     ctx["subrecord"] = subrecord
-    ctx["date_field"] = date_field
-    ctx["pathway"] = pathway
     return ctx
 
 
@@ -156,9 +154,9 @@ def test_row(context, subrecord, pathway=None, date_field=None):
     'templatetags/rbhl_panels/add_button.html',
     takes_context=True
 )
-def add_button(context, subrecord, is_singleton=False, pathway=None):
+def add_button(context, subrecord, is_singleton=False, link=None):
     return {
         "subrecord": subrecord,
         "is_singleton": is_singleton,
-        "pathway": pathway
+        "link": link
     }
