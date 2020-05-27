@@ -84,10 +84,28 @@ angular.module('opal.controllers').controller(
     }
 
     scope.preSave = function(editing){
-      editing.skin_prick_test = _.map(scope.skin_prick_tests, function(x){
+      var date = scope.getDateFromGetParams();
+      var otherDates = _.reject(scope.editing.skin_prick_test, function(spt){
+        return scope.dateEquality(spt.date, date)
+      })
+      var newOrEditedSpts = _.map(scope.skin_prick_tests, function(x){
         return x.skin_prick_test;
-      });
+      })
+      editing.skin_prick_test = otherDates.concat(newOrEditedSpts);
     };
+
+    scope.dateEquality = function(date1, date2){
+      if(!date1 && !date2){
+        return true;
+      }
+      if(date1 && !date2){
+        return false;
+      }
+      if(!date1 && date2){
+        return false
+      }
+      return date1.getTime() === date2.getTime()
+    }
 
     var init = function(){
       /*
@@ -103,12 +121,14 @@ angular.module('opal.controllers').controller(
 
       if(scope.editing.skin_prick_test && scope.editing.skin_prick_test.length){
         if(_.isArray(scope.editing.skin_prick_test)){
-          var skinPrickTests = _.where(scope.editing.skin_prick_test, {date: date});
+          var skinPrickTests = _.filter(scope.editing.skin_prick_test, function(spt){
+            return scope.dateEquality(spt.date, date)
+          })
           if(skinPrickTests.length){
             _.each(skinPrickTests, function(spt){scope.add(spt)});
           }
         }
-        else if(scope.editing.skin_prick_test.date === date){
+        else if(scope.dateEquality(scope.editing.skin_prick_test.date, date)){
           scope.add(scope.editing.skin_prick_test)
         }
       }
