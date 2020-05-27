@@ -18,7 +18,7 @@
     episode.{{ models.Malignancy.get_api_name }}.length ||
     episode.{{ models.DiffuseLungDisease.get_api_name }}.length ||
     episode.{{ models.BenignPleuralDisease.get_api_name }}.length ||
-    episode.{{ models.DiffuseLungDisease.get_api_name }}.length"
+    episode.{{ models.OtherDiagnosis.get_api_name }}.length"
   class="panel-body">
     <div ng-show="showDiagnosis" class="row">
       <div class="col-sm-11">
@@ -45,13 +45,12 @@
     </div>
     <ul class="list-group">
       {% include "partials/panels/rows.html" with subrecord=models.Asthma %}
-      {% include "partials/panels/rows.html" with subrecord=models.Rhinitis show_hr=True %}
-      {% include "partials/panels/rows.html" with subrecord=models.ChronicAirFlowLimitation show_hr=True %}
-      {% include "partials/panels/rows.html" with subrecord=models.Malignancy show_hr=True %}
-      {% include "partials/panels/rows.html" with subrecord=models.DiffuseLungDisease show_hr=True %}
-      {% include "partials/panels/rows.html" with subrecord=models.BenignPleuralDisease show_hr=True %}
-      {% include "partials/panels/rows.html" with subrecord=models.OtherDiagnosis show_hr=True %}
+      {% include "partials/panels/rows.html" with subrecord=models.Rhinitis %}
+      {% include "partials/panels/rows.html" with subrecord=models.ChronicAirFlowLimitation %}
+      {% include "partials/panels/rows.html" with subrecord=models.Malignancy %}
+      {% include "partials/panels/rows.html" with subrecord=models.DiffuseLungDisease %}
+      {% include "partials/panels/rows.html" with subrecord=models.BenignPleuralDisease %}
+      {% include "partials/panels/rows.html" with subrecord=models.OtherDiagnosis %}
     </ul>
   </div>
-
 </div>
