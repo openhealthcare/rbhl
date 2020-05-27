@@ -84,6 +84,12 @@ angular.module('opal.controllers').controller(
     }
 
     scope.preSave = function(editing){
+      /*
+      * Remove any of the editing.skin_prick_tests for the date in the GET parameter
+      * these will either have been edited or deleted.
+      *
+      * Add in everything from scope.skin_prick_tests.
+      */
       var date = scope.getDateFromGetParams();
       var otherDates = _.reject(scope.editing.skin_prick_test, function(spt){
         return scope.dateEquality(spt.date, date)
