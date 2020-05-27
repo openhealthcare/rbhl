@@ -1,0 +1,129 @@
+angular.module('opal.controllers').controller(
+  'SkinPrickTestController', function(scope, step, episode, $location, $injector) {
+    /*
+    * A patient comes in and undergoes a set of skin prick tests.
+    * date is the date they have the tests, antihistimines is if the
+    * patient is on antihistimines at the time of the test.
+    *
+    * The pathway therefore looks at one date.
+    *
+    * The controller for adding skin prick tests.
+    * We expect a GET parameter of 'date' and one of 'antihistmimines'
+    *
+    * If the patient already has skin prick tests for that date show
+    * all the skin prick tests.
+    *
+    * If they don't have skin prick test for that date create a set
+    * of the common skin prick tests for that date with the
+    * antihistimines set t the value of the get parameter
+    */
+
+    "use strict";
+
+    scope.remove = function(idx){
+      scope.skin_prick_tests.splice(idx, 1);
+    }
+
+    scope.add = function(args){
+      /*
+      * The pathway expects an array on scope.skin_prick_tests
+      * of a format like
+      * [
+      * {skin_prick_test: {spt: 'rats}},
+      * {skin_prick_test: {spt: 'grain'}},
+      * ]
+      *
+      * scope.add accepts an object of e.g. {spt: 'mice'}
+      * and adds it to the array of skin prick tests ie
+      * scope.skin_prick_tests now equals
+      *
+      * [
+      * {skin_prick_test: {spt: 'rats}},
+      * {skin_prick_test: {spt: 'grain'}},
+      * {skin_prick_test: {spt: 'mice'}},
+      * ]
+      */
+      editing.skin_prick_test = args
+      scope.skin_prick_tests.push(editing)
+    }
+
+    $scope.getDateFromGetParams = function(){
+      /*
+      * Get's the date from the GET params and formats it to a date.
+      * if the data param is empty, by default that will give you
+      * an empty string, this function will return null instead.
+      */
+      var DATE_DISPLAY_FORMAT = $injector.get('DATE_DISPLAY_FORMAT');
+      var date = $location.search().date;
+      if(date){
+        date = moment(date, DATE_DISPLAY_FORMAT).toDate()
+      }
+      else{
+        date = null;
+      }
+
+      return date;
+    }
+
+    scope.getDefaultArgs = function(){
+      var date = $scope.getDateFromGetParams();
+      var antihistimines = JSON.parse($location.search().antihistimines);
+      return {
+        date: date,
+        antihistimines: antihistimines
+      }
+    }
+
+    scope.addAnother = function(){
+      scope.add(scope.getDefaultArgs());
+    }
+
+    scope.preSave = function(editing){
+      editing.skin_prick_test = _.map(scope.skin_prick_tests, function(x){
+        return x.skin_prick_test;
+      });
+    };
+
+    var init = function(){
+      /*
+      * If the patient already has tests for GET.date
+      * display the skin prick tests.
+      *
+      * Otherwise create a list of the common skin prick
+      * tests setting GET.date and GET.antihistimines for
+      * each.
+      */
+      scope.skin_prick_tests = []
+      var date = scope.getDateFromGetParams();
+
+      if(scope.editing.skin_prick_test && scope.editing.skin_prick_test.length){
+        if(_.isArray(scope.editing.skin_prick_test)){
+          var skinPrickTests = _.where(scope.editing.skin_prick_test, {date: date});
+          if(skinPrickTests.length){
+            _.each(skinPrickTests, function(spt){scope.add(spt)});
+          }
+        }
+        else if(scope.editing.skin_prick_test.date === date){
+          scope.add(scope.editing.skin_prick_test)
+        }
+      }
+
+      if(!scope.skin_prick_tests.length){
+        var routine_spts = [
+          "Neg control",
+          "Pos control",
+          "Asp. fumigatus",
+          "Grass pollen",
+          "Cat",
+          "House dust mites"
+        ]
+        _.each(routine_spts, function(routine_spt){
+          var args = scope.getDefaultArgs();
+          args.spt = routine_spt;
+          scope.add(args);
+        });
+      }
+    }
+
+    init();
+  });

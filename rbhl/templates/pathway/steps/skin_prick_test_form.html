@@ -1,0 +1,68 @@
+{% load forms %}
+<div style="padding-left: 10px; padding-right: 10px;" pathway-step="{{ step.get_api_name }}">
+    <table class="table">
+      <tr>
+        <td></td>
+        <td class="text-center">Date</td>
+        <td class="text-center">Wheal(mm)</td>
+        <td class="text-center">Antihistimines</td>
+        <td></td>
+      </tr>
+      <tr ng-repeat="editing in skin_prick_tests">
+        <td>
+          <div  class="row">
+            <div class="col-md-10 col-md-offset-1">
+              {% input field="SkinPrickTest.spt" label="" style="vertical" %}
+            </div>
+          </div>
+        </td>
+        <td>
+          <div class="row">
+            <div class="col-md-10 col-md-offset-1">
+              {% datepicker field="SkinPrickTest.date" label="" style="vertical" %}
+            </div>
+          </div>
+        </td>
+        <td>
+          <div class="row">
+            <div class="col-md-10 col-md-offset-1">
+              {% input field="SkinPrickTest.wheal" label="" style="vertical" %}
+            </div>
+          </div>
+        </td>
+        <td>
+          <div class="row">
+            <div style="padding-left: 20px;" class="col-md-10 col-md-offset-1">
+              {% checkbox field="SkinPrickTest.antihistimines" label="" style="vertical" element_name="'s' + $index" %}
+            </div>
+          </div>
+        </td>
+        <td class="text-center">
+          <a style="display: inline-block; height: 30px; margin-top: 20px; padding: 10px; padding-bottom: 30px; font-size: 16px" ng-click="remove($index)" class="text-center btn btn-primary">
+            <i class="fa fa-trash"></i>
+          </a>
+        </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td class="text-center">
+          <a style="display: inline-block; height: 30px; margin-top: 20px; padding: 10px; padding-bottom: 30px; font-size: 16px" ng-click="addAnother()" class="text-center btn btn-primary">{% icon "glyphicon-plus" %}</a>
+        </td>
+      </tr>
+    </table>
+
+</div>
+<div class="row">
+  <div class="col-md-12 text-center">
+    <button class="btn btn-lg btn-primary btn-save"
+    ng-click="pathway.finish(editing)"
+    >
+      <i class="[[ pathway.finish_button_icon ]]"></i>
+      [[ pathway.finish_button_text ]]
+    </button>
+  </div>
+</div>
+
