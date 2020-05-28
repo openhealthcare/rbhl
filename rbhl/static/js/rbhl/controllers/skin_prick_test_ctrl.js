@@ -67,20 +67,21 @@ angular.module('opal.controllers').controller(
     scope.getDefaultArgs = function(){
       var date = scope.getDateFromGetParams();
       var antihistimines;
-      if($location.search().antihistimines){
-        antihistimines = JSON.parse($location.search().antihistimines);
-      }
-      else{
-        antihistimines = false;
-      }
+
       return {
-        date: date,
-        antihistimines: antihistimines
+        date: scope.testingDate,
+        antihistimines: scope.antihistimines
       }
     }
 
     scope.addAnother = function(){
       scope.add(scope.getDefaultArgs());
+    }
+
+    scope.updateAntihistimines = function(){
+      _.each(scope.skin_prick_tests, function(spt){
+        spt.skin_prick_test.antihistimines = scope.antihistimines;
+      });
     }
 
     scope.preSave = function(editing){
@@ -113,18 +114,9 @@ angular.module('opal.controllers').controller(
       return date1.getTime() === date2.getTime()
     }
 
-    var init = function(){
-      /*
-      * If the patient already has tests for GET.date
-      * display the skin prick tests.
-      *
-      * Otherwise create a list of the common skin prick
-      * tests setting GET.date and GET.antihistimines for
-      * each.
-      */
-      scope.skin_prick_tests = []
-      var date = scope.getDateFromGetParams();
-
+    scope.testsForDate = function(){
+      scope.skin_prick_tests = [];
+      var date = scope.testingDate;
       if(scope.editing.skin_prick_test && scope.editing.skin_prick_test.length){
         if(_.isArray(scope.editing.skin_prick_test)){
           var skinPrickTests = _.filter(scope.editing.skin_prick_test, function(spt){
@@ -154,6 +146,20 @@ angular.module('opal.controllers').controller(
           scope.add(args);
         });
       }
+    }
+
+    var init = function(){
+      /*
+      * If the patient already has tests for GET.date
+      * display the skin prick tests.
+      *
+      * Otherwise create a list of the common skin prick
+      * tests setting GET.date and GET.antihistimines for
+      * each.
+      */
+
+      scope.testingDate = scope.getDateFromGetParams();
+      scope.testsForDate();
     }
 
     init();

@@ -1,25 +1,43 @@
 {% load forms %}
 <div style="padding-left: 10px; padding-right: 10px;" pathway-step="{{ step.get_api_name }}">
-    <table class="table">
+    <div class="row">
+      <div class="col-sm-4">
+        <div class="form-group">
+          <label for="testingDate" class="control-label">
+            Testing date
+          </label>
+          <input id="testingDate" class="form-control" type="date" ng-model="testingDate" ng-blur="testsForDate()">
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="form-group">
+          <input ng-model="antihistimines" class="" id="antihistimines" type="checkbox" name="antihistimines" ng-change="updateAntihistimines()" />
+          <label for="antihistimines">Antihistimines</label>
+        </div>
+      </div>
+    </div>
+
+
+    <table class="table content-offset">
       <tr>
-        <td></td>
-        <td class="text-center">Date</td>
+        <td>Date</td>
+        <td>Substance</td>
         <td class="text-center">Wheal(mm)</td>
         <td class="text-center">Antihistimines</td>
         <td></td>
       </tr>
       <tr ng-repeat="editing in skin_prick_tests">
         <td>
-          <div  class="row">
-            <div class="col-md-10 col-md-offset-1">
-              {% input field="SkinPrickTest.spt" label="" style="vertical" %}
+          <div style="margin-top: 34px" class="row">
+            <div class="col-md-10">
+              [[ editing.skin_prick_test.date | displayDate ]]
             </div>
           </div>
         </td>
         <td>
-          <div class="row">
-            <div class="col-md-10 col-md-offset-1">
-              {% datepicker field="SkinPrickTest.date" label="" style="vertical" %}
+          <div  class="row">
+            <div class="col-md-10">
+              {% input field="SkinPrickTest.spt" label="" style="vertical" %}
             </div>
           </div>
         </td>
@@ -38,7 +56,7 @@
           </div>
         </td>
         <td class="text-center">
-          <a style="display: inline-block; height: 30px; margin-top: 20px; padding: 10px; padding-bottom: 30px; font-size: 16px" ng-click="remove($index)" class="text-center btn btn-primary">
+          <a style="display: inline-block; height: 30px; margin-top: 20px; padding: 10px; padding-bottom: 30px; font-size: 16px" ng-click="remove($index)" class="text-center btn btn-default">
             <i class="fa fa-trash"></i>
           </a>
         </td>
@@ -49,7 +67,7 @@
         <td></td>
         <td></td>
         <td class="text-center">
-          <a style="display: inline-block; height: 30px; margin-top: 20px; padding: 10px; padding-bottom: 30px; font-size: 16px" ng-click="addAnother()" class="text-center btn btn-primary">{% icon "glyphicon-plus" %}</a>
+          <a style="display: inline-block; height: 30px; margin-top: 20px; padding: 10px; padding-bottom: 30px; font-size: 16px" ng-click="addAnother()" class="text-center btn btn-default">{% icon "glyphicon-plus" %}</a>
         </td>
       </tr>
     </table>

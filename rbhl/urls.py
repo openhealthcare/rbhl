@@ -23,9 +23,6 @@ urlpatterns = [
         views.ActivePatientList.as_view(), name='active-list'),
     url(r'^patient-lists/seen-by-me/?$',
         views.SeenByMeList.as_view(), name='seen-by-me-list'),
-    url(r'^skin-prick-test-date-picker/(?P<patient_id>[0-9]+)/(?P<episode_id>[0-9]+)?$',
-        views.SkinPrickTestDatePicker.as_view(), name="skin-prick-test-date-picker"
-    ),
     url(r'^formsearch/', views.FormSearchRedirectView.as_view(),
         name='form-search'),
     url(r'^account/login/', views.TwoFactorRequired.as_view(), name="login"),
