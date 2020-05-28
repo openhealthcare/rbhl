@@ -23,11 +23,10 @@
         <td>Date</td>
         <td>Substance</td>
         <td class="text-center">Wheal(mm)</td>
-        <td class="text-center">Antihistimines</td>
         <td></td>
       </tr>
       <tr ng-repeat="editing in skin_prick_tests">
-        <td>
+        <td style="width: 160px" >
           <div style="margin-top: 34px" class="row">
             <div class="col-md-10">
               [[ editing.skin_prick_test.date | displayDate ]]
@@ -48,13 +47,6 @@
             </div>
           </div>
         </td>
-        <td>
-          <div class="row">
-            <div style="padding-left: 20px;" class="col-md-10 col-md-offset-1">
-              {% checkbox field="SkinPrickTest.antihistimines" label="" style="vertical" element_name="'s' + $index" %}
-            </div>
-          </div>
-        </td>
         <td class="text-center">
           <a style="display: inline-block; height: 30px; margin-top: 20px; padding: 10px; padding-bottom: 30px; font-size: 16px" ng-click="remove($index)" class="text-center btn btn-default">
             <i class="fa fa-trash"></i>
@@ -62,7 +54,6 @@
         </td>
       </tr>
       <tr>
-        <td></td>
         <td></td>
         <td></td>
         <td></td>
