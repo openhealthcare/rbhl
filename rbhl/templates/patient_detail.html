@@ -1,17 +1,14 @@
 {% extends 'patient_detail_base.html' %}
 {% block content %}
-<div style="position: absolute; top: 55px">
-  <div class="row">
+<div style="position: fixed; top: 4px; left: 970px; z-index: 1001;"> <div class="row">
     <div class="col-md-12">
       <div class="btn-group" role="group">
-        <a ng-class="{'btn-info': !view, 'btn-default': view}" href="/#/patient/[[ patient.id ]]" style="padding: 3px 20px" class="btn"><h4>Summary</h4></a>
-        <a ng-class="{'btn-info': view, 'btn-default': !view}" href="/#/patient/[[ patient.id ]]/investigations" style="padding: 3px 20px" type="button" style="padding: 5px 20px" class="btn"><h4>Investigations</h4></a>
+        <a ng-class="{'btn-info': !view, 'btn-default': view}" href="/#/patient/[[ patient.id ]]" style="padding: 0px 20px" class="btn"><h4>Summary</h4></a>
+        <a ng-class="{'btn-info': view, 'btn-default': !view}" href="/#/patient/[[ patient.id ]]/investigations" style="padding: 0px 20px" type="button" class="btn"><h4>Investigations</h4></a>
       </div>
     </div>
   </div>
 </div>
-<div style="height: 55px;"></div>
-
   <div ng-show="!view">
     {% include 'detail/ocld.html' %}
   </div>
