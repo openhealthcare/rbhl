@@ -25,7 +25,7 @@ style="
 ng-show="!{{ editing }}.length"
 ng-click="{{ editing }} = '{{ text }}'"
 class="btn btn-default btn-xs"
-ng-disabled="{{ editing }}.indexOf('{{ text }}') !== -1"
+ng-disabled="{{ editing }} && {{ editing }}.indexOf('{{ text }}') !== -1"
 >
 <i class="fa fa-plus-circle pointer"></i>
 {{ text }}
