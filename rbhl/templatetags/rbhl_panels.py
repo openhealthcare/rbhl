@@ -1,7 +1,7 @@
 from opal.core import fields
 from django.db import models
 from opal.core.subrecords import get_subrecord_from_model_name
-from opal.templatetags.forms import extract_common_args
+from opal.templatetags.forms import extract_common_args, _radio
 from django import template
 
 register = template.Library()
@@ -133,6 +133,7 @@ def choice_or_other(**kwargs):
     ctx["input_model"] = "editing.{}._client.{}".format(
         model.get_api_name(), kwargs["field"].split(".")[1]
     )
+    ctx["columns"] = kwargs.get("columns")
     ctx["change_input"] = "{}=other.field".format(
         ctx["model"]
     )
@@ -160,3 +161,8 @@ def add_button(context, subrecord, is_singleton=False, link=None):
         "is_singleton": is_singleton,
         "link": link
     }
+
+
+@register.inclusion_tag('templatetags/rbhl_panels/radio_columns.html')
+def radio_columns(*args, **kwargs):
+    return _radio(*args, **kwargs)
