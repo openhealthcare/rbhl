@@ -54,6 +54,11 @@ class Command(BaseCommand):
         if len(diagnostic_testing):
             return diagnostic_testing[0].antihistimines
 
+    def get_diagnosis_date(self, patient):
+        diagnostic_outcome = patient.diagnosticoutcome_set.all()
+        if len(diagnostic_outcome):
+            return diagnostic_outcome[0].diagnosis_date
+
     @transaction.atomic()
     def convert_legacy_skin_prick_tests(self):
         skin_prick_tests = []
@@ -67,15 +72,20 @@ class Command(BaseCommand):
         for patient in qs:
             antihistimines = self.get_antihistimines(patient)
             episode = patient.episode_set.all()[0]
+            diagnosis_date = self.get_diagnosis_date(patient)
             for legacy in patient.legacyskinpricktest_set.all():
 
                 # there are 181 patients with no spt, they also
                 # have not wheal
                 if not legacy.spt:
                     continue
+
+                dt = legacy.test_date
+                if not dt:
+                    dt = diagnosis_date
                 skin_prick_tests.append(SkinPrickTest(
                     spt=legacy.spt,
-                    date=legacy.test_date,
+                    date=dt,
                     wheal=legacy.wheal,
                     episode=episode,
                     antihistimines=antihistimines,
