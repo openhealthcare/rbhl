@@ -3,6 +3,16 @@ angular.module('opal.controllers').controller('InvestigationsCtrl', function($sc
 
   var self = this;
 
+  var ROUTINE_TEST_ORDER = [
+    "Neg control",
+    "Pos control",
+    "Asp. fumigatus",
+    "Grass pollen",
+    "Cat",
+    "House dust mite"
+  ]
+
+
   var dateEquality = function(date1, date2){
     if(!date1 && !date2){
       return true;
@@ -16,31 +26,41 @@ angular.module('opal.controllers').controller('InvestigationsCtrl', function($sc
     return date1.isSame(date2, "d")
   }
 
-  this.skinPrickTestForDate = function(someDate, skinPrickTests){
-    var forDate = _.filter(skinPrickTests, function(x){
+  this.filterByDate = function(someDate, skinPrickTests){
+    return  _.filter(skinPrickTests, function(x){
       return dateEquality(x.date, someDate);
     });
+  }
 
-    var negControl = _.findWhere(forDate, {spt: "Neg control"});
-    var posControl = _.findWhere(forDate, {spt: "Pos control"});
-    var result = _.reject(forDate, function(spt){
-      return spt === "Pos control" || spt === "Neg control"
+  this.skinPrickTestForDate = function(someDate, skinPrickTests){
+    var forDate = self.filterByDate(someDate, skinPrickTests);
+
+    var routineTests =[];
+
+    _.each(ROUTINE_TEST_ORDER, function(rto){
+      var rt = _.findWhere(forDate, {spt: rto});
+      if(rt){
+        routineTests.push(rt);
+      }
+      forDate = _.reject(forDate, {spt: rto})
     });
 
-    if(negControl){
-      result.unshift(negControl);
-    }
-    if(posControl){
-      result.unshift(posControl);
-    }
-    return result;
+    routineTests = _.sortBy(routineTests, function(rt){
+      return ROUTINE_TEST_ORDER.indexOf(rt);
+    });
+
+    forDate = _.sortBy(forDate, function(rt){
+      return rt.spt;
+    });
+    var result = routineTests.concat(forDate);
+    return routineTests.concat(forDate);
   };
 
   this.skinPrickTestDates = function(skinPrickTests){
     var result = [];
 
     _.each(skinPrickTests, function(skinPrickTest){
-      if(!self.skinPrickTestForDate(skinPrickTest.date, result).length){
+      if(!self.filterByDate(skinPrickTest.date, result).length){
         result.push(skinPrickTest)
       }
     });

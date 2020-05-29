@@ -21,7 +21,7 @@
       [[ date | displayDate ]]
     </div>
     <div class="col-md-6">
-      <div ng-repeat="item in investigations.skinPrickTestForDate(date, episode.skin_prick_test)" class="row">
+      <div ng-repeat="item in investigations.skinPrickTestForDate(date, episode.skin_prick_test) track by $index" class="row">
         <div class="col-md-12">
           {% include models.SkinPrickTest.get_detail_template %}
         </div>
