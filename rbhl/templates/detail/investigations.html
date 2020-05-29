@@ -1,6 +1,6 @@
 {% load rbhl_panels %}
 
-<div class="row">
+<div ng-controller="InvestigationsCtrl as investigations" class="row">
   <div class="col-md-12">
     <div class="panel panel-default">
       <div class="panel-heading">
@@ -17,6 +17,7 @@
         {% add_button models.SkinPrickTest link="/pathway/#/skin_prick_test/[[ patient.id ]]/[[ episode.id ]]" %}
         {% add_button models.BronchialTest %}
         {% add_button models.OtherInvestigations %}
+        <h1>[[ investigations.hello ]]</h1>
         <ul class="list-group">
           {% test_row subrecord=models.Spirometry %}
           {% include "partials/skin_prick_test_row.html" %}

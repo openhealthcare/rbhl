@@ -34,7 +34,8 @@ class Application(application.OpalApplication):
         'js/rbhl/controllers/peak_flow_ctrl.js',
         'js/rbhl/services/peak_flow_graph_data_loader.js',
         'js/rbhl/controllers/peak_flow_step.js',
-        'js/rbhl/controllers/skin_prick_test_ctrl.js'
+        'js/rbhl/controllers/skin_prick_test_ctrl.js',
+        'js/rbhl/controllers/investigations.js',
     ]
     styles = [
         'css/rbhl.css'

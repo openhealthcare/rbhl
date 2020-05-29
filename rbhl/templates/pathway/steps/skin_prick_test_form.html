@@ -6,7 +6,7 @@
           <label for="testingDate" class="control-label">
             Testing date
           </label>
-          <input id="testingDate" class="form-control" type="date" ng-model="testingDate" ng-blur="testsForDate()">
+          <input id="testingDate" class="form-control" type="date" ng-model="testingDate" ng-blur="updateDates()">
         </div>
       </div>
       <div class="col-sm-4">
@@ -22,28 +22,36 @@
       <tr>
         <td>Date</td>
         <td>Substance</td>
-        <td class="text-center">Wheal(mm)</td>
+        <td>Wheal(mm)</td>
+        <td>Antihistimines</td>
         <td></td>
       </tr>
       <tr ng-repeat="editing in skin_prick_tests">
-        <td style="width: 160px" >
-          <div style="margin-top: 34px" class="row">
+        <td >
+          <div class="row">
             <div class="col-md-10">
-              [[ editing.skin_prick_test.date | displayDate ]]
-            </div>
-          </div>
-        </td>
-        <td>
-          <div  class="row">
-            <div class="col-md-10">
-              {% input field="SkinPrickTest.spt" label="" style="vertical" %}
+              {% datepicker field="SkinPrickTest.date" label="" style="vertical" %}
             </div>
           </div>
         </td>
         <td>
           <div class="row">
+            <div class="col-md-10">
+              {% input field="SkinPrickTest.spt" label="" style="vertical" %}
+            </div>
+          </div>
+        </td>
+        <td style="width: 100px">
+          <div class="row">
             <div class="col-md-10 col-md-offset-1">
               {% input field="SkinPrickTest.wheal" label="" style="vertical" %}
+            </div>
+          </div>
+        </td>
+        <td>
+          <div class="row">
+            <div style="padding-left: 30px" class="col-md-10 col-md-offset-1">
+              {% checkbox field="SkinPrickTest.antihistimines" label="" style="vertical" %}
             </div>
           </div>
         </td>
@@ -54,6 +62,7 @@
         </td>
       </tr>
       <tr>
+        <td></td>
         <td></td>
         <td></td>
         <td></td>

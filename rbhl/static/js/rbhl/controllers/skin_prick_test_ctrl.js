@@ -65,9 +65,6 @@ angular.module('opal.controllers').controller(
     }
 
     scope.getDefaultArgs = function(){
-      var date = scope.getDateFromGetParams();
-      var antihistimines;
-
       return {
         date: scope.testingDate,
         antihistimines: scope.antihistimines
@@ -79,21 +76,39 @@ angular.module('opal.controllers').controller(
     }
 
     scope.updateAntihistimines = function(){
+      /*
+      * Changing the antihistmine field at the top of the page changes
+      * the antihistmine for all tests.
+      */
       _.each(scope.skin_prick_tests, function(spt){
         spt.skin_prick_test.antihistimines = scope.antihistimines;
       });
     }
 
+    scope.updateDates = function(){
+      /*
+      * Changing the date field at the top of the page changes
+      * the date for all tests
+      */
+      _.each(scope.skin_prick_tests, function(spt){
+        spt.skin_prick_test.date = scope.testingDate;
+      });
+    }
+
     scope.preSave = function(editing){
       /*
-      * Remove any of the editing.skin_prick_tests for the date in the GET parameter
-      * these will either have been edited or deleted.
-      *
+      * Look at the tests initially loaded from the get parameter.
+      * Remove any of the for the date.
+      * These will either have been deleted or editted.
       * Add in everything from scope.skin_prick_tests.
       */
-      var date = scope.getDateFromGetParams();
+      var existingIds = _.map(scope.initialTests, function(spt){
+       return spt.skin_prick_test.id;
+      });
+      var existingIds = _.compact(existingIds);
+
       var otherDates = _.reject(scope.editing.skin_prick_test, function(spt){
-        return scope.dateEquality(spt.date, date)
+        return _.contains(existingIds, spt.id);
       })
       var newOrEditedSpts = _.map(scope.skin_prick_tests, function(x){
         return x.skin_prick_test;
@@ -116,7 +131,7 @@ angular.module('opal.controllers').controller(
 
     scope.testsForDate = function(){
       scope.skin_prick_tests = [];
-      var date = scope.testingDate;
+      var date = scope.getDateFromGetParams();
       if(scope.editing.skin_prick_test && scope.editing.skin_prick_test.length){
         if(_.isArray(scope.editing.skin_prick_test)){
           var skinPrickTests = _.filter(scope.editing.skin_prick_test, function(spt){
@@ -157,9 +172,9 @@ angular.module('opal.controllers').controller(
       * tests setting GET.date and GET.antihistimines for
       * each.
       */
-
       scope.testingDate = scope.getDateFromGetParams();
       scope.testsForDate();
+      scope.initialTests = _.clone(scope.skin_prick_tests);
     }
 
     init();

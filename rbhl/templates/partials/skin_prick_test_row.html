@@ -13,20 +13,25 @@
       </h5>
     </div>
   </div>
-  <div class="row" ng-repeat="item in (items = (episode.skin_prick_test | orderBy:['-date', 'spt']))">
+  <div class="row" ng-repeat="date in investigations.skinPrickTestDates(episode.skin_prick_test)">
     <div class="col-md-3">
       {% comment %}
       Show if its the first, if there is a date now and the previous date was null, if the date is different to the previous date
       {% endcomment %}
-      <span ng-show="$first || (item.date && !items[$index-1].date) || (item.date && !item.date.isSame(items[$index-1].date, 'd'))">
-        [[ item.date | displayDate ]]
-      </span>
+      [[ date | displayDate ]]
     </div>
     <div class="col-md-6">
-      {% include models.SkinPrickTest.get_detail_template %}
+      <div ng-repeat="item in investigations.skinPrickTestForDate(date, episode.skin_prick_test)" class="row">
+        <div class="col-md-12">
+          {% include models.SkinPrickTest.get_detail_template %}
+        </div>
+      </div>
     </div>
     <div class="col-md-1 content-offset-2">
-      <a ng-show="$first || (item.date && !items[$index-1].date) || (item.date && !item.date.isSame(items[$index-1].date, 'd'))" href="/pathway/#/skin_prick_test/[[ patient.id ]]/[[ episode.id ]]?date=[[ item.date.format('YYYY-MM-DD') ]]">
+      <a ng-if="date" href="/pathway/#/skin_prick_test/[[ patient.id ]]/[[ episode.id ]]?date=[[ date.format('YYYY-MM-DD') ]]">
+        <i class="fa fa-pencil edit pull-right pointer" ></i>
+      </a>
+      <a ng-if="!date" href="/pathway/#/skin_prick_test/[[ patient.id ]]/[[ episode.id ]]">
         <i class="fa fa-pencil edit pull-right pointer" ></i>
       </a>
     </div>
