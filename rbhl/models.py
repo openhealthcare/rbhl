@@ -284,6 +284,24 @@ class Spirometry(RbhlSubrecord, models.EpisodeSubrecord):
 
 class SkinPrickTest(RbhlSubrecord, models.EpisodeSubrecord):
     _icon = "fa fa-hand-paper-o"
+    NEG_CONTROL = "Neg control"
+    POS_CONTROL = "Pos control"
+    ASP_FUMIGATUS = "Asp. fumigatus"
+    GRASS_POLLEN = "Grass pollen"
+    CAT = "Cat"
+    HOUSE_DUST_MITE = "House dust mite"
+
+    # This is the order the tests are taken
+    # so the order they would like to enter/see them
+    ROUTINE_TESTS = [
+        NEG_CONTROL,
+        POS_CONTROL,
+        ASP_FUMIGATUS,
+        GRASS_POLLEN,
+        CAT,
+        HOUSE_DUST_MITE
+    ]
+
     antihistimines = fields.NullBooleanField(null=True, blank=True)
     specific_sp_testnum = fields.IntegerField(
         null=True, blank=True, verbose_name="Specific SP test num"

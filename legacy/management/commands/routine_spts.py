@@ -82,42 +82,42 @@ class Command(BaseCommand):
                 skin_prick_tests.append(SkinPrickTest(
                     date=diagnosis_date,
                     antihistimines=antihistimines,
-                    spt="Neg control",
+                    spt=SkinPrickTest.NEG_CONTROL,
                     wheal=legacy.neg_control,
                     episode=episode
                 ))
                 skin_prick_tests.append(SkinPrickTest(
                     date=diagnosis_date,
                     antihistimines=antihistimines,
-                    spt="Pos control",
+                    spt=SkinPrickTest.POS_CONTROL,
                     wheal=legacy.pos_control,
                     episode=episode
                 ))
                 skin_prick_tests.append(SkinPrickTest(
                     date=diagnosis_date,
                     antihistimines=antihistimines,
-                    spt="Asp fumigatus",
+                    spt=SkinPrickTest.ASP_FUMIGATUS,
                     wheal=legacy.asp_fumigatus,
                     episode=episode
                 ))
                 skin_prick_tests.append(SkinPrickTest(
                     date=diagnosis_date,
                     antihistimines=antihistimines,
-                    spt="Grass pollen",
+                    spt=SkinPrickTest.GRASS_POLLEN,
                     wheal=legacy.grass_pollen,
                     episode=episode
                 ))
                 skin_prick_tests.append(SkinPrickTest(
                     date=diagnosis_date,
                     antihistimines=antihistimines,
-                    spt="Cat",
+                    spt=SkinPrickTest.CAT,
                     wheal=legacy.cat,
                     episode=episode
                 ))
                 skin_prick_tests.append(SkinPrickTest(
                     date=diagnosis_date,
                     antihistimines=antihistimines,
-                    spt="House dust mite",
+                    spt=SkinPrickTest.HOUSE_DUST_MITE,
                     wheal=legacy.d_pter,
                     episode=episode
                 ))
