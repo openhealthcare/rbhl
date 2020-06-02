@@ -5,14 +5,8 @@ when importing historic peak flow data.
 import os
 import collections
 import csv
-import sys
 
 from django.core.management.base import BaseCommand
-from plugins.trade import match
-from plugins.trade.exceptions import PatientNotFoundError
-
-from rbhl.models import PeakFlowDay
-from legacy.models import PeakFlowIdentifier
 
 
 class Command(BaseCommand):
@@ -28,7 +22,6 @@ class Command(BaseCommand):
         month_counts = collections.defaultdict(int)
 
         dir_name = kwargs.get("directory_name")
-#        demographics_file_name = os.path.join(dir_name, "OCC_PATIENT.csv" )
         demographics_file_name = 'peakflow.misses.csv'
         trial_file_name = os.path.join(dir_name, 'OCC_TRIAL.csv')
 

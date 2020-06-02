@@ -9,6 +9,7 @@ from legacy.models import Details
 
 ohc = User.objects.get(username='ohc')
 
+
 class Command(BaseCommand):
     def handle(self, *a, **k):
         value_counts = collections.defaultdict(list)
@@ -18,5 +19,5 @@ class Command(BaseCommand):
 
         for key in sorted(value_counts.keys())[-1:]:
             for detail in value_counts[key]:
-                print(f"{detail.patient.demographics().name}")
+                print("{}".format(detail.patient.demographics().name))
         return
