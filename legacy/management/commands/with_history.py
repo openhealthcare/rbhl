@@ -9,8 +9,6 @@ from django.core.management import BaseCommand
 from django.utils import timezone
 from opal.models import Patient
 
-from legacy.management.commands.flush_database import flush
-from rbhl.episode_categories import OccupationalLungDiseaseEpisode
 
 sexLUT = {"F": "Female", "M": "Male", "U": "Not Known"}
 
@@ -71,12 +69,14 @@ class Command(BaseCommand):
             #     user=None,
             # )
 
-
-
-            if Patient.objects.filter(demographics__hospital_number=row['Hospital Number']).count() > 1:
+            if Patient.objects.filter(
+                demographics__hospital_number=row['Hospital Number']
+            ).count() > 1:
                 print(row)
                 sys.exit()
-            patient = Patient.objects.get(demographics__hospital_number=row["Hospital Number"])
+            patient = Patient.objects.get(
+                demographics__hospital_number=row["Hospital Number"]
+            )
 
             patient.patientnumber_set.get().update_from_dict(
                 {
