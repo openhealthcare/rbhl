@@ -61,6 +61,30 @@ def get_peak_expiratory_flow(date, episode, trial_num):
         )
 
 
+class RbhlSubrecord(fields.Model):
+    class Meta:
+        abstract = True
+
+    @classmethod
+    def _get_field_title(cls, name):
+        field = cls._get_field(name)
+        if isinstance(field, fields.ManyToOneRel):
+            field_name = field.related_model._meta.verbose_name_plural
+        else:
+            field_name = field.verbose_name
+
+        if field_name.islower():
+            field_name = field_name.capitalize()
+
+        return field_name
+
+    @classmethod
+    def get_display_name(cls):
+        if cls._meta.verbose_name.islower():
+            return cls._meta.verbose_name.capitalize()
+        return cls._meta.verbose_name
+
+
 class Demographics(models.Demographics):
     height = fields.IntegerField(
         blank=True, null=True, verbose_name='Height(cm)'
