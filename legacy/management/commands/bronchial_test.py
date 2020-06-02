@@ -5,7 +5,7 @@ from django.core.management import BaseCommand
 from django.db import transaction
 from django.utils import timezone
 
-from legacy.models import BronchialTest, PatientNumber
+from legacy.models import LegacyBronchialTest, PatientNumber
 
 
 class Command(BaseCommand):
@@ -58,7 +58,7 @@ class Command(BaseCommand):
 
     @transaction.atomic()
     def handle(self, *args, **options):
-        BronchialTest.objects.all().delete()
+        LegacyBronchialTest.objects.all().delete()
 
         # Open with utf-8-sig encoding to avoid having a BOM in the first
         # header string.
@@ -82,7 +82,7 @@ class Command(BaseCommand):
             )
 
             tests.append(
-                BronchialTest(
+                LegacyBronchialTest(
                     patient=patient,
                     created=timezone.now(),
                     bronchial_num=row["Bronchial_num"],
@@ -98,7 +98,7 @@ class Command(BaseCommand):
                 )
             )
 
-        BronchialTest.objects.bulk_create(tests)
+        LegacyBronchialTest.objects.bulk_create(tests)
         self.stdout.write(
             self.style.SUCCESS("Created {} Bronchial Tests".format(len(tests)))
         )

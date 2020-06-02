@@ -4,7 +4,7 @@ from django.core.management import BaseCommand
 from django.db import transaction
 from django.utils import timezone
 
-from legacy.models import PatientNumber, SkinPrickTest
+from legacy.models import PatientNumber, LegacySkinPrickTest
 
 from ..utils import to_date, to_float, to_int
 
@@ -15,7 +15,7 @@ class Command(BaseCommand):
 
     @transaction.atomic()
     def handle(self, *args, **options):
-        SkinPrickTest.objects.all().delete()
+        LegacySkinPrickTest.objects.all().delete()
 
         # Open with utf-8-sig encoding to avoid having a BOM in the first
         # header string.
@@ -34,7 +34,7 @@ class Command(BaseCommand):
                 continue
 
             tests.append(
-                SkinPrickTest(
+                LegacySkinPrickTest(
                     patient=patient,
                     created=timezone.now(),
                     specific_sp_testnum=to_int(row["Specific_sp_testnum"]),
@@ -44,6 +44,6 @@ class Command(BaseCommand):
                 )
             )
 
-        SkinPrickTest.objects.bulk_create(tests)
+        LegacySkinPrickTest.objects.bulk_create(tests)
         msg = "Created {} Skin Prick Tests".format(len(tests))
         self.stdout.write(self.style.SUCCESS(msg))
