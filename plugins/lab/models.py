@@ -100,6 +100,8 @@ class BronchialTest(RbhlSubrecord, models.PatientSubrecord):
 
 
 class OtherInvestigations(RbhlSubrecord, models.PatientSubrecord):
+    _icon = "fa fa-hand-paper-o"
+
     TEST_TYPE = enum("CT chest scan", "Full lung function")
     date = fields.DateField(null=True, blank=True)
     test = fields.CharField(
