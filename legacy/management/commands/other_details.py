@@ -355,6 +355,25 @@ class Command(BaseCommand):
                 setattr(spirometry, field, field_value)
             spirometry.save()
 
+            ct_scan = legacy_diagnostic_testing.ct_chest_scan
+            ct_scan_date = legacy_diagnostic_testing.ct_chest_scan_date
+            lung_function = legacy_diagnostic_testing.full_lung_function
+            lung_function_date = legacy_diagnostic_testing.full_lung_function_date
+
+            if ct_scan or ct_scan_date:
+                lab_models.OtherInvestigations.objects.create(
+                    test=lab_models.OtherInvestigations.CT_CHEST_SCAN,
+                    date=ct_scan_date,
+                    patient=patient
+                )
+
+            if lung_function or lung_function_date:
+                lab_models.OtherInvestigations.objects.create(
+                    test=lab_models.OtherInvestigations.FULL_LUNG_FUNCTION,
+                    date=lung_function_date,
+                    patient=patient
+                )
+
     def get_diagnosis_date(self, patient):
         diagnostic_outcome = patient.diagnosticoutcome_set.all()
         if len(diagnostic_outcome):
