@@ -336,12 +336,14 @@ a {
     background: $indigo;
 }
 .panel.panel-primary .panel-heading.patient-detail-heading,
-.patient-detail-heading {
+.panel.panel-primary .panel-heading.pathway-header{
     @extend %nav-bar-heading;
 }
 
-.panel.panel-primary .panel-heading.pathway-header{
-    @extend %nav-bar-heading;
+.patient-detail{
+    .panel-body{
+        margin-top: 30px;
+    }
 }
 
 .panel-header-padding{
@@ -555,3 +557,24 @@ input[type="date"]::-webkit-input-placeholder{
     right: 15%;
     top: 111px
 }
+
+.view-switcher{
+    position: absolute;
+    top: 53px;
+    right: 28px;
+
+    .btn{
+        padding: 0px 20px; margin-top: 4px;
+    }
+
+    .btn.btn-info {
+        background: darken($blue, 10%);
+        border-color: darken($blue, 10%);
+    }
+
+    h4{
+        margin-top: 7px;
+        margin-bottom: 6px
+    }
+}
+
