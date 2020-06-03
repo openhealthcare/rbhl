@@ -3,6 +3,9 @@ from django.core.management import BaseCommand
 from django.db import transaction
 from django.utils import timezone
 
+from opal import models as opal_models
+from plugins.lab import models as lab_models
+
 from legacy.models import (
     Details,
     DiagnosticAsthma,
@@ -259,13 +262,13 @@ class Command(BaseCommand):
         DiagnosticOther.objects.all().delete()
         OtherFields.objects.all().delete()
 
-    @transaction.atomic()
-    def handle(self, *args, **options):
+    @transaction.atomic
+    def create_legacy(self, file_name):
         self.flush()
 
         # Open with utf-8-sig encoding to avoid having a BOM in the first
         # header string.
-        with open(options["file_name"], encoding="utf-8-sig") as f:
+        with open(file_name, encoding="utf-8-sig") as f:
             rows = list(csv.DictReader(f))
 
         patient_ids = (row["Patient_num"] for row in rows)
@@ -334,3 +337,40 @@ class Command(BaseCommand):
 
         # We deleted things that were singletons in the "Flush step"
         # call_command('create_singletons')
+
+    def convert_diagnostic_testing(self, patient):
+        legacy_diagnostic_testing = patient.diagnostictesting_set.all()[0]
+
+        SPIROMETRY_FIELDS = [
+            "fev_1", "fev_1_post_ventolin", "fev_1_percentage_protected",
+            "fvc", "fvc_post_ventolin", "fvc_percentage_protected"
+        ]
+        if any([
+            getattr(legacy_diagnostic_testing, i) for i in SPIROMETRY_FIELDS
+        ]):
+            spirometry  = lab_models.Spirometry(patient=patient)
+            spirometry.date = self.get_diagnosis_date(patient)
+            for field in SPIROMETRY_FIELDS:
+                field_value = getattr(legacy_diagnostic_testing, field)
+                setattr(spirometry, field, field_value)
+            spirometry.save()
+
+    def get_diagnosis_date(self, patient):
+        diagnostic_outcome = patient.diagnosticoutcome_set.all()
+        if len(diagnostic_outcome):
+            return diagnostic_outcome[0].diagnosis_date
+
+    @transaction.atomic
+    def convert_legacy(self):
+        qs = opal_models.Patient.objects.exclude(details=None)
+        qs = qs.prefetch_related(
+            'diagnostictesting_set',
+            "diagnosticoutcome_set",
+        )
+
+        for patient in qs:
+            self.convert_diagnostic_testing(patient)
+
+    def handle(self, *args, **options):
+        self.create_legacy(options["file_name"])
+        self.convert_legacy()
