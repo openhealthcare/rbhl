@@ -3,8 +3,9 @@ import csv
 from django.core.management import BaseCommand
 from django.db import transaction
 from django.utils import timezone
-
+from opal.models import Patient
 from legacy.models import PatientNumber, LegacySkinPrickTest
+from plugins.lab.models import SkinPrickTest
 
 from ..utils import to_date, to_float, to_int
 
@@ -14,12 +15,12 @@ class Command(BaseCommand):
         parser.add_argument("file_name", help="Specify import file")
 
     @transaction.atomic()
-    def handle(self, *args, **options):
+    def build_legacy_skin_prick_test(self, file_name):
         LegacySkinPrickTest.objects.all().delete()
 
         # Open with utf-8-sig encoding to avoid having a BOM in the first
         # header string.
-        with open(options["file_name"], encoding="utf-8-sig") as f:
+        with open(file_name, encoding="utf-8-sig") as f:
             rows = list(csv.DictReader(f))
 
         self.stdout.write(self.style.SUCCESS("Importing Skin Prick Tests"))
@@ -47,3 +48,49 @@ class Command(BaseCommand):
         LegacySkinPrickTest.objects.bulk_create(tests)
         msg = "Created {} Skin Prick Tests".format(len(tests))
         self.stdout.write(self.style.SUCCESS(msg))
+
+    def get_antihistimines(self, patient):
+        diagnostic_testing = patient.diagnostictesting_set.all()
+        if len(diagnostic_testing):
+            return diagnostic_testing[0].antihistimines
+
+    def get_diagnosis_date(self, patient):
+        diagnostic_outcome = patient.diagnosticoutcome_set.all()
+        if len(diagnostic_outcome):
+            return diagnostic_outcome[0].diagnosis_date
+
+    @transaction.atomic()
+    def convert_legacy_skin_prick_tests(self):
+        skin_prick_tests = []
+        qs = Patient.objects.exclude(legacyskinpricktest=None)
+        qs = qs.prefetch_related(
+            "legacyskinpricktest_set",
+            "diagnosticoutcome_set",
+            "diagnostictesting_set",
+        )
+        for patient in qs:
+            antihistimines = self.get_antihistimines(patient)
+            diagnosis_date = self.get_diagnosis_date(patient)
+            for legacy in patient.legacyskinpricktest_set.all():
+
+                # there are 181 patients with no spt, they also
+                # have not wheal
+                if not legacy.spt:
+                    continue
+
+                dt = legacy.test_date
+                if not dt:
+                    dt = diagnosis_date
+                skin_prick_tests.append(SkinPrickTest(
+                    substance=legacy.spt,
+                    date=dt,
+                    wheal=legacy.wheal,
+                    patient=patient,
+                    antihistimines=antihistimines,
+                ))
+
+        SkinPrickTest.objects.bulk_create(skin_prick_tests)
+
+    def handle(self, *args, **kwargs):
+        self.build_legacy_skin_prick_test(kwargs["file_name"])
+        self.convert_legacy_skin_prick_tests()

@@ -3,6 +3,8 @@ import csv
 from django.core.management import BaseCommand
 from django.db import transaction
 from django.utils import timezone
+from opal.models import Patient
+from plugins.lab.models import SkinPrickTest
 
 from legacy.models import PatientNumber, RoutineSPT
 
@@ -14,12 +16,12 @@ class Command(BaseCommand):
         parser.add_argument("file_name", help="Specify import file")
 
     @transaction.atomic()
-    def handle(self, *args, **options):
+    def build_routine_spts(self, file_name):
         RoutineSPT.objects.all().delete()
 
         # Open with utf-8-sig encoding to avoid having a BOM in the first
         # header string.
-        with open(options["file_name"], encoding="utf-8-sig") as f:
+        with open(file_name, encoding="utf-8-sig") as f:
             rows = list(csv.DictReader(f))
 
         self.stdout.write(self.style.SUCCESS("Importing Routine SPTs"))
@@ -50,3 +52,75 @@ class Command(BaseCommand):
         self.stdout.write(
             self.style.SUCCESS("Created {} Routine SPTs".format(len(tests)))
         )
+
+    def get_diagnosis_date(self, patient):
+        diagnostic_outcome = patient.diagnosticoutcome_set.all()
+        if len(diagnostic_outcome):
+            return diagnostic_outcome[0].diagnosis_date
+
+    def get_antihistimines(self, patient):
+        diagnostic_testing = patient.diagnostictesting_set.all()
+        if len(diagnostic_testing):
+            return diagnostic_testing[0].antihistimines
+
+    @transaction.atomic()
+    def convert_routine_spts(self):
+        skin_prick_tests = []
+        qs = Patient.objects.exclude(routinespt=None)
+        qs = qs.prefetch_related(
+            "routinespt_set",
+            "diagnosticoutcome_set",
+            "diagnostictesting_set",
+        )
+        for patient in qs:
+            diagnosis_date = self.get_diagnosis_date(patient)
+            antihistimines = self.get_antihistimines(patient)
+
+            for legacy in patient.routinespt_set.all():
+                skin_prick_tests.append(SkinPrickTest(
+                    date=diagnosis_date,
+                    antihistimines=antihistimines,
+                    substance=SkinPrickTest.NEG_CONTROL,
+                    wheal=legacy.neg_control,
+                    patient=patient
+                ))
+                skin_prick_tests.append(SkinPrickTest(
+                    date=diagnosis_date,
+                    antihistimines=antihistimines,
+                    substance=SkinPrickTest.POS_CONTROL,
+                    wheal=legacy.pos_control,
+                    patient=patient
+                ))
+                skin_prick_tests.append(SkinPrickTest(
+                    date=diagnosis_date,
+                    antihistimines=antihistimines,
+                    substance=SkinPrickTest.ASP_FUMIGATUS,
+                    wheal=legacy.asp_fumigatus,
+                    patient=patient
+                ))
+                skin_prick_tests.append(SkinPrickTest(
+                    date=diagnosis_date,
+                    antihistimines=antihistimines,
+                    substance=SkinPrickTest.GRASS_POLLEN,
+                    wheal=legacy.grass_pollen,
+                    patient=patient
+                ))
+                skin_prick_tests.append(SkinPrickTest(
+                    date=diagnosis_date,
+                    antihistimines=antihistimines,
+                    substance=SkinPrickTest.CAT,
+                    wheal=legacy.cat,
+                    patient=patient
+                ))
+                skin_prick_tests.append(SkinPrickTest(
+                    date=diagnosis_date,
+                    antihistimines=antihistimines,
+                    substance=SkinPrickTest.HOUSE_DUST_MITE,
+                    wheal=legacy.d_pter,
+                    patient=patient
+                ))
+        SkinPrickTest.objects.bulk_create(skin_prick_tests)
+
+    def handle(self, *args, **options):
+        self.build_routine_spts(options["file_name"])
+        self.convert_routine_spts()
