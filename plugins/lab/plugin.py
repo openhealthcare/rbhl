@@ -3,7 +3,7 @@ Plugin definition for the lab Opal plugin
 """
 from opal.core import plugins
 
-from lab.urls import urlpatterns
+from plugins.lab.urls import urlpatterns
 
 
 class LabPlugin(plugins.OpalPlugin):
