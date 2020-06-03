@@ -185,6 +185,7 @@ INSTALLED_APPS = (
     'django_otp.plugins.otp_totp',
     'two_factor',
     'plugins.add_patient_step',
+    'plugins.lab',
     'rbhl',
 )
 
