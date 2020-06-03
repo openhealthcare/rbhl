@@ -108,6 +108,10 @@ class Command(BaseCommand):
                     patient=patient
                 ))
         SkinPrickTest.objects.bulk_create(skin_prick_tests)
+        msg = "Created {} SkinPrickTests from RoutineSPTs".format(
+            len(skin_prick_tests)
+        )
+        self.stdout.write(self.style.SUCCESS(msg))
 
     def handle(self, *args, **options):
         self.build_routine_spts(options["file_name"])

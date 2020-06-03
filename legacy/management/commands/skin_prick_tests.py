@@ -46,7 +46,7 @@ class Command(BaseCommand):
             )
 
         LegacySkinPrickTest.objects.bulk_create(tests)
-        msg = "Created {} Skin Prick Tests".format(len(tests))
+        msg = "Created {} Legacy Skin Prick Tests".format(len(tests))
         self.stdout.write(self.style.SUCCESS(msg))
 
     def get_antihistimines(self, patient):
@@ -83,6 +83,10 @@ class Command(BaseCommand):
                 ))
 
         SkinPrickTest.objects.bulk_create(skin_prick_tests)
+        msg = "Created {} SkinPrickTests from LegacySkinPrickTests".format(
+            len(skin_prick_tests)
+        )
+        self.stdout.write(self.style.SUCCESS(msg))
 
     def handle(self, *args, **kwargs):
         self.build_legacy_skin_prick_test(kwargs["file_name"])

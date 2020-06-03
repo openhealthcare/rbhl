@@ -130,6 +130,10 @@ class Command(BaseCommand):
             to_create.append(bronchial_test)
 
         BronchialTest.objects.bulk_create(to_create)
+        msg = "Created {} BronchialTests from LegacyBronchialTests".format(
+            len(to_create)
+        )
+        self.stdout.write(self.style.SUCCESS(msg))
 
     def handle(self, *args, **options):
         self.build_legacy_bronchial_test(options["file_name"])

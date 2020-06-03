@@ -386,4 +386,33 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         self.create_legacy(options["file_name"])
+        before_ct = lab_models.OtherInvestigations.objects.filter(
+            test=lab_models.OtherInvestigations.CT_CHEST_SCAN
+        ).count()
+        before_lung = lab_models.OtherInvestigations.objects.filter(
+            test=lab_models.OtherInvestigations.FULL_LUNG_FUNCTION
+        ).count()
+        before_spirometry = lab_models.Spirometry.objects.all().count()
         self.convert_legacy()
+        after_ct = lab_models.OtherInvestigations.objects.filter(
+            test=lab_models.OtherInvestigations.CT_CHEST_SCAN
+        ).count()
+        after_lung = lab_models.OtherInvestigations.objects.filter(
+            test=lab_models.OtherInvestigations.FULL_LUNG_FUNCTION
+        ).count()
+        after_spirometry = lab_models.Spirometry.objects.all().count()
+
+        msg = "Created {} OtherInvestigation CT scans".format(
+            after_ct - before_ct
+        )
+        self.stdout.write(self.style.SUCCESS(msg))
+
+        msg = "Created {} OtherInvestigation lung function".format(
+            after_lung - before_lung
+        )
+        self.stdout.write(self.style.SUCCESS(msg))
+
+        msg = "Created {} Spirometry".format(
+            after_spirometry - before_spirometry
+        )
+        self.stdout.write(self.style.SUCCESS(msg))
