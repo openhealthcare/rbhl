@@ -349,7 +349,6 @@ class Command(BaseCommand):
             getattr(legacy_diagnostic_testing, i) for i in SPIROMETRY_FIELDS
         ]):
             spirometry  = lab_models.Spirometry(patient=patient)
-            spirometry.date = self.get_diagnosis_date(patient)
             for field in SPIROMETRY_FIELDS:
                 field_value = getattr(legacy_diagnostic_testing, field)
                 setattr(spirometry, field, field_value)
@@ -373,11 +372,6 @@ class Command(BaseCommand):
                     date=lung_function_date,
                     patient=patient
                 )
-
-    def get_diagnosis_date(self, patient):
-        diagnostic_outcome = patient.diagnosticoutcome_set.all()
-        if len(diagnostic_outcome):
-            return diagnostic_outcome[0].diagnosis_date
 
     @transaction.atomic
     def convert_legacy(self):
