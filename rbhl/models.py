@@ -64,7 +64,7 @@ def get_peak_expiratory_flow(date, episode, trial_num):
 class RbhlSubrecord(fields.Model):
     """
     Changes models titles and field display names
-    to be sentence case rather than the title case,
+    to be sentence case rather than title case,
     the opal default.
     """
     class Meta:
