@@ -1,7 +1,7 @@
 """
 Models for lab
 """
-from rbhl.models import RbhlSubrecord
+from rbhl.models import RBHLSubrecord as RbhlSubrecord
 from django.db import models as fields
 from opal import models
 from opal.core.fields import enum
