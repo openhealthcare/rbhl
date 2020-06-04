@@ -105,6 +105,37 @@ class GetPeakExpiratoryFlowTestCase(OpalTestCase):
         self.assertIsNone(expected)
 
 
+class RBHLSubrecordTestCase(OpalTestCase):
+    def test_get_field_title(self):
+        self.assertTrue(issubclass(models.Referral, models.RBHLSubrecord))
+        field_title = models.Referral._get_field_title("referrer_title")
+        self.assertEqual(
+            field_title, "Referrer title"
+        )
+
+    def test_get_field_title_verbose_name_override(self):
+        self.assertTrue(issubclass(models.Employment, models.RBHLSubrecord))
+        field_title = models.Employment._get_field_title("oh_provider")
+        self.assertEqual(
+            field_title, "OH provider"
+        )
+
+    def test_get_display_name(self):
+        self.assertTrue(issubclass(models.ClinicLog, models.RBHLSubrecord))
+        display_name = models.ClinicLog.get_display_name()
+        self.assertEqual(
+            display_name, "Clinic log"
+        )
+
+    def test_get_display_name_verbose_name_override(self):
+        with mock.patch.object(models.ClinicLog, "_meta"):
+            models.ClinicLog._meta.verbose_name = "Something"
+            display_name = models.ClinicLog.get_display_name()
+        self.assertEqual(
+            display_name, "Something"
+        )
+
+
 class DemographicsTestCase(OpalTestCase):
     def setUp(self):
         patient, _ = self.new_patient_and_episode_please()
