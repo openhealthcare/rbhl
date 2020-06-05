@@ -1,34 +1,33 @@
-{% load panels %}
+{% load panels %} {% load rbhl_panels %}
 <div class="row">
   <div class="col-md-12">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <div class="row">
-          <div class="col-md-9">
-            <h3>
-              <i class="fa fa-stethoscope"></i> Investigations
-            </h3>
-          </div>
-        </div>
+    <div class="row">
+      <div class="col-md-9">
+        <h3><i class="fa fa-stethoscope"></i> Investigations</h3>
       </div>
-      <div class="panel-body">
-        <div class="row">
-          <div class="col-md-6">
-            {% record_panel models.Spirometry %}
-          </div>
-          <div class="col-md-6">
-            {% record_panel models.SkinPrickTest %}
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-6">
-            {% record_panel models.BronchialTest %}
-          </div>
-          <div class="col-md-6">
-            {% record_panel models.OtherInvestigations %}
-          </div>
-        </div>
+    </div>
+    <div class="row">
+      {% add_button models.Spirometry %}
+      {% add_button models.SkinPrickTest %}
+      {% add_button models.BronchialTest %}
+      {% add_button models.OtherInvestigations %}
+    </div>
+    <div class="row content-offset-25">
+      <div class="col-md-6">
+        {% record_panel models.Spirometry %}
       </div>
+      <div class="col-md-6">
+        {% record_panel models.SkinPrickTest %}
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        {% record_panel models.BronchialTest %}
+      </div>
+      <div class="col-md-6">
+        {% record_panel models.OtherInvestigations %}
+      </div>
+    </div>
     </div>
   </div>
 </div>

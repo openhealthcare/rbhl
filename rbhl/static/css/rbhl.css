@@ -543,4 +543,13 @@ input[type="date"]::-webkit-input-placeholder {
   margin-top: 7px;
   margin-bottom: 6px;
 }
+
+.add-button {
+  font-size: 18px;
+  display: inline-block;
+  margin-left: 10px;
+  margin-right: 10px;
+  padding: 5px 10px;
+  margin-top: 10px;
+}
 /*# sourceMappingURL=rbhl.css.map */

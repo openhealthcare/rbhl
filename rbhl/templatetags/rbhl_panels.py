@@ -53,3 +53,17 @@ def field_display(
     ctx["is_boolean"] = is_boolean(field)
     ctx["is_date"] = is_date(field)
     return ctx
+
+
+@register.inclusion_tag(
+    'templatetags/rbhl_panels/add_button.html',
+    takes_context=True
+)
+def add_button(context, subrecord, link=None):
+    """
+    A button to add a subrecord.
+    """
+    return {
+        "subrecord": subrecord,
+        "link": link
+    }
