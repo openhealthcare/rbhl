@@ -103,6 +103,8 @@ class OtherInvestigations(RbhlSubrecord, models.PatientSubrecord):
     CT_CHEST_SCAN = "CT chest scan"
     FULL_LUNG_FUNCTION = "Full lung function"
     TEST_TYPE = enum(CT_CHEST_SCAN, FULL_LUNG_FUNCTION)
+    _icon = "fa fa-hand-paper-o"
+
     date = fields.DateField(null=True, blank=True)
     test = fields.CharField(
         choices=TEST_TYPE, blank=True, default="", max_length=256

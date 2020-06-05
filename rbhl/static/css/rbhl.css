@@ -1,6 +1,6 @@
 @charset "UTF-8";
 .panel.panel-primary .panel-heading.patient-detail-heading,
-.patient-detail-heading, .panel.panel-primary .panel-heading.pathway-header {
+.panel.panel-primary .panel-heading.pathway-header {
   position: fixed;
   top: 0px;
   z-index: 1001;
@@ -315,6 +315,10 @@ a {
   background: #4123BF;
 }
 
+.patient-detail .panel-body {
+  margin-top: 30px;
+}
+
 .panel-header-padding {
   padding-left: 20px;
   padding-right: 20px;
@@ -517,5 +521,26 @@ input[type="date"]::-webkit-input-placeholder {
   position: fixed;
   right: 15%;
   top: 111px;
+}
+
+.view-switcher {
+  position: absolute;
+  top: 53px;
+  right: 28px;
+}
+
+.view-switcher .btn {
+  padding: 0px 20px;
+  margin-top: 4px;
+}
+
+.view-switcher .btn.btn-info {
+  background: #345ea4;
+  border-color: #345ea4;
+}
+
+.view-switcher h4 {
+  margin-top: 7px;
+  margin-bottom: 6px;
 }
 /*# sourceMappingURL=rbhl.css.map */
