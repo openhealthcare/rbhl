@@ -12,11 +12,8 @@ class LabPlugin(plugins.OpalPlugin):
     """
     urls = urlpatterns
     javascripts = {
-        # Add your javascripts here!
-        'opal.lab': [
-            # 'js/lab/app.js',
-            # 'js/lab/controllers/larry.js',
-            # 'js/lab/services/larry.js',
+        'opal.controllers': [
+            'js/lab/controllers/investigations.js'
         ]
     }
 

@@ -1,16 +1,9 @@
-<span ng-show="item.antihistimines">
-     Antihistimines
-   <br />
-</span>
-<span ng-show="item.substance">
-    [[ item.substance ]]
-   <br />
-</span>
-<span ng-show="item.wheal">
-    [[ item.wheal ]]
-   <br />
-</span>
-<span ng-show="item.date">
-    [[ item.date | displayDate ]]
-   <br />
-</span>
+<div  ng-class="{'text-muted': item.wheal === 0}" class="row">
+  <div class="col-md-6">
+    [[ item.substance ]]:
+  </div>
+  <div class="col-md-6">
+    [[ item.wheal ]]<span ng-show="item.wheal !== null">mm</span>
+    <span ng-show="item.antihistimines">(on antihistamines)</span>
+  </div>
+</div>

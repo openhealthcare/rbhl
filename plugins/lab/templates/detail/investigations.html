@@ -1,33 +1,115 @@
 {% load panels %} {% load rbhl_panels %}
-<div class="row">
-  <div class="col-md-12">
-    <div class="row">
-      <div class="col-md-9">
-        <h3><i class="fa fa-stethoscope"></i> Investigations</h3>
+<div class="lab-view">
+  <div class="panel panel-primary panel-container">
+    <div class="patient-detail-heading">
+      <div class="row">
+        <div class="col-md-9">
+          <h3><i class="fa fa-stethoscope"></i> Investigations</h3>
+        </div>
       </div>
     </div>
-    <div class="row">
-      {% add_button models.Spirometry %}
-      {% add_button models.SkinPrickTest %}
-      {% add_button models.BronchialTest %}
-      {% add_button models.OtherInvestigations %}
-    </div>
-    <div class="row content-offset-25">
-      <div class="col-md-6">
-        {% record_panel models.Spirometry %}
+    <div class="panel-body">
+      <div class="row">
+        {% add_button models.Spirometry %}
+        {% add_button models.SkinPrickTest %}
+        {% add_button models.BronchialTest %}
+        {% add_button models.OtherInvestigations %}
       </div>
-      <div class="col-md-6">
-        {% record_panel models.SkinPrickTest %}
+      <div class="row content-offset-25">
+        <ul ng-controller="InvestigationsView as investigationsView" class="list-group">
+          <li ng-repeat="testDate in investigationsView.getTestDateKeys()">
+            <div class="row">
+              <div class="col-md-3">
+                [[ testDate ]]
+              </div>
+            </div>
+            <div ng-show="investigationsView.getTestsForDateKey('{{ models.Spirometry.get_api_name }}', testDate).length" class="test-row row">
+              <div class="col-md-3">
+                <strong style="text-transform: uppercase">{{ models.Spirometry.get_display_name }}</strong>
+              </div>
+              <div class="col-md-8">
+                <div ng-repeat="item in investigationsView.getTestsForDateKey('{{ models.Spirometry.get_api_name }}', testDate)" class="row">
+                  <div class="col-md-9">
+                    {% include models.Spirometry.get_display_template %}
+                  </div>
+                  <div class="col-md-1">
+                    <i
+                      class="fa fa-pencil edit pull-right pointer" ng-click="episode.recordEditor.editItem('{{ models.Spirometry.get_api_name }}', item)"
+                    ></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div ng-show="investigationsView.getTestsForDateKey('{{ models.SkinPrickTest.get_api_name }}', testDate).length" >
+              <div class="row test-row">
+                <div class="col-md-3">
+                  <strong style="text-transform: uppercase">Skin prick tests</strong>
+                  <div>
+                    <span ng-show="investigationsView.isAtopic(investigationsView.getTestsForDateKey('{{ models.SkinPrickTest.get_api_name }}', testDate))">
+                      Atopic
+                    </span>
+                    <span ng-show="!investigationsView.isAtopic(investigationsView.getTestsForDateKey('{{ models.SkinPrickTest.get_api_name }}', testDate))">
+                      Non-atopic
+                    </span>
+                    <span ng-show="dateRow.skin_prick_test[0].antihistimines">- on antihistimines</span>
+                  </div>
+                </div>
+                <div class="col-md-8">
+                  <div ng-repeat="item in investigationsView.getTestsForDateKey('{{ models.SkinPrickTest.get_api_name }}', testDate)" class="row">
+                    <div class="col-md-9">
+                      {% include models.SkinPrickTest.get_display_template %}
+                    </div>
+                    <div class="col-md-1">
+                      <i
+                        class="fa fa-pencil edit pull-right pointer" ng-click="episode.recordEditor.editItem('{{ models.SkinPrickTest.get_api_name }}', item)"
+                      ></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div ng-show="investigationsView.getTestsForDateKey('{{ models.BronchialTest.get_api_name }}', testDate).length">
+              <div class="row test-row">
+                <div class="col-md-3">
+                  <strong style="text-transform: uppercase">{{ models.BronchialTest.get_display_name }}</strong>
+                </div>
+                <div class="col-md-8">
+                  <div ng-repeat="item in investigationsView.getTestsForDateKey('{{ models.BronchialTest.get_api_name }}', testDate)" class="row">
+                    <div class="col-md-9">
+                      {% include models.BronchialTest.get_display_template %}
+                    </div>
+                    <div class="col-md-1">
+                      <i
+                        class="fa fa-pencil edit pull-right pointer" ng-click="episode.recordEditor.editItem('{{ models.BronchialTest.get_api_name }}', item)"
+                      ></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div ng-show="investigationsView.getTestsForDateKey('{{ models.OtherInvestigations.get_api_name }}', testDate).length">
+              <div class="row test-row">
+                <div class="col-md-3">
+                  <strong style="text-transform: uppercase">{{ models.OtherInvestigations.get_display_name }}</strong>
+                </div>
+                <div class="col-md-8">
+                  <div ng-repeat="item in investigationsView.getTestsForDateKey('{{ models.OtherInvestigations.get_api_name }}', testDate)" class="row">
+                    <div class="col-md-9">
+                      {% include models.OtherInvestigations.get_display_template %}
+                    </div>
+                    <div class="col-md-1">
+                      <i
+                        class="fa fa-pencil edit pull-right pointer" ng-click="episode.recordEditor.editItem('{{ models.OtherInvestigations.get_api_name }}', item)"
+                      ></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
       </div>
-    </div>
-    <div class="row">
-      <div class="col-md-6">
-        {% record_panel models.BronchialTest %}
-      </div>
-      <div class="col-md-6">
-        {% record_panel models.OtherInvestigations %}
-      </div>
-    </div>
     </div>
   </div>
 </div>
