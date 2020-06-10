@@ -23,15 +23,13 @@ angular.module('opal.services').factory('SkinPrickTestHelper', function() {
     *
     * Other tests are then in an alphabetical order.
     */
-    var routineTests =[];
+    var routineTests = [];
+    var specificSkinPrickTests = _.clone(skinPrickTests);
 
     _.each(ROUTINE_TESTS, function(rto){
-      var rt = _.findWhere(skinPrickTests, {substance: rto});
-      if(rt){
-        routineTests.push(rt);
-      }
-
-      skinPrickTests = _.reject(skinPrickTests, {substance: rto});
+      var rt = _.filter(skinPrickTests, {substance: rto});
+      routineTests = routineTests.concat(rt);
+      specificSkinPrickTests = _.reject(specificSkinPrickTests, {substance: rto});
     });
 
 
@@ -39,10 +37,10 @@ angular.module('opal.services').factory('SkinPrickTestHelper', function() {
       return ROUTINE_TESTS.indexOf(rt);
     });
 
-    skinPrickTests = _.sortBy(skinPrickTests, function(rt){
+    specificSkinPrickTests = _.sortBy(specificSkinPrickTests, function(rt){
       return rt.substance;
     });
-    return routineTests.concat(skinPrickTests);
+    return routineTests.concat(specificSkinPrickTests);
   }
 
   var isAtopic = function(skinPrickTests){
