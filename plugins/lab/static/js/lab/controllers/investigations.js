@@ -1,4 +1,4 @@
-angular.module('opal.controllers').controller('InvestigationsView', function($scope, displayDateFilter) {
+angular.module('opal.controllers').controller('InvestigationsView', function($scope, displayDateFilter, SkinPrickTestHelper) {
   "use strict";
 
   var CONTROL_TESTS = [
@@ -41,7 +41,7 @@ angular.module('opal.controllers').controller('InvestigationsView', function($sc
 
     if(tests.length){
       if(testType === 'skin_prick_test'){
-        return this.sortSkinPrickTests(tests);
+        return SkinPrickTestHelper.sortTests(tests);
       }
     }
 
@@ -49,19 +49,9 @@ angular.module('opal.controllers').controller('InvestigationsView', function($sc
   }
 
   this.isAtopic = function(skinPrickTests){
-    /*
-    * A patient is atopic if they have at least one
-    * result of 3mm or more for a routine skin prick
-    * test
-    */
-    var routineSpts = _.filter(skinPrickTests, function(spt){
-      return _.contains(STANDARD_TESTS, spt.substance)
-    });
-
-    return !!_.filter(routineSpts, function(spt){
-      return spt.wheal >= 3;
-    }).length
+    return SkinPrickTestHelper.isAtopic(skinPrickTests);
   }
+
 
   this.sortSkinPrickTests = function(skinPrickTests){
     /*

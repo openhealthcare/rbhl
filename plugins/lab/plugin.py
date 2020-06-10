@@ -14,6 +14,9 @@ class LabPlugin(plugins.OpalPlugin):
     javascripts = {
         'opal.controllers': [
             'js/lab/controllers/investigations.js'
+        ],
+        'opal.services': [
+            'js/lab/services/skin_prick_test_helper.js'
         ]
     }
 
