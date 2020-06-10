@@ -3,6 +3,9 @@ from django.core.management import BaseCommand
 from django.db import transaction
 from django.utils import timezone
 
+from opal import models as opal_models
+from plugins.lab import models as lab_models
+
 from legacy.models import (
     Details,
     DiagnosticAsthma,
@@ -259,13 +262,13 @@ class Command(BaseCommand):
         DiagnosticOther.objects.all().delete()
         OtherFields.objects.all().delete()
 
-    @transaction.atomic()
-    def handle(self, *args, **options):
+    @transaction.atomic
+    def create_legacy(self, file_name):
         self.flush()
 
         # Open with utf-8-sig encoding to avoid having a BOM in the first
         # header string.
-        with open(options["file_name"], encoding="utf-8-sig") as f:
+        with open(file_name, encoding="utf-8-sig") as f:
             rows = list(csv.DictReader(f))
 
         patient_ids = (row["Patient_num"] for row in rows)
@@ -334,3 +337,82 @@ class Command(BaseCommand):
 
         # We deleted things that were singletons in the "Flush step"
         # call_command('create_singletons')
+
+    def convert_diagnostic_testing(self, patient):
+        legacy_diagnostic_testing = patient.diagnostictesting_set.all()[0]
+
+        SPIROMETRY_FIELDS = [
+            "fev_1", "fev_1_post_ventolin", "fev_1_percentage_protected",
+            "fvc", "fvc_post_ventolin", "fvc_percentage_protected"
+        ]
+        if any([
+            getattr(legacy_diagnostic_testing, i) for i in SPIROMETRY_FIELDS
+        ]):
+            spirometry  = lab_models.Spirometry(patient=patient)
+            for field in SPIROMETRY_FIELDS:
+                field_value = getattr(legacy_diagnostic_testing, field)
+                setattr(spirometry, field, field_value)
+            spirometry.save()
+
+            ct_scan = legacy_diagnostic_testing.ct_chest_scan
+            ct_scan_date = legacy_diagnostic_testing.ct_chest_scan_date
+            lung_function = legacy_diagnostic_testing.full_lung_function
+            lung_function_date = legacy_diagnostic_testing.full_lung_function_date
+
+            if ct_scan or ct_scan_date:
+                lab_models.OtherInvestigations.objects.create(
+                    test=lab_models.OtherInvestigations.CT_CHEST_SCAN,
+                    date=ct_scan_date,
+                    patient=patient
+                )
+
+            if lung_function or lung_function_date:
+                lab_models.OtherInvestigations.objects.create(
+                    test=lab_models.OtherInvestigations.FULL_LUNG_FUNCTION,
+                    date=lung_function_date,
+                    patient=patient
+                )
+
+    @transaction.atomic
+    def convert_legacy(self):
+        qs = opal_models.Patient.objects.exclude(details=None)
+        qs = qs.prefetch_related(
+            'diagnostictesting_set',
+            "diagnosticoutcome_set",
+        )
+
+        for patient in qs:
+            self.convert_diagnostic_testing(patient)
+
+    def handle(self, *args, **options):
+        self.create_legacy(options["file_name"])
+        before_ct = lab_models.OtherInvestigations.objects.filter(
+            test=lab_models.OtherInvestigations.CT_CHEST_SCAN
+        ).count()
+        before_lung = lab_models.OtherInvestigations.objects.filter(
+            test=lab_models.OtherInvestigations.FULL_LUNG_FUNCTION
+        ).count()
+        before_spirometry = lab_models.Spirometry.objects.all().count()
+        self.convert_legacy()
+        after_ct = lab_models.OtherInvestigations.objects.filter(
+            test=lab_models.OtherInvestigations.CT_CHEST_SCAN
+        ).count()
+        after_lung = lab_models.OtherInvestigations.objects.filter(
+            test=lab_models.OtherInvestigations.FULL_LUNG_FUNCTION
+        ).count()
+        after_spirometry = lab_models.Spirometry.objects.all().count()
+
+        msg = "Created {} OtherInvestigation CT scans".format(
+            after_ct - before_ct
+        )
+        self.stdout.write(self.style.SUCCESS(msg))
+
+        msg = "Created {} OtherInvestigation lung function".format(
+            after_lung - before_lung
+        )
+        self.stdout.write(self.style.SUCCESS(msg))
+
+        msg = "Created {} Spirometry".format(
+            after_spirometry - before_spirometry
+        )
+        self.stdout.write(self.style.SUCCESS(msg))
