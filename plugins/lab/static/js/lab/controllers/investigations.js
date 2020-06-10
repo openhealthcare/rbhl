@@ -1,15 +1,19 @@
 angular.module('opal.controllers').controller('InvestigationsView', function($scope, displayDateFilter) {
   "use strict";
 
-  var self = this;
-  var ROUTINE_TEST_ORDER = [
+  var CONTROL_TESTS = [
     "Neg control",
     "Pos control",
+  ]
+
+  var STANDARD_TESTS = [
     "Asp. fumigatus",
     "Grass pollen",
     "Cat",
     "House dust mite"
   ]
+
+  var ROUTINE_TEST_ORDER = CONTROL_TESTS.concat(STANDARD_TESTS);
 
 
   this.getTestDateKeys = function(){
@@ -51,7 +55,7 @@ angular.module('opal.controllers').controller('InvestigationsView', function($sc
     * test
     */
     var routineSpts = _.filter(skinPrickTests, function(spt){
-      return _.contains(ROUTINE_TEST_ORDER, spt.substance)
+      return _.contains(STANDARD_TESTS, spt.substance)
     });
 
     return !!_.filter(routineSpts, function(spt){
