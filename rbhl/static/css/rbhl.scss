@@ -606,3 +606,9 @@ input[type="date"]::-webkit-input-placeholder{
         margin-bottom: 25px;
     }
 }
+
+.skin-prick-test-pathway{
+    .error{
+        background-color: lighten($red, 35%);
+    }
+}

@@ -13,7 +13,8 @@ class LabPlugin(plugins.OpalPlugin):
     urls = urlpatterns
     javascripts = {
         'opal.controllers': [
-            'js/lab/controllers/investigations.js'
+            'js/lab/controllers/investigations.js',
+            'js/lab/controllers/skin_prick_test_ctrl.js'
         ],
         'opal.services': [
             'js/lab/services/skin_prick_test_helper.js'

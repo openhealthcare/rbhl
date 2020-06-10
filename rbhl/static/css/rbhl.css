@@ -570,4 +570,8 @@ input[type="date"]::-webkit-input-placeholder {
 .patient-detail .test-row {
   margin-bottom: 25px;
 }
+
+.skin-prick-test-pathway .error {
+  background-color: #f5a7a5;
+}
 /*# sourceMappingURL=rbhl.css.map */
