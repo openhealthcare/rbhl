@@ -28,7 +28,7 @@
                 <strong style="text-transform: uppercase">{{ models.Spirometry.get_display_name }}</strong>
               </div>
               <div class="col-md-8">
-                <div ng-repeat="item in investigationsView.getTestsForDateKey('{{ models.Spirometry.get_api_name }}', testDate)" class="row">
+                <div ng-repeat="item in investigationsView.getTestsForDateKey('{{ models.Spirometry.get_api_name }}', testDate) track by $index" class="row">
                   <div class="col-md-9">
                     {% include models.Spirometry.get_display_template %}
                   </div>
@@ -51,19 +51,20 @@
                     <span ng-show="!investigationsView.isAtopic(investigationsView.getTestsForDateKey('{{ models.SkinPrickTest.get_api_name }}', testDate))">
                       Non-atopic
                     </span>
-                    <span ng-show="dateRow.skin_prick_test[0].antihistimines">- on antihistimines</span>
+                    <span ng-show="investigationsView.getTestsForDateKey('{{ models.SkinPrickTest.get_api_name }}', testDate)[0].antihistimines">- on antihistimines</span>
                   </div>
                 </div>
                 <div class="col-md-8">
-                  <div ng-repeat="item in investigationsView.getTestsForDateKey('{{ models.SkinPrickTest.get_api_name }}', testDate)" class="row">
+                  <div class="row">
                     <div class="col-md-9">
-                      {% include models.SkinPrickTest.get_display_template %}
+                      <div ng-repeat="item in investigationsView.getTestsForDateKey('{{ models.SkinPrickTest.get_api_name }}', testDate) track by $index" class="row">
+                        <div class="col-md-12">
+                          {% include models.SkinPrickTest.get_display_template %}
+                        </div>
+                      </div>
                     </div>
-                    <div ng-show="$first" class="col-md-1">
-                      <a ng-if="item.date" href="/pathway/#/skin_prick_test/[[ patient.id ]]/[[ episode.id ]]?date=[[ item.date.format('YYYY-MM-DD') ]]">
-                        <i class="fa fa-pencil edit pull-right pointer" ></i>
-                      </a>
-                      <a ng-if="!item.date" href="/pathway/#/skin_prick_test/[[ patient.id ]]/[[ episode.id ]]">
+                    <div class="col-md-1">
+                      <a href="/pathway/#/skin_prick_test/[[ patient.id ]]/[[ episode.id ]]?date=[[ investigationsView.getTestsForDateKey('{{ models.SkinPrickTest.get_api_name }}', testDate)[0].date.format('YYYY-MM-DD') ]]">
                         <i class="fa fa-pencil edit pull-right pointer" ></i>
                       </a>
                     </div>
@@ -77,7 +78,7 @@
                   <strong style="text-transform: uppercase">{{ models.BronchialTest.get_display_name }}</strong>
                 </div>
                 <div class="col-md-8">
-                  <div ng-repeat="item in investigationsView.getTestsForDateKey('{{ models.BronchialTest.get_api_name }}', testDate)" class="row">
+                  <div ng-repeat="item in investigationsView.getTestsForDateKey('{{ models.BronchialTest.get_api_name }}', testDate) track by $index" class="row">
                     <div class="col-md-9">
                       {% include models.BronchialTest.get_display_template %}
                     </div>
@@ -97,7 +98,7 @@
                   <strong style="text-transform: uppercase">{{ models.OtherInvestigations.get_display_name }}</strong>
                 </div>
                 <div class="col-md-8">
-                  <div ng-repeat="item in investigationsView.getTestsForDateKey('{{ models.OtherInvestigations.get_api_name }}', testDate)" class="row">
+                  <div ng-repeat="item in investigationsView.getTestsForDateKey('{{ models.OtherInvestigations.get_api_name }}', testDate) track by $index" class="row">
                     <div class="col-md-9">
                       {% include models.OtherInvestigations.get_display_template %}
                     </div>
