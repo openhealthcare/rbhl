@@ -608,7 +608,33 @@ input[type="date"]::-webkit-input-placeholder{
 }
 
 .skin-prick-test-pathway{
+    padding-left: 10px;
+    padding-right: 10px;
+
     .error{
         background-color: lighten($red, 35%);
+    }
+
+    .remove-button{
+        display: inline-block;
+        height: 30px;
+        margin-top: 20px;
+        padding: 10px;
+        padding-bottom: 30px;
+        font-size: 16px
+    }
+
+    .add-button{
+        display: inline-block;
+        height: 30px;
+        margin-top: 20px;
+        padding: 10px;
+        padding-bottom: 30px;
+        font-size: 16px
+    }
+
+    .antihistimines{
+        padding-left: 30px;
+        padding-top: 12px;
     }
 }
