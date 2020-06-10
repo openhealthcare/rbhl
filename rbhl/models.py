@@ -18,6 +18,30 @@ opal.models but can be customised here with extra / altered fields.
 """
 
 
+class RbhlSubrecord(fields.Model):
+    class Meta:
+        abstract = True
+
+    @classmethod
+    def _get_field_title(cls, name):
+        field = cls._get_field(name)
+        if isinstance(field, fields.ManyToOneRel):
+            field_name = field.related_model._meta.verbose_name_plural
+        else:
+            field_name = field.verbose_name
+
+        if field_name.islower():
+            field_name = field_name.capitalize()
+
+        return field_name
+
+    @classmethod
+    def get_display_name(cls):
+        if cls._meta.verbose_name.islower():
+            return cls._meta.verbose_name.capitalize()
+        return cls._meta.verbose_name
+
+
 def calculate_peak_expiratory_flow(height, age, sex):
     """
     For males
@@ -61,38 +85,9 @@ def get_peak_expiratory_flow(date, episode, trial_num):
         )
 
 
-class RbhlSubrecord(fields.Model):
-    """
-    Changes models titles and field display names
-    to be sentence case rather than title case,
-    the opal default.
-    """
-    class Meta:
-        abstract = True
-
-    @classmethod
-    def _get_field_title(cls, name):
-        field = cls._get_field(name)
-        if isinstance(field, fields.ManyToOneRel):
-            field_name = field.related_model._meta.verbose_name_plural
-        else:
-            field_name = field.verbose_name
-
-        if field_name.islower():
-            field_name = field_name.capitalize()
-
-        return field_name
-
-    @classmethod
-    def get_display_name(cls):
-        if cls._meta.verbose_name.islower():
-            return cls._meta.verbose_name.capitalize()
-        return cls._meta.verbose_name
-
-
 class Demographics(models.Demographics):
     height = fields.IntegerField(
-        blank=True, null=True, verbose_name='Height(cm)'
+        blank=True, null=True, verbose_name='Height (cm)'
     )
     MALE = "Male"
     FEMALE = "Female"
@@ -156,6 +151,7 @@ class ContactDetails(models.PatientSubrecord):
     mobile = fields.CharField(blank=True, null=True, max_length=100)
     phone  = fields.CharField(blank=True, null=True, max_length=100)
     email  = fields.CharField(blank=True, null=True, max_length=100)
+    address = fields.TextField(blank=True, default="")
 
     class Meta:
         verbose_name = "Contact details"
@@ -165,25 +161,28 @@ class RBHReferrer(lookuplists.LookupList):
     pass
 
 
-class Referral(models.EpisodeSubrecord):
+class ReferralReason(lookuplists.LookupList):
+    pass
+
+
+class ReferralDisease(lookuplists.LookupList):
+    pass
+
+
+class GeographicalArea(lookuplists.LookupList):
+    pass
+
+
+class Referral(RbhlSubrecord, models.EpisodeSubrecord):
     _icon         = 'fa fa-level-up'
     _is_singleton = True
 
     # Deprecated
-    referrer_title         = models.ForeignKeyOrFreeText(
-        models.Title, verbose_name="Referrer title"
-    )
-    referrer_name = fields.CharField(
-        blank=True, null=True, max_length=100, verbose_name="Referrer name"
-    )
-    date_of_referral       = fields.DateField(
-        blank=True, null=True, verbose_name="Date of referral"
-    )
+    referrer_title         = models.ForeignKeyOrFreeText(models.Title)
+    referrer_name = fields.CharField(blank=True, null=True, max_length=100)
+    date_of_referral       = fields.DateField(blank=True, null=True)
+    date_referral_received = fields.DateField(blank=True, null=True)
 
-    # Process tracking for admin staff
-    date_referral_received = fields.DateField(
-        blank=True, null=True, verbose_name="Date referral received"
-    )
     # ??
     date_first_contact     = fields.DateField(
         blank=True, null=True, verbose_name="Date of first contact"
@@ -195,9 +194,21 @@ class Referral(models.EpisodeSubrecord):
     date_first_appointment = fields.DateField(
         blank=True, null=True, verbose_name="Date of first appointment offered"
     )
-    referral_type = fields.TextField(
-        blank=True, null=True, verbose_name="Type of Referral",
+    referral_type = models.ForeignKeyOrFreeText(models.ReferralType)
+    referral_reason = models.ForeignKeyOrFreeText(ReferralReason)
+    referral_disease = models.ForeignKeyOrFreeText(ReferralDisease)
+    geographical_area = models.ForeignKeyOrFreeText(GeographicalArea)
+
+
+class SocialHistory(RbhlSubrecord, models.EpisodeSubrecord):
+    _is_singleton = True
+    _icon = 'fa fa-clock-o'
+
+    SMOKING_CHOICES = enum("Currently", "Ex-smoker", "Never")
+    smoker = fields.CharField(
+        blank=True, null=True, max_length=256, choices=SMOKING_CHOICES
     )
+    cigerettes_per_day = fields.IntegerField(null=True, blank=True)
 
 
 class Employer(lookuplists.LookupList):
@@ -208,74 +219,205 @@ class OHProvider(lookuplists.LookupList):
     pass
 
 
-class Employment(models.EpisodeSubrecord):
+class EmploymentCategory(lookuplists.LookupList):
+    pass
+
+
+class JobTitle(lookuplists.LookupList):
+    pass
+
+
+class Employment(RbhlSubrecord, models.EpisodeSubrecord):
     _icon         = 'fa fa-building-o'
     _is_singleton = True
 
+    SUS_OCC_CHOICES = enum(
+        'Yes-employed in suspect occupation',
+        'Yes',
+        'Yes-other occupation',
+        'No'
+    )
+
     employer = fields.CharField(blank=True, null=True, max_length=100)
+    job_title = models.ForeignKeyOrFreeText(JobTitle)
+    employment_category = models.ForeignKeyOrFreeText(
+        EmploymentCategory
+    )
+    employed_in_suspect_occupation = fields.CharField(
+        blank=True,
+        null=True,
+        max_length=256,
+        choices=SUS_OCC_CHOICES
+    )
+    exposures = fields.TextField(blank=True, default="")
     oh_provider = fields.CharField(
         blank=True, null=True, max_length=100, verbose_name="OH provider"
     )
     firefighter = fields.NullBooleanField()
 
 
-class ClinicLog(models.EpisodeSubrecord):
+# Diagnosis models
+class Asthma(RbhlSubrecord, models.EpisodeSubrecord):
+    _icon = "fa fa-stethoscope"
+
+    OCCUPATIONAL_CAUSED_BY_SENSITISATION = "Occupational caused by sensitisation"
+    EXACERBATED_BY_WORK = "Exacerbated by work"
+    IRRITANT_INDUCED = "Irritant induced"
+    NON_OCCUPATIONAL = "Non occupational"
+
+    ASTHMA_CHOICES = enum(
+        OCCUPATIONAL_CAUSED_BY_SENSITISATION,
+        EXACERBATED_BY_WORK,
+        IRRITANT_INDUCED,
+        NON_OCCUPATIONAL,
+    )
+    trigger = fields.CharField(
+        blank=True, null=True, max_length=256, choices=ASTHMA_CHOICES
+    )
+    sensitivities = fields.TextField(blank=True, default="")
+
+
+class Rhinitis(RbhlSubrecord, models.EpisodeSubrecord):
+    _icon = "fa fa-stethoscope"
+
+    OCCUPATIONAL_CAUSED_BY_SENSITISATION = "Occupational caused by sensitisation"
+    EXACERBATED_BY_WORK = "Exacerbated by work"
+    NON_OCCUPATIONAL = "Non occupational"
+
+    RHINITIS_CHOICES = enum(
+        OCCUPATIONAL_CAUSED_BY_SENSITISATION,
+        EXACERBATED_BY_WORK,
+        NON_OCCUPATIONAL,
+    )
+    trigger = fields.CharField(
+        blank=True, null=True, max_length=256, choices=RHINITIS_CHOICES
+    )
+    sensitivities = fields.TextField(blank=True, default="")
+
+
+class ChronicAirFlowLimitation(RbhlSubrecord, models.EpisodeSubrecord):
+    _icon = "fa fa-stethoscope"
+    copd = fields.BooleanField(default=False, verbose_name="COPD")
+    emphysema = fields.BooleanField(default=False)
+    occupational = fields.BooleanField(default=False)
+
+
+class Malignancy(RbhlSubrecord, models.EpisodeSubrecord):
+    _icon = "fa fa-stethoscope"
+    MALIGNANCY_CONDITIONS = enum(
+        'Mesothelioma',
+        'Bronchus with asbestos exposure',
+        'Bronchus - other'
+    )
+    malignancy_type = fields.CharField(
+        blank=True, null=True, max_length=256,
+        choices=MALIGNANCY_CONDITIONS
+    )
+    occupational = fields.BooleanField(default=False)
+
+
+class DiffuseLungDisease(RbhlSubrecord, models.EpisodeSubrecord):
+    _icon = "fa fa-stethoscope"
+    DISEASE_TYPE = enum(
+        "Asbestosis",
+        "Hypersensitivity pneumonitis",
+        "ILD Other",
+        "Berylliosis",
+        "Ideopathic Pulmonary Fibrosis",
+        "Sarcodisis",
+        "Silicosis",
+    )
+    disease_type = fields.CharField(
+        blank=True, null=True, max_length=256, choices=DISEASE_TYPE
+    )
+    occupational = fields.BooleanField(default=False)
+
+
+class BenignPleuralDisease(RbhlSubrecord, models.EpisodeSubrecord):
+    _icon = "fa fa-stethoscope"
+    DISEASE_TYPE = enum(
+        "Predominantly plaques",
+        "Diffuse"
+    )
+    disease_type = fields.CharField(
+        blank=True, null=True, max_length=256, choices=DISEASE_TYPE
+    )
+
+
+class OtherDiagnosis(RbhlSubrecord, models.EpisodeSubrecord):
+    _icon = "fa fa-stethoscope"
+    DIAGNOSIS_TYPE = enum(
+        "Humidifier fever",
+        "Polymer fume fever",
+        "Infection",
+        "Chemical pneumonitis",
+        "Building related symptoms",
+        "Breathing pattern disorder ",
+        "Induced laryngeal obstruction",
+        "Air travel related symptoms",
+        "Medically unexplained symptoms",
+        "Cough due to irritant symptoms "
+    )
+    diagnosis_type = fields.CharField(
+        blank=True, null=True, max_length=256, choices=DIAGNOSIS_TYPE
+    )
+    occupational = fields.BooleanField(default=False)
+
+
+class PresentingComplaint(lookuplists.LookupList):
+    pass
+
+
+class DiagnosisOutcome(lookuplists.LookupList):
+    pass
+
+
+class ClinicLog(RbhlSubrecord, models.EpisodeSubrecord):
     _icon         = 'fa fa-hospital-o'
     _is_singleton = True
+    ATOPIC_CHOICES = enum("Yes", "No", "Dermatographic")
 
     seen_by           = fields.CharField(
-        null=True, blank=True, default="", max_length=100, verbose_name="Seen by"
+        blank=True, default="", max_length=100
     )
     clinic_date        = fields.DateField(blank=True, null=True)
-    diagnosis_made    = fields.NullBooleanField(verbose_name="Diagnosis made")
-    follow_up_planned = fields.NullBooleanField(
-        verbose_name="Follow up planned"
+    clinic_site        = fields.CharField(
+        blank=True, null=True, max_length=256, default="OCLD"
     )
-    date_of_followup  = fields.DateField(
-        blank=True, null=True, verbose_name="Date of follow up"
+    diagnosis_made    = fields.NullBooleanField()
+    diagnosis_outcome = models.ForeignKeyOrFreeText(
+        DiagnosisOutcome
     )
-
-    lung_function       = fields.NullBooleanField(
-        verbose_name="Lung function"
-    )
-    lung_function_date  = fields.DateField(
-        blank=True, null=True, verbose_name="Lung function date"
-    )
-    lung_function_attendance = fields.NullBooleanField(
-        verbose_name="Lung function attendance"
-    )
+    referred_to = fields.CharField(blank=True, null=True, max_length=256)
+    follow_up_planned = fields.NullBooleanField()
+    date_of_followup  = fields.DateField(blank=True, null=True)
+    presenting_complaint = models.ForeignKeyOrFreeText(PresentingComplaint)
+    lung_function       = fields.NullBooleanField()
+    lung_function_date  = fields.DateField(blank=True, null=True)
+    lung_function_attendance = fields.NullBooleanField()
 
     histamine           = fields.NullBooleanField()
-    histamine_date      = fields.DateField(
-        blank=True, null=True, verbose_name="Histamine date"
-    )
-    histamine_attendance = fields.NullBooleanField(
-        verbose_name="Histamine attendance"
-    )
-
-    peak_flow           = fields.NullBooleanField(
-        verbose_name="Peak flow"
-    )
+    histamine_date      = fields.DateField(blank=True, null=True)
+    histamine_attendance = fields.NullBooleanField()
+    peak_flow           = fields.NullBooleanField()
 
     other_rbh_bloods    = fields.NullBooleanField(
         verbose_name="Other RBH bloods"
     )
+    atopic = fields.TextField(null=True, blank=True, choices=ATOPIC_CHOICES)
+    no_appreciable_disease = fields.NullBooleanField(verbose_name="NAD")
     immunology_oem      = fields.NullBooleanField(
         verbose_name="Immunology OEM"
     )
 
-    other_hospital_info = fields.NullBooleanField(
-        verbose_name="Other hospital info"
-    )
+    other_hospital_info = fields.NullBooleanField()
     other_oh_info       = fields.NullBooleanField(
         verbose_name="Other OH info"
     )
     other_gp_info       = fields.NullBooleanField(
         verbose_name="Other GP info"
     )
-    work_samples        = fields.NullBooleanField(
-        verbose_name="Work samples"
-    )
+    work_samples        = fields.NullBooleanField()
 
     outstanding_tests_required = fields.BooleanField(
         default=False
