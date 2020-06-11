@@ -364,12 +364,21 @@ class OtherDiagnosis(RbhlSubrecord, models.EpisodeSubrecord):
     )
     occupational = fields.BooleanField(default=False)
 
-    # def save(self, *args, **kwargs):
-    #     if self.diagnosis_type == self.NAD:
-    #         self.episode.otherdiagnosis_set.exclude(
-    #             diagnosis_type=self.NAD
-    #         ).delete()
-    #     return super().save(*args, **kwargs)
+    def save(self, *args, **kwargs):
+        if self.diagnosis_type == self.NAD:
+            if self.id:
+                self.episode.otherdiagnosis_set.exclude(
+                    id=self.id
+                ).delete()
+            else:
+                self.episode.otherdiagnosis_set.all().delete()
+        self.episode.asthma_set.all().delete()
+        self.episode.rhinitis_set.all().delete()
+        self.episode.malignancy_set.all().delete()
+        self.episode.chronicairflowlimitation_set.all().delete()
+        self.episode.diffuselungdisease_set.all().delete()
+        self.episode.benignpleuraldisease_set.all().delete()
+        return super().save(*args, **kwargs)
 
 
 class PresentingComplaint(lookuplists.LookupList):

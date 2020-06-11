@@ -104,9 +104,10 @@ class NAD(PagePathway):
     )
 
     def save(self, data, user=None, patient=None, episode=None):
+        result = super().save(data, user=user, patient=patient, episode=episode)
         episode.otherdiagnosis_set.create(
             diagnosis_type="NAD",
             created_by=user,
             created=timezone.now()
         )
-        return super().save(data, user=user, patient=patient, episode=episode)
+        return result

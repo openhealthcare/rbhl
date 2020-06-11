@@ -1,8 +1,15 @@
 {% load forms %}
-
-<div class="row">
-  <div class="col-md-10 col-md-offset-1">
-    {% input field="OtherDiagnosis.diagnosis_type" style="vertical" label="Diagnosis" %}
+<span ng-show="editing.other_diagnosis.diagnosis_type==='NAD'">
+  <p class="lead text-center">
+    Patient is recorded as NAD
+  </p>
+</span>
+<span ng-hide="editing.other_diagnosis.diagnosis_type==='NAD'">
+  <div class="row">
+    <div class="col-md-10 col-md-offset-1">
+      {% input field="OtherDiagnosis.diagnosis_type" style="vertical" label="Diagnosis" %}
+    </div>
   </div>
-</div>
-{% checkbox field="OtherDiagnosis.occupational" %}
+  {% checkbox field="OtherDiagnosis.occupational" %}
+</span>
+

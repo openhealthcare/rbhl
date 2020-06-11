@@ -11,4 +11,18 @@ angular.module('opal.controllers').controller('DiagnosisDisplay', function($scop
     }
     $scope.open_modal('EditItemCtrl', templateName, toResolve)
   }
+
+  this.isNAD = function(episode){
+    var hasAsthma = episode.asthma.length;
+    var hasRhinitis = episode.rhinitis.length;
+    var hasChronicAirFlowLimitation = episode.chronic_air_flow_limitation.length;
+    var hasMalignancy = episode.malignancy.length;
+    var hasDiffuseLungDisease = episode.diffuse_lung_disease.length;
+    var hasBenignPleuralDisease = episode.benign_pleural_disease.length;
+    var hasOtherDiagnosis = _.filter(episode.other_diagnosis, function(d){
+      d.diagnosis_type !== 'NAD'
+    }).length;
+    var result = hasAsthma || hasRhinitis || hasChronicAirFlowLimitation || hasMalignancy || hasDiffuseLungDisease || hasBenignPleuralDisease || hasOtherDiagnosis
+    return !result;
+  }
 });

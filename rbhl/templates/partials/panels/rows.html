@@ -1,9 +1,4 @@
 <li class="diagnosis-row" ng-if="episode.{{ subrecord.get_api_name }}.length" class="list-group-item">
-  <div class="row">
-    <div class="col-xs-10">
-      <hr />
-    </div>
-  </div>
   <div class="row"  ng-repeat="item in episode.{{ subrecord.get_api_name }}">
     <div class="col-xs-10">
       {% include subrecord.get_detail_template %}
