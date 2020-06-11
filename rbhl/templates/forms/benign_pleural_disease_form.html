@@ -1,0 +1,7 @@
+{% load forms %}
+{% load rbhl_panels %}
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+    {% choice_or_other field="BenignPleuralDisease.disease_type" %}
+  </div>
+</div>

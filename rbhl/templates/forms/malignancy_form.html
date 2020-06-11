@@ -1,0 +1,8 @@
+{% load forms %}
+{% load rbhl_panels %}
+<div class="row">
+  <div class="col-md-8 col-md-offset-2">
+    {% choice_or_other field="Malignancy.malignancy_type" style="vertical" %}
+  </div>
+</div>
+{% checkbox field="Malignancy.occupational" %}

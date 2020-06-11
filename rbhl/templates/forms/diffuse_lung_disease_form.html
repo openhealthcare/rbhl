@@ -1,0 +1,12 @@
+{% load forms %}
+{% load rbhl_panels %}
+<div class="row">
+  <div class="col-md-10 col-md-offset-1">
+  {% choice_or_other field="DiffuseLungDisease.disease_type" columns=True %}
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    {% checkbox field="DiffuseLungDisease.occupational" %}
+  </div>
+</div>

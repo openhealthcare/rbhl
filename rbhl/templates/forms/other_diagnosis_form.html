@@ -1,0 +1,8 @@
+{% load forms %}
+
+<div class="row">
+  <div class="col-md-10 col-md-offset-1">
+    {% input field="OtherDiagnosis.diagnosis_type" style="vertical" label="Diagnosis" %}
+  </div>
+</div>
+{% checkbox field="OtherDiagnosis.occupational" %}

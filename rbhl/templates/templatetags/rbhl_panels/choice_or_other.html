@@ -1,0 +1,31 @@
+{% load forms %}
+{% load rbhl_panels %}
+<div other-field field="{{ model }}" options="{{ lookuplist }}" class="row">
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-12">
+        {% if columns %}
+        {% radio_columns field=model_and_field change=change_radio label="" %}
+        {% else %}
+        {% radio field=model_and_field change=change_radio label="" style="vertical" %}
+        {% endif %}
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 choice-or-other">
+        <div class="row ">
+        <div class="row ">
+          <div class="col-md-2 choice-or-other-label">
+            <strong>
+              Other
+            </strong>
+          </div>
+          <div class="col-md-10">
+            {% input field=model_and_field lookuplist="" model='other.field' change=change_input style="vertical" label="" %}
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>

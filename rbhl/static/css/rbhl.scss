@@ -638,3 +638,28 @@ input[type="date"]::-webkit-input-placeholder{
         padding-top: 12px;
     }
 }
+
+.diagnosis{
+    hr{
+        display: none;
+    }
+
+    li.diagnosis-row{
+        padding-top: 10px;
+        margin-top: 10px;
+        padding-bottom: 0px;
+        border-top: 1px solid #eee;
+
+        &:first-child{
+            border-top:  none;
+            padding-top: 0;
+            margin-top: 0;
+        }
+    }
+
+
+    .panel-body{
+        margin-top: 10px;
+    }
+}
+

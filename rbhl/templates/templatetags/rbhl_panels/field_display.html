@@ -8,8 +8,11 @@
             {% icon "fa-check" %}
         {% elif is_date %}
             [[ item.{{ field_name }}|displayDate ]]
+        {% elif markdown %}
+          <div markdown="{{ field_name }}"></div>
         {% else %}
             [[ item.{{ field_name }} ]]
         {% endif %}
     </div>
 </div>
+
