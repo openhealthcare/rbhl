@@ -1,6 +1,7 @@
 """
 Pathways for the rbhl app
 """
+from django.utils import timezone
 from opal.core.pathway import Step, WizardPathway, PagePathway
 from plugins.add_patient_step import FindPatientStep
 
@@ -89,3 +90,23 @@ class PeakFlowGraphFullPage(PagePathway):
     steps = [
         models.Demographics,
     ]
+
+
+class NAD(PagePathway):
+    display_name = "NAD"
+    modal_template = "pathway/modal_only_cancel.html"
+    slug = "nad"
+    steps = (
+        Step(
+            display_name="No",
+            template="pathway/steps/nad.html",
+        ),
+    )
+
+    def save(self, data, user=None, patient=None, episode=None):
+        episode.otherdiagnosis_set.create(
+            diagnosis_type="NAD",
+            created_by=user,
+            created=timezone.now()
+        )
+        return super().save(data, user=user, patient=patient, episode=episode)

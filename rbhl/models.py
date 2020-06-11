@@ -346,6 +346,7 @@ class BenignPleuralDisease(RbhlSubrecord, models.EpisodeSubrecord):
 
 class OtherDiagnosis(RbhlSubrecord, models.EpisodeSubrecord):
     _icon = "fa fa-stethoscope"
+    NAD = "NAD"
     DIAGNOSIS_TYPE = enum(
         "Humidifier fever",
         "Polymer fume fever",
@@ -362,6 +363,13 @@ class OtherDiagnosis(RbhlSubrecord, models.EpisodeSubrecord):
         blank=True, null=True, max_length=256, choices=DIAGNOSIS_TYPE
     )
     occupational = fields.BooleanField(default=False)
+
+    # def save(self, *args, **kwargs):
+    #     if self.diagnosis_type == self.NAD:
+    #         self.episode.otherdiagnosis_set.exclude(
+    #             diagnosis_type=self.NAD
+    #         ).delete()
+    #     return super().save(*args, **kwargs)
 
 
 class PresentingComplaint(lookuplists.LookupList):

@@ -1,7 +1,11 @@
-<a {% if link %}href="{{ link }}"{% else %} ng-click="episode.recordEditor.newItem('{{ subrecord.get_api_name }}')"
+<a {% if pathway %}open-pathway="{{ pathway }}" pathway-episode="episode" pathway-callback="refresh()"{% elif link %}href="{{ link }}"{% elif click %}ng-click="{{ click }}"{% else %}ng-click="episode.recordEditor.newItem('{{ subrecord.get_api_name }}')"
 {% endif %}
 class="btn btn-default btn-xs add-button"
 >
 <i class="fa fa-plus-circle pointer"></i>
-{{ subrecord.get_display_name }}
+{% if label %}
+  {{ label }}
+{% else %}
+  {{ subrecord.get_display_name }}
+{% endif %}
 </a>

@@ -1,5 +1,5 @@
 {% load rbhl_panels %}
-<div class="panel panel-default record-panel diagnosis">
+<div  class="panel panel-default record-panel diagnosis">
   <div class="panel-heading">
     <h3>
       <i class="fa fa-stethoscope"></i> Diagnosis
@@ -29,6 +29,7 @@
         {% add_button models.DiffuseLungDisease %}
         {% add_button models.BenignPleuralDisease %}
         {% add_button models.OtherDiagnosis %}
+        {% add_button label="NAD" pathway="nad" %}
       </div>
       <div style="padding-top: 12px;" class="col-sm-1">
         <i

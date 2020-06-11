@@ -60,13 +60,24 @@ def field_display(
     'templatetags/rbhl_panels/add_button.html',
     takes_context=True
 )
-def add_button(context, subrecord, is_singleton=False, link=None):
+def add_button(
+    context,
+    subrecord=None,
+    label=None,
+    click=None,
+    is_singleton=False,
+    link=None,
+    pathway=None
+):
     """
     A button to add a subrecord.
     """
     return {
         "subrecord": subrecord,
-        "link": link
+        "link": link,
+        "click": click,
+        "label": label,
+        "pathway": pathway
     }
 
 
