@@ -1,16 +1,22 @@
 {% load forms %}
-
 <div class="row form-row">
-    <div class="col-md-6">
-        <div class="horizontal-form">
-            {% input field="ClinicLog.seen_by" %}
-        </div>
+  <div class="col-md-6">
+      <div class="horizontal-form">
+          {% input field="ClinicLog.seen_by" %}
+      </div>
+  </div>
+  <div class="col-md-6">
+      <div class="horizontal-form">
+          {% datepicker field="ClinicLog.clinic_date" %}
+      </div>
+  </div>
+</div>
+<div class="row form-row">
+  <div class="col-md-6">
+    <div class="horizontal-form">
+      {% input field="ClinicLog.clinic_site" %}
     </div>
-    <div class="col-md-6">
-        <div class="horizontal-form">
-            {% datepicker field="ClinicLog.clinic_date" %}
-        </div>
-    </div>
+  </div>
 </div>
 <hr>
 
@@ -49,19 +55,35 @@
 </div>
 <hr>
 <div class="row form-row">
-    <div class="col-md-4">
-        <div class="row">
-            <div class="col-sm-9 col-sm-push-3">
-                {% checkbox field="ClinicLog.diagnosis_made" style="vertical" %}
-            </div>
+  <div class="col-md-4">
+    <div class="row">
+        <div class="col-sm-9 col-sm-push-3">
+            {% checkbox field="ClinicLog.diagnosis_made" style="vertical" %}
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="row">
-            <div class="col-sm-9 col-sm-push-3">
-                {% checkbox field="ClinicLog.active" style="vertical" %}
-            </div>
+  </div>
+  <div class="col-md-4">
+    <div class="row">
+        <div class="col-sm-9 col-sm-push-3">
+            {% checkbox field="ClinicLog.active" style="vertical" %}
         </div>
     </div>
+  </div>
 </div>
-
+<div class="row form-row">
+  <div class="col-md-4 ">
+      <div class="horizontal-form">
+        <div class="col-sm-9 col-sm-push-3">
+          {% select field="ClinicLog.diagnosis_outcome" style="vertical" %}
+        </div>
+      </div>
+  </div>
+  <div class="col-md-4 ">
+    <div class="horizontal-form">
+      <div class="col-sm-9 col-sm-push-3">
+          {% input field="ClinicLog.referred_to" style="vertical" %}
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row"></div>

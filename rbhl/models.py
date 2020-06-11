@@ -253,7 +253,7 @@ class Employment(RbhlSubrecord, models.EpisodeSubrecord):
     oh_provider = fields.CharField(
         blank=True, null=True, max_length=100, verbose_name="OH provider"
     )
-    firefighter = fields.NullBooleanField()
+    firefighter = fields.NullBooleanField(verbose_name="Firefighter applicant")
 
 
 # Diagnosis models
@@ -421,8 +421,6 @@ class ClinicLog(RbhlSubrecord, models.EpisodeSubrecord):
     other_rbh_bloods    = fields.NullBooleanField(
         verbose_name="Other RBH bloods"
     )
-    atopic = fields.TextField(null=True, blank=True, choices=ATOPIC_CHOICES)
-    no_appreciable_disease = fields.NullBooleanField(verbose_name="NAD")
     immunology_oem      = fields.NullBooleanField(
         verbose_name="Immunology OEM"
     )
