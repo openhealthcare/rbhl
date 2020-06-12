@@ -116,10 +116,6 @@ class Allergies(models.Allergies):
     pass
 
 
-class Diagnosis(models.Diagnosis):
-    _title = 'Diagnosis'
-
-
 class PastMedicalHistory(models.PastMedicalHistory):
     pass
 
