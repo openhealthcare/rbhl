@@ -602,4 +602,18 @@ input[type="date"]::-webkit-input-placeholder {
   padding-left: 30px;
   padding-top: 12px;
 }
+
+.btn.nad-button {
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+.btn.diagnosis-btn {
+  font-size: 18px;
+  display: inline-block;
+  margin-left: 10px;
+  margin-right: 10px;
+  padding: 5px 10px;
+  margin-top: 10px;
+}
 /*# sourceMappingURL=rbhl.css.map */

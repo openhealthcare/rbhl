@@ -1,23 +1,31 @@
-angular.module('opal.controllers').controller('DiagnosisDisplay', function(scope, $http) {
+angular.module('opal.controllers').controller('DiagnosisDisplay', function($scope, $http) {
   "use strict";
   var self = this;
-  this.hasNAD = false
 
-  this.checkNAD = function(){
-    $http.get("/api/v0.1/episode/" + scope.episode.id + "/").then(function(e){
-      self.hasNAD = _.findWhere(e.diagnosis, {category: "NAD"});
+  this.refreshIfNAD = function(itemName){
+    /*
+    * Marking something as NAD removes all existing diagnosis
+    *
+    * Adding a diagnosis when the patient is NAD removes
+    * the diagnosis of NAD
+    *
+    * So if either of these conditions is true, refresh the view after the
+    * modal closes.
+    */
+    if(itemName === "NAD" || _.findWhere($scope.episode.diagnosis, {category: "NAD"})){
+      $scope.refresh();
+    }
+  }
+
+  this.editItem = function(itemName, item, template){
+    $scope.episode.recordEditor.editItem(itemName, item, template).then(function(){
+      self.refreshIfNAD(itemName);
     });
   }
 
-  scope.$watch("episode.asthma_details", function(){
-    self.checkNAD();
-  }, true);
-
-  scope.$watch("episode.rhinitis_details", function(){
-    self.checkNAD();
-  }, true);
-
-  scope.$watch("episode.diagnosis", function(){
-    self.checkNAD();
-  }, true);
+  this.newItem = function(itemName, template){
+    $scope.episode.recordEditor.newItem(itemName, template).then(function(){
+      self.refreshIfNAD(itemName);
+    });
+  }
 })
