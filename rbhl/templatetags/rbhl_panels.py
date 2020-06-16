@@ -53,3 +53,37 @@ def field_display(
     ctx["is_boolean"] = is_boolean(field)
     ctx["is_date"] = is_date(field)
     return ctx
+
+
+@register.inclusion_tag(
+    'templatetags/rbhl_panels/add_button.html',
+    takes_context=True
+)
+def add_button(context, subrecord, link=None):
+    """
+    A button to add a subrecord.
+    """
+    return {
+        "subrecord": subrecord,
+        "link": link
+    }
+
+
+@register.inclusion_tag(
+    'templatetags/rbhl_panels/test_field.html',
+    takes_context=True
+)
+def test_field(
+    context, field, **kwargs
+):
+    ctx = {}
+    model_and_field_name = field
+    ctx["field_name"] = model_and_field_name.split(".")[1]
+    model, field = _model_and_field_from_path(model_and_field_name)
+    ctx["label"] = kwargs.get(
+        "label", model._get_field_title(ctx["field_name"])
+    )
+    ctx["is_date"] = is_date(field)
+    ctx["is_boolean"] = is_boolean(field)
+    ctx["unit"] = kwargs.get("unit", "")
+    return ctx

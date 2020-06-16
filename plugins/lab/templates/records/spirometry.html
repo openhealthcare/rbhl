@@ -1,28 +1,7 @@
-<span ng-show="item.date">
-    [[ item.date | displayDate ]]
-   <br />
-</span>
-<span ng-show="item.fev_1">
-    [[ item.fev_1 ]]
-   <br />
-</span>
-<span ng-show="item.fev_1_post_ventolin">
-    [[ item.fev_1_post_ventolin ]]
-   <br />
-</span>
-<span ng-show="item.fev_1_percentage_predicted">
-    [[ item.fev_1_percentage_predicted ]]
-   <br />
-</span>
-<span ng-show="item.fvc">
-    [[ item.fvc ]]
-   <br />
-</span>
-<span ng-show="item.fvc_post_ventolin">
-    [[ item.fvc_post_ventolin ]]
-   <br />
-</span>
-<span ng-show="item.fvc_percentage_predicted">
-    [[ item.fvc_percentage_predicted ]]
-   <br />
-</span>
+{% load rbhl_panels %}
+{% test_field "Spirometry.fev_1" %}
+{% test_field "Spirometry.fev_1_post_ventolin" %}
+{% test_field "Spirometry.fev_1_percentage_predicted" %}
+{% test_field "Spirometry.fvc" %}
+{% test_field "Spirometry.fvc_post_ventolin" %}
+{% test_field "Spirometry.fvc_percentage_predicted" %}

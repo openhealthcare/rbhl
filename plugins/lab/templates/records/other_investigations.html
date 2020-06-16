@@ -1,12 +1,18 @@
-<span ng-show="item.date">
-    [[ item.date | displayDate ]]
-   <br />
-</span>
-<span ng-show="item.test">
+{% load forms %}
+<div class="row test-row">
+  <div class="col-md-6">
     [[ item.test ]]
-   <br />
-</span>
-<span ng-show="item.comments">
-    [[ item.comments ]]
-   <br />
-</span>
+  </div>
+  <div class="col-md-6">
+    <div class="row">
+      <div class="col-md-12">
+        {% icon "fa-check" %} [[ item.date | displayDate ]]
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div markdown="comments"></div>
+      </div>
+    </div>
+  </div>
+</div>
