@@ -543,4 +543,63 @@ input[type="date"]::-webkit-input-placeholder {
   margin-top: 7px;
   margin-bottom: 6px;
 }
+
+.add-button {
+  font-size: 18px;
+  display: inline-block;
+  margin-right: 10px;
+  padding: 5px 10px;
+  margin-top: 10px;
+}
+
+.patient-detail .lab-view {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.patient-detail .lab-view .panel-body {
+  margin-top: 0;
+}
+
+.patient-detail li {
+  border-top: 1px solid #eee;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.patient-detail .test-row {
+  margin-bottom: 25px;
+}
+
+.skin-prick-test-pathway {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.skin-prick-test-pathway .error {
+  background-color: #f5a7a5;
+}
+
+.skin-prick-test-pathway .remove-button {
+  display: inline-block;
+  height: 30px;
+  margin-top: 20px;
+  padding: 10px;
+  padding-bottom: 30px;
+  font-size: 16px;
+}
+
+.skin-prick-test-pathway .add-button {
+  display: inline-block;
+  height: 30px;
+  margin-top: 20px;
+  padding: 10px;
+  padding-bottom: 30px;
+  font-size: 16px;
+}
+
+.skin-prick-test-pathway .antihistimines {
+  padding-left: 30px;
+  padding-top: 12px;
+}
 /*# sourceMappingURL=rbhl.css.map */

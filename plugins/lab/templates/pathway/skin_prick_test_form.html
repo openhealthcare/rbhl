@@ -1,0 +1,91 @@
+{% load forms %}
+<div class="skin-prick-test-pathway" pathway-step="{{ step.get_api_name }}">
+    <div class="row">
+      <div class="col-sm-4">
+        <div class="form-group">
+          <label for="testingDate" class="control-label">
+            Testing date
+          </label>
+          <input id="testingDate" class="form-control" type="date" ng-model="testingDate" ng-blur="updateDates()">
+        </div>
+      </div>
+      <div class="col-sm-4">
+        <div class="form-group">
+          <input ng-model="antihistimines" class="" id="antihistimines" type="checkbox" name="antihistimines" ng-change="updateAntihistimines()" />
+          <label for="antihistimines">Antihistimines</label>
+        </div>
+      </div>
+    </div>
+
+
+    <table class="table content-offset">
+      <tr>
+        <td>Date</td>
+        <td>Substance</td>
+        <td>Wheal(mm)</td>
+        <td>Antihistimines</td>
+        <td></td>
+      </tr>
+      <tr ng-class="{error: editing.skin_prick_test._client.error.length}" ng-repeat="editing in skin_prick_tests">
+        <td >
+          <div class="row">
+            <div class="col-md-10">
+              {% datepicker field="SkinPrickTest.date" label="" style="vertical" change="validate()" %}
+            </div>
+          </div>
+        </td>
+        <td>
+          <div class="row">
+            <div class="col-md-10">
+              {% input 'ng-blur="validate()"' field="SkinPrickTest.substance" label="" style="vertical" %}
+            </div>
+          </div>
+        </td>
+        <td style="width: 100px">
+          <div class="row">
+            <div class="col-md-10 col-md-offset-1">
+              {% input 'ng-blur="validate()"' field="SkinPrickTest.wheal" label="" style="vertical" %}
+            </div>
+          </div>
+        </td>
+        <td>
+          <div class="row">
+            <div class="antihistimines col-md-10 col-md-offset-1">
+              {% checkbox field="SkinPrickTest.antihistimines" label="" style="vertical" change="validate()" %}
+            </div>
+          </div>
+        </td>
+        <td class="text-center">
+          <a ng-click="remove($index)" class="text-center btn btn-default remove-button">
+            <i class="fa fa-trash"></i>
+          </a>
+        </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td class="text-center">
+          <a ng-click="addAnother()" class="text-center btn btn-default add-button">{% icon "glyphicon-plus" %}</a>
+        </td>
+      </tr>
+    </table>
+    <div ng-show="getFlawedRow()" class="row content-offset-below-25">
+      <div class="col-md-12 text-center help-block">
+        [[ getFlawedRow().skin_prick_test._client.error ]]
+      </div>
+    </div>
+</div>
+<div class="row">
+  <div class="col-md-12 text-center">
+    <button class="btn btn-lg btn-primary btn-save"
+    ng-disabled="!pathway.steps[0].scope.isValid()"
+    ng-click="pathway.steps[0].scope.validate() && pathway.finish(editing)"
+    >
+      <i class="[[ pathway.finish_button_icon ]]"></i>
+      [[ pathway.finish_button_text ]]
+    </button>
+  </div>
+</div>
+
