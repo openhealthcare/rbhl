@@ -1,6 +1,7 @@
 import datetime
 from unittest import mock
 from opal.core.test import OpalTestCase
+
 from rbhl import models
 
 
@@ -103,6 +104,163 @@ class GetPeakExpiratoryFlowTestCase(OpalTestCase):
             datetime.date(2019, 12, 1), self.episode, "1"
         )
         self.assertIsNone(expected)
+
+
+class DiagnosisTestCase(OpalTestCase):
+    def setUp(self, *args, **kwargs):
+        super().setUp(*args, **kwargs)
+        patient, self.episode = self.new_patient_and_episode_please()
+
+    def test_creation_of_asthma_details_should_create_diagnosis(self):
+        """
+        When you create an AsthmaDetail model it should
+        create a corresponding diagnosis
+        """
+        self.episode.asthmadetails_set.create()
+        self.assertEqual(
+            self.episode.diagnosis_set.get().category,
+            models.Diagnosis.ASTHMA
+        )
+
+    def test_creation_of_rhinitis_details_should_create_diagnosis(self):
+        """
+        When you create an RhinitisDetails model it should
+        create a corresponding diagnosis
+        """
+        self.episode.rhinitisdetails_set.create()
+        self.assertEqual(
+            self.episode.diagnosis_set.get().category,
+            models.Diagnosis.RHINITIS
+        )
+
+    def test_deletion_of_asthma_details_should_delete_diagnosis(self):
+        """
+        When we delete asthma details we should delete the diagnosis of asthma
+        """
+        self.episode.asthmadetails_set.create()
+        self.assertEqual(
+            self.episode.diagnosis_set.get().category,
+            models.Diagnosis.ASTHMA
+        )
+        self.episode.diagnosis_set.create(
+            category=models.Diagnosis.MALIGNANCY,
+        )
+        self.episode.asthmadetails_set.all().delete()
+        self.assertFalse(self.episode.asthmadetails_set.exists())
+        self.assertEqual(
+            self.episode.diagnosis_set.get().category, models.Diagnosis.MALIGNANCY
+        )
+
+    def test_deletion_of_rhinitis_details_should_delete_diagnosis(self):
+        """
+        When we delete rhinits details we should delete the diagnosis of rhinits
+        """
+        self.episode.rhinitisdetails_set.create()
+        self.assertEqual(
+            self.episode.diagnosis_set.get().category,
+            models.Diagnosis.RHINITIS
+        )
+        self.episode.diagnosis_set.create(
+            category=models.Diagnosis.MALIGNANCY,
+        )
+        self.episode.rhinitisdetails_set.all().delete()
+        self.assertFalse(self.episode.rhinitisdetails_set.exists())
+        self.assertEqual(
+            self.episode.diagnosis_set.get().category, models.Diagnosis.MALIGNANCY
+        )
+
+    def test_creation_of_nad_should_delete_other_diagnosis(self):
+        """
+        A patient who is NAD should have no other diagnosis
+        """
+        self.episode.diagnosis_set.create(
+            category="other", condition="bad knee"
+        )
+        self.episode.diagnosis_set.create(
+            category=models.Diagnosis.NAD,
+        )
+        self.assertEqual(
+            self.episode.diagnosis_set.get().category,
+            models.Diagnosis.NAD
+        )
+
+    def test_creation_of_nad_should_delete_asthma(self):
+        """
+        A patient who is NAD should have no asthma details
+        """
+        self.episode.asthmadetails_set.create()
+        self.episode.diagnosis_set.create(
+            category=models.Diagnosis.NAD,
+        )
+        self.assertFalse(self.episode.asthmadetails_set.exists())
+
+    def test_creation_of_nad_should_delete_rhinits(self):
+        """
+        A patient who is NAD should have no rhinitis details
+        """
+        self.episode.rhinitisdetails_set.create()
+        self.episode.diagnosis_set.create(
+            category=models.Diagnosis.NAD,
+        )
+        self.assertFalse(self.episode.rhinitisdetails_set.exists())
+
+    def test_creation_of_asthma_should_delete_nad(self):
+        """
+        A patient who is has asthma details cannot be NAD
+        """
+        self.episode.diagnosis_set.create(
+            category=models.Diagnosis.NAD,
+        )
+        self.episode.asthmadetails_set.create()
+        self.assertEqual(
+            self.episode.diagnosis_set.get().category,
+            models.Diagnosis.ASTHMA
+        )
+
+    def test_creation_of_rhinitis_should_delete_nad(self):
+        """
+        A patient who is has rhinitis details cannot be NAD
+        """
+        self.episode.diagnosis_set.create(
+            category=models.Diagnosis.NAD,
+        )
+        self.episode.rhinitisdetails_set.create()
+        self.assertEqual(
+            self.episode.diagnosis_set.get().category,
+            models.Diagnosis.RHINITIS
+        )
+
+    def test_creation_of_other_diagnosis_should_delete_nad(self):
+        """
+        A patient who is has other diagnosis cannot be NAD
+        """
+        self.episode.diagnosis_set.create(
+            category=models.Diagnosis.NAD,
+        )
+        self.episode.diagnosis_set.create(
+            category=models.Diagnosis.MALIGNANCY,
+        )
+        self.assertEqual(
+            self.episode.diagnosis_set.get().category,
+            models.Diagnosis.MALIGNANCY
+        )
+
+    def multiple_diagnosis_that_are_not_nad_are_ok(self):
+        self.episode.asthmadetails_set.create()
+        self.episode.rhinitisdetails_set.create()
+        self.episode.diagnosis_set.create(
+            category=models.Diagnosis.MALIGNANCY,
+        )
+        self.assertEqual(
+            {
+                models.Diagnosis.ASTHMA,
+                models.Diagnosis.RHINITIS,
+                models.Diagnosis.MALIGNANCY,
+            },
+            set(
+                self.episode.diagnosis.values_list('category_name', flat=True)
+            )
+        )
 
 
 class RBHLSubrecordTestCase(OpalTestCase):
