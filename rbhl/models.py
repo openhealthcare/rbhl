@@ -5,7 +5,8 @@ import datetime
 import math
 from django.db import models as fields
 from decimal import Decimal
-
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
 from opal import models
 from opal.core.fields import enum
 from opal.core import lookuplists
@@ -417,18 +418,25 @@ class AsthmaDetails(RBHLSubrecord, models.EpisodeSubrecord):
     class Meta:
         verbose_name = "Asthma"
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        Diagnosis.objects.create(
-            episode=self.episode,
-            category=Diagnosis.ASTHMA,
-            condition=Diagnosis.ASTHMA
-        )
 
-    def delete(self, *args, **kwargs):
-        self.episode.diagnosis_set.filter(
-            category=Diagnosis.ASTHMA
-        ).delete()
+@receiver(post_delete, sender=AsthmaDetails)
+def delete_related_asthma_diagnosis(
+    sender, instance, **kwargs
+):
+    instance.episode.diagnosis_set.filter(
+        category=Diagnosis.ASTHMA
+    ).delete()
+
+
+@receiver(post_save, sender=AsthmaDetails)
+def create_related_asthma_diagnosis(
+    sender, instance, **kwargs
+):
+    Diagnosis.objects.create(
+        episode=instance.episode,
+        category=Diagnosis.ASTHMA,
+        condition=Diagnosis.ASTHMA
+    )
 
 
 class RhinitisDetails(RBHLSubrecord, models.EpisodeSubrecord):
@@ -455,18 +463,25 @@ class RhinitisDetails(RBHLSubrecord, models.EpisodeSubrecord):
     class Meta:
         verbose_name = "Rhinitis"
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        Diagnosis.objects.create(
-            episode=self.episode,
-            category=Diagnosis.RHINITIS,
-            condition=Diagnosis.RHINITIS
-        )
 
-    def delete(self, *args, **kwargs):
-        self.episode.diagnosis_set.filter(
-            category=Diagnosis.RHINITIS
-        ).delete()
+@receiver(post_delete, sender=RhinitisDetails)
+def delete_related_rhinitis_diagnosis(
+    sender, instance, **kwargs
+):
+    instance.episode.diagnosis_set.filter(
+        category=Diagnosis.RHINITIS
+    ).delete()
+
+
+@receiver(post_save, sender=RhinitisDetails)
+def create_related_rhinits_diagnosis(
+    sender, instance, **kwargs
+):
+    Diagnosis.objects.create(
+        episode=instance.episode,
+        category=Diagnosis.RHINITIS,
+        condition=Diagnosis.RHINITIS
+    )
 
 
 class Diagnosis(RBHLSubrecord, models.EpisodeSubrecord):
@@ -526,23 +541,26 @@ class Diagnosis(RBHLSubrecord, models.EpisodeSubrecord):
     condition = fields.CharField(blank=True, null=True, max_length=256)
     occupational = fields.BooleanField(default=False)
 
-    def save(self, *args, **kwargs):
-        """
-        If a patient is marked as NAD then they have no
-        other diagnosis. Remove the other diagnosis.
 
-        If a patient is given a diagnosis, delete any
-        previous diagnosis of NAD that they have.
-        """
-        super().save(*args, **kwargs)
-        if self.category == self.NAD:
-            self.episode.rhinitisdetails_set.all().delete()
-            self.episode.asthmadetails_set.all().delete()
-            self.episode.diagnosis_set.exclude(id=self.id).delete()
-        else:
-            self.episode.diagnosis_set.filter(
-                category=self.NAD
-            ).delete()
+@receiver(post_save, sender=Diagnosis)
+def handle_NAD_diagnosis(
+    sender, instance, **kwargs
+):
+    """
+    If an episode is marked as NAD then they have no
+    other diagnosis. Remove the other diagnosis.
+
+    If an episode is given a diagnosis, delete any
+    previous diagnosis of NAD that they have.
+    """
+    if instance.category == instance.NAD:
+        instance.episode.rhinitisdetails_set.all().delete()
+        instance.episode.asthmadetails_set.all().delete()
+        instance.episode.diagnosis_set.exclude(id=instance.id).delete()
+    else:
+        instance.episode.diagnosis_set.filter(
+            category=instance.NAD
+        ).delete()
 
 
 """
