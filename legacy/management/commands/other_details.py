@@ -352,6 +352,7 @@ class Command(BaseCommand):
             for field in SPIROMETRY_FIELDS:
                 field_value = getattr(legacy_diagnostic_testing, field)
                 setattr(spirometry, field, field_value)
+            spirometry.date = patient.otherfields_set.all()[0].attendance_date_as_date()
             spirometry.save()
 
             ct_scan = legacy_diagnostic_testing.ct_chest_scan
@@ -379,6 +380,7 @@ class Command(BaseCommand):
         qs = qs.prefetch_related(
             'diagnostictesting_set',
             "diagnosticoutcome_set",
+            "otherfields_set",
         )
 
         for patient in qs:

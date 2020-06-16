@@ -66,45 +66,53 @@ class Command(BaseCommand):
             "routinespt_set",
             "diagnosticoutcome_set",
             "diagnostictesting_set",
+            "otherfields_set",
         )
         for patient in qs:
             antihistimines = self.get_antihistimines(patient)
+            attendance_date = patient.otherfields_set.all()[0].attendance_date_as_date()
 
             for legacy in patient.routinespt_set.all():
                 skin_prick_tests.append(SkinPrickTest(
                     antihistimines=antihistimines,
                     substance=SkinPrickTest.NEG_CONTROL,
                     wheal=legacy.neg_control,
+                    date=attendance_date,
                     patient=patient
                 ))
                 skin_prick_tests.append(SkinPrickTest(
                     antihistimines=antihistimines,
                     substance=SkinPrickTest.POS_CONTROL,
                     wheal=legacy.pos_control,
+                    date=attendance_date,
                     patient=patient
                 ))
                 skin_prick_tests.append(SkinPrickTest(
                     antihistimines=antihistimines,
                     substance=SkinPrickTest.ASP_FUMIGATUS,
                     wheal=legacy.asp_fumigatus,
+                    date=attendance_date,
                     patient=patient
                 ))
                 skin_prick_tests.append(SkinPrickTest(
                     antihistimines=antihistimines,
                     substance=SkinPrickTest.GRASS_POLLEN,
                     wheal=legacy.grass_pollen,
+                    date=attendance_date,
                     patient=patient
                 ))
                 skin_prick_tests.append(SkinPrickTest(
                     antihistimines=antihistimines,
                     substance=SkinPrickTest.CAT,
                     wheal=legacy.cat,
+                    date=attendance_date,
                     patient=patient
                 ))
                 skin_prick_tests.append(SkinPrickTest(
                     antihistimines=antihistimines,
                     substance=SkinPrickTest.HOUSE_DUST_MITE,
                     wheal=legacy.d_pter,
+                    date=attendance_date,
                     patient=patient
                 ))
         SkinPrickTest.objects.bulk_create(skin_prick_tests)
