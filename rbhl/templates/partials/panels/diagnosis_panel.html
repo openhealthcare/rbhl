@@ -1,0 +1,79 @@
+{% load rbhl_panels %}
+<div ng-controller="DiagnosisDisplay as diagnosisDisplay" class="panel panel-default record-panel diagnosis">
+  <div class="panel-heading">
+    <h3>
+      <i class="fa fa-stethoscope"></i> Diagnosis
+      <i
+        ng-click="showDiagnosis=true"
+        class="fa fa-plus-circle edit pull-right pointer"
+      >
+      </i>
+    </h3>
+  </div>
+  <div ng-show="
+    showDiagnosis ||
+    episode.{{ models.Asthma.get_api_name }}.length ||
+    episode.{{ models.Rhinitis.get_api_name }}.length ||
+    episode.{{ models.ChronicAirFlowLimitation.get_api_name }}.length ||
+    episode.{{ models.Malignancy.get_api_name }}.length ||
+    episode.{{ models.DiffuseLungDisease.get_api_name }}.length ||
+    episode.{{ models.BenignPleuralDisease.get_api_name }}.length ||
+    episode.{{ models.OtherDiagnosis.get_api_name }}.length"
+  class="panel-body">
+    <div ng-show="showDiagnosis" class="row content-offset-below-25">
+      <div class="col-sm-11">
+        {% add_button models.Asthma is_singleton=True %}
+        {% add_button models.Rhinitis is_singleton=True %}
+        {% add_button models.ChronicAirFlowLimitation is_singleton=True %}
+        {% add_button models.Malignancy %}
+        {% add_button models.DiffuseLungDisease %}
+        {% add_button models.BenignPleuralDisease %}
+        {% add_button models.OtherDiagnosis %}
+        {% add_button label="NAD" pathway="nad" %}
+      </div>
+      <div style="padding-top: 12px;" class="col-sm-1">
+        <i
+          ng-click="showDiagnosis=false"
+          class="fa fa-times-circle edit pull-right pointer"
+        >
+        </i>
+      </div>
+    </div>
+    <ul ng-show="!diagnosisDisplay.isNAD(episode)" class="list-group">
+      {% include "partials/panels/rows.html" with subrecord=models.Asthma %}
+      {% include "partials/panels/rows.html" with subrecord=models.Rhinitis %}
+      {% include "partials/panels/rows.html" with subrecord=models.ChronicAirFlowLimitation %}
+      {% include "partials/panels/rows.html" with subrecord=models.Malignancy %}
+      {% include "partials/panels/rows.html" with subrecord=models.DiffuseLungDisease %}
+      {% include "partials/panels/rows.html" with subrecord=models.BenignPleuralDisease %}
+      <li class="diagnosis-row" ng-if="episode.{{ models.OtherDiagnosis.get_api_name }}.length" class="list-group-item">
+        <div class="row" ng-show="item.diagnosis_type !== 'NAD'" ng-repeat="item in episode.{{  models.OtherDiagnosis.get_api_name }}">
+          <div class="col-xs-10">
+            {% include  models.OtherDiagnosis.get_detail_template %}
+          </div>
+          <div class="col-xs-2">
+            <i
+              class="fa fa-pencil edit pull-right pointer" ng-click="episode.recordEditor.editItem('{{  models.OtherDiagnosis.get_api_name }}', item)"
+            ></i>
+          </div>
+        </div>
+      </li>
+    </ul>
+    <ul ng-show="diagnosisDisplay.isNAD(episode)">
+      <li class="diagnosis-row" ng-if="episode.{{  models.OtherDiagnosis.get_api_name }}.length" class="list-group-item">
+        <div class="row"  ng-repeat="item in episode.{{  models.OtherDiagnosis.get_api_name }}">
+          <div class="col-xs-10">
+            <strong>
+              NAD
+            </strong>
+          </div>
+          <div class="col-xs-2">
+            <i
+              class="fa fa-pencil edit pull-right pointer" ng-click="episode.recordEditor.editItem('{{  models.OtherDiagnosis.get_api_name }}', item)"
+            ></i>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>

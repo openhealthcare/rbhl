@@ -391,6 +391,160 @@ class PeakFlowDay(RBHLSubrecord, models.EpisodeSubrecord):
             }
 
 
+class AsthmaDetails(RBHLSubrecord, models.EpisodeSubrecord):
+    """
+    When this model is saved we create a diagnosis of Asthma.
+    When it is deleted we remove the diagnosis of Asthma
+    """
+    _icon = "fa fa-stethoscope"
+
+    OCCUPATIONAL_CAUSED_BY_SENSITISATION = "Occupational caused by sensitisation"
+    EXACERBATED_BY_WORK = "Exacerbated by work"
+    IRRITANT_INDUCED = "Irritant induced"
+    NON_OCCUPATIONAL = "Non occupational"
+
+    ASTHMA_CHOICES = enum(
+        OCCUPATIONAL_CAUSED_BY_SENSITISATION,
+        EXACERBATED_BY_WORK,
+        IRRITANT_INDUCED,
+        NON_OCCUPATIONAL,
+    )
+    trigger = fields.CharField(
+        blank=True, null=True, max_length=256, choices=ASTHMA_CHOICES
+    )
+    sensitivities = fields.TextField(blank=True, default="")
+
+    class Meta:
+        verbose_name = "Asthma"
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        Diagnosis.objects.create(
+            episode=self.episode,
+            category=Diagnosis.ASTHMA,
+            condition=Diagnosis.ASTHMA
+        )
+
+    def delete(self, *args, **kwargs):
+        self.episode.diagnosis_set.filter(
+            category=Diagnosis.ASTHMA
+        ).delete()
+
+
+class RhinitisDetails(RBHLSubrecord, models.EpisodeSubrecord):
+    """
+    When this model is saved we create a diagnosis of Rhinitis.
+    When it is deleted we remove the diagnosis of Rhinitis
+    """
+    _icon = "fa fa-stethoscope"
+
+    OCCUPATIONAL_CAUSED_BY_SENSITISATION = "Occupational caused by sensitisation"
+    EXACERBATED_BY_WORK = "Exacerbated by work"
+    NON_OCCUPATIONAL = "Non occupational"
+
+    RHINITIS_CHOICES = enum(
+        OCCUPATIONAL_CAUSED_BY_SENSITISATION,
+        EXACERBATED_BY_WORK,
+        NON_OCCUPATIONAL,
+    )
+    trigger = fields.CharField(
+        blank=True, null=True, max_length=256, choices=RHINITIS_CHOICES
+    )
+    sensitivities = fields.TextField(blank=True, default="")
+
+    class Meta:
+        verbose_name = "Rhinitis"
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        Diagnosis.objects.create(
+            episode=self.episode,
+            category=Diagnosis.RHINITIS,
+            condition=Diagnosis.RHINITIS
+        )
+
+    def delete(self, *args, **kwargs):
+        self.episode.diagnosis_set.filter(
+            category=Diagnosis.RHINITIS
+        ).delete()
+
+
+class Diagnosis(RBHLSubrecord, models.EpisodeSubrecord):
+    ASTHMA = "Asthma"
+    RHINITIS = "Rhinitis"
+    CHRONIC_AIR_FLOW_LIMITATION = "Chronic air flow limitation"
+    MALIGNANCY = "Malignancy"
+    BENIGN_PLEURAL_DISEASE = "Benign pleural disease"
+    DIFFUSE_LUNG_DISEASE = "Diffuse lung disease"
+    NAD = "NAD"  # no abnormality detected
+    OTHER = "Other"
+
+    CONDITION_CATEGORIES = {
+        "asthma": [ASTHMA],
+        "rhinitis": [RHINITIS],
+        "chronic_air_flow_limitation": [
+            "COPD", "Emphysema"
+        ],
+        "NAD": [NAD],
+        # Free text is also possible for all of the below
+        "malignancy": [
+            'Mesothelioma',
+            'Bronchus with asbestos exposure',
+        ],
+        "benign_pleural_disease": [
+            "Predominantly plaques",
+            "Diffuse"
+        ],
+        "diffuse_lung_disease": [
+            "Asbestosis",
+            "Hypersensitivity pneumonitis",
+            "ILD Other",
+            "Berylliosis",
+            "Ideopathic Pulmonary Fibrosis",
+            "Sarcodisis",
+            "Silicosis",
+        ],
+        "other": [
+            "Humidifier fever",
+            "Polymer fume fever",
+            "Infection",
+            "Chemical pneumonitis",
+            "Building related symptoms",
+            "Breathing pattern disorder ",
+            "Induced laryngeal obstruction",
+            "Air travel related symptoms",
+            "Medically unexplained symptoms",
+            "Cough due to irritant symptoms"
+        ]
+    }
+
+    category = fields.CharField(
+        blank=True, null=True, max_length=256, choices=enum(
+            *CONDITION_CATEGORIES.keys()
+        )
+    )
+    condition = fields.CharField(blank=True, null=True, max_length=256)
+    occupational = fields.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        """
+        If a patient is marked as NAD then they have no
+        other diagnosis. Remove the other diagnosis.
+
+        If a patient is given a diagnosis, delete any
+        previous diagnosis of NAD that they have.
+        """
+        super().save(*args, **kwargs)
+        if self.category == self.NAD:
+            self.episode.rhinitisdetails_set.all().delete()
+            self.episode.asthmadetails_set.all().delete()
+            self.episode.diagnosis_set.exclude(id=self.id).delete()
+        else:
+            self.episode.diagnosis_set.filter(
+                category=self.NAD
+            ).delete()
+
+
 """
 Begin exploratory models during testing
 """
