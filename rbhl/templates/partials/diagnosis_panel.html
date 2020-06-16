@@ -1,0 +1,184 @@
+{% load rbhl_panels %}
+<div class="panel panel-default record-panel diagnosis content-offset-below">
+  <div class="panel-heading">
+    <h3>
+      <i class="fa fa-stethoscope"></i> Diagnosis
+      <i
+        ng-click="showDiagnosis=true"
+        class="fa fa-plus-circle edit pull-right pointer"
+      >
+      </i>
+    </h3>
+  </div>
+  <div ng-show="showDiagnosis" class="row content-offset-below-25">
+    <div class="col-sm-11">
+      <a
+        style="
+          font-size: 18px;
+          display: inline-block;
+          margin-left: 10px;
+          margin-right: 10px;
+          padding: 5px 10px;
+          margin-top: 10px;
+        "
+        ng-click="episode.recordEditor.newItem('{{ models.AsthmaDetails.get_api_name }}')"
+        class="btn btn-default btn-xs"
+      >
+        <i class="fa fa-plus-circle pointer"></i>
+        {{ models.AsthmaDetails.get_display_name }}
+      </a>
+      <a
+        style="
+          font-size: 18px;
+          display: inline-block;
+          margin-left: 10px;
+          margin-right: 10px;
+          padding: 5px 10px;
+          margin-top: 10px;
+        "
+        ng-click="episode.recordEditor.newItem('{{ models.RhinitisDetails.get_api_name }}')"
+        class="btn btn-default btn-xs"
+      >
+        <i class="fa fa-plus-circle pointer"></i>
+        {{ models.RhinitisDetails.get_display_name }}
+      </a>
+      <a
+        style="
+          font-size: 18px;
+          display: inline-block;
+          margin-left: 10px;
+          margin-right: 10px;
+          padding: 5px 10px;
+          margin-top: 10px;
+        "
+        ng-click="episode.recordEditor.newItem('{{ models.Diagnosis.get_api_name }}', '/templates/modals/chronic_air_flow_limitation.html')"
+        class="btn btn-default btn-xs"
+      >
+        <i class="fa fa-plus-circle pointer"></i>
+        {{ models.Diagnosis.CHRONIC_AIR_FLOW_LIMITATION}}
+      </a>
+      <a
+        style="
+          font-size: 18px;
+          display: inline-block;
+          margin-left: 10px;
+          margin-right: 10px;
+          padding: 5px 10px;
+          margin-top: 10px;
+        "
+        ng-click="episode.recordEditor.newItem('{{ models.Diagnosis.get_api_name }}', '/templates/modals/malignancy.html')"
+        class="btn btn-default btn-xs"
+      >
+        <i class="fa fa-plus-circle pointer"></i>
+        {{ models.Diagnosis.MALIGNANCY}}
+      </a>
+      <a
+        style="
+          font-size: 18px;
+          display: inline-block;
+          margin-left: 10px;
+          margin-right: 10px;
+          padding: 5px 10px;
+          margin-top: 10px;
+        "
+        ng-click="episode.recordEditor.newItem('{{ models.Diagnosis.get_api_name }}', '/templates/modals/benign_pleural_disease.html')"
+        class="btn btn-default btn-xs"
+      >
+        <i class="fa fa-plus-circle pointer"></i>
+        {{ models.Diagnosis.BENIGN_PLEURAL_DISEASE}}
+      </a>
+      <a
+        style="
+          font-size: 18px;
+          display: inline-block;
+          margin-left: 10px;
+          margin-right: 10px;
+          padding: 5px 10px;
+          margin-top: 10px;
+        "
+        ng-click="episode.recordEditor.newItem('{{ models.Diagnosis.get_api_name }}', '/templates/modals/diffuse_lung_disease.html')"
+        class="btn btn-default btn-xs"
+      >
+        <i class="fa fa-plus-circle pointer"></i>
+        {{ models.Diagnosis.DIFFUSE_LUNG_DISEASE}}
+      </a>
+      <a
+        style="
+          font-size: 18px;
+          display: inline-block;
+          margin-left: 10px;
+          margin-right: 10px;
+          padding: 5px 10px;
+          margin-top: 10px;
+        "
+        ng-click="episode.recordEditor.newItem('{{ models.Diagnosis.get_api_name }}', '/templates/modals/other_diagnosis.html')"
+        class="btn btn-default btn-xs"
+      >
+        <i class="fa fa-plus-circle pointer"></i>
+        {{ models.Diagnosis.OTHER}}
+      </a>
+      <a
+        style="
+          font-size: 18px;
+          display: inline-block;
+          margin-left: 10px;
+          margin-right: 10px;
+          padding: 5px 10px;
+          margin-top: 10px;
+        "
+        ng-click="episode.recordEditor.newItem('{{ models.Diagnosis.get_api_name }}', '/templates/modals/nad.html')"
+        class="btn btn-default btn-xs"
+      >
+        <i class="fa fa-plus-circle pointer"></i>
+        {{ models.Diagnosis.NAD}}
+      </a>
+    </div>
+    <div style="padding-top: 12px; padding-right: 30px;" class="col-sm-1">
+      <i
+        ng-click="showDiagnosis=false"
+        class="fa fa-times-circle edit pull-right pointer"
+      >
+      </i>
+    </div>
+  </div>
+  <ul class="list-group">
+    <li ng-repeat="item in episode.diagnosis | filter:{category: '{{ models.Diagnosis.NAD }}'} as hasNAD">
+      <div class="col-md-11">
+        {% include models.Diagnosis.get_display_template %}
+      </div>
+      <div class="col-md-1">
+        <i ng-click="episode.recordEditor.editItem('diagnosis', item, '/templates/modals/nad.html')" class="fa fa-pencil edit pull-right pointer" ></i>
+      </div>
+    </li>
+  </ul>
+  <ul ng-show="!hasNAD.length" class="list-group">
+    <li ng-repeat="item in episode.asthma_details" class="diagnosis-row"class="list-group-item">
+      <div class="col-md-11">
+        {% include models.AsthmaDetails.get_display_template %}
+      </div>
+      <div class="col-md-1">
+        <i ng-click="episode.recordEditor.editItem('{{ models.AsthmaDetails.get_api_name }}', item)" class="fa fa-pencil edit pull-right pointer" ></i>
+      </div>
+    </li>
+    <li ng-repeat="item in episode.rhinitis_details" class="diagnosis-row"class="list-group-item">
+      <div class="col-md-11">
+        {% include models.RhinitisDetails.get_display_template %}
+      </div>
+      <div class="col-md-1">
+        <i ng-click="episode.recordEditor.editItem('{{ models.RhinitisDetails.get_api_name }}', item)" class="fa fa-pencil edit pull-right pointer" ></i>
+      </div>
+    </li>
+    <li ng-repeat="item in episode.diagnosis" ng-show="item.category !== '{{ models.Diagnosis.ASTHMA }}' && item.category !== '{{ models.Diagnosis.RHINITIS }}'" class="diagnosis-row"class="list-group-item">
+      <div class="col-md-11">
+        {% include models.Diagnosis.get_display_template %}
+      </div>
+      <div class="col-md-1">
+        <i ng-show="item.category==='{{ models.Diagnosis.CHRONIC_AIR_FLOW_LIMITATION }}'" ng-click="episode.recordEditor.editItem('diagnosis', item, '/templates/modals/chronic_air_flow_limitation.html')" class="fa fa-pencil edit pull-right pointer" ></i>
+        <i ng-show="item.category==='{{ models.Diagnosis.MALIGNANCY }}'" ng-click="episode.recordEditor.editItem('diagnosis', item, '/templates/modals/malignancy.html')" class="fa fa-pencil edit pull-right pointer" ></i>
+        <i ng-show="item.category==='{{ models.Diagnosis.BENIGN_PLEURAL_DISEASE }}'" ng-click="episode.recordEditor.editItem('diagnosis', item, '/templates/modals/benign_pleural_disease.html')" class="fa fa-pencil edit pull-right pointer" ></i>
+        <i ng-show="item.category==='{{ models.Diagnosis.DIFFUSE_LUNG_DISEASE }}'" ng-click="episode.recordEditor.editItem('diagnosis', item, '/templates/modals/diffuse_lung_disease.html')" class="fa fa-pencil edit pull-right pointer" ></i>
+        <i ng-show="item.category==='{{ models.Diagnosis.OTHER }}'" ng-click="episode.recordEditor.editItem('diagnosis', item, '/templates/modals/other_diagnosis.html')" class="fa fa-pencil edit pull-right pointer" ></i>
+      </div>
+    </li>
+  </ul>
+</div>
