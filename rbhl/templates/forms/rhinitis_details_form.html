@@ -1,7 +1,23 @@
 {% load forms %}
+{% load rbhl_panels %}
 <div class="row">
   <div class="col-md-10 col-md-offset-1">
-    {% radio field="RhinitisDetails.trigger" label="" style="vertical" %}
+    {% radio field="RhinitisDetails.trigger" style="vertical" %}
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-10 col-md-offset-1">
     {% textarea field="RhinitisDetails.sensitivities" style="vertical" %}
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-10 col-md-offset-1">
+    <div class="row">
+      {% add_to_text_button "RhinitisDetails.sensitivities" "Grain/Flour" %}
+      {% add_to_text_button "RhinitisDetails.sensitivities" "Latex" %}
+      {% add_to_text_button "RhinitisDetails.sensitivities" "Mice" %}
+      {% add_to_text_button "RhinitisDetails.sensitivities" "Rats" %}
+      {% add_to_text_button "RhinitisDetails.sensitivities" "Amylase" %}
+    </div>
   </div>
 </div>

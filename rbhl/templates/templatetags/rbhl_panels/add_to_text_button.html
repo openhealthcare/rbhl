@@ -1,0 +1,16 @@
+<a ng-show="{{ editing }}.length"
+ng-click="{{ editing }} = {{ editing }} + '\n{{ text }}'"
+class="btn btn-default btn-xs add-button"
+ng-disabled="{{ editing }}.indexOf('{{ text }}') !== -1"
+>
+<i class="fa fa-plus-circle pointer"></i>
+{{ text }}
+</a>
+<a ng-show="!{{ editing }}.length"
+ng-click="{{ editing }} = '{{ text }}'"
+class="btn btn-default btn-xs add-button"
+ng-disabled="{{ editing }} && {{ editing }}.indexOf('{{ text }}') !== -1"
+>
+<i class="fa fa-plus-circle pointer"></i>
+{{ text }}
+</a>
