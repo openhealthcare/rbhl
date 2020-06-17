@@ -252,6 +252,19 @@ class Command(BaseCommand):
                 referred_to=row["Diagnosis_referral"],
             )
 
+    def convert_diagnostic_outcome(self, patient):
+        """
+        diagnosis -> Clinic Log.diagnosis_outcome
+        referred_to -> Clinic Log.referred_to
+        diagnosis date -> clinic date if not populated
+        """
+        episode = patient.episode_set.get()
+        diagnosis_outcome = patient.diagnosticoutcome_set.all()[0]
+        clinic_log = episode.cliniclog_set.all()[0]
+        clinic_log.diagnosis_outcome = diagnosis_outcome.diagnosis
+        clinic_log.referred_to = diagnosis_outcome.referred_to
+        clinic_log.save()
+
     def build_diagnostic_asthma(self, patientLUT, rows):
         for row in rows:
             patient = patientLUT.get(row["Patient_num"], None)
@@ -679,6 +692,7 @@ class Command(BaseCommand):
             self.convert_diagnostic_testing(patient)
             self.convert_to_diagnosis_asthma(patient)
             self.convert_to_diagnosis_rhinitis(patient)
+            self.convert_diagnostic_outcome(patient)
             self.convert_to_diagnosis_other(patient)
 
         build_lookup_list(models.Employment, models.Employment.job_title)
