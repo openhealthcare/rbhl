@@ -477,7 +477,7 @@ class Command(BaseCommand):
                 occupational=bool(other.other_diagnosis_is_occupational)
             )
 
-        if not episode.diagnosis_set.exists() and other.NAD:
+        if other.NAD:
             models.Diagnosis.objects.create(
                 episode=episode,
                 category=models.Diagnosis.NAD,
