@@ -2,6 +2,11 @@
 <div class="row">
   <div class="col-md-6">
     <div class="horizontal-form">
+      {% datepicker field="Referral.date_of_referral" style="vertical" %}
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="horizontal-form">
       {% input field="Referral.referrer_name" lookuplist="rbhreferrer_list" style="vertical" %}
     </div>
   </div>
@@ -9,31 +14,62 @@
 <div class="row">
   <div class="col-md-6">
     <div class="horizontal-form">
-      {% datepicker field="Referral.date_of_referral" style="vertical" %}
+      {% input field="Referral.referral_type" style="vertical" %}
     </div>
   </div>
   <div class="col-md-6">
     <div class="horizontal-form">
-      {% datepicker field="Referral.date_referral_received" style="vertical" %}
+      {% input field="Referral.referral_reason" style="vertical" %}
     </div>
   </div>
 </div>
 <div class="row">
   <div class="col-md-6">
     <div class="horizontal-form">
-      {% datepicker field="Referral.date_first_appointment" style="vertical" %}
+      {% input field="Referral.geographical_area" style="vertical" %}
     </div>
   </div>
+  <div class="col-md-6">
+    <div class="text-muted">
+      Options include:
+      <br />
+      <span ng-repeat="area in geographicalarea_list"><span ng-if="!$first && !$last">, </span><span ng-if="$last"> and </span>[[ area ]]</span>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-6">
+    <div class="horizontal-form">
+      {% input field="Referral.referral_disease" style="vertical" %}
+    </div>
+  </div>
+</div>
+<hr>
+<div class="row">
+  <div class="col-md-6">
+    <div class="horizontal-form">
+      {% datepicker field="Referral.date_referral_received" style="vertical" %}
+    </div>
+  </div>
+<div class="col-md-6">
+  <div class="horizontal-form">
+    {% datepicker field="Referral.date_first_appointment" style="vertical" %}
+  </div>
+</div>
+<div class="row">
   <div class="col-md-6">
     <div class="horizontal-form">
       {% checkbox field="Referral.attendance" style="vertical" %}
     </div>
   </div>
 </div>
+<hr>
 <div class="row">
   <div class="col-md-12">
-    <div class="horizontal-form">
-      {% textarea field="Referral.comments" style="vertical" %}
+    <div class="col-md-12">
+      <div class="horizontal-form">
+        {% textarea field="Referral.comments" style="vertical" %}
+      </div>
     </div>
   </div>
 </div>
