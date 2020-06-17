@@ -5,6 +5,7 @@ from django.utils import timezone
 
 from opal import models as opal_models
 from rbhl import models
+from legacy.build_lookup_list import build_lookup_list
 from plugins.lab import models as lab_models
 
 from legacy.models import (
@@ -165,6 +166,40 @@ class Command(BaseCommand):
                 month_finished_exposure=none_if_0(row["Date Finished"]),
                 year_finished_exposure=get_year(none_if_0(row["Dates_f_Exposure_Y"])),
             )
+
+    def convert_suspect_occupational_category(self, patient):
+        """
+        Maps
+        SuspectOccupationalCategory.job_title
+            -> Employment.job_title
+        SuspectOccupationalCategory.employer_name
+            -> Employment.employer
+        SuspectOccupationalCategory.suspect_occupational_category
+            -> Employment.employment_category
+        SuspectOccupationalCategory.is_employed_in_suspect_occupation
+            -> Employment.employed_in_suspect_occupation
+        SuspectOccupationalCategory.exposures
+            -> Employment.exposures
+        """
+        suspect_occupational_category = patient.suspectoccupationalcategory_set.all()[0]
+        episode = patient.episode_set.get()
+        employment = episode.employment_set.all()[0]
+        employment.job_title = suspect_occupational_category.job_title
+        emp_cat = suspect_occupational_category.suspect_occupational_category
+        employment.employment_category = emp_cat
+
+        if not employment.employer:
+            emp_name = suspect_occupational_category.employer_name
+            employment.employment_category = emp_name
+
+        sus = suspect_occupational_category.is_employed_in_suspect_occupation
+        if sus:
+            employment.employed_in_suspect_occupation = sus
+
+        employment.exposures = clean_sensitivies(
+            suspect_occupational_category.exposures
+        )
+        employment.save()
 
     def build_diagnostic_testing(self, patientLUT, rows):
         for row in rows:
@@ -633,16 +668,30 @@ class Command(BaseCommand):
         qs = opal_models.Patient.objects.exclude(details=None)
         qs = qs.prefetch_related(
             'diagnostictesting_set',
+            "suspectoccupationalcategory_set",
             "diagnosticoutcome_set",
             "diagnosticother_set",
             "otherfields_set",
         )
 
         for patient in qs:
+            self.convert_suspect_occupational_category(patient)
             self.convert_diagnostic_testing(patient)
             self.convert_to_diagnosis_asthma(patient)
             self.convert_to_diagnosis_rhinitis(patient)
             self.convert_to_diagnosis_other(patient)
+
+        build_lookup_list(models.Employment, models.Employment.job_title)
+        msg = "Created {} job titles".format(
+            models.JobTitle.objects.all().count()
+        )
+        self.stdout.write(self.style.SUCCESS(msg))
+
+        build_lookup_list(models.Employment, models.Employment.employment_category)
+        msg = "Created {} employment categories".format(
+            models.EmploymentCategory.objects.all().count()
+        )
+        self.stdout.write(self.style.SUCCESS(msg))
 
     def handle(self, *args, **options):
         self.create_legacy(options["file_name"])
