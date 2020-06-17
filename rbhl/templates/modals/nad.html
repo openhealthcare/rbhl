@@ -26,10 +26,10 @@
       </span>
       <span ng-repeat="diagnosis in hasOtherDiagnosis">
         <span ng-show="diagnosis.condition">
-          [[ diagnosis.condition ]]
+          [[ diagnosis.condition.toLowerCase() ]]
         </span>
         <span ng-hide="diagnosis.condition">
-          [[ diagnosis.category ]]
+          [[ diagnosis.category.toLowerCase() ]]
         </span>
         {# comma/and seperate the diagnois #}
         [[$last ? '' : ($index==hasOtherDiagnosis.length-2) ? ' and ' : ', ']]
