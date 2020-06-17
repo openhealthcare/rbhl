@@ -1,6 +1,7 @@
 """
 Models for the RBH legacy transition
 """
+import datetime
 from django.db import models
 from opal.models import PatientSubrecord, EpisodeSubrecord
 
@@ -416,6 +417,14 @@ class OtherFields(PatientSubrecord):
     chronic_air_flow = models.TextField(null=True, blank=True)
     chronic_air_flow_choice = models.TextField(null=True, blank=True)
     chronic_obstructive_brinchitis = models.TextField(null=True, blank=True)
+
+    def attendance_date_as_date(self):
+        if self.attendance_date == '':
+            return None
+        else:
+            return datetime.datetime.strptime(
+                self.attendance_date, "%d-%b-%y"
+            ).date()
 
 
 class LegacyBronchialTest(PatientSubrecord):
