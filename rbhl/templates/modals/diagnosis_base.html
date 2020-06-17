@@ -1,0 +1,33 @@
+{% extends 'base_templates/form_modal_base.html' %}
+{% block form %}
+<div ng-repeat="item in the_episode.diagnosis | filter:{category: '{{ models.Diagnosis.NAD }}'} as hasNAD">
+</div>
+<div ng-show="!confirm">
+{% block diagnosis_form %}
+{% endblock %}
+</div>
+<div ng-show="confirm">
+  <p class="lead text-center">
+    Delete the diagnosis of NAD
+  </p>
+  <p class="text-center">
+    <button check-form="form" class="btn btn-primary nad-button" ng-click="form.$valid && save('save')">
+      Confirm
+    </button>
+  </p>
+</div>
+{% endblock %}
+{% block modal_save %}
+<span class="pull-right" ng-hide="confirm">
+  <span ng-show="!hasNAD.length">
+    {{ block.super }}
+  </span>
+  <span ng-show="hasNAD.length">
+    <button class="btn btn-primary btn-save" ng-click="confirm=true">
+      <i class="fa fa-save"></i> Save
+    </button>
+  </span>
+</span>
+{% endblock %}
+
+

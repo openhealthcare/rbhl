@@ -1,0 +1,5 @@
+{% extends 'modals/diagnosis_base.html' %}
+{{ models.RhinitisDetails.get_display_name }} {{ block.super }}
+{% block diagnosis_form %}
+{% include models.RhinitisDetails.get_form_template %}
+{% endblock %}

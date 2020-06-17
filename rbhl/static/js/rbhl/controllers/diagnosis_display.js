@@ -4,6 +4,14 @@ angular.module('opal.controllers').controller('DiagnosisDisplay', function($scop
 
   this.refreshIfNAD = function(itemName){
     /*
+    * Asthma details and rhinitis details create diagnosis
+    * so to make it track easier, if we save either of these two
+    * refresh the patient
+    */
+    if(itemName === 'asthma_details' || itemName === 'rhinitis_details'){
+      $scope.refresh();
+    }
+    /*
     * Marking something as NAD removes all existing diagnosis
     *
     * Adding a diagnosis when the patient is NAD removes
@@ -12,7 +20,7 @@ angular.module('opal.controllers').controller('DiagnosisDisplay', function($scop
     * So if either of these conditions is true, refresh the view after the
     * modal closes.
     */
-    if(itemName === "NAD" || _.findWhere($scope.episode.diagnosis, {category: "NAD"})){
+    else if(itemName === "NAD" || _.findWhere($scope.episode.diagnosis, {category: "NAD"})){
       $scope.refresh();
     }
   }

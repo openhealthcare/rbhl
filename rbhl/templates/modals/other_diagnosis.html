@@ -1,9 +1,9 @@
-{% extends 'base_templates/form_modal_base.html' %}
+{% extends 'modals/diagnosis_base.html' %}}
 {% load forms %}
 {% block title %}
 {{ models.Diagnosis.OTHER }} {{ block.super }}
 {% endblock title %}
-{% block form %}
+{% block diagnosis_form %}
 <div ng-init="editing.diagnosis.category = '{{ models.Diagnosis.OTHER }}'">
   <div class="row form-row">
     <div class="col-md-8">
@@ -16,4 +16,4 @@
     </div>
   </div>
 </div>
-{% endblock form %}
+{% endblock %}
