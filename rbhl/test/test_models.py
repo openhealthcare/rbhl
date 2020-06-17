@@ -122,12 +122,38 @@ class DiagnosisTestCase(OpalTestCase):
             models.Diagnosis.ASTHMA
         )
 
+    def test_editing_asthma_details(self):
+        """
+        Editing the asthma details multiple times
+        should not create multiple asthma diagnosis
+        """
+        asthma = self.episode.asthmadetails_set.create()
+        asthma.trigger = "something"
+        asthma.save()
+        self.assertEqual(
+            self.episode.diagnosis_set.get().category,
+            models.Diagnosis.ASTHMA
+        )
+
     def test_creation_of_rhinitis_details_should_create_diagnosis(self):
         """
         When you create an RhinitisDetails model it should
         create a corresponding diagnosis
         """
         self.episode.rhinitisdetails_set.create()
+        self.assertEqual(
+            self.episode.diagnosis_set.get().category,
+            models.Diagnosis.RHINITIS
+        )
+
+    def test_editing_rhinitis_details(self):
+        """
+        Editing the rhinitis details multiple times
+        should not create multiple rhinits diagnosis
+        """
+        rhinitis = self.episode.rhinitisdetails_set.create()
+        rhinitis.trigger = "something"
+        rhinitis.save()
         self.assertEqual(
             self.episode.diagnosis_set.get().category,
             models.Diagnosis.RHINITIS
