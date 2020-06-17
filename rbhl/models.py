@@ -146,6 +146,17 @@ End Opal core models
 """
 
 
+class SocialHistory(RBHLSubrecord, models.EpisodeSubrecord):
+    _is_singleton = True
+    _icon = 'fa fa-clock-o'
+
+    SMOKING_CHOICES = enum("Currently", "Ex-smoker", "Never")
+    smoker = fields.CharField(
+        blank=True, null=True, max_length=256, choices=SMOKING_CHOICES
+    )
+    cigerettes_per_day = fields.IntegerField(null=True, blank=True)
+
+
 class ContactDetails(RBHLSubrecord, models.PatientSubrecord):
     _is_singleton = True
     _icon         = 'fa fa-phone'
