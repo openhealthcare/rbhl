@@ -5,7 +5,9 @@ import datetime
 import math
 from django.db import models as fields
 from decimal import Decimal
-from django.db.models.signals import post_save, post_delete
+from django.db.models.signals import (
+    pre_save, post_save, post_delete
+)
 from django.dispatch import receiver
 from opal import models
 from opal.core.fields import enum
@@ -428,15 +430,19 @@ def delete_related_asthma_diagnosis(
     ).delete()
 
 
-@receiver(post_save, sender=AsthmaDetails)
+@receiver(pre_save, sender=AsthmaDetails)
 def create_related_asthma_diagnosis(
     sender, instance, **kwargs
 ):
-    Diagnosis.objects.create(
-        episode=instance.episode,
-        category=Diagnosis.ASTHMA,
-        condition=Diagnosis.ASTHMA
-    )
+    """
+    If its new create a diagnosis
+    """
+    if not instance.id:
+        Diagnosis.objects.create(
+            episode=instance.episode,
+            category=Diagnosis.ASTHMA,
+            condition=Diagnosis.ASTHMA
+        )
 
 
 class RhinitisDetails(RBHLSubrecord, models.EpisodeSubrecord):
@@ -473,15 +479,19 @@ def delete_related_rhinitis_diagnosis(
     ).delete()
 
 
-@receiver(post_save, sender=RhinitisDetails)
+@receiver(pre_save, sender=RhinitisDetails)
 def create_related_rhinits_diagnosis(
     sender, instance, **kwargs
 ):
-    Diagnosis.objects.create(
-        episode=instance.episode,
-        category=Diagnosis.RHINITIS,
-        condition=Diagnosis.RHINITIS
-    )
+    """
+    If its new create a diagnosis
+    """
+    if not instance.id:
+        Diagnosis.objects.create(
+            episode=instance.episode,
+            category=Diagnosis.RHINITIS,
+            condition=Diagnosis.RHINITIS
+        )
 
 
 class Diagnosis(RBHLSubrecord, models.EpisodeSubrecord):
