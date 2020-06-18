@@ -187,7 +187,7 @@ class Referral(RBHLSubrecord, models.EpisodeSubrecord):
 
     DISEASE = enum(
         "Asthma",
-        "Asthma/Rhinitis",
+        "Asthma / Rhinitis",
         "Inhalation injury",
         "Malignancy",
         "Other / Unclear",
