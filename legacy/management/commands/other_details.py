@@ -181,9 +181,12 @@ class Command(BaseCommand):
             referral_disease = "Pulmonary fibrosis(eg: Asbestos related disease)"
         referral.referral_disease = referral_disease
 
-        if not referral.referral_type:
+        if not referral.referral_type and details.referral_type:
             referral_type = details.referral_type
-            if referral_type:
+            if referral_type not in [
+                'Dept social security',
+                'Employment medical advisory service'
+            ]:
                 if referral_type.lower() == 'other (self)':
                     referral_type = "Self"
                 elif referral_type == "self":
