@@ -29,9 +29,7 @@
 
 <div class="row form-row">
   <div class="col-md-6">
-      <div class="horizontal-form">
-          {% select field="Employment.employed_in_suspect_occupation" style="vertical" %}
-      </div>
+    {% checkbox field="Employment.employed_in_suspect_occupation" style="vertical" %}
   </div>
   <div class="col-md-6">
     {% checkbox field="Employment.firefighter" style="vertical" %}
