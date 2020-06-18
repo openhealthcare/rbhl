@@ -178,7 +178,12 @@ class Command(BaseCommand):
         referral_disease = details.referral_disease
         # this is a strangely common error
         if referral_disease == "Pulmonary fibrosis(eg: Asbestos related disease":
-            referral_disease = "Pulmonary fibrosis(eg: Asbestos related disease)"
+            referral_disease = "Pulmonary fibrosis(e.g.: Asbestos related disease)"
+        if referral_disease == "Pulmonary fibrosis(eg: Asbestos related disease)":
+            referral_disease = "Pulmonary fibrosis(e.g.: Asbestos related disease)"
+
+        if referral_disease == "Asthma/Rhinitis":
+            referral_disease = "Asthma / Rhinitis"
         referral.referral_disease = referral_disease
 
         if not referral.referral_type and details.referral_type:
