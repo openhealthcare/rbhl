@@ -132,6 +132,106 @@ class Command(BaseCommand):
                 smokes_per_day=to_int(row["No_cigarettes"]),
             )
 
+    def convert_details(self, patient):
+        """
+        Maps
+        Details.date_referral_received" -> Referral.date_referral_received
+        OtherFields.attendance_date -> Referral.date_first_appointment
+        Details.referral_type -> Referral.referral_type
+        Details.referral_reason -> Referral.referral_reason
+        Details.fire_service_applicant -> Employment.firefighter
+        Details.systems_presenting_compliant ->     Referral.comments
+        Details.referral_disease -> Referral.referral_disease
+        Details.specialist_doctor -> ClinicLog.seen_by
+        Details.geographical_area or Details.geographical_area_other ->
+            Referral.geographical_area
+        Details.is_smoker = SocialHistory.smoker
+        Details.smokes_per_day = SocialHistory.cigerettes_per_day
+        """
+        episode = patient.episode_set.get()
+        details = patient.details_set.all()[0]
+        if not details:
+            return
+        clinic_log = episode.cliniclog_set.all()[0]
+
+        if details and details.site_of_clinic:
+            if details.site_of_clinic == "Other":
+                clinic_log.clinic_site = details.site_of_clinic
+            else:
+                clinic_log.clinic_site = details.other_clinic_site
+            clinic_log.save()
+
+        referral = episode.referral_set.all()[0]
+        referral_received = referral.date_referral_received
+
+        # agreed with the client, as there are patients that
+        # have rereferrals, always use the most recent.
+        if referral_received:
+            if details.date_referral_received:
+                referral.date_referral_received = max(
+                    referral_received, details.date_referral_received.date()
+                )
+        else:
+            referral.date_referral_received = details.date_referral_received
+
+        referral.referral_reason = details.referral_reason
+        referral_disease = details.referral_disease
+        # this is a strangely common error
+        if referral_disease == "Pulmonary fibrosis(eg: Asbestos related disease":
+            referral_disease = "Pulmonary fibrosis(eg: Asbestos related disease)"
+        referral.referral_disease = referral_disease
+
+        if not referral.referral_type:
+            referral_type = details.referral_type
+            if referral_type:
+                if referral_type.lower() == 'other (self)':
+                    referral_type = "Self"
+                elif referral_type == "self":
+                    referral_type = "Self"
+                elif referral_type == "Other doctor- GP":
+                    referral_type = "GP"
+                referral.referral_type = referral_type
+
+        area = details.geographical_area
+        if area:
+            if area == "SouthThames":
+                area = "South Thames"
+            elif area == "North thames":
+                area = "North Thames"
+            elif area.lower() == "other" and details.geographical_area_other:
+                area = details.geographical_area_other
+            referral.geographical_area = area
+
+        if not referral.date_first_appointment:
+            other_fields = patient.otherfields_set.all()[0]
+            if other_fields.attendance_date_as_date():
+                referral.date_first_appointment = other_fields.attendance_date_as_date()
+        referral.save()
+
+        employment = episode.employment_set.all()[0]
+        if employment.firefighter is None:
+            fsa = details.fire_service_applicant
+            if fsa:
+                fire_service_lut = {"no": False, "yes": True}
+                employment.firefighter = fire_service_lut.get(fsa.lower())
+                employment.save()
+
+        social_history = episode.socialhistory_set.all()[0]
+        if not social_history.smoker:
+            if details.is_smoker:
+                if details.is_smoker == "Currently":
+                    social_history.smoker = "Current"
+                else:
+                    social_history.smoker = details.is_smoker
+
+        if not social_history.cigerettes_per_day:
+            if details.smokes_per_day:
+                social_history.cigerettes_per_day = details.smokes_per_day
+        social_history.save()
+
+        clinic_log.presenting_complaint = details.systems_presenting_compliant
+        clinic_log.save()
+
     def build_suspect_occupational_category(self, patientLUT, rows):
         for row in rows:
             patient = patientLUT.get(row["Patient_num"], None)
@@ -688,6 +788,7 @@ class Command(BaseCommand):
         )
 
         for patient in qs:
+            self.convert_details(patient)
             self.convert_suspect_occupational_category(patient)
             self.convert_diagnostic_testing(patient)
             self.convert_to_diagnosis_asthma(patient)
@@ -702,6 +803,7 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(msg))
 
         build_lookup_list(models.Employment, models.Employment.employment_category)
+        build_lookup_list(models.ClinicLog, models.ClinicLog.presenting_complaint)
         msg = "Created {} employment categories".format(
             models.EmploymentCategory.objects.all().count()
         )
