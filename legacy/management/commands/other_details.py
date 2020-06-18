@@ -5,6 +5,7 @@ from django.utils import timezone
 
 from opal import models as opal_models
 from rbhl import models
+from legacy.build_lookup_list import build_lookup_list
 from plugins.lab import models as lab_models
 
 from legacy.models import (
@@ -131,6 +132,109 @@ class Command(BaseCommand):
                 smokes_per_day=to_int(row["No_cigarettes"]),
             )
 
+    def convert_details(self, patient):
+        """
+        Maps
+        Details.date_referral_received" -> Referral.date_referral_received
+        OtherFields.attendance_date -> Referral.date_first_appointment
+        Details.referral_type -> Referral.referral_type
+        Details.referral_reason -> Referral.referral_reason
+        Details.fire_service_applicant -> Employment.firefighter
+        Details.systems_presenting_compliant ->     Referral.comments
+        Details.referral_disease -> Referral.referral_disease
+        Details.specialist_doctor -> ClinicLog.seen_by
+        Details.geographical_area or Details.geographical_area_other ->
+            Referral.geographical_area
+        Details.is_smoker = SocialHistory.smoker
+        Details.smokes_per_day = SocialHistory.cigerettes_per_day
+        """
+        episode = patient.episode_set.get()
+        details = patient.details_set.all()[0]
+        if not details:
+            return
+        clinic_log = episode.cliniclog_set.all()[0]
+
+        if details and details.site_of_clinic:
+            if details.site_of_clinic == "Other":
+                clinic_log.clinic_site = details.site_of_clinic
+            else:
+                clinic_log.clinic_site = details.other_clinic_site
+            clinic_log.save()
+
+        referral = episode.referral_set.all()[0]
+        referral_received = referral.date_referral_received
+
+        # agreed with the client, as there are patients that
+        # have rereferrals, always use the most recent.
+        if referral_received:
+            if details.date_referral_received:
+                referral.date_referral_received = max(
+                    referral_received, details.date_referral_received.date()
+                )
+        else:
+            referral.date_referral_received = details.date_referral_received
+
+        referral.referral_reason = details.referral_reason
+        referral_disease = details.referral_disease
+        # this is a strangely common error
+        if referral_disease == "Pulmonary fibrosis(eg: Asbestos related disease":
+            referral_disease = "Pulmonary fibrosis(eg: Asbestos related disease)"
+        referral.referral_disease = referral_disease
+
+        if not referral.referral_type and details.referral_type:
+            referral_type = details.referral_type
+            if referral_type not in [
+                'Dept social security',
+                'Employment medical advisory service'
+            ]:
+                if referral_type.lower() == 'other (self)':
+                    referral_type = "Self"
+                elif referral_type == "self":
+                    referral_type = "Self"
+                elif referral_type == "Other doctor- GP":
+                    referral_type = "GP"
+                referral.referral_type = referral_type
+
+        area = details.geographical_area
+        if area:
+            if area == "SouthThames":
+                area = "South Thames"
+            elif area == "North thames":
+                area = "North Thames"
+            elif area.lower() == "other" and details.geographical_area_other:
+                area = details.geographical_area_other
+            referral.geographical_area = area
+
+        if not referral.date_first_appointment:
+            other_fields = patient.otherfields_set.all()[0]
+            if other_fields.attendance_date_as_date():
+                referral.date_first_appointment = other_fields.attendance_date_as_date()
+        referral.save()
+
+        employment = episode.employment_set.all()[0]
+        if employment.firefighter is None:
+            fsa = details.fire_service_applicant
+            if fsa:
+                fire_service_lut = {"no": False, "yes": True}
+                employment.firefighter = fire_service_lut.get(fsa.lower())
+                employment.save()
+
+        social_history = episode.socialhistory_set.all()[0]
+        if not social_history.smoker:
+            if details.is_smoker:
+                if details.is_smoker == "Currently":
+                    social_history.smoker = "Current"
+                else:
+                    social_history.smoker = details.is_smoker
+
+        if not social_history.cigerettes_per_day:
+            if details.smokes_per_day:
+                social_history.cigerettes_per_day = details.smokes_per_day
+        social_history.save()
+
+        clinic_log.presenting_complaint = details.systems_presenting_compliant
+        clinic_log.save()
+
     def build_suspect_occupational_category(self, patientLUT, rows):
         for row in rows:
             patient = patientLUT.get(row["Patient_num"], None)
@@ -165,6 +269,48 @@ class Command(BaseCommand):
                 month_finished_exposure=none_if_0(row["Date Finished"]),
                 year_finished_exposure=get_year(none_if_0(row["Dates_f_Exposure_Y"])),
             )
+
+    def convert_suspect_occupational_category(self, patient):
+        """
+        Maps
+        SuspectOccupationalCategory.job_title
+            -> Employment.job_title
+        SuspectOccupationalCategory.employer_name
+            -> Employment.employer
+        SuspectOccupationalCategory.suspect_occupational_category
+            -> Employment.employment_category
+        SuspectOccupationalCategory.is_employed_in_suspect_occupation
+            -> Employment.employed_in_suspect_occupation
+        SuspectOccupationalCategory.exposures
+            -> Employment.exposures
+        """
+        suspect_occupational_category = patient.suspectoccupationalcategory_set.all()[0]
+        episode = patient.episode_set.get()
+        employment = episode.employment_set.all()[0]
+        employment.job_title = suspect_occupational_category.job_title
+        emp_cat = suspect_occupational_category.suspect_occupational_category
+        employment.employment_category = emp_cat
+
+        if not employment.employer:
+            emp_name = suspect_occupational_category.employer_name
+            employment.employment_category = emp_name
+
+        sus = suspect_occupational_category.is_employed_in_suspect_occupation
+        if sus:
+            employment.employed_in_suspect_occupation = sus
+
+        # exposures like sensitities contain a lot of synonyms
+        # that we can clean
+        exposures = clean_sensitivies(
+            suspect_occupational_category.exposures
+        )
+        exposures = exposures.replace("Christmas trees", "")
+        exposures = exposures.replace("gluteraldehyde", "")
+        exposures = exposures.replace("Christmas trees", "")
+        exposures = exposures.replace("Tea bloom", "")
+        exposures = "\n".join([i.strip() for i in exposures.split("\n") if i.strip()])
+        exposures = exposures.strip()
+        employment.save()
 
     def build_diagnostic_testing(self, patientLUT, rows):
         for row in rows:
@@ -216,6 +362,19 @@ class Command(BaseCommand):
                 diagnosis_date=to_date(row["Date of Diagnosis"]),
                 referred_to=row["Diagnosis_referral"],
             )
+
+    def convert_diagnostic_outcome(self, patient):
+        """
+        diagnosis -> Clinic Log.diagnosis_outcome
+        referred_to -> Clinic Log.referred_to
+        diagnosis date -> clinic date if not populated
+        """
+        episode = patient.episode_set.get()
+        diagnosis_outcome = patient.diagnosticoutcome_set.all()[0]
+        clinic_log = episode.cliniclog_set.all()[0]
+        clinic_log.diagnosis_outcome = diagnosis_outcome.diagnosis
+        clinic_log.referred_to = diagnosis_outcome.referred_to
+        clinic_log.save()
 
     def build_diagnostic_asthma(self, patientLUT, rows):
         for row in rows:
@@ -633,16 +792,38 @@ class Command(BaseCommand):
         qs = opal_models.Patient.objects.exclude(details=None)
         qs = qs.prefetch_related(
             'diagnostictesting_set',
+            "suspectoccupationalcategory_set",
             "diagnosticoutcome_set",
             "diagnosticother_set",
             "otherfields_set",
         )
 
         for patient in qs:
+            self.convert_details(patient)
+            self.convert_suspect_occupational_category(patient)
             self.convert_diagnostic_testing(patient)
             self.convert_to_diagnosis_asthma(patient)
             self.convert_to_diagnosis_rhinitis(patient)
+            self.convert_diagnostic_outcome(patient)
             self.convert_to_diagnosis_other(patient)
+
+        build_lookup_list(models.Employment, models.Employment.job_title)
+        msg = "Created {} job titles".format(
+            models.JobTitle.objects.all().count()
+        )
+        self.stdout.write(self.style.SUCCESS(msg))
+
+        build_lookup_list(models.Employment, models.Employment.employment_category)
+        models.EmploymentCategory.objects.create(name="Stone masons")
+        msg = "Created {} employment categories".format(
+            models.EmploymentCategory.objects.all().count()
+        )
+        self.stdout.write(self.style.SUCCESS(msg))
+        build_lookup_list(models.ClinicLog, models.ClinicLog.presenting_complaint)
+        msg = "Created {} presenting complaints".format(
+            models.PresentingComplaint.objects.all().count()
+        )
+        self.stdout.write(self.style.SUCCESS(msg))
 
     def handle(self, *args, **options):
         self.create_legacy(options["file_name"])

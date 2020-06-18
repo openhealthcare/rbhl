@@ -4,12 +4,21 @@
   <!-- 1 -->
   <div class="col-md-4">
     <!-- Top level column -->
-    {% field_display "ClinicLog.seen_by" %}
+    {% field_display "ClinicLog.seen_by" parenthesis_field="ClinicLog.clinic_site" %}
   </div>
 
   <div class="col-md-4">
     <!-- Top level column -->
     {% field_display "ClinicLog.clinic_date" label="First attended clinic" %}
+  </div>
+  <div class="col-md-4">
+    {% field_display "ClinicLog.clinic_site" %}
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-4">
+    {% field_display "ClinicLog.presenting_complaint" %}
   </div>
   <div class="col-md-4">
     {% field_display "ClinicLog.active" %}
@@ -19,10 +28,14 @@
   <div class="col-md-4">
     {% field_display "ClinicLog.diagnosis_made" %}
   </div>
+  <div class="col-md-4">
+    {% field_display "ClinicLog.diagnosis_outcome" %}
+  </div>
+  <div class="col-md-4">
+    {% field_display "ClinicLog.referred_to" %}
+  </div>
 </div>
-
 <hr />
-
 <div class="row">
   <div class="col-md-4">
     {% field_display "ClinicLog.peak_flow" %}
@@ -33,6 +46,7 @@
   <div class="col-md-4">
     {% field_display "ClinicLog.immunology_oem" %}
   </div>
+
 </div>
 <div class="row">
   <div class="col-md-4">

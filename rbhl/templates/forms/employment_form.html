@@ -1,6 +1,46 @@
 {% load forms %}
-<div class="horizontal-form">
-    {% input field="Employment.oh_provider" lookuplist="ohprovider_list" style="vertical" %}
-    {% input field="Employment.employer" lookuplist="employer_list" style="vertical" %}
+{% load rbhl_panels %}
+
+<div class="row form-row">
+  <div class="col-md-6">
+      <div class="horizontal-form">
+          {% input field="Employment.employer" style="vertical" %}
+      </div>
+  </div>
+  <div class="col-md-6">
+      <div class="horizontal-form">
+          {% input field="Employment.oh_provider" style="vertical" %}
+      </div>
+  </div>
+</div>
+
+<div class="row form-row">
+  <div class="col-md-6">
+      <div class="horizontal-form">
+          {% input field="Employment.job_title" style="vertical" %}
+      </div>
+  </div>
+  <div class="col-md-6">
+      <div class="horizontal-form">
+          {% input field="Employment.employment_category" style="vertical" %}
+      </div>
+  </div>
+</div>
+
+<div class="row form-row">
+  <div class="col-md-6">
+      <div class="horizontal-form">
+          {% select field="Employment.employed_in_suspect_occupation" style="vertical" %}
+      </div>
+  </div>
+  <div class="col-md-6">
     {% checkbox field="Employment.firefighter" style="vertical" %}
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    <div class="col-md-12">
+      {% textarea field="Employment.exposures" style="vertical" %}
+    </div>
+  </div>
 </div>
