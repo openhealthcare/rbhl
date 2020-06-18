@@ -252,23 +252,13 @@ class Employment(RBHLSubrecord, models.EpisodeSubrecord):
     _icon         = 'fa fa-building-o'
     _is_singleton = True
 
-    SUS_OCC_CHOICES = enum(
-        'Yes-employed in suspect occupation',
-        'Yes',
-        'Yes-other occupation',
-        'No'
-    )
-
     employer = fields.CharField(blank=True, null=True, max_length=100)
     job_title = models.ForeignKeyOrFreeText(JobTitle)
     employment_category = models.ForeignKeyOrFreeText(
         EmploymentCategory
     )
-    employed_in_suspect_occupation = fields.CharField(
-        blank=True,
-        null=True,
-        max_length=256,
-        choices=SUS_OCC_CHOICES
+    employed_in_suspect_occupation = fields.BooleanField(
+        default=False
     )
     exposures = fields.TextField(blank=True, default="")
     oh_provider = fields.CharField(

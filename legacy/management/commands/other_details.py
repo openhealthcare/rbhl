@@ -301,8 +301,11 @@ class Command(BaseCommand):
             employment.employment_category = emp_name
 
         sus = suspect_occupational_category.is_employed_in_suspect_occupation
-        if sus:
-            employment.employed_in_suspect_occupation = sus
+        if sus and sus in [
+                'Yes-employed in suspect occupation',
+                'Yes'
+        ]:
+            employment.employed_in_suspect_occupation = True
 
         # exposures like sensitities contain a lot of synonyms
         # that we can clean
