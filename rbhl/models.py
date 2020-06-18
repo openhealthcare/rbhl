@@ -148,6 +148,17 @@ End Opal core models
 """
 
 
+class SocialHistory(RBHLSubrecord, models.EpisodeSubrecord):
+    _is_singleton = True
+    _icon = 'fa fa-clock-o'
+
+    SMOKING_CHOICES = enum("Currently", "Ex-smoker", "Never")
+    smoker = fields.CharField(
+        blank=True, null=True, max_length=256, choices=SMOKING_CHOICES
+    )
+    cigerettes_per_day = fields.IntegerField(null=True, blank=True)
+
+
 class ContactDetails(RBHLSubrecord, models.PatientSubrecord):
     _is_singleton = True
     _icon         = 'fa fa-phone'
@@ -161,9 +172,29 @@ class RBHReferrer(lookuplists.LookupList):
     pass
 
 
+class GeographicalArea(lookuplists.LookupList):
+    pass
+
+
 class Referral(RBHLSubrecord, models.EpisodeSubrecord):
     _icon         = 'fa fa-level-up'
     _is_singleton = True
+
+    REASONS = enum(
+        "Environmental",
+        "Fit to work",
+        "Occupational",
+        "Other"
+    )
+
+    DISEASE = enum(
+        "Asthma",
+        "Asthma / Rhinitis",
+        "Inhalation injury",
+        "Malignancy",
+        "Other / Unclear",
+        "Pulmonary fibrosis(eg: Asbestos related disease)"
+    )
 
     # Deprecated
     referrer_title         = models.ForeignKeyOrFreeText(models.Title)
@@ -192,6 +223,13 @@ class Referral(RBHLSubrecord, models.EpisodeSubrecord):
     referral_type = fields.TextField(
         blank=True, null=True, verbose_name="Type of Referral",
     )
+    referral_reason = fields.CharField(
+        blank=True, null=True, max_length=256, choices=REASONS
+    )
+    referral_disease = fields.CharField(
+        blank=True, null=True, max_length=256, choices=DISEASE
+    )
+    geographical_area = models.ForeignKeyOrFreeText(GeographicalArea)
 
 
 class Employer(lookuplists.LookupList):
@@ -202,25 +240,69 @@ class OHProvider(lookuplists.LookupList):
     pass
 
 
+class EmploymentCategory(lookuplists.LookupList):
+    pass
+
+
+class JobTitle(lookuplists.LookupList):
+    pass
+
+
 class Employment(RBHLSubrecord, models.EpisodeSubrecord):
     _icon         = 'fa fa-building-o'
     _is_singleton = True
 
+    SUS_OCC_CHOICES = enum(
+        'Yes-employed in suspect occupation',
+        'Yes',
+        'Yes-other occupation',
+        'No'
+    )
+
     employer = fields.CharField(blank=True, null=True, max_length=100)
+    job_title = models.ForeignKeyOrFreeText(JobTitle)
+    employment_category = models.ForeignKeyOrFreeText(
+        EmploymentCategory
+    )
+    employed_in_suspect_occupation = fields.CharField(
+        blank=True,
+        null=True,
+        max_length=256,
+        choices=SUS_OCC_CHOICES
+    )
+    exposures = fields.TextField(blank=True, default="")
     oh_provider = fields.CharField(
         blank=True, null=True, max_length=100, verbose_name="OH provider"
     )
-    firefighter = fields.NullBooleanField()
+    firefighter = fields.NullBooleanField(
+        verbose_name="Firefighter pre-employment"
+    )
+
+
+class PresentingComplaint(lookuplists.LookupList):
+    pass
 
 
 class ClinicLog(RBHLSubrecord, models.EpisodeSubrecord):
     _icon         = 'fa fa-hospital-o'
     _is_singleton = True
 
+    OUTCOMES = enum(
+        'Known',
+        'Investigations continuing',
+        'Not established lost to follow-up',
+        'Not reached despite investigation',
+        'Not established referred to someone else',
+        'Not established patient withdrew'
+    )
+
     seen_by           = fields.CharField(
         null=True, blank=True, default="", max_length=100
     )
     clinic_date        = fields.DateField(blank=True, null=True)
+    clinic_site        = fields.CharField(
+        blank=True, null=True, max_length=256, default="OCLD"
+    )
     diagnosis_made    = fields.NullBooleanField()
     follow_up_planned = fields.NullBooleanField()
     date_of_followup  = fields.DateField(
@@ -258,6 +340,14 @@ class ClinicLog(RBHLSubrecord, models.EpisodeSubrecord):
     )
 
     active              = fields.NullBooleanField()
+
+    presenting_complaint = models.ForeignKeyOrFreeText(PresentingComplaint)
+    diagnosis_outcome = fields.CharField(
+        blank=True, null=True, max_length=256, choices=OUTCOMES
+    )
+    referred_to = fields.CharField(
+        blank=True, null=True, max_length=256
+    )
 
     def days_since_first_attended(self):
         if not self.clinic_date:

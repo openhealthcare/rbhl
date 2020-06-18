@@ -3,15 +3,13 @@
 {% with label_size=6 field_size=6 %}
 {% field_display "Employment.employer" %}
 {% field_display "Employment.oh_provider" %}
+{% field_display "Employment.job_title" %}
+{% field_display "Employment.employment_category" %}
+{% field_display "Employment.employed_in_suspect_occupation" %}
+{% field_display "Employment.firefighter" %}
 <div class="row">
-  <div class="col-md-{{ label_size }}">
-    <b>Firefighter <br />pre-employment:</b>
-  </div>
-  <div class="col-md-{{ field_size }}" ng-show="item.firefighter">
-      {% icon "fa-check" %}
+  <div class="col-md-12">
+    {% field_display "Employment.exposures" markdown=True %}
   </div>
 </div>
 {% endwith %}
-
-
-
