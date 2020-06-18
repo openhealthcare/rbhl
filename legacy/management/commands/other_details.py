@@ -296,9 +296,17 @@ class Command(BaseCommand):
         if sus:
             employment.employed_in_suspect_occupation = sus
 
-        employment.exposures = clean_sensitivies(
+        # exposures like sensitities contain a lot of synonyms
+        # that we can clean
+        exposures = clean_sensitivies(
             suspect_occupational_category.exposures
         )
+        exposures = exposures.replace("Christmas trees", "")
+        exposures = exposures.replace("gluteraldehyde", "")
+        exposures = exposures.replace("Christmas trees", "")
+        exposures = exposures.replace("Tea bloom", "")
+        exposures = "\n".join([i.strip() for i in exposures.split("\n") if i.strip()])
+        exposures = exposures.strip()
         employment.save()
 
     def build_diagnostic_testing(self, patientLUT, rows):
@@ -803,9 +811,14 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(msg))
 
         build_lookup_list(models.Employment, models.Employment.employment_category)
-        build_lookup_list(models.ClinicLog, models.ClinicLog.presenting_complaint)
+        models.EmploymentCategory.objects.create(name="Stone masons")
         msg = "Created {} employment categories".format(
             models.EmploymentCategory.objects.all().count()
+        )
+        self.stdout.write(self.style.SUCCESS(msg))
+        build_lookup_list(models.ClinicLog, models.ClinicLog.presenting_complaint)
+        msg = "Created {} presenting complaints".format(
+            models.PresentingComplaint.objects.all().count()
         )
         self.stdout.write(self.style.SUCCESS(msg))
 
