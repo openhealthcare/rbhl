@@ -9,7 +9,7 @@ from opal.core import lookuplists
 
 
 class Spirometry(RbhlSubrecord, models.PatientSubrecord):
-    _icon = "fa fa-hand-paper-o"
+    _icon = "fa fa-crosshairs"
 
     date = fields.DateField(blank=True, null=True)
     fev_1 = fields.FloatField(
@@ -31,7 +31,7 @@ class Spirometry(RbhlSubrecord, models.PatientSubrecord):
 
 
 class SkinPrickTest(RbhlSubrecord, models.PatientSubrecord):
-    _icon = "fa fa-hand-paper-o"
+    _icon = "fa fa-crosshairs"
     NEG_CONTROL = "Neg control"
     POS_CONTROL = "Pos control"
     ASP_FUMIGATUS = "Asp. fumigatus"
@@ -63,7 +63,7 @@ class BronchialChallengeSubstance(lookuplists.LookupList):
 
 
 class BronchialTest(RbhlSubrecord, models.PatientSubrecord):
-    _icon = "fa fa-hand-paper-o"
+    _icon = "fa fa-crosshairs"
 
     BRONCHIAL_TEST_RESULTS = enum(
         'Positive',
@@ -95,8 +95,12 @@ class BronchialTest(RbhlSubrecord, models.PatientSubrecord):
     duration_exposed = fields.TextField(default="", blank=True)
     date = fields.DateField(null=True, blank=True)
     substance = models.ForeignKeyOrFreeText(BronchialChallengeSubstance)
-    baseline_pc20 = fields.CharField(blank=True, default="", max_length=256)
-    lowest_pc20 = fields.CharField(blank=True, default="", max_length=256)
+    baseline_pc20 = fields.CharField(
+        verbose_name="Baseline PC20", blank=True, default="", max_length=256
+    )
+    lowest_pc20 = fields.CharField(
+        verbose_name="Lowest PC20", blank=True, default="", max_length=256
+    )
 
 
 class OtherInvestigations(RbhlSubrecord, models.PatientSubrecord):

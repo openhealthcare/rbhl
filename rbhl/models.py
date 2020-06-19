@@ -93,9 +93,9 @@ class RBHLSubrecord(fields.Model):
         return cls._meta.verbose_name
 
 
-class Demographics(models.Demographics):
+class Demographics(RBHLSubrecord, models.Demographics):
     height = fields.IntegerField(
-        blank=True, null=True, verbose_name='Height(cm)'
+        blank=True, null=True, verbose_name='Height (cm)'
     )
     MALE = "Male"
     FEMALE = "Female"
@@ -221,7 +221,7 @@ class Referral(RBHLSubrecord, models.EpisodeSubrecord):
         blank=True, null=True, verbose_name="Date of first appointment offered"
     )
     referral_type = fields.TextField(
-        blank=True, null=True, verbose_name="Type of Referral",
+        blank=True, null=True, verbose_name="Type of referral",
     )
     referral_reason = fields.CharField(
         blank=True, null=True, max_length=256, choices=REASONS
@@ -660,6 +660,9 @@ Begin exploratory models during testing
 
 class Occupation(models.EpisodeSubrecord):
     _is_singleton = True
+    _exclude_from_extract = True
+    _advanced_searchable = False
+
     currently_employed = fields.CharField(
         max_length=200, choices=YN, blank=True, null=True
     )
@@ -670,6 +673,8 @@ class Occupation(models.EpisodeSubrecord):
 
 class DiagnosisAsthma(models.EpisodeSubrecord):
     _is_singleton = True
+    _exclude_from_extract = True
+    _advanced_searchable = False
 
     asthma = fields.CharField(max_length=200, blank=True, null=True)
     exacerbated_by_work = fields.CharField(
@@ -691,6 +696,8 @@ class DiagnosisAsthma(models.EpisodeSubrecord):
 
 class DiagnosisRhinitis(models.EpisodeSubrecord):
     _is_singleton = True
+    _exclude_from_extract = True
+    _advanced_searchable = False
 
     rhinitis = fields.CharField(max_length=200, blank=True, null=True)
     work_exacerbated = fields.CharField(
@@ -715,11 +722,17 @@ class ImportedFromPeakFlowDatabase(models.EpisodeSubrecord):
     The occupational lung database was the database before
     Indigo that was used to store peak flows
     """
+    _exclude_from_extract = True
+    _advanced_searchable = False
+
     age = fields.IntegerField(blank=True, null=True)
     trial_number = fields.IntegerField(blank=True, null=True)
 
 
 class PatientSource(fields.Model):
+    _exclude_from_extract = True
+    _advanced_searchable = False
+
     patient = fields.OneToOneField(models.Patient, on_delete=fields.CASCADE)
     peak_flow_database = fields.BooleanField(
         default=False, blank=True
