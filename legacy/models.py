@@ -53,6 +53,9 @@ class ActionLog(EpisodeSubrecord):
 
 
 class BloodBook(EpisodeSubrecord):
+    _exclude_from_extract = True
+    _advanced_searchable = False
+
     reference_number   = models.CharField(blank=True, null=True,
                                           max_length=200)
     employer           = models.CharField(blank=True, null=True,
@@ -96,6 +99,9 @@ class BloodBook(EpisodeSubrecord):
 
 
 class BloodBookResult(EpisodeSubrecord):
+    _exclude_from_extract = True
+    _advanced_searchable = False
+
     result = models.CharField(blank=True, null=True, max_length=200)
     allergen   = models.CharField(blank=True, null=True, max_length=200)
     antigenno  = models.CharField(blank=True, null=True, max_length=200)
@@ -167,11 +173,15 @@ Peak Flow DB
 
 
 class PeakFlowIdentifier(PatientSubrecord):
+    _exclude_from_extract = True
+    _advanced_searchable = False
+
     occmendo = models.IntegerField(blank=True, null=True)
     age = models.IntegerField(blank=True, null=True)
 
 
 class GP(PatientSubrecord):
+    _exclude_from_extract = True
     _is_singleton = True
 
     name = models.TextField()
@@ -180,12 +190,16 @@ class GP(PatientSubrecord):
 
 
 class PatientNumber(PatientSubrecord):
+    _exclude_from_extract = True
+    _advanced_searchable = False
     _is_singleton = True
 
     value = models.TextField(null=True)
 
 
 class Address(PatientSubrecord):
+    _exclude_from_extract = True
+    _advanced_searchable = False
     _is_singleton = True
 
     address = models.TextField(null=True)
@@ -193,6 +207,8 @@ class Address(PatientSubrecord):
 
 
 class Details(PatientSubrecord):
+    _exclude_from_extract = True
+    _advanced_searchable = False
     _is_singleton = True
 
     date_referral_received = models.DateTimeField(null=True, blank=True)
@@ -215,6 +231,8 @@ class Details(PatientSubrecord):
 
 
 class SuspectOccupationalCategory(PatientSubrecord):
+    _exclude_from_extract = True
+    _advanced_searchable = False
     _is_singleton = True
 
     # UI Field: Currently Employed?
@@ -240,6 +258,8 @@ class SuspectOccupationalCategory(PatientSubrecord):
 
 
 class DiagnosticTesting(PatientSubrecord):
+    _exclude_from_extract = True
+    _advanced_searchable = False
     _is_singleton = True
 
     # UI Field: Antihistimines
@@ -299,6 +319,8 @@ class DiagnosticTesting(PatientSubrecord):
 
 
 class DiagnosticOutcome(PatientSubrecord):
+    _exclude_from_extract = True
+    _advanced_searchable = False
     _is_singleton = True
 
     # UI Field: Diagnosis
@@ -310,6 +332,8 @@ class DiagnosticOutcome(PatientSubrecord):
 
 
 class DiagnosticAsthma(PatientSubrecord):
+    _exclude_from_extract = True
+    _advanced_searchable = False
     _is_singleton = True
 
     # UI Field: Asthma
@@ -331,6 +355,8 @@ class DiagnosticAsthma(PatientSubrecord):
 
 
 class DiagnosticRhinitis(PatientSubrecord):
+    _exclude_from_extract = True
+    _advanced_searchable = False
     _is_singleton = True
 
     # Rhinitis
@@ -352,6 +378,8 @@ class DiagnosticRhinitis(PatientSubrecord):
 
 
 class DiagnosticOther(PatientSubrecord):
+    _exclude_from_extract = True
+    _advanced_searchable = False
     _is_singleton = True
 
     # UI Field: COPD
@@ -399,6 +427,9 @@ class DiagnosticOther(PatientSubrecord):
 
 
 class LegacySkinPrickTest(PatientSubrecord):
+    _exclude_from_extract = True
+    _advanced_searchable = False
+
     specific_sp_testnum = models.IntegerField(null=True, blank=True)
     spt = models.TextField(null=True, blank=True)
     wheal = models.FloatField(null=True, blank=True)
@@ -406,6 +437,8 @@ class LegacySkinPrickTest(PatientSubrecord):
 
 
 class OtherFields(PatientSubrecord):
+    _exclude_from_extract = True
+    _advanced_searchable = False
     _is_singleton = True
 
     other_det_num = models.TextField(null=True, blank=True)
@@ -428,6 +461,9 @@ class OtherFields(PatientSubrecord):
 
 
 class LegacyBronchialTest(PatientSubrecord):
+    _exclude_from_extract = True
+    _advanced_searchable = False
+
     # UI Field: ???
     bronchial_num = models.IntegerField(null=True, blank=True)
     # UI Field: Substance
@@ -451,6 +487,9 @@ class LegacyBronchialTest(PatientSubrecord):
 
 
 class RoutineSPT(PatientSubrecord):
+    _exclude_from_extract = True
+    _advanced_searchable = False
+
     neg_control = models.FloatField(null=True, blank=True)
     pos_control = models.FloatField(null=True, blank=True)
     asp_fumigatus = models.FloatField(null=True, blank=True)
