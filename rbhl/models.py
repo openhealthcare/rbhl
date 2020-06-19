@@ -93,9 +93,9 @@ class RBHLSubrecord(fields.Model):
         return cls._meta.verbose_name
 
 
-class Demographics(RBHLSubrecord, models.Demographics):
+class Demographics(models.Demographics):
     height = fields.IntegerField(
-        blank=True, null=True, verbose_name='Height (cm)'
+        blank=True, null=True, verbose_name='Height(cm)'
     )
     MALE = "Male"
     FEMALE = "Female"
@@ -221,7 +221,7 @@ class Referral(RBHLSubrecord, models.EpisodeSubrecord):
         blank=True, null=True, verbose_name="Date of first appointment offered"
     )
     referral_type = fields.TextField(
-        blank=True, null=True, verbose_name="Type of referral",
+        blank=True, null=True, verbose_name="Type of Referral",
     )
     referral_reason = fields.CharField(
         blank=True, null=True, max_length=256, choices=REASONS
@@ -252,13 +252,23 @@ class Employment(RBHLSubrecord, models.EpisodeSubrecord):
     _icon         = 'fa fa-building-o'
     _is_singleton = True
 
+    SUS_OCC_CHOICES = enum(
+        'Yes-employed in suspect occupation',
+        'Yes',
+        'Yes-other occupation',
+        'No'
+    )
+
     employer = fields.CharField(blank=True, null=True, max_length=100)
     job_title = models.ForeignKeyOrFreeText(JobTitle)
     employment_category = models.ForeignKeyOrFreeText(
         EmploymentCategory
     )
-    employed_in_suspect_occupation = fields.BooleanField(
-        default=False
+    employed_in_suspect_occupation = fields.CharField(
+        blank=True,
+        null=True,
+        max_length=256,
+        choices=SUS_OCC_CHOICES
     )
     exposures = fields.TextField(blank=True, default="")
     oh_provider = fields.CharField(
@@ -476,7 +486,11 @@ class PeakFlowDay(RBHLSubrecord, models.EpisodeSubrecord):
 
 class AsthmaDetails(RBHLSubrecord, models.EpisodeSubrecord):
     """
+    This model has an implicit fk to Diagnosis, based on a
+    diagnosis of Asthma and a date.
+
     When this model is saved we create a diagnosis of Asthma.
+    When we update this model we update the diagnosis based
     When it is deleted we remove the diagnosis of Asthma
     """
     _icon = "fa fa-stethoscope"
@@ -492,6 +506,7 @@ class AsthmaDetails(RBHLSubrecord, models.EpisodeSubrecord):
         IRRITANT_INDUCED,
         NON_OCCUPATIONAL,
     )
+    date = fields.DateField(blank=True, null=True)
     trigger = fields.CharField(
         blank=True, null=True, max_length=256, choices=ASTHMA_CHOICES
     )
@@ -506,7 +521,8 @@ def delete_related_asthma_diagnosis(
     sender, instance, **kwargs
 ):
     instance.episode.diagnosis_set.filter(
-        category=Diagnosis.ASTHMA
+        category=Diagnosis.ASTHMA,
+        date=instance.date
     ).delete()
 
 
@@ -515,19 +531,40 @@ def create_related_asthma_diagnosis(
     sender, instance, **kwargs
 ):
     """
-    If its new create a diagnosis
+    If its new create a diagnosis.
+
+    If its an update that updates the date,
+    update the diagnosis date.
     """
     if not instance.id:
         Diagnosis.objects.create(
             episode=instance.episode,
             category=Diagnosis.ASTHMA,
-            condition=Diagnosis.ASTHMA
+            condition=Diagnosis.ASTHMA,
+            date=instance.date
         )
+    else:
+        existing_instance = instance.__class__.objects.get(
+            id=instance.id
+        )
+        if not existing_instance.date == instance.date:
+            Diagnosis.objects.filter(
+                episode=instance.episode,
+                category=Diagnosis.ASTHMA,
+                condition=Diagnosis.ASTHMA,
+                date=existing_instance.date
+            ).update(
+                date=instance.date
+            )
 
 
 class RhinitisDetails(RBHLSubrecord, models.EpisodeSubrecord):
     """
+    This model has an implicit fk to Diagnosis, based on a
+    diagnosis of Rhinitis and a date.
+
     When this model is saved we create a diagnosis of Rhinitis.
+    When we update this model we update the diagnosis.
     When it is deleted we remove the diagnosis of Rhinitis
     """
     _icon = "fa fa-stethoscope"
@@ -541,6 +578,7 @@ class RhinitisDetails(RBHLSubrecord, models.EpisodeSubrecord):
         EXACERBATED_BY_WORK,
         NON_OCCUPATIONAL,
     )
+    date = fields.DateField(blank=True, null=True)
     trigger = fields.CharField(
         blank=True, null=True, max_length=256, choices=RHINITIS_CHOICES
     )
@@ -555,7 +593,8 @@ def delete_related_rhinitis_diagnosis(
     sender, instance, **kwargs
 ):
     instance.episode.diagnosis_set.filter(
-        category=Diagnosis.RHINITIS
+        category=Diagnosis.RHINITIS,
+        date=instance.date
     ).delete()
 
 
@@ -564,14 +603,31 @@ def create_related_rhinits_diagnosis(
     sender, instance, **kwargs
 ):
     """
-    If its new create a diagnosis
+    If its new create a diagnosis.
+
+    If its an update that updates the date,
+    update the diagnosis date.
     """
     if not instance.id:
         Diagnosis.objects.create(
             episode=instance.episode,
             category=Diagnosis.RHINITIS,
-            condition=Diagnosis.RHINITIS
+            condition=Diagnosis.RHINITIS,
+            date=instance.date
         )
+    else:
+        existing_instance = instance.__class__.objects.get(
+            id=instance.id
+        )
+        if not existing_instance.date == instance.date:
+            Diagnosis.objects.filter(
+                episode=instance.episode,
+                category=Diagnosis.RHINITIS,
+                condition=Diagnosis.RHINITIS,
+                date=existing_instance.date
+            ).update(
+                date=instance.date
+            )
 
 
 class Diagnosis(RBHLSubrecord, models.EpisodeSubrecord):
@@ -623,6 +679,7 @@ class Diagnosis(RBHLSubrecord, models.EpisodeSubrecord):
         ]
     }
 
+    date = fields.DateField(blank=True, null=True)
     category = fields.CharField(
         blank=True, null=True, max_length=256, choices=enum(
             *CONDITION_CATEGORIES.keys()
@@ -660,9 +717,6 @@ Begin exploratory models during testing
 
 class Occupation(models.EpisodeSubrecord):
     _is_singleton = True
-    _exclude_from_extract = True
-    _advanced_searchable = False
-
     currently_employed = fields.CharField(
         max_length=200, choices=YN, blank=True, null=True
     )
@@ -673,8 +727,6 @@ class Occupation(models.EpisodeSubrecord):
 
 class DiagnosisAsthma(models.EpisodeSubrecord):
     _is_singleton = True
-    _exclude_from_extract = True
-    _advanced_searchable = False
 
     asthma = fields.CharField(max_length=200, blank=True, null=True)
     exacerbated_by_work = fields.CharField(
@@ -696,8 +748,6 @@ class DiagnosisAsthma(models.EpisodeSubrecord):
 
 class DiagnosisRhinitis(models.EpisodeSubrecord):
     _is_singleton = True
-    _exclude_from_extract = True
-    _advanced_searchable = False
 
     rhinitis = fields.CharField(max_length=200, blank=True, null=True)
     work_exacerbated = fields.CharField(
@@ -722,17 +772,11 @@ class ImportedFromPeakFlowDatabase(models.EpisodeSubrecord):
     The occupational lung database was the database before
     Indigo that was used to store peak flows
     """
-    _exclude_from_extract = True
-    _advanced_searchable = False
-
     age = fields.IntegerField(blank=True, null=True)
     trial_number = fields.IntegerField(blank=True, null=True)
 
 
 class PatientSource(fields.Model):
-    _exclude_from_extract = True
-    _advanced_searchable = False
-
     patient = fields.OneToOneField(models.Patient, on_delete=fields.CASCADE)
     peak_flow_database = fields.BooleanField(
         default=False, blank=True
