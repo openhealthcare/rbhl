@@ -96,7 +96,7 @@ class BronchialTest(RbhlSubrecord, models.PatientSubrecord):
     date = fields.DateField(null=True, blank=True)
     substance = models.ForeignKeyOrFreeText(BronchialChallengeSubstance)
     baseline_pc20 = fields.CharField(
-        verbose_name="Baseline_PC20", blank=True, default="", max_length=256
+        verbose_name="Baseline PC20", blank=True, default="", max_length=256
     )
     lowest_pc20 = fields.CharField(
         verbose_name="Lowest PC20", blank=True, default="", max_length=256
