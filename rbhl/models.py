@@ -93,9 +93,9 @@ class RBHLSubrecord(fields.Model):
         return cls._meta.verbose_name
 
 
-class Demographics(models.Demographics):
+class Demographics(RBHLSubrecord, models.Demographics):
     height = fields.IntegerField(
-        blank=True, null=True, verbose_name='Height(cm)'
+        blank=True, null=True, verbose_name='Height (cm)'
     )
     MALE = "Male"
     FEMALE = "Female"
@@ -221,7 +221,7 @@ class Referral(RBHLSubrecord, models.EpisodeSubrecord):
         blank=True, null=True, verbose_name="Date of first appointment offered"
     )
     referral_type = fields.TextField(
-        blank=True, null=True, verbose_name="Type of Referral",
+        blank=True, null=True, verbose_name="Type of referral",
     )
     referral_reason = fields.CharField(
         blank=True, null=True, max_length=256, choices=REASONS
