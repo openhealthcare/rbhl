@@ -8,7 +8,7 @@
             <h4>Summary</h4>
           </a>
           <a ng-class="{'btn-info': view, 'btn-default': !view}" href="/#/patient/[[ patient.id ]]/investigations" class="btn">
-            <h4>Investigations</h4>
+            <h4 ng-controller="InvestigationsView as investigationsView">Investigations ([[ investigationsView.testCount() ]])</h4>
           </a>
         </div>
       </div>
