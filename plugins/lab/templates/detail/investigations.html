@@ -18,14 +18,10 @@
       <div class="row content-offset-25">
         <ul ng-controller="InvestigationsView as investigationsView" class="list-group">
           <li ng-repeat="testDate in investigationsView.getTestDateKeys()">
-            <div class="row">
-              <div class="col-md-3">
-                [[ testDate ]]
-              </div>
-            </div>
             <div ng-show="investigationsView.getTestsForDateKey('{{ models.Spirometry.get_api_name }}', testDate).length" class="test-row row">
               <div class="col-md-3">
                 <strong style="text-transform: uppercase">{{ models.Spirometry.get_display_name }}</strong>
+                <br/>[[ testDate ]]
               </div>
               <div class="col-md-8">
                 <div ng-repeat="item in investigationsView.getTestsForDateKey('{{ models.Spirometry.get_api_name }}', testDate) track by $index" class="row">
@@ -44,6 +40,7 @@
               <div class="row test-row">
                 <div class="col-md-3">
                   <strong style="text-transform: uppercase">Skin prick tests</strong>
+                  <br/>[[ testDate ]]
                   <div>
                     <span ng-show="investigationsView.isAtopic(investigationsView.getTestsForDateKey('{{ models.SkinPrickTest.get_api_name }}', testDate))">
                       Atopic
@@ -76,6 +73,7 @@
               <div class="row test-row">
                 <div class="col-md-3">
                   <strong style="text-transform: uppercase">{{ models.BronchialTest.get_display_name }}</strong>
+                  <br/>[[ testDate ]]
                 </div>
                 <div class="col-md-8">
                   <div ng-repeat="item in investigationsView.getTestsForDateKey('{{ models.BronchialTest.get_api_name }}', testDate) track by $index" class="row">
@@ -96,6 +94,7 @@
               <div class="row test-row">
                 <div class="col-md-3">
                   <strong style="text-transform: uppercase">{{ models.OtherInvestigations.get_display_name }}</strong>
+                  <br/>[[ testDate ]]
                 </div>
                 <div class="col-md-8">
                   <div ng-repeat="item in investigationsView.getTestsForDateKey('{{ models.OtherInvestigations.get_api_name }}', testDate) track by $index" class="row">
