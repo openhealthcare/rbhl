@@ -255,10 +255,10 @@ class Employment(RBHLSubrecord, models.EpisodeSubrecord):
     employer = fields.CharField(blank=True, null=True, max_length=100)
     job_title = models.ForeignKeyOrFreeText(JobTitle)
     employment_category = models.ForeignKeyOrFreeText(
-        EmploymentCategory
+        EmploymentCategory, verbose_name="category"
     )
     employed_in_suspect_occupation = fields.BooleanField(
-        default=False
+        default=False, verbose_name="suspect occcupation"
     )
     exposures = fields.TextField(blank=True, default="")
     oh_provider = fields.CharField(
