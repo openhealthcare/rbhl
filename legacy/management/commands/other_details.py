@@ -434,6 +434,7 @@ class Command(BaseCommand):
             elif legacy_asthma.has_non_occupational_asthma:
                 option = models.AsthmaDetails.NON_OCCUPATIONAL
 
+            asthma.date = patient.diagnosticoutcome_set.all()[0].diagnosis_date
             asthma.trigger = option
             asthma.save()
 
@@ -496,7 +497,7 @@ class Command(BaseCommand):
             rhinitis.sensitivities = clean_sensitivies(
                 legacy_rhinitis.rhinitis_occupational_sensitisation_cause
             )
-
+            rhinitis.date = patient.diagnosticoutcome_set.all()[0].diagnosis_date
             rhinitis.save()
 
     def build_diagnostic_other(self, patientLUT, rows):
@@ -537,6 +538,7 @@ class Command(BaseCommand):
     def convert_to_diagnosis_other(self, patient):
         other = patient.diagnosticother_set.all()[0]
         episode = patient.episode_set.get()
+        diagnosis_date = patient.diagnosticoutcome_set.all()[0].diagnosis_date
 
         if any([
             other.copd,
@@ -548,27 +550,31 @@ class Command(BaseCommand):
                     episode=episode,
                     condition="COPD",
                     category=models.Diagnosis.CHRONIC_AIR_FLOW_LIMITATION,
-                    occupational=bool(other.copd_is_occupational)
+                    occupational=bool(other.copd_is_occupational),
+                    date=diagnosis_date
                 )
                 models.Diagnosis.objects.create(
                     episode=episode,
                     condition="Emphysema",
                     category=models.Diagnosis.CHRONIC_AIR_FLOW_LIMITATION,
-                    occupational=bool(other.copd_is_occupational)
+                    occupational=bool(other.copd_is_occupational),
+                    date=diagnosis_date
                 )
             elif other.copd:
                 models.Diagnosis.objects.create(
                     episode=episode,
                     condition="COPD",
                     category=models.Diagnosis.CHRONIC_AIR_FLOW_LIMITATION,
-                    occupational=bool(other.copd_is_occupational)
+                    occupational=bool(other.copd_is_occupational),
+                    date=diagnosis_date
                 )
             else:
                 models.Diagnosis.objects.create(
                     episode=episode,
                     condition="Emphysema",
                     category=models.Diagnosis.CHRONIC_AIR_FLOW_LIMITATION,
-                    occupational=bool(other.copd_is_occupational)
+                    occupational=bool(other.copd_is_occupational),
+                    date=diagnosis_date
                 )
 
         if any([
@@ -585,7 +591,8 @@ class Command(BaseCommand):
                 episode=episode,
                 condition=malignancy,
                 category=models.Diagnosis.MALIGNANCY,
-                occupational=bool(other.malignancy_is_occupational)
+                occupational=bool(other.malignancy_is_occupational),
+                date=diagnosis_date
             )
 
         if any([
@@ -601,7 +608,8 @@ class Command(BaseCommand):
                 episode=episode,
                 condition=lung_disease_type,
                 category=models.Diagnosis.DIFFUSE_LUNG_DISEASE,
-                occupational=bool(other.diffuse_lung_disease_is_occupational)
+                occupational=bool(other.diffuse_lung_disease_is_occupational),
+                date=diagnosis_date
             )
 
         if any([
@@ -616,6 +624,7 @@ class Command(BaseCommand):
                 episode=episode,
                 condition=disease_type,
                 category=models.Diagnosis.BENIGN_PLEURAL_DISEASE,
+                date=diagnosis_date
             )
 
         if any([
@@ -641,13 +650,15 @@ class Command(BaseCommand):
                 episode=episode,
                 condition=condition,
                 category=models.Diagnosis.OTHER,
-                occupational=bool(other.other_diagnosis_is_occupational)
+                occupational=bool(other.other_diagnosis_is_occupational),
+                date=diagnosis_date
             )
 
         if other.NAD:
             models.Diagnosis.objects.create(
                 episode=episode,
                 category=models.Diagnosis.NAD,
+                date=diagnosis_date
             )
 
     def build_other(self, patientLUT, rows):
