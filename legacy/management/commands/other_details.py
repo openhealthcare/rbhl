@@ -539,6 +539,23 @@ class Command(BaseCommand):
         other = patient.diagnosticother_set.all()[0]
         episode = patient.episode_set.get()
         diagnosis_date = patient.diagnosticoutcome_set.all()[0].diagnosis_date
+        if other.NAD:
+            # As discussed with the user, in some instances of NAD
+            # Diagnosis other was used as a comment field. This
+            # is now added as a general note.
+            if other.other_diagnosis_type_other:
+                episode.actionlog_set.create(
+                    general_notes="Diagnosis information: {}".format(
+                        other.other_diagnosis_type_other
+                    )
+                )
+
+            models.Diagnosis.objects.create(
+                episode=episode,
+                category=models.Diagnosis.NAD,
+                date=diagnosis_date
+            )
+            return
 
         if any([
             other.copd,
@@ -651,13 +668,6 @@ class Command(BaseCommand):
                 condition=condition,
                 category=models.Diagnosis.OTHER,
                 occupational=bool(other.other_diagnosis_is_occupational),
-                date=diagnosis_date
-            )
-
-        if other.NAD:
-            models.Diagnosis.objects.create(
-                episode=episode,
-                category=models.Diagnosis.NAD,
                 date=diagnosis_date
             )
 
