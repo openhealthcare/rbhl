@@ -28,6 +28,7 @@ seen_by_me_menu_item = SeenByMeMenuItem(
 class Application(application.OpalApplication):
     javascripts   = [
         'js/rbhl/routes.js',
+        'js/rbhl/filters.js',
         'js/rbhl/clinicdatecomparator.js',
         'js/opal/controllers/discharge.js',
         'js/rbhl/directives.js',
