@@ -1,3 +1,4 @@
+{# if there is already a value in the text field, append with a new line #}
 <a ng-show="{{ editing }}.length"
 ng-click="{{ editing }} = {{ editing }} + '\n{{ text }}'"
 class="btn btn-default btn-xs add-button"
@@ -6,6 +7,7 @@ ng-disabled="{{ editing }}.indexOf('{{ text }}') !== -1"
 <i class="fa fa-plus-circle pointer"></i>
 {{ text }}
 </a>
+{# if there is not already a value set the field to the value of the button clicked #}
 <a ng-show="!{{ editing }}.length"
 ng-click="{{ editing }} = '{{ text }}'"
 class="btn btn-default btn-xs add-button"
