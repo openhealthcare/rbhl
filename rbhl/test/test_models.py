@@ -367,17 +367,15 @@ class RBHLSubrecordTestCase(OpalTestCase):
 
     def test_get_display_name(self):
         self.assertTrue(issubclass(models.ClinicLog, models.RBHLSubrecord))
-        display_name = models.ClinicLog.get_display_name()
+        display_name = models.PeakFlowDay.get_display_name()
         self.assertEqual(
-            display_name, "Clinic log"
+            display_name, "Peak flow day"
         )
 
     def test_get_display_name_verbose_name_override(self):
-        with mock.patch.object(models.ClinicLog, "_meta"):
-            models.ClinicLog._meta.verbose_name = "Something"
-            display_name = models.ClinicLog.get_display_name()
+        display_name = models.ClinicLog.get_display_name()
         self.assertEqual(
-            display_name, "Something"
+            display_name, "Clinic details"
         )
 
 

@@ -175,7 +175,7 @@ class Referral(RBHLSubrecord, models.EpisodeSubrecord):
     # Deprecated
     referrer_title         = models.ForeignKeyOrFreeText(models.Title)
     referrer_name = fields.CharField(
-        blank=True, null=True, max_length=100
+        blank=True, null=True, max_length=100, verbose_name="Referrer name"
     )
     date_of_referral       = fields.DateField(
         blank=True, null=True
@@ -183,7 +183,7 @@ class Referral(RBHLSubrecord, models.EpisodeSubrecord):
 
     # Process tracking for admin staff
     date_referral_received = fields.DateField(
-        blank=True, null=True
+        blank=True, null=True, verbose_name="Received"
     )
     # ??
     date_first_contact     = fields.DateField(
@@ -197,7 +197,7 @@ class Referral(RBHLSubrecord, models.EpisodeSubrecord):
         blank=True, null=True, verbose_name="Date of first appointment offered"
     )
     referral_type = fields.TextField(
-        blank=True, null=True, verbose_name="Type of referral",
+        blank=True, null=True, verbose_name="Type",
     )
     referral_reason = fields.CharField(
         blank=True, null=True, max_length=256, choices=REASONS
@@ -252,6 +252,9 @@ class PresentingComplaint(lookuplists.LookupList):
 class ClinicLog(RBHLSubrecord, models.EpisodeSubrecord):
     _icon         = 'fa fa-hospital-o'
     _is_singleton = True
+
+    class Meta:
+        verbose_name = "Clinic details"
 
     OUTCOMES = enum(
         'Known',
