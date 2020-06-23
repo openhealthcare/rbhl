@@ -1,8 +1,13 @@
 {% load forms %}
 {% load rbhl_panels %}
 <div class="row">
+  <div class="col-md-4 col-md-offset-1">
+    {% datepicker field="AsthmaDetails.date" style="vertical" %}
+  </div>
+</div>
+<div class="row">
   <div class="col-md-10 col-md-offset-1">
-    {% radio field="AsthmaDetails.trigger" style="vertical" %}
+    {% radio field="AsthmaDetails.trigger" style="vertical" label="" %}
   </div>
 </div>
 <div class="row">
