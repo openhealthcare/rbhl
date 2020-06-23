@@ -1,5 +1,6 @@
 $red: rgba(208, 28, 23, 1);
 $blue: rgba(70, 118, 197, 1);
+$dark-blue: darken($blue, 10%);
 $bluegreen: rgba(58, 138, 138, 1);
 $green: rgba(46, 153, 62, 1);
 $orange: rgba(225, 132, 0, 1);
@@ -174,7 +175,7 @@ a {
 
 
 .panel.panel-primary .panel-heading a{
-    color: $slate;
+    color: $dark-blue;
 }
 .panel.panel-primary .panel-heading a:hover{
     color: grey;
@@ -573,8 +574,8 @@ input[type="date"]::-webkit-input-placeholder{
     }
 
     .btn.btn-info {
-        background: darken($blue, 10%);
-        border-color: darken($blue, 10%);
+        background: $dark-blue;
+        border-color: $dark-blue;
     }
 
     h4{
@@ -657,3 +658,4 @@ input[type="date"]::-webkit-input-placeholder{
     padding: 5px 10px;
     margin-top: 10px;
 }
+
