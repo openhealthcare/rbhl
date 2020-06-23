@@ -227,8 +227,8 @@ class Command(BaseCommand):
         social_history = episode.socialhistory_set.all()[0]
         if not social_history.smoker:
             if details.is_smoker:
-                if details.is_smoker == "Currently":
-                    social_history.smoker = "Current"
+                if details.is_smoker == "Current":
+                    social_history.smoker = "Currently"
                 else:
                     social_history.smoker = details.is_smoker
 

@@ -1,10 +1,10 @@
 {% load panels %}
 <div class="row">
   <div class="col-md-6">
-    {% record_panel models.Demographics %}
+    {% record_panel models.Demographics full_width=True %}
   </div>
   <div class="col-md-6">
-    {% record_panel models.ContactDetails %}
+    {% record_panel models.ContactDetails full_width=True %}
   </div>
 </div>
 <div class="row">
@@ -36,7 +36,7 @@
 
 
 
-
+{% comment %}
   <h2>Asthma Database</h2>
 
 
@@ -116,6 +116,7 @@
       {% record_panel models.OtherFields %}
     </div>
   </div>
+{% endcomment %}
 
 
 
