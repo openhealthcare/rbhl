@@ -1,24 +1,35 @@
 {% extends 'base_templates/form_modal_base.html' %}
+{% load forms %}
 {% block title %}
-  {{ models.Diagnosis.NAD }} {{ block.super }}
+<i class="fa fa-stethoscope"></i>
+{{ models.Diagnosis.NAD }} {{ block.super }}
 {% endblock title %}
 {% block form %}
 <div ng-repeat="item in the_episode.diagnosis | filter:{category: '!{{ models.Diagnosis.NAD }}'} as hasOtherDiagnosis">
 </div>
-<div class="row" ng-init="editing.diagnosis.category = '{{ models.Diagnosis.NAD }}'">
+<div ng-init="editing.diagnosis.category = '{{ models.Diagnosis.NAD }}'">
   <div ng-show="!confirm">
-    <div ng-show="!item.id" class="col-md-12">
-      <p class="lead text-center">
-        Record the patient as NAD
-      </p>
+    <div class="row">
+      <div ng-show="!item.id" class="col-md-12">
+        <p class="lead text-center">
+          Record the patient as NAD
+        </p>
+      </div>
+      <div ng-show="item.id" class="col-md-12">
+        <p class="lead text-center">
+          Patient recorded as NAD
+        </p>
+      </div>
     </div>
-    <div ng-show="item.id" class="col-md-12">
-      <p class="lead text-center">
-        Patient recorded as NAD
-      </p>
+    <div class="row">
+      <div class="col-md-6 col-md-offset-3">
+        <div class="horizontal-form">
+          {% datepicker field="Diagnosis.date"%}
+        </div>
+      </div>
     </div>
   </div>
-  <div ng-show="confirm">
+  <div class="row" ng-show="confirm">
     <p class="lead text-center">
       Delete the diagnosis of
       <span>

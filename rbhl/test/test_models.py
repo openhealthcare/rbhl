@@ -110,16 +110,21 @@ class DiagnosisTestCase(OpalTestCase):
     def setUp(self, *args, **kwargs):
         super().setUp(*args, **kwargs)
         patient, self.episode = self.new_patient_and_episode_please()
+        self.today = datetime.date.today()
 
     def test_creation_of_asthma_details_should_create_diagnosis(self):
         """
         When you create an AsthmaDetail model it should
         create a corresponding diagnosis
         """
-        self.episode.asthmadetails_set.create()
+        self.episode.asthmadetails_set.create(date=self.today)
         self.assertEqual(
             self.episode.diagnosis_set.get().category,
-            models.Diagnosis.ASTHMA
+            models.Diagnosis.ASTHMA,
+        )
+        self.assertEqual(
+            self.episode.diagnosis_set.get().date,
+            self.today,
         )
 
     def test_editing_asthma_details(self):
@@ -135,15 +140,45 @@ class DiagnosisTestCase(OpalTestCase):
             models.Diagnosis.ASTHMA
         )
 
+    def test_editing_asthma_should_update_date(self):
+        """
+        If a patient has multiple asthma diagnosis. When
+        we edit we should only update diagnosis related to
+        the asthma that is being updated
+        """
+        yesterday = self.today - datetime.timedelta(1)
+        two_days_ago = self.today - datetime.timedelta(2)
+        asthma_to_be_updated = self.episode.asthmadetails_set.create(
+            date=yesterday
+        )
+        diagnosis_to_be_updated = self.episode.diagnosis_set.get()
+        self.episode.asthmadetails_set.create(
+            date=two_days_ago
+        )
+        asthma_to_be_updated.date = self.today
+        asthma_to_be_updated.save()
+
+        self.assertEqual(
+            models.Diagnosis.objects.count(), 2
+        )
+        self.assertEqual(
+            models.Diagnosis.objects.get(id=diagnosis_to_be_updated.id).date,
+            self.today
+        )
+
     def test_creation_of_rhinitis_details_should_create_diagnosis(self):
         """
         When you create an RhinitisDetails model it should
         create a corresponding diagnosis
         """
-        self.episode.rhinitisdetails_set.create()
+        self.episode.rhinitisdetails_set.create(date=self.today)
         self.assertEqual(
             self.episode.diagnosis_set.get().category,
             models.Diagnosis.RHINITIS
+        )
+        self.assertEqual(
+            self.episode.diagnosis_set.get().date,
+            self.today,
         )
 
     def test_editing_rhinitis_details(self):
@@ -157,6 +192,32 @@ class DiagnosisTestCase(OpalTestCase):
         self.assertEqual(
             self.episode.diagnosis_set.get().category,
             models.Diagnosis.RHINITIS
+        )
+
+    def test_editing_rhinitis_should_update_date(self):
+        """
+        If a patient has multiple rhinitis diagnosis. When
+        we edit we should only update the diagnosis related to
+        the rhinitis that is being updated
+        """
+        yesterday = self.today - datetime.timedelta(1)
+        two_days_ago = self.today - datetime.timedelta(2)
+        rhinitis_to_be_updated = self.episode.rhinitisdetails_set.create(
+            date=yesterday
+        )
+        diagnosis_to_be_updated = self.episode.diagnosis_set.get()
+        self.episode.rhinitisdetails_set.create(
+            date=two_days_ago
+        )
+        rhinitis_to_be_updated.date = self.today
+        rhinitis_to_be_updated.save()
+
+        self.assertEqual(
+            models.Diagnosis.objects.count(), 2
+        )
+        self.assertEqual(
+            models.Diagnosis.objects.get(id=diagnosis_to_be_updated.id).date,
+            self.today
         )
 
     def test_deletion_of_asthma_details_should_delete_diagnosis(self):
