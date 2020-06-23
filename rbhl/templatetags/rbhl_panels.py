@@ -87,3 +87,23 @@ def test_field(
     ctx["is_boolean"] = is_boolean(field)
     ctx["unit"] = kwargs.get("unit", "")
     return ctx
+
+
+@register.inclusion_tag(
+    'templatetags/rbhl_panels/add_to_text_button.html',
+)
+def add_to_text_button(
+    field, text, **kwargs
+):
+    model_and_field_name = field
+    field_name = model_and_field_name.split(".")[1]
+    model, _ = _model_and_field_from_path(model_and_field_name)
+
+    ctx = {
+        "editing": "editing.{}.{}".format(
+            model.get_api_name(), field_name
+        ),
+        "text": text
+    }
+
+    return ctx
