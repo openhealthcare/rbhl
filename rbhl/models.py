@@ -111,30 +111,6 @@ class Demographics(RBHLSubrecord, models.Demographics):
             )
 
 
-class Location(models.Location):
-    pass
-
-
-class Allergies(models.Allergies):
-    pass
-
-
-class PastMedicalHistory(models.PastMedicalHistory):
-    pass
-
-
-class Treatment(models.Treatment):
-    pass
-
-
-class Investigation(models.Investigation):
-    pass
-
-
-class SymptomComplex(models.SymptomComplex):
-    pass
-
-
 class PatientConsultation(models.PatientConsultation):
     pass
 
