@@ -112,4 +112,4 @@ class OtherInvestigations(RbhlSubrecord, models.PatientSubrecord):
     test = fields.CharField(
         choices=TEST_TYPE, blank=True, default="", max_length=256
     )
-    comments = fields.TextField(blank=True, default="")
+    details = fields.TextField(blank=True, default="")
