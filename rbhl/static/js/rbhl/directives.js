@@ -364,7 +364,7 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
 
           return `
             <table class="${CLASS.tooltip}">
-              <tr><th colspan='2'>Day ${trialNum}${dtStr}</th></tr>
+              <tr><th colspan='2'>Day ${trialNum} ${dtStr}</th></tr>
               ${rows.join("")}
             </table>
           `
