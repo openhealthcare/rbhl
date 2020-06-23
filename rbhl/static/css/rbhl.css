@@ -406,6 +406,11 @@ a {
   padding-right: 20px;
 }
 
+.horizontal-form .control-label {
+  margin-bottom: 5px;
+  padding-top: 0px;
+}
+
 .horizontal-form .checkbox {
   margin-top: 32px;
 }
