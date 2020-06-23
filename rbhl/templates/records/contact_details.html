@@ -1,5 +1,12 @@
 {% load rbhl_panels %}
 {% field_display "ContactDetails.mobile" %}
 {% field_display "ContactDetails.phone" %}
-{% field_display "ContactDetails.email" %}
+<div class="row">
+  <div class="col-md-5">
+      <b>Email:</b>
+  </div>
+  <div class="col-md-7" ng-show="item.email">
+    <a href="mailto:[[ item.email ]]">[[ item.email ]]</a>
+  </div>
+</div>
 
