@@ -1,6 +1,5 @@
 {% load forms %}
 {% load rbhl_panels %}
-{% with label_size=6 field_size=6 %}
 {% field_display "Employment.employer" %}
 {% field_display "Employment.oh_provider" %}
 {% field_display "Employment.job_title" %}
@@ -12,4 +11,3 @@
     {% field_display "Employment.exposures" markdown=True %}
   </div>
 </div>
-{% endwith %}
