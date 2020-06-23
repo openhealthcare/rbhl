@@ -12,62 +12,82 @@
   </div>
   <div ng-show="showDiagnosis" class="row content-offset-below-25">
     <div class="col-sm-11">
-      <a
-        ng-click="diagnosisDisplay.newItem('{{ models.AsthmaDetails.get_api_name }}', '/templates/modals/asthma.html')"
-        class="btn btn-default btn-xs diagnosis-btn"
-      >
-        <i class="fa fa-plus-circle pointer"></i>
-        {{ models.AsthmaDetails.get_display_name }}
-      </a>
-      <a
-        ng-click="diagnosisDisplay.newItem('{{ models.RhinitisDetails.get_api_name }}', '/templates/modals/rhinitis.html')"
-        class="btn btn-default btn-xs diagnosis-btn"
-      >
-        <i class="fa fa-plus-circle pointer"></i>
-        {{ models.RhinitisDetails.get_display_name }}
-      </a>
-      <a
-        ng-click="diagnosisDisplay.newItem('{{ models.Diagnosis.get_api_name }}', '/templates/modals/chronic_air_flow_limitation.html')"
-        class="btn btn-default btn-xs diagnosis-btn"
-      >
-        <i class="fa fa-plus-circle pointer"></i>
-        {{ models.Diagnosis.CHRONIC_AIR_FLOW_LIMITATION}}
-      </a>
-      <a
-        ng-click="diagnosisDisplay.newItem('{{ models.Diagnosis.get_api_name }}', '/templates/modals/malignancy.html')"
-        class="btn btn-default btn-xs diagnosis-btn"
-      >
-        <i class="fa fa-plus-circle pointer"></i>
-        {{ models.Diagnosis.MALIGNANCY}}
-      </a>
-      <a
-        ng-click="diagnosisDisplay.newItem('{{ models.Diagnosis.get_api_name }}', '/templates/modals/benign_pleural_disease.html')"
-        class="btn btn-default btn-xs diagnosis-btn"
-      >
-        <i class="fa fa-plus-circle pointer"></i>
-        {{ models.Diagnosis.BENIGN_PLEURAL_DISEASE}}
-      </a>
-      <a
-        ng-click="diagnosisDisplay.newItem('{{ models.Diagnosis.get_api_name }}', '/templates/modals/diffuse_lung_disease.html')"
-        class="btn btn-default btn-xs diagnosis-btn"
-      >
-        <i class="fa fa-plus-circle pointer"></i>
-        {{ models.Diagnosis.DIFFUSE_LUNG_DISEASE}}
-      </a>
-      <a
-        ng-click="diagnosisDisplay.newItem('{{ models.Diagnosis.get_api_name }}', '/templates/modals/other_diagnosis.html')"
-        class="btn btn-default btn-xs diagnosis-btn"
-      >
-        <i class="fa fa-plus-circle pointer"></i>
-        {{ models.Diagnosis.OTHER}}
-      </a>
-      <a
-        ng-click="diagnosisDisplay.newItem('{{ models.Diagnosis.get_api_name }}', '/templates/modals/nad.html')"
-        class="btn btn-default btn-xs diagnosis-btn"
-      >
-        <i class="fa fa-plus-circle pointer"></i>
-        {{ models.Diagnosis.NAD}}
-      </a>
+      <div class="row">
+        <div class="col-sm-3">
+          <a
+          ng-click="diagnosisDisplay.newItem('{{ models.AsthmaDetails.get_api_name }}', '/templates/modals/asthma.html')"
+          class="btn btn-default btn-xs diagnosis-btn"
+        >
+          <i class="fa fa-plus-circle pointer"></i>
+          {{ models.AsthmaDetails.get_display_name }}
+        </a>
+        </div>
+        <div class="col-sm-3">
+          <a
+          ng-click="diagnosisDisplay.newItem('{{ models.RhinitisDetails.get_api_name }}', '/templates/modals/rhinitis.html')"
+          class="btn btn-default btn-xs diagnosis-btn"
+        >
+          <i class="fa fa-plus-circle pointer"></i>
+          {{ models.RhinitisDetails.get_display_name }}
+        </a>
+        </div>
+        <div class="col-sm-3">
+          <a
+          ng-click="diagnosisDisplay.newItem('{{ models.Diagnosis.get_api_name }}', '/templates/modals/chronic_air_flow_limitation.html')"
+          class="btn btn-default btn-xs diagnosis-btn"
+        >
+          <i class="fa fa-plus-circle pointer"></i>
+          {{ models.Diagnosis.CHRONIC_AIR_FLOW_LIMITATION}}
+        </a>
+        </div>
+        <div class="col-sm-3">
+          <a
+          ng-click="diagnosisDisplay.newItem('{{ models.Diagnosis.get_api_name }}', '/templates/modals/malignancy.html')"
+          class="btn btn-default btn-xs diagnosis-btn"
+        >
+          <i class="fa fa-plus-circle pointer"></i>
+          {{ models.Diagnosis.MALIGNANCY}}
+        </a>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-3">
+          <a
+          ng-click="diagnosisDisplay.newItem('{{ models.Diagnosis.get_api_name }}', '/templates/modals/benign_pleural_disease.html')"
+          class="btn btn-default btn-xs diagnosis-btn"
+        >
+          <i class="fa fa-plus-circle pointer"></i>
+          {{ models.Diagnosis.BENIGN_PLEURAL_DISEASE}}
+        </a>
+        </div>
+        <div class="col-sm-3">
+          <a
+          ng-click="diagnosisDisplay.newItem('{{ models.Diagnosis.get_api_name }}', '/templates/modals/diffuse_lung_disease.html')"
+          class="btn btn-default btn-xs diagnosis-btn"
+        >
+          <i class="fa fa-plus-circle pointer"></i>
+          {{ models.Diagnosis.DIFFUSE_LUNG_DISEASE}}
+        </a>
+        </div>
+        <div class="col-sm-3">
+          <a
+          ng-click="diagnosisDisplay.newItem('{{ models.Diagnosis.get_api_name }}', '/templates/modals/other_diagnosis.html')"
+          class="btn btn-default btn-xs diagnosis-btn"
+        >
+          <i class="fa fa-plus-circle pointer"></i>
+          {{ models.Diagnosis.OTHER}}
+        </a>
+        </div>
+        <div class="col-sm-3">
+          <a
+          ng-click="diagnosisDisplay.newItem('{{ models.Diagnosis.get_api_name }}', '/templates/modals/nad.html')"
+          class="btn btn-default btn-xs diagnosis-btn"
+        >
+          <i class="fa fa-plus-circle pointer"></i>
+          {{ models.Diagnosis.NAD}}
+        </a>
+        </div>
+      </div>
     </div>
     <div style="padding-top: 12px; padding-right: 30px;" class="col-sm-1">
       <i
