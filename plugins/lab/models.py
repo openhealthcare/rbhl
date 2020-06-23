@@ -81,7 +81,6 @@ class BronchialTest(RbhlSubrecord, models.PatientSubrecord):
         'Other',
     )
 
-    test_num = fields.IntegerField(null=True, blank=True)
     result = fields.CharField(
         blank=True, default="", choices=BRONCHIAL_TEST_RESULTS, max_length=256
     )
@@ -113,4 +112,4 @@ class OtherInvestigations(RbhlSubrecord, models.PatientSubrecord):
     test = fields.CharField(
         choices=TEST_TYPE, blank=True, default="", max_length=256
     )
-    comments = fields.TextField(blank=True, default="")
+    details = fields.TextField(blank=True, default="")

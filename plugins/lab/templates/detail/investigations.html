@@ -99,10 +99,10 @@
                 </div>
               </div>
             </div>
-            <div ng-show="investigationsView.getTestsForDateKey('{{ models.OtherInvestigations.get_api_name }}', testDate).length">
+            <div ng-repeat="item in investigationsView.getTestsForDateKey('{{ models.OtherInvestigations.get_api_name }}', testDate) track by $index">
               <div class="row">
                 <div class="col-md-3">
-                  <strong style="text-transform: uppercase">{{ models.OtherInvestigations.get_display_name }}</strong>
+                  <strong style="text-transform: uppercase">[[ item.test ]]</strong>
                 </div>
               </div>
               <div class="row test-row">
@@ -110,7 +110,7 @@
                   [[ testDate ]]
                 </div>
                 <div class="col-md-8">
-                  <div ng-repeat="item in investigationsView.getTestsForDateKey('{{ models.OtherInvestigations.get_api_name }}', testDate) track by $index" class="row">
+                  <div class="row">
                     <div class="col-md-9">
                       {% include models.OtherInvestigations.get_display_template %}
                     </div>
