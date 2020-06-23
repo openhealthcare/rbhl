@@ -630,7 +630,13 @@ class Diagnosis(RBHLSubrecord, models.EpisodeSubrecord):
     NAD = "NAD"  # no abnormality detected
     OTHER = "Other"
 
-    CONDITION_CATEGORIES = {
+    CONDITON_CATEGORIES = enum(
+        ASTHMA, RHINITIS, CHRONIC_AIR_FLOW_LIMITATION,
+        MALIGNANCY, BENIGN_PLEURAL_DISEASE, DIFFUSE_LUNG_DISEASE,
+        OTHER
+    )
+
+    CONDITION_OPTIONS = {
         "asthma": [ASTHMA],
         "rhinitis": [RHINITIS],
         "chronic_air_flow_limitation": [
@@ -671,9 +677,7 @@ class Diagnosis(RBHLSubrecord, models.EpisodeSubrecord):
 
     date = fields.DateField(blank=True, null=True)
     category = fields.CharField(
-        blank=True, null=True, max_length=256, choices=enum(
-            *CONDITION_CATEGORIES.keys()
-        )
+        blank=True, null=True, max_length=256, choices=CONDITON_CATEGORIES
     )
     condition = fields.CharField(blank=True, null=True, max_length=256)
     occupational = fields.BooleanField(default=False)
