@@ -74,6 +74,9 @@ sensitivies_translation = {
         'pharmaceuticals - morphine',
         'morphine'
     ],
+    ('Grain / Flour',): [
+        "grain/flour"
+    ]
 }
 
 
