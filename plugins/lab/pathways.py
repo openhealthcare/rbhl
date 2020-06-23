@@ -3,6 +3,7 @@ from plugins.lab import models
 
 
 class SkinPrickTest(PagePathway):
+    icon = 'fa-crosshairs'
     display_name = "Skin Prick Test"
     slug = "skin_prick_test"
     template = "pathway/skin_prick_test_base.html"
