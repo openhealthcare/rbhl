@@ -50,7 +50,7 @@ class SkinPrickTest(RbhlSubrecord, models.PatientSubrecord):
         HOUSE_DUST_MITE
     ]
 
-    antihistimines = fields.NullBooleanField(null=True, blank=True)
+    antihistamines = fields.NullBooleanField(null=True, blank=True)
     substance = fields.TextField(
         blank=True, verbose_name="SPT", default=""
     )

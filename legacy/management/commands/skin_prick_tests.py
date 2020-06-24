@@ -52,7 +52,7 @@ class Command(BaseCommand):
     def get_antihistimines(self, patient):
         diagnostic_testing = patient.diagnostictesting_set.all()
         if len(diagnostic_testing):
-            return diagnostic_testing[0].antihistimines
+            return diagnostic_testing[0].antihistamines
 
     @transaction.atomic()
     def convert_legacy_skin_prick_tests(self):
@@ -64,7 +64,7 @@ class Command(BaseCommand):
             "diagnostictesting_set",
         )
         for patient in qs:
-            antihistimines = self.get_antihistimines(patient)
+            antihistamines = self.get_antihistimines(patient)
             for legacy in patient.legacyskinpricktest_set.all():
 
                 # there are 181 patients with no spt, they also
@@ -79,7 +79,7 @@ class Command(BaseCommand):
                     date=dt,
                     wheal=legacy.wheal,
                     patient=patient,
-                    antihistimines=antihistimines,
+                    antihistamines=antihistamines,
                 ))
 
         SkinPrickTest.objects.bulk_create(skin_prick_tests)

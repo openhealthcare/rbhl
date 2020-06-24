@@ -2,8 +2,8 @@ angular.module('opal.controllers').controller(
   'SkinPrickTestController', function(scope, step, episode, displayDateFilter, $location, SkinPrickTestHelper) {
     /*
     * A patient comes in and undergoes a set of skin prick tests.
-    * date is the date they have the tests, antihistimines is if the
-    * patient is on antihistimines at the time of the test.
+    * date is the date they have the tests, antihistamines is if the
+    * patient is on antihistamines at the time of the test.
     *
     * The pathway therefore looks at one date.
     *
@@ -12,7 +12,7 @@ angular.module('opal.controllers').controller(
     *
     * If they don't have skin prick test for that date create a set
     * of the common skin prick tests for that date with the
-    * antihistimines set the value of the get parameter
+    * antihistamines set the value of the get parameter
     */
 
     "use strict";
@@ -64,7 +64,7 @@ angular.module('opal.controllers').controller(
     scope.getDefaultArgs = function(){
       return {
         date: scope.testingDate,
-        antihistimines: scope.antihistimines,
+        antihistamines: scope.antihistamines,
         wheal: 0,
         _client: {
           id: _.uniqueId("testRow"),
@@ -84,7 +84,7 @@ angular.module('opal.controllers').controller(
       * the antihistmine for all tests.
       */
       _.each(scope.skin_prick_tests, function(spt){
-        spt.skin_prick_test.antihistimines = scope.antihistimines;
+        spt.skin_prick_test.antihistamines = scope.antihistamines;
       });
       scope.validate();
     }
@@ -170,14 +170,14 @@ angular.module('opal.controllers').controller(
 
     scope.dateError = function(spt){
       var dtString = displayDateFilter(spt.date);
-      return "For the date " + dtString + " it is unclear if the patient was on antihistimines or not.";
+      return "For the date " + dtString + " it is unclear if the patient was on antihistamines or not.";
     }
 
     scope.isSkinPrickTestValid = function(spt){
       /*
-      * spt.antihistimines actually means on this day the patient was on anthistimines
+      * spt.antihistamines actually means on this day the patient was on anthistimines
       * therefore an spt is invalid if for a day a patient is both recorded as being
-      * on and not on antihistimines
+      * on and not on antihistamines
       */
       spt._client.error = ""
 
@@ -192,8 +192,8 @@ angular.module('opal.controllers').controller(
 
       scope.allSpts = scope.toSaveSet();
       var different = _.find(scope.allSpts, function(otherSpt){
-        var otherAntihistimines = !!otherSpt.antihistimines;
-        var onAntihistimines = !!spt.antihistimines;
+        var otherAntihistimines = !!otherSpt.antihistamines;
+        var onAntihistimines = !!spt.antihistamines;
         return scope.dateEquality(otherSpt.date, spt.date) && (otherAntihistimines !== onAntihistimines);
       });
 
@@ -230,13 +230,13 @@ angular.module('opal.controllers').controller(
       * display the skin prick tests.
       *
       * Otherwise create a list of the common skin prick
-      * tests setting GET.date and GET.antihistimines for
+      * tests setting GET.date and GET.antihistamines for
       * each.
       */
       scope.testingDate = scope.getDateFromGetParams();
       scope.testsForDate();
-      scope.antihistimines = _.every(scope.skin_prick_tests, function(spt){
-        return spt.skin_prick_test.antihistimines;
+      scope.antihistamines = _.every(scope.skin_prick_tests, function(spt){
+        return spt.skin_prick_test.antihistamines;
       });
       scope.initialTests = _.clone(scope.skin_prick_tests);
       scope.validate();
