@@ -24,13 +24,13 @@
 <div class="row">
   <div class="col-md-12">
     {% record_panel models.ClinicLog full_width=True %}
+    {% include 'partials/diagnosis_panel.html' %}
     {% record_panel models.ActionLog %}
     {% record_panel models.Letter %}
   </div>
 </div>
 
 {% include 'partials/peak_flow_table.html' %}
-{% include 'partials/diagnosis_panel.html' %}
 
 
 
