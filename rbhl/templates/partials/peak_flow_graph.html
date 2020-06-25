@@ -2,7 +2,7 @@
   <div class="col-md-12">
     <h4 class="panel-header-padding">
       <span ng-show="graphData.length > 1">Trial [[ peakFlowTrial.start_date | displayDate ]]</span>
-      <a href="/pathway/#/peak_flow_day/[[ patient.id ]]/[[ episode.id ]]?trial_num=[[ peakFlowTrial.trialNum ]]">
+      <a href="/pathway/#/peak_flow_day/[[ patient.id ]]/[[ episode.id ]]?trial_num=[[ peakFlowTrial.trial_num ]]">
         <i class="fa fa-pencil edit pull-right pointer">
         </i>
       </a>
@@ -42,7 +42,7 @@
         </span>
   </div>
 </div>
-<div peak-flow-graph data="peakFlowTrial" highlights="highlights[trialNum]"></div>
+<div peak-flow-graph data="peakFlowTrial" highlights="highlights[trial_num]"></div>
   <div ng-show="peakFlowTrial.notes.length" class="row content-offset-below">
     <div class="row">
       <div class="col-md-1 text-right">
