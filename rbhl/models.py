@@ -272,7 +272,6 @@ class ClinicLog(RBHLSubrecord, models.EpisodeSubrecord):
     clinic_site        = fields.CharField(
         blank=True, null=True, max_length=256, default="OCLD"
     )
-    diagnosis_made    = fields.NullBooleanField()
     follow_up_planned = fields.NullBooleanField()
     date_of_followup  = fields.DateField(
         blank=True, null=True, verbose_name="Date of follow up"
