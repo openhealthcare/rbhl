@@ -19,14 +19,14 @@ class Spirometry(RbhlSubrecord, models.PatientSubrecord):
         null=True, blank=True, verbose_name="FEV post ventolin"
     )
     fev_1_percentage_predicted = fields.IntegerField(
-        null=True, blank=True, verbose_name="FEV 1 % predicted"
+        null=True, blank=True, verbose_name="FEV 1 predicted"
     )
     fvc = fields.FloatField(null=True, blank=True, verbose_name="FVC")
     fvc_post_ventolin = fields.FloatField(
         null=True, blank=True, verbose_name="FVC post ventolin"
     )
     fvc_percentage_predicted = fields.IntegerField(
-        null=True, blank=True, verbose_name="FVC % predicted"
+        null=True, blank=True, verbose_name="FVC predicted"
     )
 
 
