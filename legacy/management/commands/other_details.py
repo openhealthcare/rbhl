@@ -333,7 +333,7 @@ class Command(BaseCommand):
             yield DiagnosticTesting(
                 patient=patient,
                 created=timezone.now(),
-                antihistimines=to_bool(row["Antihistimines"]),
+                antihistamines=to_bool(row["Antihistimines"]),
                 skin_prick_test=to_bool(row["SkinPrick_test"]),
                 atopic=row["Atopic"],
                 specific_skin_prick=to_bool(row["SpecificSkinPrick"]),

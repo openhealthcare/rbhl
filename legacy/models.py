@@ -262,8 +262,8 @@ class DiagnosticTesting(PatientSubrecord):
     _advanced_searchable = False
     _is_singleton = True
 
-    # UI Field: Antihistimines
-    antihistimines = models.NullBooleanField(null=True, blank=True)
+    # UI Field: antihistamines
+    antihistamines = models.NullBooleanField(null=True, blank=True)
     # UI Field: SkinPrick test
     skin_prick_test = models.NullBooleanField(null=True, blank=True)
     # UI Field: Atopic
