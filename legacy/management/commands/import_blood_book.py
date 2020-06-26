@@ -142,8 +142,8 @@ class Command(BaseCommand):
                 books.append(create_blood_book(data, episode))
 
                 fieldnames = [
-                    'result', 'allergen', 'antigenno', 'kul',
-                    'class', 'rast', 'precipitin', 'igg', 'iggclass'
+                    'RESULT', 'ALLERGEN', 'ANTIGENNO', 'KUL',
+                    'CLASS', 'RAST', 'precipitin', 'igg', 'iggclass'
                 ]
 
                 for i in range(1, 11):
@@ -152,8 +152,9 @@ class Command(BaseCommand):
                         iterfield = '{}{}'.format(field, str(i))
                         value = data.get(iterfield, "")
                         if value:
-                            if field == 'class':
+                            if field == 'CLASS':
                                 field = 'klass'
+                            field = field.lower()
                             result_data[field] = value
 
                     if any(result_data.values()):
