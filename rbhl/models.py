@@ -5,7 +5,10 @@ import datetime
 import math
 from django.db import models as fields
 from decimal import Decimal
-
+from django.db.models.signals import (
+    pre_save, post_save, post_delete
+)
+from django.dispatch import receiver
 from opal import models
 from opal.core.fields import enum
 from opal.core import lookuplists
@@ -61,9 +64,38 @@ def get_peak_expiratory_flow(date, episode, trial_num):
         )
 
 
-class Demographics(models.Demographics):
+class RBHLSubrecord(fields.Model):
+    """
+    Changes models titles and field display names
+    to be sentence case rather than title case,
+    the opal default.
+    """
+    class Meta:
+        abstract = True
+
+    @classmethod
+    def _get_field_title(cls, name):
+        field = cls._get_field(name)
+        if isinstance(field, fields.ManyToOneRel):
+            field_name = field.related_model._meta.verbose_name_plural
+        else:
+            field_name = field.verbose_name
+
+        if field_name.islower():
+            field_name = field_name.capitalize()
+
+        return field_name
+
+    @classmethod
+    def get_display_name(cls):
+        if cls._meta.verbose_name.islower():
+            return cls._meta.verbose_name.capitalize()
+        return cls._meta.verbose_name
+
+
+class Demographics(RBHLSubrecord, models.Demographics):
     height = fields.IntegerField(
-        blank=True, null=True, verbose_name='Height(cm)'
+        blank=True, null=True, verbose_name='Height (cm)'
     )
     MALE = "Male"
     FEMALE = "Female"
@@ -79,34 +111,6 @@ class Demographics(models.Demographics):
             )
 
 
-class Location(models.Location):
-    pass
-
-
-class Allergies(models.Allergies):
-    pass
-
-
-class Diagnosis(models.Diagnosis):
-    _title = 'Diagnosis'
-
-
-class PastMedicalHistory(models.PastMedicalHistory):
-    pass
-
-
-class Treatment(models.Treatment):
-    pass
-
-
-class Investigation(models.Investigation):
-    pass
-
-
-class SymptomComplex(models.SymptomComplex):
-    pass
-
-
 class PatientConsultation(models.PatientConsultation):
     pass
 
@@ -120,7 +124,18 @@ End Opal core models
 """
 
 
-class ContactDetails(models.PatientSubrecord):
+class SocialHistory(RBHLSubrecord, models.EpisodeSubrecord):
+    _is_singleton = True
+    _icon = 'fa fa-clock-o'
+
+    SMOKING_CHOICES = enum("Currently", "Ex-smoker", "Never")
+    smoker = fields.CharField(
+        blank=True, null=True, max_length=256, choices=SMOKING_CHOICES
+    )
+    cigerettes_per_day = fields.IntegerField(null=True, blank=True)
+
+
+class ContactDetails(RBHLSubrecord, models.PatientSubrecord):
     _is_singleton = True
     _icon         = 'fa fa-phone'
 
@@ -128,32 +143,47 @@ class ContactDetails(models.PatientSubrecord):
     phone  = fields.CharField(blank=True, null=True, max_length=100)
     email  = fields.CharField(blank=True, null=True, max_length=100)
 
-    class Meta:
-        verbose_name = "Contact details"
-
 
 class RBHReferrer(lookuplists.LookupList):
     pass
 
 
-class Referral(models.EpisodeSubrecord):
+class GeographicalArea(lookuplists.LookupList):
+    pass
+
+
+class Referral(RBHLSubrecord, models.EpisodeSubrecord):
     _icon         = 'fa fa-level-up'
     _is_singleton = True
 
-    # Deprecated
-    referrer_title         = models.ForeignKeyOrFreeText(
-        models.Title, verbose_name="Referrer title"
+    REASONS = enum(
+        "Environmental",
+        "Fit to work",
+        "Occupational",
+        "Other"
     )
+
+    DISEASE = enum(
+        "Asthma",
+        "Asthma / Rhinitis",
+        "Inhalation injury",
+        "Malignancy",
+        "Other / Unclear",
+        "Pulmonary fibrosis(eg: Asbestos related disease)"
+    )
+
+    # Deprecated
+    referrer_title         = models.ForeignKeyOrFreeText(models.Title)
     referrer_name = fields.CharField(
         blank=True, null=True, max_length=100, verbose_name="Referrer name"
     )
     date_of_referral       = fields.DateField(
-        blank=True, null=True, verbose_name="Date of referral"
+        blank=True, null=True
     )
 
     # Process tracking for admin staff
     date_referral_received = fields.DateField(
-        blank=True, null=True, verbose_name="Date referral received"
+        blank=True, null=True, verbose_name="Received"
     )
     # ??
     date_first_contact     = fields.DateField(
@@ -166,6 +196,16 @@ class Referral(models.EpisodeSubrecord):
     date_first_appointment = fields.DateField(
         blank=True, null=True, verbose_name="Date of first appointment offered"
     )
+    referral_type = fields.TextField(
+        blank=True, null=True, verbose_name="Type",
+    )
+    referral_reason = fields.CharField(
+        blank=True, null=True, max_length=256, choices=REASONS
+    )
+    referral_disease = fields.CharField(
+        blank=True, null=True, max_length=256, choices=DISEASE
+    )
+    geographical_area = models.ForeignKeyOrFreeText(GeographicalArea)
 
 
 class Employer(lookuplists.LookupList):
@@ -176,54 +216,76 @@ class OHProvider(lookuplists.LookupList):
     pass
 
 
-class Employment(models.EpisodeSubrecord):
+class EmploymentCategory(lookuplists.LookupList):
+    pass
+
+
+class JobTitle(lookuplists.LookupList):
+    pass
+
+
+class Employment(RBHLSubrecord, models.EpisodeSubrecord):
     _icon         = 'fa fa-building-o'
     _is_singleton = True
 
     employer = fields.CharField(blank=True, null=True, max_length=100)
+    job_title = models.ForeignKeyOrFreeText(JobTitle)
+    employment_category = models.ForeignKeyOrFreeText(
+        EmploymentCategory, verbose_name="category"
+    )
+    employed_in_suspect_occupation = fields.BooleanField(
+        default=False, verbose_name="suspect occcupation"
+    )
+    exposures = fields.TextField(blank=True, default="")
     oh_provider = fields.CharField(
         blank=True, null=True, max_length=100, verbose_name="OH provider"
     )
-    firefighter = fields.NullBooleanField()
+    firefighter = fields.NullBooleanField(
+        verbose_name="Firefighter pre-employment"
+    )
 
 
-class ClinicLog(models.EpisodeSubrecord):
+class PresentingComplaint(lookuplists.LookupList):
+    pass
+
+
+class ClinicLog(RBHLSubrecord, models.EpisodeSubrecord):
     _icon         = 'fa fa-hospital-o'
     _is_singleton = True
 
+    class Meta:
+        verbose_name = "Clinic details"
+
+    OUTCOMES = enum(
+        'Known',
+        'Investigations continuing',
+        'Not established lost to follow-up',
+        'Not reached despite investigation',
+        'Not established referred to someone else',
+        'Not established patient withdrew'
+    )
+
     seen_by           = fields.CharField(
-        blank=True, default="", max_length=100, verbose_name="Seen by"
+        null=True, blank=True, default="", max_length=100
     )
     clinic_date        = fields.DateField(blank=True, null=True)
-    diagnosis_made    = fields.NullBooleanField(verbose_name="Diagnosis made")
-    follow_up_planned = fields.NullBooleanField(
-        verbose_name="Follow up planned"
+    clinic_site        = fields.CharField(
+        blank=True, null=True, max_length=256, default="OCLD"
     )
+    follow_up_planned = fields.NullBooleanField()
     date_of_followup  = fields.DateField(
         blank=True, null=True, verbose_name="Date of follow up"
     )
 
-    lung_function       = fields.NullBooleanField(
-        verbose_name="Lung function"
-    )
-    lung_function_date  = fields.DateField(
-        blank=True, null=True, verbose_name="Lung function date"
-    )
-    lung_function_attendance = fields.NullBooleanField(
-        verbose_name="Lung function attendance"
-    )
+    lung_function       = fields.NullBooleanField()
+    lung_function_date  = fields.DateField(blank=True, null=True)
+    lung_function_attendance = fields.NullBooleanField()
 
     histamine           = fields.NullBooleanField()
-    histamine_date      = fields.DateField(
-        blank=True, null=True, verbose_name="Histamine date"
-    )
-    histamine_attendance = fields.NullBooleanField(
-        verbose_name="Histamine attendance"
-    )
+    histamine_date      = fields.DateField(blank=True, null=True)
+    histamine_attendance = fields.NullBooleanField()
 
-    peak_flow           = fields.NullBooleanField(
-        verbose_name="Peak flow"
-    )
+    peak_flow           = fields.NullBooleanField()
 
     other_rbh_bloods    = fields.NullBooleanField(
         verbose_name="Other RBH bloods"
@@ -232,18 +294,14 @@ class ClinicLog(models.EpisodeSubrecord):
         verbose_name="Immunology OEM"
     )
 
-    other_hospital_info = fields.NullBooleanField(
-        verbose_name="Other hospital info"
-    )
+    other_hospital_info = fields.NullBooleanField()
     other_oh_info       = fields.NullBooleanField(
         verbose_name="Other OH info"
     )
     other_gp_info       = fields.NullBooleanField(
         verbose_name="Other GP info"
     )
-    work_samples        = fields.NullBooleanField(
-        verbose_name="Work samples"
-    )
+    work_samples        = fields.NullBooleanField()
 
     outstanding_tests_required = fields.BooleanField(
         default=False
@@ -251,8 +309,13 @@ class ClinicLog(models.EpisodeSubrecord):
 
     active              = fields.NullBooleanField()
 
-    class Meta:
-        verbose_name = "Clinic log"
+    presenting_complaint = models.ForeignKeyOrFreeText(PresentingComplaint)
+    diagnosis_outcome = fields.CharField(
+        blank=True, null=True, max_length=256, choices=OUTCOMES
+    )
+    referred_to = fields.CharField(
+        blank=True, null=True, max_length=256
+    )
 
     def days_since_first_attended(self):
         if not self.clinic_date:
@@ -268,7 +331,7 @@ class Letter(models.EpisodeSubrecord):
     text = fields.TextField(blank=True, null=True)
 
 
-class PeakFlowDay(models.EpisodeSubrecord):
+class PeakFlowDay(RBHLSubrecord, models.EpisodeSubrecord):
     _sort = '-date'
 
     date = fields.DateField(blank=True, null=True)
@@ -389,6 +452,236 @@ class PeakFlowDay(models.EpisodeSubrecord):
             }
 
 
+class AsthmaDetails(RBHLSubrecord, models.EpisodeSubrecord):
+    """
+    This model has an implicit fk to Diagnosis, based on a
+    diagnosis of Asthma and a date.
+
+    When this model is saved we create a diagnosis of Asthma for the date.
+    When we update this model we update the diagnosis for the date.
+    When it is deleted we remove the diagnosis of Asthma for the date.
+    """
+    _icon = "fa fa-stethoscope"
+
+    OCCUPATIONAL_CAUSED_BY_SENSITISATION = "Occupational caused by sensitisation"
+    EXACERBATED_BY_WORK = "Exacerbated by work"
+    IRRITANT_INDUCED = "Irritant induced"
+    NON_OCCUPATIONAL = "Non occupational"
+
+    ASTHMA_CHOICES = enum(
+        OCCUPATIONAL_CAUSED_BY_SENSITISATION,
+        EXACERBATED_BY_WORK,
+        IRRITANT_INDUCED,
+        NON_OCCUPATIONAL,
+    )
+    date = fields.DateField(blank=True, null=True)
+    trigger = fields.CharField(
+        blank=True, null=True, max_length=256, choices=ASTHMA_CHOICES
+    )
+    sensitivities = fields.TextField(blank=True, default="")
+
+    class Meta:
+        verbose_name = "Asthma"
+
+
+@receiver(post_delete, sender=AsthmaDetails)
+def delete_related_asthma_diagnosis(
+    sender, instance, **kwargs
+):
+    instance.episode.diagnosis_set.filter(
+        category=Diagnosis.ASTHMA,
+        date=instance.date
+    ).delete()
+
+
+@receiver(pre_save, sender=AsthmaDetails)
+def create_related_asthma_diagnosis(
+    sender, instance, **kwargs
+):
+    """
+    If its new create a diagnosis.
+
+    If its an update that updates the date,
+    update the diagnosis date.
+    """
+    if not instance.id:
+        Diagnosis.objects.create(
+            episode=instance.episode,
+            category=Diagnosis.ASTHMA,
+            condition=Diagnosis.ASTHMA,
+            date=instance.date
+        )
+    else:
+        existing_instance = instance.__class__.objects.get(
+            id=instance.id
+        )
+        if not existing_instance.date == instance.date:
+            Diagnosis.objects.filter(
+                episode=instance.episode,
+                category=Diagnosis.ASTHMA,
+                condition=Diagnosis.ASTHMA,
+                date=existing_instance.date
+            ).update(
+                date=instance.date
+            )
+
+
+class RhinitisDetails(RBHLSubrecord, models.EpisodeSubrecord):
+    """
+    This model has an implicit fk to Diagnosis, based on a
+    diagnosis of Rhinitis and a date.
+
+    When this model is saved we create a diagnosis of Rhinitis for the date.
+    When we update this model we update the diagnosis for the date.
+    When it is deleted we remove the diagnosis of Rhinitis for the date.
+    """
+    _icon = "fa fa-stethoscope"
+
+    OCCUPATIONAL_CAUSED_BY_SENSITISATION = "Occupational caused by sensitisation"
+    EXACERBATED_BY_WORK = "Exacerbated by work"
+    NON_OCCUPATIONAL = "Non occupational"
+
+    RHINITIS_CHOICES = enum(
+        OCCUPATIONAL_CAUSED_BY_SENSITISATION,
+        EXACERBATED_BY_WORK,
+        NON_OCCUPATIONAL,
+    )
+    date = fields.DateField(blank=True, null=True)
+    trigger = fields.CharField(
+        blank=True, null=True, max_length=256, choices=RHINITIS_CHOICES
+    )
+    sensitivities = fields.TextField(blank=True, default="")
+
+    class Meta:
+        verbose_name = "Rhinitis"
+
+
+@receiver(post_delete, sender=RhinitisDetails)
+def delete_related_rhinitis_diagnosis(
+    sender, instance, **kwargs
+):
+    instance.episode.diagnosis_set.filter(
+        category=Diagnosis.RHINITIS,
+        date=instance.date
+    ).delete()
+
+
+@receiver(pre_save, sender=RhinitisDetails)
+def create_related_rhinits_diagnosis(
+    sender, instance, **kwargs
+):
+    """
+    If its new create a diagnosis.
+
+    If its an update that updates the date,
+    update the diagnosis date.
+    """
+    if not instance.id:
+        Diagnosis.objects.create(
+            episode=instance.episode,
+            category=Diagnosis.RHINITIS,
+            condition=Diagnosis.RHINITIS,
+            date=instance.date
+        )
+    else:
+        existing_instance = instance.__class__.objects.get(
+            id=instance.id
+        )
+        if not existing_instance.date == instance.date:
+            Diagnosis.objects.filter(
+                episode=instance.episode,
+                category=Diagnosis.RHINITIS,
+                condition=Diagnosis.RHINITIS,
+                date=existing_instance.date
+            ).update(
+                date=instance.date
+            )
+
+
+class Diagnosis(RBHLSubrecord, models.EpisodeSubrecord):
+    ASTHMA = "Asthma"
+    RHINITIS = "Rhinitis"
+    CHRONIC_AIR_FLOW_LIMITATION = "Chronic air flow limitation"
+    MALIGNANCY = "Malignancy"
+    BENIGN_PLEURAL_DISEASE = "Benign pleural disease"
+    DIFFUSE_LUNG_DISEASE = "Diffuse lung disease"
+    NAD = "NAD"  # no abnormality detected
+    OTHER = "Other"
+
+    CONDITON_CATEGORIES = enum(
+        ASTHMA, RHINITIS, CHRONIC_AIR_FLOW_LIMITATION,
+        MALIGNANCY, BENIGN_PLEURAL_DISEASE, DIFFUSE_LUNG_DISEASE,
+        OTHER
+    )
+
+    CONDITION_OPTIONS = {
+        "asthma": [ASTHMA],
+        "rhinitis": [RHINITIS],
+        "chronic_air_flow_limitation": [
+            "COPD", "Emphysema"
+        ],
+        "NAD": [NAD],
+        # Free text is also possible for all of the below
+        "malignancy": [
+            'Mesothelioma',
+            'Bronchus with asbestos exposure',
+        ],
+        "benign_pleural_disease": [
+            "Predominantly plaques",
+            "Diffuse"
+        ],
+        "diffuse_lung_disease": [
+            "Asbestosis",
+            "Hypersensitivity pneumonitis",
+            "ILD Other",
+            "Berylliosis",
+            "Ideopathic Pulmonary Fibrosis",
+            "Sarcodisis",
+            "Silicosis",
+        ],
+        "other": [
+            "Humidifier fever",
+            "Polymer fume fever",
+            "Infection",
+            "Chemical pneumonitis",
+            "Building related symptoms",
+            "Breathing pattern disorder ",
+            "Induced laryngeal obstruction",
+            "Air travel related symptoms",
+            "Medically unexplained symptoms",
+            "Cough due to irritant symptoms"
+        ]
+    }
+
+    date = fields.DateField(blank=True, null=True)
+    category = fields.CharField(
+        blank=True, null=True, max_length=256, choices=CONDITON_CATEGORIES
+    )
+    condition = fields.CharField(blank=True, null=True, max_length=256)
+    occupational = fields.BooleanField(default=False)
+
+
+@receiver(post_save, sender=Diagnosis)
+def handle_NAD_diagnosis(
+    sender, instance, **kwargs
+):
+    """
+    If an episode is marked as NAD then they have no
+    other diagnosis. Remove the other diagnosis.
+
+    If an episode is given a diagnosis, delete any
+    previous diagnosis of NAD that they have.
+    """
+    if instance.category == instance.NAD:
+        instance.episode.rhinitisdetails_set.all().delete()
+        instance.episode.asthmadetails_set.all().delete()
+        instance.episode.diagnosis_set.exclude(id=instance.id).delete()
+    else:
+        instance.episode.diagnosis_set.filter(
+            category=instance.NAD
+        ).delete()
+
+
 """
 Begin exploratory models during testing
 """
@@ -396,6 +689,8 @@ Begin exploratory models during testing
 
 class Occupation(models.EpisodeSubrecord):
     _is_singleton = True
+    _exclude_from_extract = True
+    _advanced_searchable = False
     currently_employed = fields.CharField(
         max_length=200, choices=YN, blank=True, null=True
     )
@@ -406,6 +701,8 @@ class Occupation(models.EpisodeSubrecord):
 
 class DiagnosisAsthma(models.EpisodeSubrecord):
     _is_singleton = True
+    _exclude_from_extract = True
+    _advanced_searchable = False
 
     asthma = fields.CharField(max_length=200, blank=True, null=True)
     exacerbated_by_work = fields.CharField(
@@ -427,6 +724,8 @@ class DiagnosisAsthma(models.EpisodeSubrecord):
 
 class DiagnosisRhinitis(models.EpisodeSubrecord):
     _is_singleton = True
+    _exclude_from_extract = True
+    _advanced_searchable = False
 
     rhinitis = fields.CharField(max_length=200, blank=True, null=True)
     work_exacerbated = fields.CharField(
@@ -451,11 +750,15 @@ class ImportedFromPeakFlowDatabase(models.EpisodeSubrecord):
     The occupational lung database was the database before
     Indigo that was used to store peak flows
     """
+    _exclude_from_extract = True
+    _advanced_searchable = False
     age = fields.IntegerField(blank=True, null=True)
     trial_number = fields.IntegerField(blank=True, null=True)
 
 
 class PatientSource(fields.Model):
+    _exclude_from_extract = True
+    _advanced_searchable = False
     patient = fields.OneToOneField(models.Patient, on_delete=fields.CASCADE)
     peak_flow_database = fields.BooleanField(
         default=False, blank=True

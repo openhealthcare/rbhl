@@ -1,15 +1,23 @@
 {% extends 'patient_detail_base.html' %}
 {% block content %}
-  <div ng-show="episode.category_name == 'Outpatient'">
-    {% include 'detail/outpatient.html' %}
+  <div class="view-switcher">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="btn-group" role="group">
+          <a ng-class="{'btn-info': !view, 'btn-default': view}" href="/#/patient/[[ patient.id ]]" class="btn">
+            <h4>Summary</h4>
+          </a>
+          <a ng-class="{'btn-info': view, 'btn-default': !view}" href="/#/patient/[[ patient.id ]]/investigations" class="btn">
+            <h4>Investigations ([[ patient|testCount ]])</h4>
+          </a>
+        </div>
+      </div>
+    </div>
   </div>
-  <div ng-show="episode.category_name == 'Admin Database'">
-    {% include 'detail/admin_database.html' %}
-  </div>
-  <div ng-show="episode.category_name == 'Blood Book'">
-    {% include 'detail/blood_book.html' %}
-  </div>
-  <div ng-show="episode.category_name == 'OCLD'">
+  <div ng-show="!view">
     {% include 'detail/ocld.html' %}
+  </div>
+  <div ng-show="view === 'investigations'">
+    {% include 'detail/investigations.html' %}
   </div>
 {% endblock %}

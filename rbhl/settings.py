@@ -40,7 +40,8 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     '.herokuapp.com',
-    '192.168.1.10'
+    '192.168.1.10',
+    '10.0.0.112',
 ]
 
 # Local time zone for this installation. Choices can be found here:
@@ -184,6 +185,7 @@ INSTALLED_APPS = (
     'django_otp.plugins.otp_totp',
     'two_factor',
     'plugins.add_patient_step',
+    'plugins.lab',
     'rbhl',
 )
 
@@ -272,7 +274,7 @@ COVERAGE_EXCLUDE_MODULES = ('rbhl.migrations', 'rbhl.tests',
 
 # Begins OPAL Settings
 
-OPAL_LOG_OUT_MINUTES = 15
+OPAL_LOG_OUT_MINUTES = 60
 OPAL_LOG_OUT_DURATION = OPAL_LOG_OUT_MINUTES*60*1000
 
 # Begins OPAL optional settings

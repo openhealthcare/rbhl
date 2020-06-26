@@ -28,10 +28,12 @@ seen_by_me_menu_item = SeenByMeMenuItem(
 class Application(application.OpalApplication):
     javascripts   = [
         'js/rbhl/routes.js',
+        'js/rbhl/filters.js',
         'js/rbhl/clinicdatecomparator.js',
         'js/opal/controllers/discharge.js',
         'js/rbhl/directives.js',
         'js/rbhl/controllers/peak_flow_ctrl.js',
+        'js/rbhl/controllers/diagnosis_display.js',
         'js/rbhl/services/peak_flow_graph_data_loader.js',
         'js/rbhl/controllers/peak_flow_step.js',
     ]
@@ -66,4 +68,14 @@ class Application(application.OpalApplication):
                             index=999
                         )
                     )
+                if user.is_superuser:
+                    items.append(
+                        menus.MenuItem(
+                            href="/search/#/extract/",
+                            icon="fa-search",
+                            display="Query",
+                            index=1999
+                        )
+                    )
+
         return items

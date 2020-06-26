@@ -1,0 +1,37 @@
+{
+  "geographicalarea": [
+    {
+      "name": "East"
+    },
+    {
+      "name": "London"
+    },
+    {
+      "name": "North West"
+    },
+    {
+      "name": "Northern Ireland"
+    },
+    {
+      "name": "Northern Yorkshire"
+    },
+    {
+      "name": "Scotland"
+    },
+    {
+      "name": "South East"
+    },
+    {
+      "name": "South West"
+    },
+    {
+      "name": "Trent"
+    },
+    {
+      "name": "Wales"
+    },
+    {
+      "name": "West Midlands"
+    }
+  ]
+}

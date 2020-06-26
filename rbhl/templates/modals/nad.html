@@ -1,0 +1,68 @@
+{% extends 'base_templates/form_modal_base.html' %}
+{% load forms %}
+{% block title %}
+<i class="fa fa-stethoscope"></i>
+{{ models.Diagnosis.NAD }} {{ block.super }}
+{% endblock title %}
+{% block form %}
+<div ng-repeat="item in the_episode.diagnosis | filter:{category: '!{{ models.Diagnosis.NAD }}'} as hasOtherDiagnosis">
+</div>
+<div ng-init="editing.diagnosis.category = '{{ models.Diagnosis.NAD }}'">
+  <div ng-show="!confirm">
+    <div class="row">
+      <div ng-show="!item.id" class="col-md-12">
+        <p class="lead text-center">
+          Record the patient as NAD
+        </p>
+      </div>
+      <div ng-show="item.id" class="col-md-12">
+        <p class="lead text-center">
+          Patient recorded as NAD
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6 col-md-offset-3">
+        <div class="horizontal-form">
+          {% datepicker field="Diagnosis.date"%}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row" ng-show="confirm">
+    <p class="lead text-center">
+      Delete the diagnosis of
+      <span>
+
+      </span>
+      <span ng-repeat="diagnosis in hasOtherDiagnosis">
+        <span ng-show="diagnosis.condition">
+          [[ diagnosis.condition.toLowerCase() ]]
+        </span>
+        <span ng-hide="diagnosis.condition">
+          [[ diagnosis.category.toLowerCase() ]]
+        </span>
+        {# comma/and seperate the diagnois #}
+        [[$last ? '' : ($index==hasOtherDiagnosis.length-2) ? ' and ' : ', ']]
+      </span>
+    </p>
+    <p class="text-center">
+      <button check-form="form" class="btn btn-primary nad-button" ng-click="form.$valid && save('save')">
+        Confirm
+      </button>
+    </p>
+  </div>
+</div>
+{% endblock form %}
+{% block modal_save %}
+<span class="pull-right" ng-hide="confirm">
+  <span ng-show="!hasOtherDiagnosis.length">
+    {{ block.super }}
+  </span>
+  <span ng-show="hasOtherDiagnosis.length">
+    <button class="btn btn-primary btn-save" ng-click="confirm=true">
+      <i class="fa fa-save"></i> Save
+    </button>
+  </span>
+</span>
+{% endblock %}

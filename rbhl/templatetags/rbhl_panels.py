@@ -44,12 +44,66 @@ def field_display(
         "label", model._get_field_title(ctx["field_name"])
     )
     ctx["label_size"] = kwargs.get(
-        "label_size", context.get("label_size", 8)
+        "label_size", context.get("label_size", 5)
     )
 
     ctx["field_size"] = kwargs.get(
-        "field_size", context.get("label_field_sizesize", 4)
+        "field_size", context.get("field_size", 7)
     )
     ctx["is_boolean"] = is_boolean(field)
     ctx["is_date"] = is_date(field)
+    return ctx
+
+
+@register.inclusion_tag(
+    'templatetags/rbhl_panels/add_button.html',
+    takes_context=True
+)
+def add_button(context, subrecord, link=None):
+    """
+    A button to add a subrecord.
+    """
+    return {
+        "subrecord": subrecord,
+        "link": link
+    }
+
+
+@register.inclusion_tag(
+    'templatetags/rbhl_panels/test_field.html',
+    takes_context=True
+)
+def test_field(
+    context, field, **kwargs
+):
+    ctx = {}
+    model_and_field_name = field
+    ctx["field_name"] = model_and_field_name.split(".")[1]
+    model, field = _model_and_field_from_path(model_and_field_name)
+    ctx["label"] = kwargs.get(
+        "label", model._get_field_title(ctx["field_name"])
+    )
+    ctx["is_date"] = is_date(field)
+    ctx["is_boolean"] = is_boolean(field)
+    ctx["unit"] = kwargs.get("unit", "")
+    return ctx
+
+
+@register.inclusion_tag(
+    'templatetags/rbhl_panels/add_to_text_button.html',
+)
+def add_to_text_button(
+    field, text, **kwargs
+):
+    model_and_field_name = field
+    field_name = model_and_field_name.split(".")[1]
+    model, _ = _model_and_field_from_path(model_and_field_name)
+
+    ctx = {
+        "editing": "editing.{}.{}".format(
+            model.get_api_name(), field_name
+        ),
+        "text": text
+    }
+
     return ctx

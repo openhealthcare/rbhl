@@ -1,5 +1,5 @@
 {% load rbhl_panels %}
-{% with label_size=4 field_size=8 %}
+{% with label_size=5 field_size=7 %}
   <div class="row">
     <div class="col-md-{{ label_size }}">
       <b>Name</b>
@@ -18,7 +18,7 @@
     <div class="col-md-{{ field_size }}">
       [[ item.date_of_birth | displayDate ]]
       <span ng-show="item.date_of_birth">
-        ([[ item.date_of_birth | age ]])
+        (age [[ item.date_of_birth | age ]])
       </span>
     </div>
   </div>

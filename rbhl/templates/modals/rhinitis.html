@@ -1,0 +1,8 @@
+{% extends 'modals/diagnosis_base.html' %}
+{% block title %}
+<i class="fa fa-stethoscope"></i>
+{{ models.RhinitisDetails.get_display_name }} {{ block.super }}
+{% endblock title %}
+{% block diagnosis_form %}
+{% include models.RhinitisDetails.get_form_template %}
+{% endblock %}
