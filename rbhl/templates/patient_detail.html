@@ -4,8 +4,13 @@
     <div class="row">
       <div class="col-md-12">
         <div class="btn-group" role="group">
-          <a ng-class="{'btn-info': !view, 'btn-default': view}" href="/#/patient/[[ patient.id ]]" class="btn">
+          <span ng-repeat="episode in patient.episodes | filter:{category_name: 'OCLD'} as OCLD track by $index"></span>
+          <span ng-repeat="episode in patient.episodes | filter:{category_name: 'Blood Book'} as BloodBook track by $index"></span>
+          <a ng-class="{'btn-info': episode.category_name === 'OCLD' && !view, 'btn-default': episode.category_name !== 'OCLD'} || view" href="/#/patient/[[ patient.id ]]/[[ OCLD[0].id ]]" class="btn">
             <h4>Summary</h4>
+          </a>
+          <a ng-class="{'btn-info': episode.category_name === 'Blood Book' && !view, 'btn-default': episode.category_name !== 'Blood Book' || view, 'disabled': !BloodBook.length}" href="/#/patient/[[ patient.id ]]/[[ BloodBook[0].id ]]" class="btn">
+            <h4>Blood book</h4>
           </a>
           <a ng-class="{'btn-info': view, 'btn-default': !view}" href="/#/patient/[[ patient.id ]]/investigations" class="btn">
             <h4>Investigations ([[ patient|testCount ]])</h4>
@@ -14,8 +19,11 @@
       </div>
     </div>
   </div>
-  <div ng-show="!view">
+  <div ng-show="episode.category_name === 'OCLD' && !view">
     {% include 'detail/ocld.html' %}
+  </div>
+  <div ng-show="episode.category_name === 'Blood Book' && !view">
+    {% include 'detail/blood_book.html' %}
   </div>
   <div ng-show="view === 'investigations'">
     {% include 'detail/investigations.html' %}
