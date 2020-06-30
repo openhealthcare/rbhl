@@ -56,6 +56,7 @@ class BloodBook(EpisodeSubrecord):
     _exclude_from_extract = True
     _advanced_searchable = False
 
+    # filled in 50% of the time, quite often its the name of a company
     reference_number   = models.CharField(blank=True, null=True,
                                           max_length=200)
     employer           = models.CharField(blank=True, null=True,
@@ -63,38 +64,93 @@ class BloodBook(EpisodeSubrecord):
     oh_provider        = models.CharField(blank=True, null=True,
                                           max_length=100)
     blood_date         = models.DateField(blank=True, null=True)
+
+    # a mix of chars and numbers always filled in
     blood_number       = models.CharField(blank=True, null=True,
                                           max_length=200)
+    # data has 193 different methods however more than
+    # half are made up up....
+    # 'ImmunoCAP', 'UniCAP', 'CAP', 'RAST', 'CAP & RAST', 'RAST & UniCAP',
+    #   'PRECIPITINS'
     method             = models.CharField(blank=True, null=True,
                                           max_length=200)
+    # never filled in
     blood_collected    = models.CharField(
         verbose_name='EDTA blood collected',
         blank=True, null=True,
         max_length=200)
+    # filled in but not with meanging full data
     date_dna_extracted = models.CharField(blank=True, null=True,
                                           max_length=200)
+    # data is one word but that word is either a specific
+    # clinic, specific country, specific company or a number
     information        = models.CharField(blank=True, null=True,
                                           max_length=200)
+
+    # filled in ~30% of the time with a number, or 2 numbers with an '&'
+    # inbetween
     assayno            = models.CharField(blank=True, null=True,
                                           max_length=200)
+    # filled in ~30% of the time with a date
     assay_date         = models.DateField(blank=True, null=True)
+
+    # filled in 25% of the time
     blood_taken        = models.DateField(blank=True, null=True)
+
+    # 95% of the time this is None the rest its 30/12/1999
     blood_tm           = models.DateField(blank=True, null=True)
+
+    # filled in 25% of the time
     report_dt          = models.DateField(blank=True, null=True)
+
+    # filled in 25% of the time
     report_st          = models.DateField(blank=True, null=True)
+
+    # 25% of the time stored as either 'YES' or 'NO'
     store              = models.CharField(blank=True, null=True,
                                           max_length=200)
+
+    # filled in with 413 different exposures with a long tail
+    # usually 'LAB ANIMALS', 'FLOUR', 'ISOCYANATES', 'LATEX', 'GEN ANIMALS',
+    # 'ENZYMES', 'HOUSE DUST MITES', 'GRASSES', 'ANHYDRIDES', 'MOULDS'
     exposure           = models.CharField(blank=True, null=True,
                                           max_length=200)
+
+    # 95% of the time not filled in when it is it is garbeled...
+    # e.g. 14/-174/67 00:00:00
     antigen_date       = models.DateField(blank=True, null=True)
+
+    # Not filled in 60% of the time, other wise it is one of...
+    # 'STANDARD', 'BESPOKE', 'METAL WORKING FLUID'
     antigen_type       = models.CharField(blank=True, null=True,
                                           max_length=200)
+
+    # Free text, not used 99% of the time but...
     comment            = models.TextField(blank=True, null=True)
+
+    # 99.9% of the time not filled in, otherwise only with
+    # 1 value
     batches            = models.TextField(blank=True, null=True)
+
+    # 75% of the time not filled in, otherwise..
+    # 'G53', 'G52', 'G54', 'G43', 'G543', 'Q175'
     room               = models.TextField(blank=True, null=True)
+
+    # 75% of the time not filled in, 24.9% of the time OM2
+    # else '0M2', 'G53', 'OMW', 'OM', 'OMN2', '8'
     freezer            = models.TextField(blank=True, null=True)
+
+    # 75% of the time not filled in, 24.9% of the time 8
+    # else '4', 'OM2', '9'
     shelf              = models.TextField(blank=True, null=True)
+
+    # 75% of the time not filled
+    # else almost always
+    # 'O776', 'P598', 'P939', 'P115', 'Q124', 'P445',
+    # 'Q295', 'P292', 'P777', 'Q459'
     tray               = models.TextField(blank=True, null=True)
+
+    # 85% of the time not filled in else a float
     vials              = models.TextField(blank=True, null=True)
 
 
@@ -102,14 +158,40 @@ class BloodBookResult(EpisodeSubrecord):
     _exclude_from_extract = True
     _advanced_searchable = False
 
+    # filled in 30% of the time, does not exist in the old ui screenshots
+    # appears to be a compound field of allergen (allergen no) value
+    # but sometimes misses some of those fields
     result = models.CharField(blank=True, null=True, max_length=200)
+
+    # filled in 60% of the time, results are usually
+    # 'ALPHA AMYLASE', 'PLAIN FLOUR', 'MOUSE URINE', 'RAT URINE',
+    # but there is a wide variety
     allergen   = models.CharField(blank=True, null=True, max_length=200)
+
+    # filled in 63% of the time, roughly corresponds to an allergen
+    # but not always (could be typos when they don't)
     antigenno  = models.CharField(blank=True, null=True, max_length=200)
+
+    # filled in  63% of the time, usually
+    # '< 0.35'
     kul        = models.CharField(blank=True, null=True, max_length=200)
+
+    # numeric field, filled in  63% of the time, usually 0, otherwise 0-8
+    # (one time it is higher, assume that's a typo)
     klass      = models.CharField(blank=True, null=True, max_length=200)
+
+    # not filled in 95% of the time, otherwise comming through as
+    # a flawed decimal number, e.g. 1.0000000000000000e+00
     rast       = models.CharField(blank=True, null=True, max_length=200)
+
+    # not filled in 95% of the time, otherwise
+    # '-VE', 'WEAK +VE', '+VE', '- VE', '++VE', '+ VE', '-ve'
     precipitin = models.CharField(blank=True, null=True, max_length=200)
+
+    # not filled in 95% of the time, otherwise, number with 1 decimal place
     igg        = models.CharField(blank=True, null=True, max_length=200)
+
+    # only filled in twice...
     iggclass   = models.CharField(blank=True, null=True, max_length=200)
 
 
