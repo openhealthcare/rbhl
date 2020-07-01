@@ -18,6 +18,32 @@
       <div class="row content-offset-25">
         <ul ng-controller="InvestigationsView as investigationsView" class="list-group">
           <li ng-repeat="testDate in investigationsView.getTestDateKeys()">
+            <div ng-repeat="item in investigationsView.getTestsForDateKey('{{ models.Specimen.get_api_name }}', testDate) track by $index">
+              <div class="row">
+                <div class="col-md-3">
+                  <strong style="text-transform: uppercase">BLOOD BOOK</strong>
+                </div>
+              </div>
+              <div class="row test-row">
+                <div class="col-md-3">
+                  [[ testDate ]]
+                  <div ng-show="item.reference_number">Ref # [[ item.reference_number</div>
+                  <div ng-show="item.blood_number">Blood # [[ item.blood_number</div>
+                  <div ng-show="item.method">[[ item.method ]]</div>
+                  <div ng-show="item.exposure || item.antigen_type">[[ item.exposure ]] [[ item.antigen_type ]]j</div>
+                </div>
+                <div class="col-md-8">
+                  <div ng-repeat="item in investigationsView.getTestsForDateKey('{{ models.Specimen.get_api_name }}', testDate) track by $index" class="row">
+                    <div class="col-md-9">
+                      {% include models.Specimen.get_display_template %}
+                    </div>
+                    <div class="col-md-1">
+                      <i class="fa fa-pencil edit pull-right pointer" ng-click="episode.recordEditor.editItem('{{ models.Specimen.get_api_name }}', item)"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div ng-show="investigationsView.getTestsForDateKey('{{ models.Spirometry.get_api_name }}', testDate).length">
               <div class="row">
                 <div class="col-md-3">
