@@ -127,7 +127,7 @@ def create_lab_test(specimen, data_row):
             iterfield = '{}{}'.format(csv_field, str(i))
             value = data_row.get(iterfield, "")
             if value:
-                update_values[csv_field] = value
+                update_values[observation_name] = value
 
         if any(update_values.values()):
             for obs_name, obs_value in update_values.items():
@@ -254,8 +254,11 @@ class Command(BaseCommand):
         self.stdout.write(self.style.WARNING(msg))
 
         msg = "Created {} specimens".format(Specimen.objects.all().count())
+        self.stdout.write(self.style.SUCCESS(msg))
         msg = "Created {} lab tests".format(LabTest.objects.all().count())
+        self.stdout.write(self.style.SUCCESS(msg))
         msg = "Created {} observations".format(Observation.objects.all().count())
+        self.stdout.write(self.style.SUCCESS(msg))
 
         msg = "Impored {} patients".format(
             patients_imported
