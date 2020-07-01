@@ -63,6 +63,7 @@ class BloodBook(EpisodeSubrecord):
                                           max_length=200)
     oh_provider        = models.CharField(blank=True, null=True,
                                           max_length=100)
+    # UI field date sample received
     blood_date         = models.DateField(blank=True, null=True)
 
     # a mix of chars and numbers always filled in
@@ -87,22 +88,29 @@ class BloodBook(EpisodeSubrecord):
     information        = models.CharField(blank=True, null=True,
                                           max_length=200)
 
+    # UI Assay no.
     # filled in ~30% of the time with a number, or 2 numbers with an '&'
     # inbetween
     assayno            = models.CharField(blank=True, null=True,
                                           max_length=200)
+
+    # UI date assay run
     # filled in ~30% of the time with a date
     assay_date         = models.DateField(blank=True, null=True)
 
+    # UI Date blood taken externally
     # filled in 25% of the time
     blood_taken        = models.DateField(blank=True, null=True)
 
+    # UI Time blood taken externally
     # 95% of the time this is None the rest its 30/12/1999
     blood_tm           = models.DateField(blank=True, null=True)
 
+    # UI Field ???
     # filled in 25% of the time
     report_dt          = models.DateField(blank=True, null=True)
 
+    # UI Field ??
     # filled in 25% of the time
     report_st          = models.DateField(blank=True, null=True)
 
@@ -116,6 +124,7 @@ class BloodBook(EpisodeSubrecord):
     exposure           = models.CharField(blank=True, null=True,
                                           max_length=200)
 
+    # UI Field Date antigen received
     # 95% of the time not filled in when it is it is garbeled...
     # e.g. 14/-174/67 00:00:00
     antigen_date       = models.DateField(blank=True, null=True)
@@ -125,31 +134,38 @@ class BloodBook(EpisodeSubrecord):
     antigen_type       = models.CharField(blank=True, null=True,
                                           max_length=200)
 
+    # UI Field does not exit
     # Free text, not used 99% of the time but...
     comment            = models.TextField(blank=True, null=True)
 
+    # UI Field does not exit
     # 99.9% of the time not filled in, otherwise only with
     # 1 value
     batches            = models.TextField(blank=True, null=True)
 
+    # UI Field does not exit
     # 75% of the time not filled in, otherwise..
     # 'G53', 'G52', 'G54', 'G43', 'G543', 'Q175'
     room               = models.TextField(blank=True, null=True)
 
+    # UI Field does not exit
     # 75% of the time not filled in, 24.9% of the time OM2
     # else '0M2', 'G53', 'OMW', 'OM', 'OMN2', '8'
     freezer            = models.TextField(blank=True, null=True)
 
+    # UI Field does not exit
     # 75% of the time not filled in, 24.9% of the time 8
     # else '4', 'OM2', '9'
     shelf              = models.TextField(blank=True, null=True)
 
+    # UI Field does not exit
     # 75% of the time not filled
     # else almost always
     # 'O776', 'P598', 'P939', 'P115', 'Q124', 'P445',
     # 'Q295', 'P292', 'P777', 'Q459'
     tray               = models.TextField(blank=True, null=True)
 
+    # UI Field does not exit
     # 85% of the time not filled in else a float
     vials              = models.TextField(blank=True, null=True)
 
