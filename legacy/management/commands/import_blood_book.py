@@ -10,6 +10,7 @@ from legacy.utils import str_to_date
 from legacy.models import BloodBook, BloodBookResult
 from opal.models import Patient
 from rbhl.models import Demographics
+from plugins.lab.models import Observation, LabTest, Specimen
 
 
 def create_blood_book(row, episode):
@@ -64,6 +65,77 @@ def get_demographics(**demographics_kwargs):
         print(msg)
         raise ValueError(msg)
     return None
+
+
+def get_or_create_specimen(patient, row):
+    existing_specimen = patient.specimen_set.filter(
+        exposure__iexact=row["EXPOSURE"],
+        blood_date=str_to_date(row["BLOODDAT"]),
+    ).first()
+
+    if existing_specimen:
+        return existing_specimen, False
+
+    store = None
+    if row["STORE"] == 'YES':
+        store = True
+    elif row["STORE"] == "NO":
+        store = False
+
+    vials = None
+    if row["Vials"]:
+        vials = row["Vials"]
+        # fixes a typo
+        vials = vials.replace("..", ".")
+
+    return patient.specimen_set.create(
+        exposure=row["EXPOSURE"],
+        reference_number=row['REFERENCE NO'],
+        blood_date=str_to_date(row["BLOODDAT"]),
+        blood_taken=str_to_date(row["BLOODTK"]),
+        information=row["INFORMATION"],
+        assay_no=row["ASSAYNO"],
+        assay_date=str_to_date(row["ASSAYDATE"]),
+        report_dt=str_to_date(row["REPORTDT"]),
+        report_st=str_to_date(row["REPORTST"]),
+        store=store,
+        antigen_type=row["ANTIGENTYP"],
+        comment=row["Comment"],
+        vials=vials
+    ), True
+
+
+def create_lab_test(specimen, data_row):
+    csv_field_to_observation_name = {
+        'RESULT': Observation.RESULT,
+        'ALLERGEN': Observation.ALLERGEN,
+        'ANTIGENNO': Observation.ANTIGEN_NO,
+        'KUL': Observation.KUL,
+        'CLASS': Observation.CLASS,
+        'RAST': Observation.RAST,
+        'precipitin': Observation.PRECIPITIN,
+        'igg': Observation.IGG
+    }
+
+    for i in range(1, 11):
+        lab_test = LabTest(
+            specimen=specimen,
+            test_name=LabTest.BLOOD_BOOK
+        )
+        update_values = {}
+        for csv_field, observation_name in csv_field_to_observation_name.items():
+            iterfield = '{}{}'.format(csv_field, str(i))
+            value = data_row.get(iterfield, "")
+            if value:
+                update_values[csv_field] = value
+
+        if any(update_values.values()):
+            for obs_name, obs_value in update_values.items():
+                lab_test.save()
+                lab_test.observation_set.create(
+                    observation_name=obs_name,
+                    observation_value=obs_value
+                )
 
 
 class Command(BaseCommand):
@@ -139,6 +211,9 @@ class Command(BaseCommand):
                 referral.save()
                 referrals.append(referral)
 
+                specimen, _ = get_or_create_specimen(patient, data)
+                create_lab_test(specimen, data)
+
                 books.append(create_blood_book(data, episode))
 
                 fieldnames = [
@@ -168,15 +243,19 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(msg))
 
         BloodBook.objects.bulk_create(books)
-        msg = "Created {} blood books".format(len(books))
+        msg = "Created {} legacy blood books".format(len(books))
         self.stdout.write(self.style.SUCCESS(msg))
 
         BloodBookResult.objects.bulk_create(results)
-        msg = "Created {} blood results".format(len(results))
+        msg = "Created {} legacy blood results".format(len(results))
         self.stdout.write(self.style.SUCCESS(msg))
 
         msg = "Skipping {} duplicates".format(len(duplicates))
         self.stdout.write(self.style.WARNING(msg))
+
+        msg = "Created {} specimens".format(Specimen.objects.all().count())
+        msg = "Created {} lab tests".format(LabTest.objects.all().count())
+        msg = "Created {} observations".format(Observation.objects.all().count())
 
         msg = "Impored {} patients".format(
             patients_imported

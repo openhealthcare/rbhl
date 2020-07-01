@@ -229,12 +229,12 @@ class LabTest(
     SerializeRelated, models.UpdatesFromDictMixin, models.ToDictMixin, fields.Model
 ):
     _icon = "fa fa-crosshairs"
+    # At the moment all lab tests are of type blood book
+    BLOOD_BOOK = "Blood book"
     consistency_token = fields.CharField(max_length=8)
     clinical_info = fields.TextField(null=True, blank=True)
     status = fields.CharField(max_length=256, blank=True, null=True)
-    # the allergen
     test_name = fields.CharField(max_length=256, blank=True, null=True)
-    # the allergen code
     test_code = fields.CharField(max_length=256, blank=True, null=True)
     created_at = fields.DateTimeField(auto_now_add=True)
     updated_at = fields.DateTimeField(auto_now=True)
@@ -244,6 +244,16 @@ class LabTest(
 class Observation(
     models.UpdatesFromDictMixin, models.ToDictMixin, fields.Model
 ):
+    # Observation names
+    RESULT = "Result"
+    ALLERGEN = "Allergen"
+    ANTIGEN_NO = "Antigen #"
+    KUL = "KU/L"
+    CLASS = "Class"
+    RAST = "RAST %B"
+    PRECIPITIN = "Precipitin"
+    IGG = "mg/L"
+
     consistency_token = fields.CharField(max_length=8)
     last_updated = fields.DateTimeField(blank=True, null=True)
     observation_name = fields.CharField(max_length=256, blank=True, null=True)
