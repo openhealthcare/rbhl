@@ -4,24 +4,16 @@
 {% test_field "Specimen.assay_date" %}
 {% test_field "Specimen.store" %}
 {% test_field "Specimen.information" %}
-<div class="test-row content-offset-25" ng-repeat="test in item.labtest_set">
-  <div class="row">
-    <div class="col-md-6">
-      Allergen
-    </div>
-    <div class="col-md-6">
-      [[ test.test_name ]]
-      <span ng-show="test.test_code">
-        ([[ test.test_code ]])
-      </span>
-    </div>
-  </div>
+<div class="content-offset-10" ng-repeat="test in item.labtest_set">
   <div class="row" ng-repeat="observation in investigationsView.sortBloodBookObs(test.observation_set)">
     <div class="col-md-6">
       [[ observation.observation_name ]]
     </div>
     <div class="col-md-6">
       [[ observation.observation_value ]]
+      <span ng-show="observation.observation_name == 'Allergen' && investigationsView.getAntigenNo(test.observation_set)">
+        ([[ investigationsView.getAntigenNo(test.observation_set) ]])
+      </span>
     </div>
   </div>
 </div>

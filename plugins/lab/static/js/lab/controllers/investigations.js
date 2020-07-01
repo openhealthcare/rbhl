@@ -50,11 +50,21 @@ angular.module('opal.controllers').controller('InvestigationsView', function($sc
     return SkinPrickTestHelper.isAtopic(skinPrickTests);
   }
 
+  this.getAntigenNo = function(array){
+    var result = _.findWhere(array, {observation_name: "Antigen #"})
+    if(result){
+      return result.observation_value;
+    }
+
+  }
+
   this.sortBloodBookObs = function(array){
     var result = [];
     var observationNames = [
+      "Result",
+      "Allergen",
       "KU/L",
-      "klass",
+      "Class",
       "RAST %B",
       "Preciptin",
       "mg/L",
