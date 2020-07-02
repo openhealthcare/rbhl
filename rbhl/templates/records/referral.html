@@ -5,23 +5,23 @@
   </div>
   <div class="second-column-field">
     <div class="col-md-6 ">
-    {% field_display "Referral.geographical_area" %}
+    {% field_display "Referral.referral_reason" %}
     </div>
   </div>
 </div>
 <div class="row">
   <div class="col-md-6">
-    {% field_display "Referral.referral_type" %}
+    {% field_display "Referral.referral_source" %}
   </div>
   <div class="second-column-field">
     <div class="col-md-6">
-      {% field_display "Referral.referral_reason" %}
+      {% field_display "Referral.referrer_name" %}
     </div>
   </div>
 </div>
 <div class="row">
   <div class="col-md-6">
-    {% field_display "Referral.referrer_name" %}
+    {% field_display "Referral.geographical_area" %}
   </div>
   <div class="second-column-field">
     <div class="col-md-6">
@@ -32,11 +32,11 @@
 <hr />
 <div class="row">
   <div class="col-md-6">
-    {% field_display "Referral.date_referral_received" label="Referral received" %}
+    {% field_display "Referral.date_referral_received" %}
   </div>
   <div class="second-column-field">
     <div class="col-md-6">
-      {% field_display "Referral.date_first_appointment" label="First appointment" %}
+      {% field_display "Referral.date_first_appointment" %}
     </div>
   </div>
 </div>

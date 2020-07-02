@@ -193,19 +193,29 @@ class Command(BaseCommand):
             referral_disease = "Asthma / Rhinitis"
         referral.referral_disease = referral_disease
 
-        if not referral.referral_type and details.referral_type:
-            referral_type = details.referral_type
-            if referral_type not in [
-                'Dept social security',
-                'Employment medical advisory service'
-            ]:
-                if referral_type.lower() == 'other (self)':
-                    referral_type = "Self"
-                elif referral_type == "self":
-                    referral_type = "Self"
-                elif referral_type == "Other doctor- GP":
-                    referral_type = "GP"
-                referral.referral_type = referral_type
+        if not referral.referral_source and details.referral_type:
+            remap = {
+                'Company or Group OHS doctor': 'Occupational health doctor or nurse',
+                'GP': 'GP',
+                'Hospital Doctor(Brompton)': 'RBH doctor',
+                'Dept social security': 'Other',
+                'Medico-legal': 'Medico legal',
+                'Hospital Doctor(Other)': 'Other hospital doctor',
+                'Employment medical advisory service':
+                    'Occupational health doctor or nurse',
+                'Other doctor': 'Other hospital doctor',
+                'self': 'Self',
+                'Occ Health': 'Occupational health doctor or nurse',
+                'Other (self)': 'Self',
+                'Company or Group OHS nurse': 'Occupational health doctor or nurse',
+                'Self': 'Self',
+                'resp nurse community': 'Other',
+                'Other doctor- GP': 'GP',
+            }
+
+            referral_source = details.referral_type
+            if referral_source:
+                referral.referral_source  = remap[referral_source]
 
         area = details.geographical_area
         if area:
