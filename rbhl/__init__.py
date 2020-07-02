@@ -30,7 +30,6 @@ class Application(application.OpalApplication):
         'js/rbhl/routes.js',
         'js/rbhl/filters.js',
         'js/rbhl/clinicdatecomparator.js',
-        'js/opal/controllers/discharge.js',
         'js/rbhl/directives.js',
         'js/rbhl/controllers/peak_flow_ctrl.js',
         'js/rbhl/controllers/diagnosis_display.js',
