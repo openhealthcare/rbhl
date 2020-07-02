@@ -1,0 +1,124 @@
+{
+  "employmentcategory": [
+    {
+      "name": "Agricultural worker",
+      "synonyms": []
+    },
+    {
+      "name": "Armed forces",
+      "synonyms": []
+    },
+    {
+      "name": "Asbestos worker",
+      "synonyms": []
+    },
+    {
+      "name": "Bakery/mill worker",
+      "synonyms": []
+    },
+    {
+      "name": "Beauty Industry",
+      "synonyms": []
+    },
+    {
+      "name": "Building worker",
+      "synonyms": []
+    },
+    {
+      "name": "Cleaner",
+      "synonyms": []
+    },
+    {
+      "name": "Electrical engineer",
+      "synonyms": []
+    },
+    {
+      "name": "Electronics assembler",
+      "synonyms": []
+    },
+    {
+      "name": "Engineer",
+      "synonyms": []
+    },
+    {
+      "name": "Enzyme/detergent manufacturer",
+      "synonyms": []
+    },
+    {
+      "name": "Factory worker (other)",
+      "synonyms": []
+    },
+    {
+      "name": "Fire officer",
+      "synonyms": []
+    },
+    {
+      "name": "Food industry",
+      "synonyms": []
+    },
+    {
+      "name": "Health care worker",
+      "synonyms": []
+    },
+    {
+      "name": "Laboratory animal worker",
+      "synonyms": []
+    },
+    {
+      "name": "Mechanic",
+      "synonyms": []
+    },
+    {
+      "name": "Not applicable",
+      "synonyms": []
+    },
+    {
+      "name": "Office worker",
+      "synonyms": []
+    },
+    {
+      "name": "Other",
+      "synonyms": []
+    },
+    {
+      "name": "Other animal worker",
+      "synonyms": []
+    },
+    {
+      "name": "Other chemical worker",
+      "synonyms": []
+    },
+    {
+      "name": "Other laboratory worker",
+      "synonyms": []
+    },
+    {
+      "name": "Pharmaceutical worker",
+      "synonyms": []
+    },
+    {
+      "name": "Platinum refiner",
+      "synonyms": []
+    },
+    {
+      "name": "Printer",
+      "synonyms": []
+    },
+    {
+      "name": "Spray painter",
+      "synonyms": []
+    },
+    {
+      "name": "Stone mason",
+      "synonyms": []
+    },
+    {
+      "name": "Unknown",
+      "synonyms": []
+    },
+    {
+      "name": "Woodworker",
+      "synonyms": []
+    }
+  ]
+}

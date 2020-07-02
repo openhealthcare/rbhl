@@ -1,0 +1,224 @@
+{
+  "jobtitle": [
+    {
+      "name": "Administrator",
+      "synonyms": []
+    },
+    {
+      "name": "Baker",
+      "synonyms": []
+    },
+    {
+      "name": "Bakery Manager",
+      "synonyms": []
+    },
+    {
+      "name": "Biomedical Scientist",
+      "synonyms": []
+    },
+    {
+      "name": "Dough Maker",
+      "synonyms": []
+    },
+    {
+      "name": "Electrician",
+      "synonyms": []
+    },
+    {
+      "name": "Fire service applicant",
+      "synonyms": []
+    },
+    {
+      "name": "Firefighter",
+      "synonyms": []
+    },
+    {
+      "name": "Firefighter applicant",
+      "synonyms": []
+    },
+    {
+      "name": "Fitter",
+      "synonyms": []
+    },
+    {
+      "name": "Fork Lift Truck Driver",
+      "synonyms": []
+    },
+    {
+      "name": "Machine Operator",
+      "synonyms": []
+    },
+    {
+      "name": "Nurse",
+      "synonyms": []
+    },
+    {
+      "name": "Office worker",
+      "synonyms": []
+    },
+    {
+      "name": "Packer",
+      "synonyms": []
+    },
+    {
+      "name": "PhD student",
+      "synonyms": []
+    },
+    {
+      "name": "Police Officer",
+      "synonyms": []
+    },
+    {
+      "name": "Research Fellow",
+      "synonyms": []
+    },
+    {
+      "name": "Research Scientist",
+      "synonyms": []
+    },
+    {
+      "name": "Research Technician",
+      "synonyms": []
+    },
+    {
+      "name": "Scientific Officer",
+      "synonyms": []
+    },
+    {
+      "name": "Scientist",
+      "synonyms": []
+    },
+    {
+      "name": "Scratch Baker",
+      "synonyms": []
+    },
+    {
+      "name": "Solderer",
+      "synonyms": []
+    },
+    {
+      "name": "Staff Nurse",
+      "synonyms": []
+    },
+    {
+      "name": "Technician",
+      "synonyms": []
+    },
+    {
+      "name": "Theatre Nurse",
+      "synonyms": []
+    },
+    {
+      "name": "Animal technician",
+      "synonyms": []
+    },
+    {
+      "name": "Bakery assistant",
+      "synonyms": []
+    },
+    {
+      "name": "Bakery operative",
+      "synonyms": []
+    },
+    {
+      "name": "Builder",
+      "synonyms": []
+    },
+    {
+      "name": "Carpenter",
+      "synonyms": []
+    },
+    {
+      "name": "Cleaner",
+      "synonyms": []
+    },
+    {
+      "name": "Confectioner",
+      "synonyms": []
+    },
+    {
+      "name": "Engineer",
+      "synonyms": []
+    },
+    {
+      "name": "Fire fighter",
+      "synonyms": []
+    },
+    {
+      "name": "Fire fighter applicant",
+      "synonyms": []
+    },
+    {
+      "name": "Hairdresser",
+      "synonyms": []
+    },
+    {
+      "name": "Lab technician",
+      "synonyms": []
+    },
+    {
+      "name": "Maintenance engineer",
+      "synonyms": []
+    },
+    {
+      "name": "Operative",
+      "synonyms": []
+    },
+    {
+      "name": "Paint sprayer",
+      "synonyms": []
+    },
+    {
+      "name": "Plumber",
+      "synonyms": []
+    },
+    {
+      "name": "Post doc research fellow",
+      "synonyms": []
+    },
+    {
+      "name": "Post doc scientist",
+      "synonyms": []
+    },
+    {
+      "name": "Process operator",
+      "synonyms": []
+    },
+    {
+      "name": "Production operative",
+      "synonyms": []
+    },
+    {
+      "name": "Research assistant",
+      "synonyms": []
+    },
+    {
+      "name": "Research associate",
+      "synonyms": []
+    },
+    {
+      "name": "Retired",
+      "synonyms": []
+    },
+    {
+      "name": "Stonemason",
+      "synonyms": []
+    },
+    {
+      "name": "Student",
+      "synonyms": []
+    },
+    {
+      "name": "Team leader",
+      "synonyms": []
+    },
+    {
+      "name": "Vet student",
+      "synonyms": []
+    },
+    {
+      "name": "Welder",
+      "synonyms": []
+    }
+  ]
+}
