@@ -172,6 +172,16 @@ class Referral(RBHLSubrecord, models.EpisodeSubrecord):
         "Pulmonary fibrosis(eg: Asbestos related disease)"
     )
 
+    SOURCE = enum(
+        'GP',
+        'RBH doctor',
+        'Other hospital doctor',
+        'Occupational health doctor or nurse',
+        'Medico legal',
+        'Self',
+        'Other'
+    )
+
     # Deprecated
     referrer_title         = models.ForeignKeyOrFreeText(models.Title)
     referrer_name = fields.CharField(
@@ -183,7 +193,7 @@ class Referral(RBHLSubrecord, models.EpisodeSubrecord):
 
     # Process tracking for admin staff
     date_referral_received = fields.DateField(
-        blank=True, null=True, verbose_name="Received"
+        blank=True, null=True, verbose_name="Date referral received"
     )
     # ??
     date_first_contact     = fields.DateField(
@@ -196,8 +206,8 @@ class Referral(RBHLSubrecord, models.EpisodeSubrecord):
     date_first_appointment = fields.DateField(
         blank=True, null=True, verbose_name="Date of first appointment offered"
     )
-    referral_type = fields.TextField(
-        blank=True, null=True, verbose_name="Type",
+    referral_source = fields.TextField(
+        blank=True, null=True, choices=SOURCE, verbose_name="Referral source",
     )
     referral_reason = fields.CharField(
         blank=True, null=True, max_length=256, choices=REASONS
@@ -234,7 +244,7 @@ class Employment(RBHLSubrecord, models.EpisodeSubrecord):
         EmploymentCategory, verbose_name="category"
     )
     employed_in_suspect_occupation = fields.BooleanField(
-        default=False, verbose_name="suspect occcupation"
+        default=False, verbose_name="Currently employed in suspect occupation"
     )
     exposures = fields.TextField(blank=True, default="")
     oh_provider = fields.CharField(
@@ -243,10 +253,6 @@ class Employment(RBHLSubrecord, models.EpisodeSubrecord):
     firefighter = fields.NullBooleanField(
         verbose_name="Firefighter pre-employment"
     )
-
-
-class PresentingComplaint(lookuplists.LookupList):
-    pass
 
 
 class ClinicLog(RBHLSubrecord, models.EpisodeSubrecord):
@@ -309,7 +315,6 @@ class ClinicLog(RBHLSubrecord, models.EpisodeSubrecord):
 
     active              = fields.NullBooleanField()
 
-    presenting_complaint = models.ForeignKeyOrFreeText(PresentingComplaint)
     diagnosis_outcome = fields.CharField(
         blank=True, null=True, max_length=256, choices=OUTCOMES
     )

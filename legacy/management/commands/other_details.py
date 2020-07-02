@@ -143,7 +143,7 @@ class Command(BaseCommand):
         Details.referral_type -> Referral.referral_type
         Details.referral_reason -> Referral.referral_reason
         Details.fire_service_applicant -> Employment.firefighter
-        Details.systems_presenting_compliant ->     Referral.comments
+        Details.systems_presenting_compliant ->     Referral.referral_reason
         Details.referral_disease -> Referral.referral_disease
         Details.specialist_doctor -> ClinicLog.seen_by
         Details.geographical_area or Details.geographical_area_other ->
@@ -177,7 +177,11 @@ class Command(BaseCommand):
         else:
             referral.date_referral_received = details.date_referral_received
 
-        referral.referral_reason = details.referral_reason
+        referral.referral_reason = details.systems_presenting_compliant
+
+        if not referral.referral_reason:
+            referral.referral_reason = details.referral_reason
+
         referral_disease = details.referral_disease
         # this is a strangely common error
         if referral_disease == "Pulmonary fibrosis(eg: Asbestos related disease":
@@ -189,19 +193,29 @@ class Command(BaseCommand):
             referral_disease = "Asthma / Rhinitis"
         referral.referral_disease = referral_disease
 
-        if not referral.referral_type and details.referral_type:
-            referral_type = details.referral_type
-            if referral_type not in [
-                'Dept social security',
-                'Employment medical advisory service'
-            ]:
-                if referral_type.lower() == 'other (self)':
-                    referral_type = "Self"
-                elif referral_type == "self":
-                    referral_type = "Self"
-                elif referral_type == "Other doctor- GP":
-                    referral_type = "GP"
-                referral.referral_type = referral_type
+        if not referral.referral_source and details.referral_type:
+            remap = {
+                'Company or Group OHS doctor': 'Occupational health doctor or nurse',
+                'GP': 'GP',
+                'Hospital Doctor(Brompton)': 'RBH doctor',
+                'Dept social security': 'Other',
+                'Medico-legal': 'Medico legal',
+                'Hospital Doctor(Other)': 'Other hospital doctor',
+                'Employment medical advisory service':
+                    'Occupational health doctor or nurse',
+                'Other doctor': 'Other hospital doctor',
+                'self': 'Self',
+                'Occ Health': 'Occupational health doctor or nurse',
+                'Other (self)': 'Self',
+                'Company or Group OHS nurse': 'Occupational health doctor or nurse',
+                'Self': 'Self',
+                'resp nurse community': 'Other',
+                'Other doctor- GP': 'GP',
+            }
+
+            referral_source = details.referral_type
+            if referral_source:
+                referral.referral_source  = remap[referral_source]
 
         area = details.geographical_area
         if area:
@@ -217,6 +231,7 @@ class Command(BaseCommand):
             other_fields = patient.otherfields_set.all()[0]
             if other_fields.attendance_date_as_date():
                 referral.date_first_appointment = other_fields.attendance_date_as_date()
+
         referral.save()
 
         employment = episode.employment_set.all()[0]
@@ -239,9 +254,6 @@ class Command(BaseCommand):
             if details.smokes_per_day:
                 social_history.cigerettes_per_day = details.smokes_per_day
         social_history.save()
-
-        clinic_log.presenting_complaint = details.systems_presenting_compliant
-        clinic_log.save()
 
     def build_suspect_occupational_category(self, patientLUT, rows):
         for row in rows:
@@ -849,11 +861,6 @@ class Command(BaseCommand):
         models.EmploymentCategory.objects.create(name="Stone masons")
         msg = "Created {} employment categories".format(
             models.EmploymentCategory.objects.all().count()
-        )
-        self.stdout.write(self.style.SUCCESS(msg))
-        build_lookup_list(models.ClinicLog, models.ClinicLog.presenting_complaint)
-        msg = "Created {} presenting complaints".format(
-            models.PresentingComplaint.objects.all().count()
         )
         self.stdout.write(self.style.SUCCESS(msg))
 
