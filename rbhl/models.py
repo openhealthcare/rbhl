@@ -234,7 +234,7 @@ class Employment(RBHLSubrecord, models.EpisodeSubrecord):
         EmploymentCategory, verbose_name="category"
     )
     employed_in_suspect_occupation = fields.BooleanField(
-        default=False, verbose_name="suspect occcupation"
+        default=False, verbose_name="Currently employed in suspect occupation"
     )
     exposures = fields.TextField(blank=True, default="")
     oh_provider = fields.CharField(
