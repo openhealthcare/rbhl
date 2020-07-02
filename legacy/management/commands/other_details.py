@@ -5,7 +5,6 @@ from django.utils import timezone
 
 from opal import models as opal_models
 from rbhl import models
-from legacy.build_lookup_list import build_lookup_list
 from plugins.lab import models as lab_models
 
 from legacy.models import (
@@ -850,19 +849,6 @@ class Command(BaseCommand):
             self.convert_to_diagnosis_rhinitis(patient)
             self.convert_diagnostic_outcome(patient)
             self.convert_to_diagnosis_other(patient)
-
-        build_lookup_list(models.Employment, models.Employment.job_title)
-        msg = "Created {} job titles".format(
-            models.JobTitle.objects.all().count()
-        )
-        self.stdout.write(self.style.SUCCESS(msg))
-
-        build_lookup_list(models.Employment, models.Employment.employment_category)
-        models.EmploymentCategory.objects.create(name="Stone masons")
-        msg = "Created {} employment categories".format(
-            models.EmploymentCategory.objects.all().count()
-        )
-        self.stdout.write(self.style.SUCCESS(msg))
 
     def handle(self, *args, **options):
         self.create_legacy(options["file_name"])
