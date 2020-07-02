@@ -143,7 +143,7 @@ class Command(BaseCommand):
         Details.referral_type -> Referral.referral_type
         Details.referral_reason -> Referral.referral_reason
         Details.fire_service_applicant -> Employment.firefighter
-        Details.systems_presenting_compliant ->     Referral.comments
+        Details.systems_presenting_compliant ->     Referral.referral_reason
         Details.referral_disease -> Referral.referral_disease
         Details.specialist_doctor -> ClinicLog.seen_by
         Details.geographical_area or Details.geographical_area_other ->
@@ -177,7 +177,11 @@ class Command(BaseCommand):
         else:
             referral.date_referral_received = details.date_referral_received
 
-        referral.referral_reason = details.referral_reason
+        referral.referral_reason = details.systems_presenting_compliant
+
+        if not referral.referral_reason:
+            referral.referral_reason = details.referral_reason
+
         referral_disease = details.referral_disease
         # this is a strangely common error
         if referral_disease == "Pulmonary fibrosis(eg: Asbestos related disease":
@@ -217,6 +221,7 @@ class Command(BaseCommand):
             other_fields = patient.otherfields_set.all()[0]
             if other_fields.attendance_date_as_date():
                 referral.date_first_appointment = other_fields.attendance_date_as_date()
+
         referral.save()
 
         employment = episode.employment_set.all()[0]
@@ -239,9 +244,6 @@ class Command(BaseCommand):
             if details.smokes_per_day:
                 social_history.cigerettes_per_day = details.smokes_per_day
         social_history.save()
-
-        clinic_log.presenting_complaint = details.systems_presenting_compliant
-        clinic_log.save()
 
     def build_suspect_occupational_category(self, patientLUT, rows):
         for row in rows:
@@ -849,11 +851,6 @@ class Command(BaseCommand):
         models.EmploymentCategory.objects.create(name="Stone masons")
         msg = "Created {} employment categories".format(
             models.EmploymentCategory.objects.all().count()
-        )
-        self.stdout.write(self.style.SUCCESS(msg))
-        build_lookup_list(models.ClinicLog, models.ClinicLog.presenting_complaint)
-        msg = "Created {} presenting complaints".format(
-            models.PresentingComplaint.objects.all().count()
         )
         self.stdout.write(self.style.SUCCESS(msg))
 

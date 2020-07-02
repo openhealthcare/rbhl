@@ -245,10 +245,6 @@ class Employment(RBHLSubrecord, models.EpisodeSubrecord):
     )
 
 
-class PresentingComplaint(lookuplists.LookupList):
-    pass
-
-
 class ClinicLog(RBHLSubrecord, models.EpisodeSubrecord):
     _icon         = 'fa fa-hospital-o'
     _is_singleton = True
@@ -309,7 +305,6 @@ class ClinicLog(RBHLSubrecord, models.EpisodeSubrecord):
 
     active              = fields.NullBooleanField()
 
-    presenting_complaint = models.ForeignKeyOrFreeText(PresentingComplaint)
     diagnosis_outcome = fields.CharField(
         blank=True, null=True, max_length=256, choices=OUTCOMES
     )
