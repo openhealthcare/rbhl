@@ -30,9 +30,8 @@
                   <div ng-show="item.reference_number">Ref # [[ item.reference_number ]]</div>
                   <div ng-show="item.blood_number">Blood # [[ item.blood_number</div>
                   <div ng-show="item.method">[[ item.method ]]</div>
-                  <div ng-show="item.exposure || item.antigen_type">
-                    [[ item.exposure ]] <span ng-show="item.antigen_type">([[ item.antigen_type ]])</span>
-
+                  <div ng-show="item.exposure">
+                    [[ item.exposure ]]
                   </div>
                 </div>
                 <div class="col-md-8">

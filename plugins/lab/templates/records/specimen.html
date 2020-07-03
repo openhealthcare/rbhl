@@ -1,19 +1,18 @@
 {% load rbhl_panels %}
-{% test_field "Specimen.blood_taken" %}
-{% test_field "Specimen.assay_no" %}
-{% test_field "Specimen.assay_date" %}
-{% test_field "Specimen.store" %}
-{% test_field "Specimen.information" %}
-<div class="content-offset-10" ng-repeat="test in item.labtest_set">
-  <div class="row" ng-repeat="observation in investigationsView.sortBloodBookObs(test.observation_set)">
+  <div ng-repeat="test in item.labtest_set" class="row">
     <div class="col-md-6">
-      [[ observation.observation_name ]]
+      [[ investigationsView.getTestDisplay(test.observation_set).label ]]
     </div>
     <div class="col-md-6">
-      [[ observation.observation_value ]]
-      <span ng-show="observation.observation_name == 'Allergen' && investigationsView.getAntigenNo(test.observation_set)">
-        ([[ investigationsView.getAntigenNo(test.observation_set) ]])
+      <span ng-repeat="val in investigationsView.getTestDisplay(test.observation_set).value">
+        [[ val ]]
+        <span ng-show="!$last">&nbsp;</span>
       </span>
     </div>
   </div>
-</div>
+  {% test_field "Specimen.blood_taken" %}
+  {% test_field "Specimen.assay_no" %}
+  {% test_field "Specimen.assay_date" %}
+  {% test_field "Specimen.store" %}
+  {% test_field "Specimen.information" %}
+
