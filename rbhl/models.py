@@ -142,6 +142,7 @@ class ContactDetails(RBHLSubrecord, models.PatientSubrecord):
     mobile = fields.CharField(blank=True, null=True, max_length=100)
     phone  = fields.CharField(blank=True, null=True, max_length=100)
     email  = fields.CharField(blank=True, null=True, max_length=100)
+    email_consent = fields.BooleanField(default=False)
 
 
 class RBHReferrer(lookuplists.LookupList):
