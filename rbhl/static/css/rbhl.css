@@ -503,6 +503,10 @@ input[type="date"]::-webkit-input-placeholder {
   margin-bottom: 100px;
 }
 
+.content-offset-below-0 {
+  margin-bottom: 0;
+}
+
 .table-sortable th.sorting-desc:after {
   content: "￬";
   font-size: 18px;
