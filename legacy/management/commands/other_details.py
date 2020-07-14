@@ -105,7 +105,7 @@ class Command(BaseCommand):
 
         for row in rows:
 
-            patient = patientLUT.get(row["Patient_num"], None)
+            patient = patientLUT.get(row["Patient_details.Patient_num"], None)
 
             if patient is None:
                 continue
@@ -150,7 +150,7 @@ class Command(BaseCommand):
         Details.is_smoker = SocialHistory.smoker
         Details.smokes_per_day = SocialHistory.cigerettes_per_day
         """
-        episode = patient.episode_set.get()
+        episode = patient.episode_set.first()
         details = patient.details_set.all()[0]
         if not details:
             return
@@ -256,7 +256,7 @@ class Command(BaseCommand):
 
     def build_suspect_occupational_category(self, patientLUT, rows):
         for row in rows:
-            patient = patientLUT.get(row["Patient_num"], None)
+            patient = patientLUT.get(row["Patient_details.Patient_num"], None)
 
             if patient is None:
                 continue
@@ -304,7 +304,7 @@ class Command(BaseCommand):
             -> Employment.exposures
         """
         suspect_occupational_category = patient.suspectoccupationalcategory_set.all()[0]
-        episode = patient.episode_set.get()
+        episode = patient.episode_set.first()
         employment = episode.employment_set.all()[0]
         employment.job_title = suspect_occupational_category.job_title
         emp_cat = suspect_occupational_category.suspect_occupational_category
@@ -336,7 +336,7 @@ class Command(BaseCommand):
 
     def build_diagnostic_testing(self, patientLUT, rows):
         for row in rows:
-            patient = patientLUT.get(row["Patient_num"], None)
+            patient = patientLUT.get(row["Patient_details.Patient_num"], None)
 
             if patient is None:
                 continue
@@ -372,7 +372,7 @@ class Command(BaseCommand):
 
     def build_diagnostic_outcome(self, patientLUT, rows):
         for row in rows:
-            patient = patientLUT.get(row["Patient_num"], None)
+            patient = patientLUT.get(row["Patient_details.Patient_num"], None)
 
             if patient is None:
                 continue
@@ -391,7 +391,7 @@ class Command(BaseCommand):
         referred_to -> Clinic Log.referred_to
         diagnosis date -> clinic date if not populated
         """
-        episode = patient.episode_set.get()
+        episode = patient.episode_set.first()
         diagnosis_outcome = patient.diagnosticoutcome_set.all()[0]
         clinic_log = episode.cliniclog_set.all()[0]
         clinic_log.diagnosis_outcome = diagnosis_outcome.diagnosis
@@ -400,7 +400,7 @@ class Command(BaseCommand):
 
     def build_diagnostic_asthma(self, patientLUT, rows):
         for row in rows:
-            patient = patientLUT.get(row["Patient_num"], None)
+            patient = patientLUT.get(row["Patient_details.Patient_num"], None)
 
             if patient is None:
                 continue
@@ -428,7 +428,7 @@ class Command(BaseCommand):
             legacy_asthma.occupational_asthma_caused_by_sensitisation,
             legacy_asthma.has_non_occupational_asthma
         ]):
-            asthma = models.AsthmaDetails(episode=patient.episode_set.get())
+            asthma = models.AsthmaDetails(episode=patient.episode_set.first())
 
             asthma.sensitivities = clean_sensitivies(
                 legacy_asthma.sensitising_agent
@@ -454,7 +454,7 @@ class Command(BaseCommand):
 
     def build_diagnostic_rhinitis(self, patientLUT, rows):
         for row in rows:
-            patient = patientLUT.get(row["Patient_num"], None)
+            patient = patientLUT.get(row["Patient_details.Patient_num"], None)
 
             if patient is None:
                 continue
@@ -491,7 +491,7 @@ class Command(BaseCommand):
             legacy_rhinitis.occupational_rhinitis_caused_by_sensitisation,
             legacy_rhinitis.has_non_occupational_rhinitis
         ]):
-            rhinitis = models.RhinitisDetails(episode=patient.episode_set.get())
+            rhinitis = models.RhinitisDetails(episode=patient.episode_set.first())
 
             # order of priority for what overrides
             # occupational_rhinitis_caused_by_sensitisation > work_exacerbated >
@@ -516,7 +516,7 @@ class Command(BaseCommand):
 
     def build_diagnostic_other(self, patientLUT, rows):
         for row in rows:
-            patient = patientLUT.get(row["Patient_num"], None)
+            patient = patientLUT.get(row["Patient_details.Patient_num"], None)
 
             if patient is None:
                 continue
@@ -551,7 +551,7 @@ class Command(BaseCommand):
 
     def convert_to_diagnosis_other(self, patient):
         other = patient.diagnosticother_set.all()[0]
-        episode = patient.episode_set.get()
+        episode = patient.episode_set.first()
         diagnosis_date = patient.diagnosticoutcome_set.all()[0].diagnosis_date
         if other.NAD:
             # As discussed with the user, in some instances of NAD
@@ -687,7 +687,7 @@ class Command(BaseCommand):
 
     def build_other(self, patientLUT, rows):
         for row in rows:
-            patient = patientLUT.get(row["Patient_num"], None)
+            patient = patientLUT.get(row["Patient_details.Patient_num"], None)
 
             if patient is None:
                 continue
@@ -727,7 +727,7 @@ class Command(BaseCommand):
         with open(file_name, encoding="utf-8-sig") as f:
             rows = list(csv.DictReader(f))
 
-        patient_ids = (row["Patient_num"] for row in rows)
+        patient_ids = (row["Patient_details.Patient_num"] for row in rows)
         patient_nums = PatientNumber.objects.filter(value__in=patient_ids)
         patientLUT = {p.value: p.patient for p in patient_nums}
 
@@ -757,12 +757,12 @@ class Command(BaseCommand):
         OtherFields.objects.bulk_create(self.build_other(patientLUT, rows))
 
         for row in rows:
-            patient = patientLUT.get(row["Patient_num"], None)
+            patient = patientLUT.get(row["Patient_details.Patient_num"], None)
 
             if patient is None:
                 continue
 
-            episode = patient.episode_set.get()
+            episode = patient.episode_set.first()
 
             # CONVERTED FIELDS
 
