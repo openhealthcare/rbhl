@@ -59,7 +59,9 @@ class Command(BaseCommand):
 
     @transaction.atomic()
     def build_legacy_bronchial_test(self, file_name):
-        LegacyBronchialTest.objects.all().delete()
+        LegacyBronchialTest.objects.filter(
+            patient__patientnumber__source=PatientNumber.OCC_ASTHMA
+        ).delete()
 
         # Open with utf-8-sig encoding to avoid having a BOM in the first
         # header string.
@@ -71,6 +73,12 @@ class Command(BaseCommand):
         for row in rows:
             try:
                 p_num = PatientNumber.objects.get(value=row["Patient_num"])
+                if not p_num.source == PatientNumber.OCC_ASTHMA:
+                    msg = "{} is not from occ asthma skipping".format(
+                        row["Patient_num"]
+                    )
+                    self.stderr.write(msg)
+                    continue
                 patient = p_num.patient
             except PatientNumber.DoesNotExist:
                 msg = "Unknown Patient: {}".format(row["Patient_num"])
@@ -107,7 +115,10 @@ class Command(BaseCommand):
     @transaction.atomic()
     def convert_bronchial_tests(self):
         to_create = []
-        for legacy_bronchial_test in LegacyBronchialTest.objects.all():
+        qs = LegacyBronchialTest.objects.filter(
+            patient__patientnumber__source=PatientNumber.OCC_ASTHMA
+        )
+        for legacy_bronchial_test in qs:
             bronchial_test = BronchialTest(
                 patient=legacy_bronchial_test.patient,
             )

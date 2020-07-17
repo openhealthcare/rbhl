@@ -16,7 +16,9 @@ class Command(BaseCommand):
 
     @transaction.atomic()
     def build_legacy_skin_prick_test(self, file_name):
-        LegacySkinPrickTest.objects.all().delete()
+        LegacySkinPrickTest.objects.filter(
+            patient__patientnumber__source=PatientNumber.OCC_ASTHMA
+        ).delete()
 
         # Open with utf-8-sig encoding to avoid having a BOM in the first
         # header string.
@@ -28,6 +30,12 @@ class Command(BaseCommand):
         for row in rows:
             try:
                 p_num = PatientNumber.objects.get(value=row["Patient_num"])
+                if not p_num.source == PatientNumber.OCC_ASTHMA:
+                    msg = "{} is not from occ asthma skipping".format(
+                        row["Patient_num"]
+                    )
+                    self.stderr.write(msg)
+                    continue
                 patient = p_num.patient
             except PatientNumber.DoesNotExist:
                 msg = "Unknown Patient: {}".format(row["Patient_num"])
@@ -58,6 +66,9 @@ class Command(BaseCommand):
     def convert_legacy_skin_prick_tests(self):
         skin_prick_tests = []
         qs = Patient.objects.exclude(legacyskinpricktest=None)
+        qs = qs.filter(
+            patientnumber__source=PatientNumber.OCC_ASTHMA
+        )
         qs = qs.prefetch_related(
             "legacyskinpricktest_set",
             "diagnosticoutcome_set",
