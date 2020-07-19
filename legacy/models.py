@@ -194,7 +194,12 @@ class PatientNumber(PatientSubrecord):
     _advanced_searchable = False
     _is_singleton = True
 
+    # the patient source for patients who were only found
+    # in the occ asthma database
+    OCC_ASTHMA = "occ_asthma"
+
     value = models.TextField(null=True)
+    source = models.TextField(blank=True, default="")
 
 
 class Address(PatientSubrecord):

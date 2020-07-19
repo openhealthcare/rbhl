@@ -709,14 +709,48 @@ class Command(BaseCommand):
             )
 
     def flush(self):
-        Details.objects.all().delete()
-        SuspectOccupationalCategory.objects.all().delete()
-        DiagnosticTesting.objects.all().delete()
-        DiagnosticOutcome.objects.all().delete()
-        DiagnosticAsthma.objects.all().delete()
-        DiagnosticRhinitis.objects.all().delete()
-        DiagnosticOther.objects.all().delete()
-        OtherFields.objects.all().delete()
+        Details.objects.filter(
+            patient__patientnumber__source=PatientNumber.OCC_ASTHMA
+        ).delete()
+        SuspectOccupationalCategory.objects.filter(
+            patient__patientnumber__source=PatientNumber.OCC_ASTHMA
+        ).delete()
+        DiagnosticTesting.objects.filter(
+            patient__patientnumber__source=PatientNumber.OCC_ASTHMA
+        ).delete()
+        DiagnosticOutcome.objects.filter(
+            patient__patientnumber__source=PatientNumber.OCC_ASTHMA
+        ).delete()
+        DiagnosticAsthma.objects.filter(
+            patient__patientnumber__source=PatientNumber.OCC_ASTHMA
+        ).delete()
+        DiagnosticRhinitis.objects.filter(
+            patient__patientnumber__source=PatientNumber.OCC_ASTHMA
+        ).delete()
+        DiagnosticOther.objects.filter(
+            patient__patientnumber__source=PatientNumber.OCC_ASTHMA
+        ).delete()
+        OtherFields.objects.filter(
+            patient__patientnumber__source=PatientNumber.OCC_ASTHMA
+        ).delete()
+
+    def build_patient_numbers(self, rows):
+        for row in rows:
+            patient_number = row["Patient_details.Patient_num"]
+            hospital_number = row["Hospital Number"]
+            patient_number_obj = PatientNumber.objects.filter(
+                value=patient_number
+            ).first()
+
+            demographics = models.Demographics.objects.filter(
+                hospital_number=hospital_number
+            ).first()
+
+            if not patient_number_obj and demographics:
+                patient_number_obj = demographics.patient.patientnumber_set.get()
+                patient_number_obj.value = patient_number
+                patient_number_obj.source = PatientNumber.OCC_ASTHMA
+                patient_number_obj.save()
 
     @transaction.atomic
     def create_legacy(self, file_name):
@@ -727,8 +761,10 @@ class Command(BaseCommand):
         with open(file_name, encoding="utf-8-sig") as f:
             rows = list(csv.DictReader(f))
 
-        patient_ids = (row["Patient_details.Patient_num"] for row in rows)
-        patient_nums = PatientNumber.objects.filter(value__in=patient_ids)
+        self.build_patient_numbers(rows)
+        patient_nums = PatientNumber.objects.filter(
+            source=PatientNumber.OCC_ASTHMA
+        )
         patientLUT = {p.value: p.patient for p in patient_nums}
 
         # TODO: print missing patient IDs here
@@ -832,7 +868,9 @@ class Command(BaseCommand):
 
     @transaction.atomic
     def convert_legacy(self):
-        qs = opal_models.Patient.objects.exclude(details=None)
+        qs = opal_models.Patient.objects.exclude(details=None).filter(
+            patientnumber__source=PatientNumber.OCC_ASTHMA
+        )
         qs = qs.prefetch_related(
             'diagnostictesting_set',
             "suspectoccupationalcategory_set",
