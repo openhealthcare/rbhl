@@ -4,16 +4,19 @@ rbhl models.
 import datetime
 import math
 from django.db import models as fields
+from django.utils import timezone
 from decimal import Decimal
 from django.db.models.signals import (
     pre_save, post_save, post_delete
 )
 from django.dispatch import receiver
+from django.contrib.auth import get_user_model
 from opal import models
 from opal.core.fields import enum
 from opal.core import lookuplists
 
 YN = enum('Yes', 'No')
+User = get_user_model()
 
 """
 Core Opal models - these inherit from the abstract data models in
@@ -769,3 +772,33 @@ class PatientSource(fields.Model):
     peak_flow_database = fields.BooleanField(
         default=False, blank=True
     )
+
+
+class SetUpTwoFactor(fields.Model):
+    """
+    Instances of this model gives the user permission to setup
+    2 factor auth for themselves provided they
+    do it within ALLOWED_TIME minutes of the object creation
+    """
+    user = fields.OneToOneField(User, on_delete=fields.CASCADE)
+    created = fields.DateTimeField(auto_now=True)
+
+    # how long in minutes the user is allowed after the object
+    # is created
+    ALLOWED_TIME = 10
+
+    @classmethod
+    def time_left(cls, user):
+        instance = cls.objects.filter(user=user).first()
+        if instance:
+            threshold = instance.created + datetime.timedelta(
+                minutes=cls.ALLOWED_TIME
+            )
+            if threshold > timezone.now():
+                diff = threshold - timezone.now()
+                return int(diff.seconds/60)
+
+    @classmethod
+    def allowed(cls, user):
+        if cls.time_left(user):
+            return True

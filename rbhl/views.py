@@ -3,18 +3,19 @@ Custom views for Lungs@Work
 """
 import json
 
-from django.contrib.auth.models import User
 from django.urls import reverse
 from django.views.generic import FormView, TemplateView, RedirectView, ListView
-from django.contrib.auth import login, logout
+from django.contrib.auth import logout
 from django.contrib.admin.views.decorators import staff_member_required
 from django.utils.decorators import method_decorator
+from django.http import HttpResponseRedirect
 from two_factor.views import core as two_factor_core_views
 from opal.core import serialization
 from opal.models import Episode
 from opal import models as opal_models
 from plugins.trade import match
 from plugins.trade.forms import ImportDataForm
+from rbhl.models import SetUpTwoFactor
 
 
 class StaffRequiredMixin(object):
@@ -141,23 +142,6 @@ class TwoFactorRequired(TemplateView):
     template_name = "two_factor/two_factor_required.html"
 
 
-class OtpSetupRelogin(StaffRequiredMixin, RedirectView):
-    def get_redirect_url(self, *args, **kwargs):
-        return reverse("two-factor-setup")
-
-    def get_user(self):
-        return User.objects.filter(
-            is_superuser=False
-        ).filter(is_staff=False).get(
-            username__iexact=self.kwargs["username"]
-        )
-
-    def get(self, request, *args, **kwargs):
-        logout(request)
-        login(request, self.get_user())
-        return super().get(request, *args, **kwargs)
-
-
 class ChangePasswordCheck(RedirectView):
     def get_redirect_url(self):
         profile, _ = opal_models.UserProfile.objects.get_or_create(
@@ -173,3 +157,10 @@ class TwoFactorSetupView(two_factor_core_views.SetupView):
     @property
     def success_url(self):
         return reverse('home')
+
+    def dispatch(self, request, *args, **kwargs):
+        if not SetUpTwoFactor.allowed(request.user):
+            logout(request)
+            url = reverse("two-factor-required")
+            HttpResponseRedirect(url)
+        return super().dispatch(request, *args, **kwargs)

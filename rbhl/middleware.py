@@ -4,7 +4,8 @@ from django.shortcuts import redirect
 from django.utils.deprecation import MiddlewareMixin
 from django.urls import resolve, reverse
 from django.contrib.auth import logout
-from two_factor import utils as two_factor_utils
+from two_factor.utils import default_device
+from rbhl.models import SetUpTwoFactor
 
 
 class SecurityHeadersMiddleware(MiddlewareMixin):
@@ -57,12 +58,12 @@ class TwoStageAuthenticationRequired(MiddlewareMixin):
             if not settings.TWO_FACTOR_FOR_SUPERUSERS:
                 if request.user.is_superuser:
                     return
-
             if request.user.is_verified():
                 return
-
-            elif [i for i in two_factor_utils.devices_for_user(request.user)]:
+            elif default_device(request.user):
                 return redirect("two-factor-login")
+            elif SetUpTwoFactor.allowed(request.user):
+                return redirect("two-factor-setup")
             else:
                 logging.error(
                     "user {} has not had two factor auth set up".format(

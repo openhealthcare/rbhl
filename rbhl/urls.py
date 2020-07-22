@@ -37,11 +37,6 @@ urlpatterns = [
         views.TwoFactorSetupView.as_view(),
         name="two-factor-setup",
     ),
-    url(
-        r'^account/two_factor/(?P<username>.+)/setup',
-        views.OtpSetupRelogin.as_view(),
-        name="two-factor-setup-redirect"
-    ),
     url(r'indigo/v0.1/', include(api.indigo_router.urls))
 ]
 
