@@ -26,6 +26,12 @@
   roles:
     - deploy_rbhl
 
+- name: Set up ec2
+  user: ubuntu
+  hosts: webserver
+  roles:
+    - setup_aws
+
 - name: Restart services
   user: ubuntu
   hosts: webserver
