@@ -330,7 +330,6 @@ LOGIN_NOT_REQUIRED = (
 LOGIN_URL = 'two_factor:login'
 LOGIN_REDIRECT_URL = 'change-password-check'
 LOGOUT_REDIRECT_URL = 'two_factor:login'
-TWO_FACTOR_SMS_GATEWAY = 'two_factor.gateways.fake.Fake'
 
 # the name as it appears in google authenticator
 OTP_TOTP_ISSUER = urllib.parse.quote(OPAL_BRAND_NAME)
