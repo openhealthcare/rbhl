@@ -28,7 +28,7 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
           let mean = getLineData(days, "Mean", "mean_flow");
           let max = getLineData(days, "Max", "max_flow");
           let min = getLineData(days, "Min", "min_flow");
-          let pef = getLineData(days, "Predicted PEF", "pef_flow")
+          let pef = getLineData(days, "Predicted PF", "pef_flow")
 
           scope.completeness = data.completeness;
           scope.overrall_mean = data.overrall_mean;
