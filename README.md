@@ -55,3 +55,10 @@ e.g.
 ```
 
 Will display the below field verbose name and value in `col-md-4` for the label and `col-md-8` respectively.
+
+
+#### Usersetup
+User set up is done in the admin list actions. Enable OTP setup will delete the users
+existing OTP and give them 10 mins to setup a new OTP.
+
+
