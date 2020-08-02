@@ -90,13 +90,13 @@ STATIC_URL = '/assets/'
 STATICFILES_DIRS = (
     os.path.join(PROJECT_PATH, 'static'),
 )
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 # List of finder classes that know how to find static files in
 # various locations.
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'compressor.finders.CompressorFinder',
 )
 
 # Make this unique, and don't share it with anybody.
@@ -116,6 +116,8 @@ else:
     )
 
 MIDDLEWARE = (
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'opal.middleware.AngularCSRFRename',
@@ -174,7 +176,6 @@ INSTALLED_APPS = (
     'reversion',
     'rest_framework',
     'rest_framework.authtoken',
-    'compressor',
     'opal',
     'opal.core.search',
     'opal.core.pathway',

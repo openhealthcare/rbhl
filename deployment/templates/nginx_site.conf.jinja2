@@ -29,10 +29,6 @@ server {
 
     access_log {{ LOG_DIR }}/nginx.log timed_combined;
 
-   location /static {
-        alias {{ PROJECT_PATH }}/static;
-    }
-
     location / {
         proxy_pass http://127.0.0.1:4567;
         proxy_set_header Host $host;
