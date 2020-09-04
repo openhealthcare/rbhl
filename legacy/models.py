@@ -89,6 +89,7 @@ class BloodBook(EpisodeSubrecord):
     antigen_date       = models.DateField(blank=True, null=True)
     antigen_type       = models.CharField(blank=True, null=True,
                                           max_length=200)
+    # The below do not exist in the UI
     comment            = models.TextField(blank=True, null=True)
     batches            = models.TextField(blank=True, null=True)
     room               = models.TextField(blank=True, null=True)
@@ -110,6 +111,8 @@ class BloodBookResult(EpisodeSubrecord):
     rast       = models.CharField(blank=True, null=True, max_length=200)
     precipitin = models.CharField(blank=True, null=True, max_length=200)
     igg        = models.CharField(blank=True, null=True, max_length=200)
+
+    # This has only be filled in twice
     iggclass   = models.CharField(blank=True, null=True, max_length=200)
 
 

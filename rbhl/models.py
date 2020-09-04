@@ -100,6 +100,10 @@ class Demographics(RBHLSubrecord, models.Demographics):
     height = fields.IntegerField(
         blank=True, null=True, verbose_name='Height (cm)'
     )
+    blood_book_ref_number = fields.CharField(
+        blank=True, null=True, max_length=256
+    )
+
     MALE = "Male"
     FEMALE = "Female"
 
