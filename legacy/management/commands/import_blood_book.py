@@ -5,7 +5,7 @@ import csv
 from django.core.management import BaseCommand
 from django.db import transaction
 
-from legacy import episode_categories
+from plugins.blood_book import episode_categories
 from legacy.utils import str_to_date
 from legacy.models import BloodBook, BloodBookResult
 from opal.models import Patient
