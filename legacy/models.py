@@ -66,6 +66,8 @@ class BloodBook(EpisodeSubrecord):
     referrer_name = models.CharField(blank=True, null=True, max_length=256)
     referrer_title = models.CharField(blank=True, null=True, max_length=256)
     blood_date         = models.DateField(blank=True, null=True)
+
+    # an id number of the test
     blood_number       = models.CharField(blank=True, null=True,
                                           max_length=200)
     method             = models.CharField(blank=True, null=True,

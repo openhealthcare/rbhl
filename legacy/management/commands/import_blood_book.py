@@ -5,7 +5,7 @@ import csv
 from django.core.management import BaseCommand
 from django.db import transaction
 
-from plugins.blood_book import episode_categories
+from legacy import episode_categories
 from legacy.utils import str_to_date
 from legacy.models import BloodBook, BloodBookResult
 from opal.models import Patient
@@ -72,15 +72,18 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument("file_name", help="Specify import file")
 
-    @transaction.atomic
     def handle(self, *args, **options):
+        file_name = options["file_name"]
+        self.create_legacy_models(file_name)
+
+    @transaction.atomic
+    def create_legacy_models(self, file_name):
         patients_imported = 0
 
         print('Open CSV to read')
-        with open(options["file_name"]) as f:
+        with open(file_name) as f:
             reader = csv.DictReader(f)
             duplicates = []
-            referrals = []
             books = []
             results = []
 
@@ -181,11 +184,6 @@ class Command(BaseCommand):
                         result = BloodBookResult(**result_data)
                         results.append(result)
 
-        # although they are actually updated they singletons
-        # therefore essentially created
-        msg = "Created {} referrals".format(len(referrals))
-        self.stdout.write(self.style.SUCCESS(msg))
-
         BloodBook.objects.bulk_create(books)
         msg = "Created {} legacy blood books".format(len(books))
         self.stdout.write(self.style.SUCCESS(msg))
@@ -201,4 +199,3 @@ class Command(BaseCommand):
             patients_imported
         )
         self.stdout.write(self.style.SUCCESS(msg))
-        raise ValueError('Boom')
