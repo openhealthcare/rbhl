@@ -83,8 +83,8 @@ class BloodBook(EpisodeSubrecord):
     assayno            = models.CharField(blank=True, null=True,
                                           max_length=200)
     assay_date         = models.DateField(blank=True, null=True)
-    blood_taken        = models.DateField(blank=True, null=True)
-    blood_tm           = models.DateField(blank=True, null=True)
+    blood_taken        = models.DateTimeField(blank=True, null=True)
+    blood_tm           = models.DateTimeField(blank=True, null=True)
     report_dt          = models.DateField(blank=True, null=True)
     report_st          = models.DateField(blank=True, null=True)
     store              = models.CharField(blank=True, null=True,

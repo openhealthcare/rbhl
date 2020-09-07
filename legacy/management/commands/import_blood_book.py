@@ -6,7 +6,7 @@ from django.core.management import BaseCommand
 from django.db import transaction
 
 from plugins.blood_book import episode_categories
-from legacy.utils import str_to_date
+from legacy.utils import str_to_date, str_to_datetime
 from legacy.models import BloodBook, BloodBookResult
 from opal.models import Patient
 from rbhl.models import Demographics
@@ -23,8 +23,8 @@ def create_blood_book(row, episode):
     book.information = row["INFORMATION"]
     book.assayno = row["ASSAYNO"]
     book.assay_date = str_to_date(row["ASSAYDATE"])
-    book.blood_taken = str_to_date(row["BLOODTK"])
-    book.blood_tm = str_to_date(row["BLOODTM"])
+    book.blood_taken = str_to_datetime(row["BLOODTK"])
+    book.blood_tm = str_to_datetime(row["BLOODTM"])
     book.report_dt = str_to_date(row["REPORTDT"])
     book.report_st = str_to_date(row["REPORTST"])
     book.employer = row["Employer"]
