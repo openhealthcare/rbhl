@@ -2,6 +2,8 @@ from django.db import models as fields
 from opal import models
 from opal.core.fields import enum
 from rbhl.models import RBHLSubrecord
+from opal.core import lookuplists
+
 
 COMMON_EXPOSURES = enum(
     "LAB ANIMALS",
@@ -14,20 +16,17 @@ COMMON_EXPOSURES = enum(
 )
 
 
-class Note(RBHLSubrecord, models.EpisodeSubrecord):
-    _is_singleton = True
-    _exclude_from_extract = True
-    _advanced_searchable = False
-    details = fields.TextField(blank=True, default="")
+class Allergen(lookuplists.LookupList):
+    pass
 
 
 class Specimen(RBHLSubrecord, models.EpisodeSubrecord):
     _is_singleton = True
-    blood_date = fields.DateField(blank=True, null=True)
+    sample_received = fields.DateField(blank=True, null=True)
+
+    # an old id of the record.
     blood_number = fields.CharField(blank=True, null=True, max_length=200)
-    date_dna_extracted = fields.CharField(blank=True, null=True, max_length=200)
-    blood_taken = fields.DateField(blank=True, null=True)
-    blood_tm = fields.DateField(blank=True, null=True)
+    blood_taken = fields.DateTimeField(blank=True, null=True)
     report_dt = fields.DateField(blank=True, null=True)
     report_st = fields.DateField(blank=True, null=True)
     store = fields.NullBooleanField(blank=True)
@@ -59,10 +58,10 @@ class Antigen(RBHLSubrecord, models.EpisodeSubrecord):
 
 
 class AllergenResult(RBHLSubrecord, models.EpisodeSubrecord):
-    PRECIPITIN_CHOICES = enum("-ve", "+ve", "Weak +ve")
+    PRECIPITIN_CHOICES = enum("-ve", "+ve", "Weak +ve", '++ve')
 
-    result = fields.CharField(blank=True, null=True, max_length=200)
-    allergen = fields.CharField(blank=True, null=True, max_length=200)
+    result = fields.TextField(blank=True, null=True, max_length=200)
+    allergen = models.ForeignKeyOrFreeText(Allergen)
     antigen_no = fields.CharField(blank=True, null=True, max_length=200)
     # usually a float but can include '<' and '>'
     kul = fields.CharField(blank=True, null=True, max_length=200, verbose_name="KU/L")

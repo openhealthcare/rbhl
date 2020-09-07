@@ -1,0 +1,349 @@
+{
+  "allergen": [
+       {
+            "name": "PLAIN FLOUR"
+       },
+       {
+            "name": "ALPHA AMYLASE"
+       },
+       {
+            "name": "RAT URINE"
+       },
+       {
+            "name": "MOUSE URINE"
+       },
+       {
+            "name": "SILICA"
+       },
+       {
+            "name": "FERRET URINE"
+       },
+       {
+            "name": "TDI"
+       },
+       {
+            "name": "MDI"
+       },
+       {
+            "name": "HDI"
+       },
+       {
+            "name": "TIMOTHY"
+       },
+       {
+            "name": "COMMON SILVER BIRCH"
+       },
+       {
+            "name": "CAT DANDER"
+       },
+       {
+            "name": "G. PIG EPITH"
+       },
+       {
+            "name": "LATEX"
+       },
+       {
+            "name": "FORMALDEHYDE"
+       },
+       {
+            "name": "EGG WHITE"
+       },
+       {
+            "name": "DOG DANDER"
+       },
+       {
+            "name": "SOY BEAN"
+       },
+       {
+            "name": "SAVINASE"
+       },
+       {
+            "name": "TERMAMYL"
+       },
+       {
+            "name": "ASP. FUMIGATUS"
+       },
+       {
+            "name": "HORSE DANDER"
+       },
+       {
+            "name": "RABBIT EPITH"
+       },
+       {
+            "name": "RAT EPITH"
+       },
+       {
+            "name": "MOUSE EPITH"
+       },
+       {
+            "name": "PURADAX"
+       },
+       {
+            "name": "G.PIG EPITH"
+       },
+       {
+            "name": "TIMOTHY GRASS"
+       },
+       {
+            "name": "CLAD. HERBARUM"
+       },
+       {
+            "name": "ALT. ALTERNATA"
+       },
+       {
+            "name": "HAMSTER EPITH"
+       },
+       {
+            "name": "EGG"
+       },
+       {
+            "name": "DROSOPHILA, WHOLE"
+       },
+       {
+            "name": "D. PTERONYSSINUS"
+       },
+       {
+            "name": "CELLUCLEAN"
+       },
+       {
+            "name": "STAINZYME"
+       },
+       {
+            "name": "RYE"
+       },
+       {
+            "name": "MAIZE"
+       },
+       {
+            "name": "RICE"
+       },
+       {
+            "name": "WHEAT"
+       },
+       {
+            "name": "BARLEY"
+       },
+       {
+            "name": "YEAST"
+       },
+       {
+            "name": "ASP. NIGER"
+       },
+       {
+            "name": "DUST"
+       },
+       {
+            "name": "PLATINUM"
+       },
+       {
+            "name": "DROSOPHILA"
+       },
+       {
+            "name": "ASP. VERSICOLOR"
+       },
+       {
+            "name": "PEANUT"
+       },
+       {
+            "name": "COW DANDER"
+       },
+       {
+            "name": "SWINE EPITH"
+       },
+       {
+            "name": "MILK"
+       },
+       {
+            "name": "SHRIMP"
+       },
+       {
+            "name": "ASBESTOS"
+       },
+       {
+            "name": "RABBIT EPITHELIUM"
+       },
+       {
+            "name": "ASPERGILLUS FUMIGATUS"
+       },
+       {
+            "name": "MOUSE SERUM PROTEINS"
+       },
+       {
+            "name": "RAT SERUM PROTEINS"
+       },
+       {
+            "name": "MOUSE URINE PROTEINS"
+       },
+       {
+            "name": "FIRE FIGHTER"
+       },
+       {
+            "name": "LIQUANASE"
+       },
+       {
+            "name": "SOY FLOUR"
+       },
+       {
+            "name": "CAN. ALBICANS"
+       },
+       {
+            "name": "BAKEZYME WHOLEGRAIN"
+       },
+       {
+            "name": "BAKEZYME P500 BG"
+       },
+       {
+            "name": "BAKEZYME HS10000"
+       },
+       {
+            "name": "BAKEZYME GD 10000"
+       },
+       {
+            "name": "BAKEZYME PPL IBG"
+       },
+       {
+            "name": "BAKEZYME BXP 25001"
+       },
+       {
+            "name": "NOVOZYME 27159"
+       },
+       {
+            "name": "NOVOZYME BAN 800MG"
+       },
+       {
+            "name": "BAKEZYME P500BG"
+       },
+       {
+            "name": "LIPOLASE"
+       },
+       {
+            "name": "BAN"
+       },
+       {
+            "name": "PEN. NOTATUM"
+       },
+       {
+            "name": "COLOPHONY"
+       },
+       {
+            "name": "SOYBEAN"
+       },
+       {
+            "name": "EXCELLULASE 3000D"
+       },
+       {
+            "name": "MANNAWAY"
+       },
+       {
+            "name": "EXCELLULASE"
+       },
+       {
+            "name": "LIPEX"
+       },
+       {
+            "name": "STAINZYME 12T"
+       },
+       {
+            "name": "XPECT"
+       },
+       {
+            "name": "EGG YOLK"
+       },
+       {
+            "name": "METAL WORKING FLUID"
+       },
+       {
+            "name": "GUINEA PIG EPITHELIUM"
+       },
+       {
+            "name": "SPUN / CLEAN"
+       },
+       {
+            "name": "NEAT / DIRTY"
+       },
+       {
+            "name": "ISPAGHULA"
+       },
+       {
+            "name": "MDI : HUMAN SERUM ALBUMIN"
+       },
+       {
+            "name": "RAT URINARY PROTEIN"
+       },
+       {
+            "name": "PINK BOLLWORM ADULT MOTHS"
+       },
+       {
+            "name": "DIAMONDBACK ADULT MOTHS"
+       },
+       {
+            "name": "XANTHIUM STRUMMARIUM"
+       },
+       {
+            "name": "AMAQU SEED"
+       },
+       {
+            "name": "AMAQU SEED SEP"
+       },
+       {
+            "name": "AMAQU THRESH FINAL"
+       },
+       {
+            "name": "AMAQU RUMBLE"
+       },
+       {
+            "name": "AMAQU POLLEN"
+       },
+       {
+            "name": "LOLIUM FLOWER AND POLLEN"
+       },
+       {
+            "name": "BLACK PEPPER"
+       },
+       {
+            "name": "TIGER BREAD POWDER"
+       },
+       {
+            "name": "TMA"
+       },
+       {
+            "name": "MOULD 6MG/ML"
+       },
+       {
+            "name": "MOULD 3MG/ML"
+       },
+       {
+            "name": "FEATHERS"
+       },
+       {
+            "name": "HDI:HUMAN SERUM ALBUMIN"
+       },
+       {
+            "name": "TDI:HUMAN SERUM ALBUMIN"
+       },
+       {
+            "name": "MDI:HUMAN SERUM ALBUMIN"
+       },
+       {
+            "name": "RAT URINE PROTEINS"
+       },
+       {
+            "name": "MOUSE URINARY PROTEIN"
+       },
+       {
+            "name": "LOMICRO GROUND GINGER 227027"
+       },
+       {
+            "name": "BUTTER VANILLA 504044"
+       },
+       {
+            "name": "VANILLA V93371"
+       },
+       {
+            "name": "WAFER 2436"
+       },
+       {
+            "name": "PILOT FLOUR 227044"
+       }
+  ]
+}

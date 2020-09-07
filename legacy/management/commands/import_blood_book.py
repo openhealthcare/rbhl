@@ -2,14 +2,37 @@
 Management command to import the blood book csv
 """
 import csv
+import datetime
+from django.utils import timezone
 from django.core.management import BaseCommand
 from django.db import transaction
 
 from plugins.blood_book import episode_categories
 from legacy.utils import str_to_date, str_to_datetime
 from legacy.models import BloodBook, BloodBookResult
-from opal.models import Patient
+from opal.models import Patient, Episode
 from rbhl.models import Demographics
+
+
+def no_yes(field):
+    field = field.strip().upper()
+    if field == 'YES':
+        return True
+    if field == 'NO':
+        return False
+    return
+
+
+def get_precipitin(some_field):
+    if some_field is None:
+        return
+    some_field = some_field.lower()
+    lut = {
+        "- ve": "-ve",
+        "+ ve": "+ve",
+        "weak +ve": "Weak +ve"
+    }
+    return lut.get(some_field, some_field)
 
 
 def create_blood_book(row, episode):
@@ -75,6 +98,96 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         file_name = options["file_name"]
         self.create_legacy_models(file_name)
+        self.create_production_models()
+
+    @transaction.atomic
+    def create_production_models(self):
+        episodes = Episode.objects.filter(
+            category_name=episode_categories.BloodBook.display_name
+        ).prefetch_related(
+            'bloodbook_set',
+            'specimen_set',
+            'antigen_set',
+            'referral_set',
+            'employment_set',
+            'bloodbookresult_set'
+        )
+        for episode in episodes:
+            specimen = episode.specimen_set.all()[0]
+            legacy_blood_book = episode.bloodbook_set.all()[0]
+            specimen.sample_received = legacy_blood_book.blood_date
+            specimen.blood_number = legacy_blood_book.blood_number
+            time_taken = legacy_blood_book.blood_tm
+            if time_taken:
+                time_taken = time_taken.time()
+            else:
+                time_taken = datetime.time.min
+
+            if legacy_blood_book.blood_taken:
+                specimen.blood_taken = timezone.make_aware(datetime.datetime.combine(
+                    legacy_blood_book.blood_taken.date(),
+                    time_taken
+                ))
+            specimen.report_dt = legacy_blood_book.report_dt
+            specimen.report_st = legacy_blood_book.report_st
+            specimen.store = no_yes(legacy_blood_book.store)
+            specimen.created = timezone.now()
+            specimen.save()
+
+            antigen = episode.antigen_set.all()[0]
+            antigen.method = legacy_blood_book.method
+            antigen.assay_no = legacy_blood_book.assayno
+            antigen.assay_date = legacy_blood_book.assay_date
+            antigen.antigen_date = legacy_blood_book.antigen_date
+            antigen.antigen_type = legacy_blood_book.antigen_type
+            antigen.created = timezone.now()
+            antigen.save()
+
+            note_msg = legacy_blood_book.comment.strip() or ""
+
+            for field in [
+                "batches", "room", "freezer", "shelf", "tray", "vials"
+            ]:
+                field_value = getattr(legacy_blood_book, field, "").strip()
+                if field_value:
+                    note_msg = "{}\n{}: {}".format(
+                        note_msg, field, field_value
+                    )
+
+            if note_msg:
+                episode.actionlog_set.create(
+                    general_notes=note_msg,
+                    created=timezone.now()
+                )
+
+            referral = episode.referral_set.all()[0]
+            referral.referrer_title = legacy_blood_book.referrer_title
+            referral.referrer_name = legacy_blood_book.referrer_name
+            referral.created = timezone.now()
+            referral.save()
+
+            employment = episode.employment_set.all()[0]
+            employment.employer = legacy_blood_book.employer
+            employment.oh_provider = legacy_blood_book.oh_provider
+            employment.exposures = legacy_blood_book.exposure
+            employment.save()
+
+            for blood_book_result in episode.bloodbookresult_set.all():
+                episode.allergenresult_set.create(
+                    result=blood_book_result.result,
+                    allergen=blood_book_result.result,
+                    antigen_no=blood_book_result.result,
+                    kul=blood_book_result.kul,
+                    ige_class=blood_book_result.klass,
+                    rast=blood_book_result.rast,
+                    precipitin=get_precipitin(blood_book_result.precipitin),
+                    igg_mg=blood_book_result.igg,
+                )
+
+        msg = "Created information for {} blood books episodes".format(
+            episodes.count()
+        )
+        self.stdout.write(self.style.SUCCESS(msg))
 
     @transaction.atomic
     def create_legacy_models(self, file_name):
