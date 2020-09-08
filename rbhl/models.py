@@ -114,14 +114,6 @@ class Demographics(RBHLSubrecord, models.Demographics):
             )
 
 
-class PatientConsultation(models.PatientConsultation):
-    pass
-
-# we commonly need a referral route, ie how the patient
-# came to the service, but not always.
-# class ReferralRoute(models.ReferralRoute): pass
-
-
 """
 End Opal core models
 """
