@@ -2,7 +2,7 @@
 {% with label_size=5 field_size=7 %}
   <div class="row">
     <div class="col-md-{{ label_size }}">
-      <b>Name</b>
+      <b>Name:</b>
     </div>
     <div class="col-md-{{ field_size }}">
       [[ item.first_name ]]
@@ -13,7 +13,7 @@
   {% field_display "Demographics.nhs_number" label="NHS #" %}
   <div class="row">
     <div class="col-md-{{ label_size }}">
-      <b>DOB</b>
+      <b>DOB:</b>
     </div>
     <div class="col-md-{{ field_size }}">
       [[ item.date_of_birth | displayDate ]]
