@@ -626,4 +626,11 @@ input[type="date"]::-webkit-input-placeholder {
   margin-top: 10px;
   overflow: hidden;
 }
+
+.extract-search-form .btn {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
 /*# sourceMappingURL=rbhl.css.map */
