@@ -2,12 +2,16 @@
 Management command to import the blood book csv
 """
 import csv
+import datetime
 from django.core.management import BaseCommand
 from django.db import transaction
 
 from legacy import episode_categories
+from rbhl.episode_categories import OccupationalLungDiseaseEpisode
 from legacy.utils import str_to_date
-from legacy.models import BloodBook, BloodBookResult, BloodBookPatient
+from legacy.models import (
+    BloodBook, BloodBookResult, BloodBookPatient, BloodBookEpisode
+)
 from opal.models import Patient
 from rbhl.models import Demographics
 
@@ -26,6 +30,16 @@ def contains_numbers(some_str):
     Returns true if the string contains any numbers
     """
     return any(i for i in some_str if i.isnumeric())
+
+
+def get_longest(*strs):
+    """
+    Returns the longest of a list of strings
+    """
+    strs = [i for i in strs if i]
+    if strs:
+        return sorted(strs, key=lambda x: len(x), reverse=True)[0]
+    return None
 
 
 def get_precipitin(some_field):
@@ -123,19 +137,14 @@ def get_or_create_blood_book_patient(row):
 def get_or_create_blood_book_episode(bb_patient, row):
     """
     We consider an episode to be a referral.
-
-    We expect it to come with a blood sample and a blood number.
-
     We therefore expect a maximum of one referral for a blood sample date.
     """
     blood_date = str_to_date(row["BLOODDAT"]).strip()
-    blood_number = row["BLOODNO"].strip()
     referrer_name = row["Referrername"].strip()
     oh_provider = row["OH Provider"].strip()
     employer = row["Employer"].strip()
 
     return bb_patient.bloodbookepisode_set.get_or_create(
-        blood_number=blood_number,
         blood_date=blood_date,
         referrer_name=referrer_name,
         oh_provider=oh_provider,
@@ -155,6 +164,7 @@ class Command(BaseCommand):
 
         self.create_blood_book_patients_and_episodes(rows)
         self.create_rbhl_patients()
+        self.create_rbhl_episodes()
 
     @transaction.atomic
     def create_blood_book_patients_and_episodes(self, rows):
@@ -180,12 +190,11 @@ class Command(BaseCommand):
     @transaction.atomic
     def create_rbhl_patients(self):
         """
-        For the moment lets just look at unique, first_name, surname, dob
-        and matches those that we currently have.
-
+        For the moment we get or create based on first_name, surname, dob
         We can do better than this, but this should always be correct.
 
-        We use the longest unique bb hospital number that contains a numeric digit
+        When creating a patient for a hosptial number we use the longest unique
+        bb patient hospital number that contains a numeric digit
         """
         self.stdout.write("Creating rbhl patients")
         patient_details = BloodBookPatient.objects.all().values(
@@ -237,6 +246,104 @@ class Command(BaseCommand):
         msg = "Created {} patients, updated {} patients"
         self.stdout.write(
             self.style.SUCCESS(msg.format(patients_created, patients_found))
+        )
+
+    @transaction.atomic
+    def create_rbhl_episodes(self):
+        """
+        We consider a blood book referral to be a unique patient/blood date.
+
+        If there exists an episode within a year of the blood date, we will use
+        that episode.
+
+        If there are multiple bb episodes with patient/blood date we will use the
+        referral details employer details that are the longest.
+
+        If these have not been populated in existing episodes then we shall use these
+        """
+        self.stdout.write("Creating rbhl episodes")
+        episodes_created = 0
+        episodes_found = 0
+        referrals_updated = 0
+        employment_updated = 0
+        episode_details = BloodBookEpisode.objects.all().values(
+            "blood_book_patient_id", "blood_date"
+        ).distinct()
+        disinct_episode_details = set([tuple(i.values()) for i in episode_details])
+        if not len(episode_details) == len(disinct_episode_details):
+            raise ValueError("Distinct does not work like you think it does...")
+        episode_details = sorted(
+            episode_details,
+            key=lambda x: x["blood_date"] or datetime.datetime.max.date()
+        )
+        for episode_detail in episode_details:
+            patient = Patient.objects.get(
+                bloodbookpatient__id=episode_detail["blood_book_patient_id"]
+            )
+            episodes = patient.episode_set.all()
+
+            # If we have no blood date, use any episode
+            if not episode_detail["blood_date"]:
+                if not episodes:
+                    episode = patient.episode_set.create()
+                    episodes_created += 1
+            else:
+                # Get the episode that is within a year of the blood date.
+                # The existing system does not have duplicate episodes.
+                # but the blood book does.
+                earliest = episode_detail["blood_date"] - datetime.timedelta(
+                    365
+                )
+                latest = episode_detail["blood_date"] + datetime.timedelta(
+                    365
+                )
+                episode = patient.episode_set.filter(
+                    referral__date_of_referral__gt=earliest
+                ).filter(
+                    referral__date_of_referral__lt=latest
+                ).first()
+
+                if episode:
+                    episodes_found += 1
+                else:
+                    # If an episode does not exist create it.
+                    episode = patient.episode_set.create(
+                        category_name=OccupationalLungDiseaseEpisode.display_name
+                    )
+                    episodes_found += 1
+
+            bb_episodes = BloodBookEpisode.objects.filter(
+                **episode_detail
+            )
+            referrer_name = get_longest(*[i.referrer_name for i in bb_episodes])
+            oh_provider = get_longest(*[i.oh_provider for i in bb_episodes])
+            employer = get_longest(*[i.employer for i in bb_episodes])
+
+            referral = episode.referral_set.get()
+            if not referral.referrer_name:
+                referral.referrer_name = referrer_name
+                referrals_updated += 1
+                referral.save()
+
+            employment = episode.employment_set.get()
+            employment_changed = False
+            if not employment.employer and employer:
+                employment.employer = employer
+                employment_changed = True
+            if not employment.oh_provider and oh_provider:
+                employment.oh_provider = oh_provider
+                employment_changed = True
+
+            if employment_changed:
+                employment_updated += 1
+                employment.save()
+        msg = "Created {} episodes, found {} episodes"
+        self.stdout.write(
+            self.style.SUCCESS(msg.format(episodes_created, episodes_found))
+        )
+        msg = "Referrals updated {}, employment updated {}"
+        self.stdout.write(
+            self.style.SUCCESS(msg.format(referrals_updated, employment_updated))
         )
 
     @transaction.atomic
