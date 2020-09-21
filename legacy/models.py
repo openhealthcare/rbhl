@@ -151,7 +151,6 @@ class BloodBookEpisode(models.Model):
     blood_book_patient = models.ForeignKey(
         BloodBookPatient, blank=True, null=True, on_delete=models.CASCADE
     )
-    blood_number = models.CharField(blank=True, null=True, max_length=256)
     blood_date = models.DateField(blank=True, null=True)
     oh_provider = models.CharField(blank=True, null=True, max_length=256)
     employer = models.CharField(blank=True, null=True, max_length=256)
