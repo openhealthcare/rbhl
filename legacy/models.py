@@ -54,67 +54,6 @@ class ActionLog(EpisodeSubrecord):
     finaldays           = models.IntegerField(blank=True, null=True)
 
 
-class BloodBook(EpisodeSubrecord):
-    _exclude_from_extract = True
-    _advanced_searchable = False
-
-    reference_number   = models.CharField(blank=True, null=True,
-                                          max_length=200)
-    employer           = models.CharField(blank=True, null=True,
-                                          max_length=200)
-    oh_provider        = models.CharField(blank=True, null=True,
-                                          max_length=100)
-    blood_date         = models.DateField(blank=True, null=True)
-    blood_number       = models.CharField(blank=True, null=True,
-                                          max_length=200)
-    method             = models.CharField(blank=True, null=True,
-                                          max_length=200)
-    blood_collected    = models.CharField(
-        verbose_name='EDTA blood collected',
-        blank=True, null=True,
-        max_length=200)
-    date_dna_extracted = models.CharField(blank=True, null=True,
-                                          max_length=200)
-    information        = models.CharField(blank=True, null=True,
-                                          max_length=200)
-    assayno            = models.CharField(blank=True, null=True,
-                                          max_length=200)
-    assay_date         = models.DateField(blank=True, null=True)
-    blood_taken        = models.DateField(blank=True, null=True)
-    blood_tm           = models.DateField(blank=True, null=True)
-    report_dt          = models.DateField(blank=True, null=True)
-    report_st          = models.DateField(blank=True, null=True)
-    store              = models.CharField(blank=True, null=True,
-                                          max_length=200)
-    exposure           = models.CharField(blank=True, null=True,
-                                          max_length=200)
-    antigen_date       = models.DateField(blank=True, null=True)
-    antigen_type       = models.CharField(blank=True, null=True,
-                                          max_length=200)
-    comment            = models.TextField(blank=True, null=True)
-    batches            = models.TextField(blank=True, null=True)
-    room               = models.TextField(blank=True, null=True)
-    freezer            = models.TextField(blank=True, null=True)
-    shelf              = models.TextField(blank=True, null=True)
-    tray               = models.TextField(blank=True, null=True)
-    vials              = models.TextField(blank=True, null=True)
-
-
-class BloodBookResult(EpisodeSubrecord):
-    _exclude_from_extract = True
-    _advanced_searchable = False
-
-    result = models.CharField(blank=True, null=True, max_length=200)
-    allergen   = models.CharField(blank=True, null=True, max_length=200)
-    antigenno  = models.CharField(blank=True, null=True, max_length=200)
-    kul        = models.CharField(blank=True, null=True, max_length=200)
-    klass      = models.CharField(blank=True, null=True, max_length=200)
-    rast       = models.CharField(blank=True, null=True, max_length=200)
-    precipitin = models.CharField(blank=True, null=True, max_length=200)
-    igg        = models.CharField(blank=True, null=True, max_length=200)
-    iggclass   = models.CharField(blank=True, null=True, max_length=200)
-
-
 class BloodBookPatient(models.Model):
     """
     Hospital number is unreliable and will give false positives.
