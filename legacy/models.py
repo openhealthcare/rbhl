@@ -3,7 +3,9 @@ Models for the RBH legacy transition
 """
 import datetime
 from django.db import models
-from opal.models import PatientSubrecord, EpisodeSubrecord
+from opal.models import (
+    PatientSubrecord, EpisodeSubrecord, Episode, Patient
+)
 
 
 """
@@ -111,6 +113,49 @@ class BloodBookResult(EpisodeSubrecord):
     precipitin = models.CharField(blank=True, null=True, max_length=200)
     igg        = models.CharField(blank=True, null=True, max_length=200)
     iggclass   = models.CharField(blank=True, null=True, max_length=200)
+
+
+class BloodBookPatient(models.Model):
+    """
+    Hospital number is unreliable and will give false positives.
+    First name, surname and dob is unreliable as first name is often
+    but not always given as an initial however it should not give false
+    negatives.
+
+    This model stores all unique combinations of the above so that
+    we can then collapse them via some reducitve function into patients.
+
+    We can then trace the patients details back to what was in the csv.
+    """
+    patient = models.ForeignKey(
+        Patient, blank=True, null=True, on_delete=models.CASCADE
+    )
+    hospital_number = models.CharField(blank=True, null=True, max_length=256)
+    first_name = models.CharField(blank=True, null=True, max_length=256)
+    surname = models.CharField(blank=True, null=True, max_length=256)
+    date_of_birth = models.DateField(blank=True, null=True)
+
+
+class BloodBookEpisode(models.Model):
+    """
+    For a patient an episode a referral. Some blood given over to
+    test for n exposures.
+
+    This model contains all unique combinations of the below so that
+    we can then collapse the bb episodes into rbhl episodes and trace
+    back to what their before information was.
+    """
+    episode = models.ForeignKey(
+        Episode, blank=True, null=True, on_delete=models.CASCADE
+    )
+    blood_book_patient = models.ForeignKey(
+        BloodBookPatient, blank=True, null=True, on_delete=models.CASCADE
+    )
+    blood_number = models.CharField(blank=True, null=True, max_length=256)
+    blood_date = models.DateField(blank=True, null=True)
+    oh_provider = models.CharField(blank=True, null=True, max_length=256)
+    employer = models.CharField(blank=True, null=True, max_length=256)
+    referrer_name = models.CharField(blank=True, null=True, max_length=256)
 
 
 """

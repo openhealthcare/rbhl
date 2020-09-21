@@ -7,7 +7,9 @@ from django.db import transaction
 
 from legacy import episode_categories
 from legacy.utils import str_to_date
-from legacy.models import BloodBook, BloodBookResult
+from legacy.models import (
+    BloodBook, BloodBookResult, BloodBookPatient
+)
 from opal.models import Patient
 from rbhl.models import Demographics
 
@@ -19,6 +21,10 @@ def no_yes(field):
     if field == 'NO':
         return False
     return
+
+
+def contains_number(some_str):
+    return any(i for i in some_str if i.isnumeric())
 
 
 def get_precipitin(some_field):
@@ -89,13 +95,85 @@ def get_demographics(**demographics_kwargs):
     return None
 
 
+def get_or_create_blood_book_patient(row):
+    """
+    Hospital number is unreliable and will give false positives.
+    First name, surname and dob is unreliable as first name is often
+    but not always given as an initial however it should not give false
+    negatives.
+
+    At the moment we will just do first name, surname, dob but should
+    change this to more sophisticated matching later.
+    """
+    hospital_number = row["Hosp_no"].strip()
+    dob = str_to_date(
+        row['BIRTH'], no_future_dates=True
+    )
+    first_name = row["FIRSTNAME"].strip()
+    surname = row["SURNAME"].strip()
+    return BloodBookPatient.objects.get_or_create(
+        first_name=first_name,
+        surname=surname,
+        date_of_birth=dob,
+        hospital_number=hospital_number
+    )
+
+
+def get_or_create_blood_book_episode(bb_patient, row):
+    """
+    We consider an episode to be a referral.
+
+    We expect it to come with a blood sample and a blood number.
+
+    We therefore expect a maximum of one referral for a blood sample date.
+    """
+    blood_date = str_to_date(row["BLOODDAT"]).strip()
+    blood_number = row["BLOODNO"].strip()
+    referrer_name = row["Referrername"].strip()
+    oh_provider = row["OH Provider"].strip()
+    employer = row["Employer"].strip()
+
+    return bb_patient.bloodbookepisode_set.get_or_create(
+        blood_number=blood_number,
+        blood_date=blood_date,
+        referrer_name=referrer_name,
+        oh_provider=oh_provider,
+        employer=employer
+    )
+
+
 class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument("file_name", help="Specify import file")
 
     def handle(self, *args, **options):
         file_name = options["file_name"]
-        self.create_legacy_models(file_name)
+        print('Open CSV to read')
+        with open(file_name) as f:
+            rows = list(csv.DictReader(f))
+
+        self.create_blood_book_patients_and_episodes(rows)
+
+    @transaction.atomic
+    def create_blood_book_patients_and_episodes(self, rows):
+        """
+        Saves distinct patient data and distinct episode/referral data.
+        These can then be collapsed down at a later date.
+        """
+        self.stdout.write("Creating blood book patient and episodes")
+        patient_count = 0
+        episode_count = 0
+        for row in rows:
+            bb_patient, bb_patient_created = get_or_create_blood_book_patient(row)
+            bb_episode, bb_episode_created = get_or_create_blood_book_episode(
+                bb_patient, row
+            )
+            if bb_patient_created:
+                patient_count += 1
+            if bb_episode_created:
+                episode_count += 1
+        msg = "Created {} blood book patients and {} blood book episodes"
+        self.stdout.write(self.style.SUCCESS(msg.format(patient_count, episode_count)))
 
     @transaction.atomic
     def create_legacy_models(self, file_name):
