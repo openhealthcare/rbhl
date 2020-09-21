@@ -7,9 +7,7 @@ from django.db import transaction
 
 from legacy import episode_categories
 from legacy.utils import str_to_date
-from legacy.models import (
-    BloodBook, BloodBookResult, BloodBookPatient
-)
+from legacy.models import BloodBook, BloodBookResult, BloodBookPatient
 from opal.models import Patient
 from rbhl.models import Demographics
 
@@ -23,7 +21,10 @@ def no_yes(field):
     return
 
 
-def contains_number(some_str):
+def contains_numbers(some_str):
+    """
+    Returns true if the string contains any numbers
+    """
     return any(i for i in some_str if i.isnumeric())
 
 
@@ -153,6 +154,7 @@ class Command(BaseCommand):
             rows = list(csv.DictReader(f))
 
         self.create_blood_book_patients_and_episodes(rows)
+        self.create_rbhl_patients()
 
     @transaction.atomic
     def create_blood_book_patients_and_episodes(self, rows):
@@ -174,6 +176,68 @@ class Command(BaseCommand):
                 episode_count += 1
         msg = "Created {} blood book patients and {} blood book episodes"
         self.stdout.write(self.style.SUCCESS(msg.format(patient_count, episode_count)))
+
+    @transaction.atomic
+    def create_rbhl_patients(self):
+        """
+        For the moment lets just look at unique, first_name, surname, dob
+        and matches those that we currently have.
+
+        We can do better than this, but this should always be correct.
+
+        We use the longest unique bb hospital number that contains a numeric digit
+        """
+        self.stdout.write("Creating rbhl patients")
+        patient_details = BloodBookPatient.objects.all().values(
+            "first_name", "surname", "date_of_birth"
+        ).distinct()
+        patients_created = 0
+        patients_found = 0
+
+        disinct_patinet_details = set([tuple(i.values()) for i in patient_details])
+        if not len(patient_details) == len(disinct_patinet_details):
+            raise ValueError("Distinct does not work like you think it does...")
+
+        for patient_detail in patient_details:
+            patient = Patient.objects.filter(
+                demographics__first_name__iexact=patient_detail["first_name"],
+                demographics__surname__iexact=patient_detail["surname"],
+                demographics__date_of_birth=patient_detail["date_of_birth"]
+            ).first()
+            if patient:
+                patients_found += 1
+            else:
+                rows = BloodBookPatient.objects.filter(**patient_detail)
+                hns = list(set([row.hospital_number for row in rows]))
+                hns = [i for i in hns if i and contains_numbers(i)]
+                hns = sorted(hns, key=lambda x: len(x), reverse=True)
+                hn_to_use = ""
+
+                for hn in hns:
+                    if BloodBookPatient.objects.exclude(**patient_detail).filter(
+                        hospital_number=hn
+                    ).exists():
+                        continue
+
+                    hn_to_use = hn
+                    break
+                patient = Patient.objects.create()
+                patient.demographics_set.update(
+                    first_name=patient_detail["first_name"],
+                    surname=patient_detail["surname"],
+                    date_of_birth=patient_detail["date_of_birth"],
+                    hospital_number=hn_to_use
+                )
+                patients_created += 1
+            BloodBookPatient.objects.filter(
+                **patient_detail
+            ).update(
+                patient=patient
+            )
+        msg = "Created {} patients, updated {} patients"
+        self.stdout.write(
+            self.style.SUCCESS(msg.format(patients_created, patients_found))
+        )
 
     @transaction.atomic
     def create_legacy_models(self, file_name):
