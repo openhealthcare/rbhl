@@ -3,6 +3,8 @@ Management command to import the blood book csv
 """
 import csv
 import datetime
+from time import time
+from functools import wraps
 from django.core.management import BaseCommand
 from django.db import transaction
 
@@ -14,6 +16,19 @@ from legacy.models import (
 )
 from opal.models import Patient
 from rbhl.models import Demographics
+
+
+def timing(f):
+    @wraps(f)
+    def wrap(cmd, *args, **kw):
+        ts = time()
+        result = f(cmd, *args, **kw)
+        te = time()
+        cmd.stdout.write('timing_func: %r %2.4f sec' % (
+            f.__name__, te-ts
+        ))
+        return result
+    return wrap
 
 
 def no_yes(field):
@@ -166,6 +181,7 @@ class Command(BaseCommand):
         self.create_rbhl_patients()
         self.create_rbhl_episodes()
 
+    @timing
     @transaction.atomic
     def create_blood_book_patients_and_episodes(self, rows):
         """
@@ -187,6 +203,7 @@ class Command(BaseCommand):
         msg = "Created {} blood book patients and {} blood book episodes"
         self.stdout.write(self.style.SUCCESS(msg.format(patient_count, episode_count)))
 
+    @timing
     @transaction.atomic
     def create_rbhl_patients(self):
         """
@@ -248,6 +265,7 @@ class Command(BaseCommand):
             self.style.SUCCESS(msg.format(patients_created, patients_found))
         )
 
+    @timing
     @transaction.atomic
     def create_rbhl_episodes(self):
         """
