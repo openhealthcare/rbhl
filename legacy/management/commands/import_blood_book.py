@@ -154,7 +154,7 @@ def get_or_create_blood_book_episode(bb_patient, row):
     We consider an episode to be a referral.
     We therefore expect a maximum of one referral for a blood sample date.
     """
-    blood_date = str_to_date(row["BLOODDAT"]).strip()
+    blood_date = str_to_date(row["BLOODDAT"])
     referrer_name = row["Referrername"].strip()
     oh_provider = row["OH Provider"].strip()
     employer = row["Employer"].strip()
@@ -191,7 +191,13 @@ class Command(BaseCommand):
         self.stdout.write("Creating blood book patient and episodes")
         patient_count = 0
         episode_count = 0
+        skipped = 0
         for row in rows:
+            # Surname is our most reliable identifier, if its not populated
+            # skip the row
+            if not row["SURNAME"].strip():
+                skipped += 1
+                continue
             bb_patient, bb_patient_created = get_or_create_blood_book_patient(row)
             bb_episode, bb_episode_created = get_or_create_blood_book_episode(
                 bb_patient, row
@@ -200,8 +206,11 @@ class Command(BaseCommand):
                 patient_count += 1
             if bb_episode_created:
                 episode_count += 1
-        msg = "Created {} blood book patients and {} blood book episodes"
-        self.stdout.write(self.style.SUCCESS(msg.format(patient_count, episode_count)))
+        msg = "Created {} blood book patients and {} blood book episodes".format(
+            patient_count, episode_count
+        )
+        msg = "{}. Skipped {} patients".format(msg, skipped)
+        self.stdout.write(self.style.SUCCESS(msg))
 
     @timing
     @transaction.atomic
