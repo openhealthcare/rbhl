@@ -8,6 +8,7 @@ from functools import wraps
 from django.core.management import BaseCommand
 from django.db import transaction
 from django.db.models import Count
+from django.utils import timezone
 from rbhl.episode_categories import OccupationalLungDiseaseEpisode
 from legacy.utils import str_to_date
 from legacy.models import BloodBookPatient, BloodBookEpisode
@@ -26,6 +27,15 @@ def timing(f):
         ))
         return result
     return wrap
+
+
+def str_to_time(s):
+    if s == '':
+        return
+    when = timezone.make_aware(
+        datetime.datetime.strptime(s, "%m/%d/%y %H:%M:%S")
+    ).time()
+    return when
 
 
 def no_yes(field):
@@ -83,6 +93,10 @@ def get_demographics(**demographics_kwargs):
 
 def get_or_create_blood_book_patient(row):
     """
+    A blood book patient is a unique hospital number,
+    first_name, surname, dob as appears in the csv.
+    Due to typos etc an rbhl patient can have 1+ blood book patients.
+
     Hospital number is unreliable and will give false positives.
     First name, surname and dob is unreliable as first name is often
     but not always given as an initial however it should not give false
@@ -107,6 +121,9 @@ def get_or_create_blood_book_patient(row):
 
 def get_or_create_blood_book_episode(bb_patient, row):
     """
+    A blood book episode is a unique blood date/referrer name
+    oh provider and employer set.
+
     We consider an episode to be a referral.
     We therefore expect a maximum of one referral for a blood sample date.
     """
@@ -123,6 +140,28 @@ def get_or_create_blood_book_episode(bb_patient, row):
     )
 
 
+def check_and_set(model, row, csv_field, model_field, conversion=None):
+    """
+    We are doing some aggregation of some csv rows however if the aggregation
+    is done correctly the rows should not contradict each other
+
+    This checks to that no contradiction exists and then sets the value.
+    """
+    val = row[csv_field].strip()
+    if conversion:
+        val = conversion(val)
+    existing_val = getattr(model, model_field)
+    if val is None:
+        return
+    if existing_val is not None and val != existing_val:
+        raise ValueError(
+            'Field differs for row field {}({}) and model field {}({})'.format(
+                csv_field, val, model_field, existing_val
+            )
+        )
+    setattr(model, model_field, val)
+
+
 class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument("file_name", help="Specify import file")
@@ -136,6 +175,7 @@ class Command(BaseCommand):
         self.create_blood_book_patients_and_episodes(rows)
         self.create_rbhl_patients()
         self.create_rbhl_episodes()
+        self.create_blood_book_test_models(rows)
 
     @timing
     @transaction.atomic
@@ -340,3 +380,100 @@ class Command(BaseCommand):
         ).filter(count__gt=1)
         msg = "Single episodes with multiple rows: {}".format(qs.count())
         self.stdout.write(self.style.SUCCESS(msg))
+
+    def get_or_create_blood_book_test(self, row):
+        """
+        A blood book test is a
+        unique
+        exposure, method, assay_no, assay_date, blood_no, blood_date
+        as appears in the csv
+        """
+        hospital_number = row["Hosp_no"].strip()
+        dob = str_to_date(
+            row['BIRTH'], no_future_dates=True
+        )
+        first_name = row["FIRSTNAME"].strip()
+        surname = row["SURNAME"].strip()
+
+        patient = BloodBookPatient.objects.get(
+            hospital_number=hospital_number,
+            date_of_birth=dob,
+            first_name=first_name,
+            surname=surname
+        ).patient
+
+        # unique fields
+        exposure = row["EXPOSURE"].strip()
+        method = row["METHOD"].strip()
+
+        assay_number = row["ASSAYNO"].strip()
+        assay_date = str_to_date(row["ASSAYDATE"])
+
+        blood_number = row["BLOODNO"].strip()
+        sr = str_to_date(row["BLOODDAT"])
+
+        blood_book = None
+        created = None
+
+        # We don't query because exposure is an fk_ft
+        for bb in patient.bloodbook_set.all():
+            if bb.blood_number == blood_number and bb.sample_received == sr:
+                if bb.assay_number == assay_number and bb.assay_date == assay_date:
+                    if bb.exposure == exposure and bb.method == method:
+                        blood_book = bb
+                        break
+
+        if blood_book:
+            created = False
+        else:
+            blood_book = patient.bloodbook_set.create()
+            blood_book.exposure = exposure
+            blood_book.method = method
+            blood_book.assay_number = assay_number
+            blood_book.assay_date = assay_date
+            blood_book.blood_number = blood_number
+            blood_book.sample_recieved = sr
+            blood_book.save()
+            created = True
+
+        check_and_set(blood_book, row, "REFERENCE NO", "reference_number")
+
+        blood_taken_date = str_to_date(row["BLOODTK"])
+
+        if blood_taken_date:
+            blood_taken_time = str_to_time(row["BLOODTM"])
+            if not blood_taken_time:
+                blood_taken_time = datetime.datetime.min.time()
+            blood_taken = timezone.make_aware(datetime.datetime.combine(
+                blood_taken_date, blood_taken_time
+            ))
+
+            if blood_book.blood_taken and not blood_book.blood_taken == blood_taken:
+                raise ValueError('mapping failed on blood taken')
+            blood_book.blood_taken = blood_taken
+
+        check_and_set(blood_book, row, "STORE", "store", no_yes)
+        check_and_set(blood_book, row, "REPORTDT", "report_date", str_to_date)
+        check_and_set(blood_book, row, "REPORTST", "report_submitted", str_to_date)
+        check_and_set(blood_book, row, "ANTIGENTYP", "antigen_type")
+
+        information = blood_book.information
+        if row["Comment"]:
+            information = "{}\n{}".format(information, row["Comment"])
+        for k in ["Room", "Freezer", "Shelf", "Vials", "Batches"]:
+            if row[k]:
+                information = "{}\n{}: {}".format(
+                    information, k, row[k]
+                )
+        blood_book.information = information.strip()
+        blood_book.save()
+
+        return blood_book, created
+
+    @timing
+    @transaction.atomic
+    def create_blood_book_test_models(self, rows):
+        for row in rows:
+            if not row["SURNAME"].strip():
+                continue
+            blood_book_test, _ = self.get_or_create_blood_book_test(row)
