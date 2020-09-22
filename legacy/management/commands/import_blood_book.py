@@ -7,11 +7,11 @@ from time import time
 from functools import wraps
 from django.core.management import BaseCommand
 from django.db import transaction
-
+from django.db.models import Count
 from rbhl.episode_categories import OccupationalLungDiseaseEpisode
 from legacy.utils import str_to_date
 from legacy.models import BloodBookPatient, BloodBookEpisode
-from opal.models import Patient
+from opal.models import Patient, Episode
 from rbhl.models import Demographics
 
 
@@ -131,7 +131,7 @@ class Command(BaseCommand):
         file_name = options["file_name"]
         print('Open CSV to read')
         with open(file_name) as f:
-            rows = [list(csv.DictReader(f))[0]]
+            rows = list(csv.DictReader(f))
 
         self.create_blood_book_patients_and_episodes(rows)
         self.create_rbhl_patients()
@@ -229,6 +229,11 @@ class Command(BaseCommand):
         self.stdout.write(
             self.style.SUCCESS(msg.format(patients_created, patients_found))
         )
+        qs = Patient.objects.annotate(
+            count=Count('bloodbookpatient')
+        ).filter(count__gt=1)
+        msg = "Single patients with multiple rows: {}".format(qs.count())
+        self.stdout.write(self.style.SUCCESS(msg))
 
     @timing
     @transaction.atomic
@@ -293,11 +298,12 @@ class Command(BaseCommand):
                     episode = patient.episode_set.create(
                         category_name=OccupationalLungDiseaseEpisode.display_name
                     )
-                    episodes_found += 1
+                    episodes_created += 1
 
             bb_episodes = BloodBookEpisode.objects.filter(
                 **episode_detail
             )
+            bb_episodes.update(episode=episode)
             referrer_name = get_longest(*[i.referrer_name for i in bb_episodes])
             oh_provider = get_longest(*[i.oh_provider for i in bb_episodes])
             employer = get_longest(*[i.employer for i in bb_episodes])
@@ -328,3 +334,9 @@ class Command(BaseCommand):
         self.stdout.write(
             self.style.SUCCESS(msg.format(referrals_updated, employment_updated))
         )
+
+        qs = Episode.objects.annotate(
+            count=Count('bloodbookepisode')
+        ).filter(count__gt=1)
+        msg = "Single episodes with multiple rows: {}".format(qs.count())
+        self.stdout.write(self.style.SUCCESS(msg))
