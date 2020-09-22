@@ -156,6 +156,7 @@ class BloodBook(RbhlSubrecord, models.PatientSubrecord):
     antigen_type = fields.CharField(
         blank=True, null=True, max_length=256, choices=ANTIGEN_TYPE
     )
+    antigen_date = fields.DateField(blank=True, null=True)
 
     exposure = models.ForeignKeyOrFreeText(Exposure)
 
@@ -180,7 +181,6 @@ class AllergenResult(fields.Model):
     allergen = models.ForeignKeyOrFreeText(Allergen)
     antigen_number = fields.CharField(blank=True, null=True, max_length=200)
 
-    antigen_date = fields.DateField(blank=True, null=True)
     # usually a float but can include '<' and '>'
     kul = fields.CharField(blank=True, null=True, max_length=200, verbose_name="KU/L")
     ige_class = fields.CharField(

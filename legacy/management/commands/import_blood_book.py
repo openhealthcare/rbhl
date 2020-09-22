@@ -457,6 +457,26 @@ class Command(BaseCommand):
         check_and_set(blood_book, row, "REPORTST", "report_submitted", str_to_date)
         check_and_set(blood_book, row, "ANTIGENTYP", "antigen_type")
 
+        antigen_date = None
+        try:
+            antigen_date = str_to_date(row["ANTIGENDAT"])
+        except ValueError:
+            pass
+
+        # antigen data is slightly garbled, lets strip out the obviously wrong.
+        if antigen_date and antigen_date.year > 1969 and antigen_date.year < 2021:
+            if blood_book.antigen_date is not None:
+                if blood_book.antigen_date != antigen_date:
+                    msg = 'Field differs for row field {}({}) and model field {}({})'
+                    raise ValueError(
+                        msg.format(
+                            "ANTIGENDAT",
+                            "antigen_date",
+                            antigen_date,
+                            blood_book.antigen_date
+                        )
+                    )
+
         information = blood_book.information
         if row["Comment"]:
             information = "{}\n{}".format(information, row["Comment"])
