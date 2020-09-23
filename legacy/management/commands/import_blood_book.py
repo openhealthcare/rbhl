@@ -172,9 +172,9 @@ class Command(BaseCommand):
         with open(file_name) as f:
             rows = list(csv.DictReader(f))
 
-        self.create_blood_book_patients_and_episodes(rows)
-        self.create_rbhl_patients()
-        self.create_rbhl_episodes()
+        # self.create_blood_book_patients_and_episodes(rows)
+        # self.create_rbhl_patients()
+        # self.create_rbhl_episodes()
         self.create_blood_book_test_models(rows)
 
     @timing
@@ -497,3 +497,29 @@ class Command(BaseCommand):
             if not row["SURNAME"].strip():
                 continue
             blood_book_test, _ = self.get_or_create_blood_book_test(row)
+            mapping = {
+                'RESULT': "result",
+                'ALLERGEN': "allergen",
+                'ANTIGENNO': "antigen_number",
+                'KUL': "kul",
+                'CLASS': "ige_class",
+                'RAST': "rast",
+                'precipitin': "precipitin",
+                'igg': "igg_mg",
+                'iggclass': "igg_class"
+            }
+            for i in range(1, 11):
+                result_data = {}
+                for csv_field, our_field in mapping.items():
+                    iterfield = '{}{}'.format(csv_field, i)
+                    value = row.get(iterfield, "")
+                    if value:
+                        if csv_field == 'precipitin':
+                            value = get_precipitin(value)
+                        result_data[our_field] = value
+
+                if any(result_data.values()):
+                    allergen_result = blood_book_test.allergenresult_set.create()
+                    for k, v in result_data.items():
+                        setattr(allergen_result, k, v)
+                allergen_result.save()
