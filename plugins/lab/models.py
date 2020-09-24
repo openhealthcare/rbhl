@@ -158,8 +158,6 @@ class BloodBook(RbhlSubrecord, models.PatientSubrecord):
     )
     antigen_date = fields.DateField(blank=True, null=True)
 
-    exposure = models.ForeignKeyOrFreeText(Exposure)
-
     # report information these fields don't appear on the
     # front end so first version won't display them.
 
