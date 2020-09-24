@@ -171,7 +171,7 @@ class BloodBook(RbhlSubrecord, models.PatientSubrecord):
     information = fields.TextField(blank=True, default="")
 
 
-class AllergenResult(fields.Model):
+class BloodBookResult(fields.Model):
     PRECIPITIN_CHOICES = enum("-ve", "+ve", "Weak +ve", '++ve')
 
     blood_book = fields.ForeignKey(BloodBook, on_delete=fields.CASCADE)

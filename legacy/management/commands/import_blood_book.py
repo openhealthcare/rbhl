@@ -165,8 +165,8 @@ class Command(BaseCommand):
             # if a row has no surname or any results skip it.
             if not row["SURNAME"].strip():
                 continue
-            allergen_results = self.get_result_details(row)
-            if not len(allergen_results):
+            blood_book_results = self.get_result_details(row)
+            if not len(blood_book_results):
                 continue
             cleaned_rows.append(row)
 
@@ -519,10 +519,10 @@ class Command(BaseCommand):
                 blood_books_created += 1
             results = self.get_result_details(row)
             for result_data in results:
-                allergen_result = blood_book_test.allergenresult_set.create()
+                blood_book_result = blood_book_test.bloodbookresult_set.create()
                 for k, v in result_data.items():
-                    setattr(allergen_result, k, v)
-                allergen_result.save()
+                    setattr(blood_book_result, k, v)
+                blood_book_result.save()
                 results_created += 1
         msg = "Blood books created {}. results created: {}".format(
             blood_books_created, results_created
