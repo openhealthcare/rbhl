@@ -7,6 +7,7 @@ from django.utils import timezone
 
 
 def str_to_date(s, no_future_dates=False):
+    s = s.strip()
     if s == '':
         return
     when = timezone.make_aware(

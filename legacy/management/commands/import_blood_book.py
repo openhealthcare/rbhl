@@ -47,6 +47,16 @@ def no_yes(field):
     return
 
 
+def translate_ref_num(field):
+    # IC OCC HEALTH is occationally typoed
+    field = field.strip()
+    if field == 'ICC.OCC.HLTH':
+        return "IC.OCC.HLTH"
+    if field == "ASTTRAZENECA":
+        field = "ASTRAZENECA"
+    return field
+
+
 def contains_numbers(some_str):
     """
     Returns true if the string contains any numbers
@@ -140,28 +150,6 @@ def get_or_create_blood_book_episode(bb_patient, row):
     )
 
 
-def check_and_set(model, row, csv_field, model_field, conversion=None):
-    """
-    We are doing some aggregation of some csv rows however if the aggregation
-    is done correctly the rows should not contradict each other
-
-    This checks to that no contradiction exists and then sets the value.
-    """
-    val = row[csv_field].strip()
-    if conversion:
-        val = conversion(val)
-    existing_val = getattr(model, model_field)
-    if val is None:
-        return
-    if existing_val is not None and val != existing_val:
-        raise ValueError(
-            'Field differs for row field {}({}) and model field {}({})'.format(
-                csv_field, val, model_field, existing_val
-            )
-        )
-    setattr(model, model_field, val)
-
-
 class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument("file_name", help="Specify import file")
@@ -172,10 +160,20 @@ class Command(BaseCommand):
         with open(file_name) as f:
             rows = list(csv.DictReader(f))
 
-        # self.create_blood_book_patients_and_episodes(rows)
-        # self.create_rbhl_patients()
-        # self.create_rbhl_episodes()
-        self.create_blood_book_test_models(rows)
+        cleaned_rows = []
+        for row in rows:
+            # if a row has no surname or any results skip it.
+            if not row["SURNAME"].strip():
+                continue
+            allergen_results = self.get_result_details(row)
+            if not len(allergen_results):
+                continue
+            cleaned_rows.append(row)
+
+        self.create_blood_book_patients_and_episodes(cleaned_rows)
+        self.create_rbhl_patients()
+        self.create_rbhl_episodes()
+        self.create_blood_book_test_models(cleaned_rows)
 
     @timing
     @transaction.atomic
@@ -385,7 +383,8 @@ class Command(BaseCommand):
         """
         A blood book test is a
         unique
-        exposure, method, assay_no, assay_date, blood_no, blood_date
+        method, assay_number, assay_date, blood_number, sample_received, report_date,
+        report_submitted, reference_number, store, antigen_type
         as appears in the csv
         """
         hospital_number = row["Hosp_no"].strip()
@@ -403,59 +402,25 @@ class Command(BaseCommand):
         ).patient
 
         # unique fields
-        exposure = row["EXPOSURE"].strip()
-        method = row["METHOD"].strip()
+        MAPPING = {
+            "method": "METHOD",
+            "assay_number": "ASSAYNO",
+            "assay_date": lambda row: str_to_date(row["ASSAYDATE"]),
+            "blood_number": "BLOODNO",
+            "sample_received": lambda row: str_to_date(row["BLOODDAT"]),
+            "report_date": lambda row: str_to_date(row["REPORTDT"]),
+            "report_submitted": lambda row: str_to_date(row["REPORTST"]),
+            "reference_number": lambda row: translate_ref_num(row["REFERENCE NO"]),
+            "store": lambda row: no_yes(row["STORE"]),
+            "antigen_type": "ANTIGENTYP",
+        }
 
-        assay_number = row["ASSAYNO"].strip()
-        assay_date = str_to_date(row["ASSAYDATE"])
-
-        blood_number = row["BLOODNO"].strip()
-        sr = str_to_date(row["BLOODDAT"])
-
-        blood_book = None
-        created = None
-
-        # We don't query because exposure is an fk_ft
-        for bb in patient.bloodbook_set.all():
-            if bb.blood_number == blood_number and bb.sample_received == sr:
-                if bb.assay_number == assay_number and bb.assay_date == assay_date:
-                    if bb.exposure == exposure and bb.method == method:
-                        blood_book = bb
-                        break
-
-        if blood_book:
-            created = False
-        else:
-            blood_book = patient.bloodbook_set.create()
-            blood_book.exposure = exposure
-            blood_book.method = method
-            blood_book.assay_number = assay_number
-            blood_book.assay_date = assay_date
-            blood_book.blood_number = blood_number
-            blood_book.sample_recieved = sr
-            blood_book.save()
-            created = True
-
-        check_and_set(blood_book, row, "REFERENCE NO", "reference_number")
-
-        blood_taken_date = str_to_date(row["BLOODTK"])
-
-        if blood_taken_date:
-            blood_taken_time = str_to_time(row["BLOODTM"])
-            if not blood_taken_time:
-                blood_taken_time = datetime.datetime.min.time()
-            blood_taken = timezone.make_aware(datetime.datetime.combine(
-                blood_taken_date, blood_taken_time
-            ))
-
-            if blood_book.blood_taken and not blood_book.blood_taken == blood_taken:
-                raise ValueError('mapping failed on blood taken')
-            blood_book.blood_taken = blood_taken
-
-        check_and_set(blood_book, row, "STORE", "store", no_yes)
-        check_and_set(blood_book, row, "REPORTDT", "report_date", str_to_date)
-        check_and_set(blood_book, row, "REPORTST", "report_submitted", str_to_date)
-        check_and_set(blood_book, row, "ANTIGENTYP", "antigen_type")
+        our_args = {}
+        for i, v in MAPPING.items():
+            if callable(v):
+                our_args[i] = v(row)
+            else:
+                our_args[i] = row[v].strip()
 
         antigen_date = None
         try:
@@ -465,17 +430,41 @@ class Command(BaseCommand):
 
         # antigen data is slightly garbled, lets strip out the obviously wrong.
         if antigen_date and antigen_date.year > 1969 and antigen_date.year < 2021:
-            if blood_book.antigen_date is not None:
-                if blood_book.antigen_date != antigen_date:
-                    msg = 'Field differs for row field {}({}) and model field {}({})'
-                    raise ValueError(
-                        msg.format(
-                            "ANTIGENDAT",
-                            "antigen_date",
-                            antigen_date,
-                            blood_book.antigen_date
-                        )
-                    )
+            our_args["antigen_date"] = antigen_date
+
+        blood_taken_date = str_to_date(row["BLOODTK"])
+
+        if blood_taken_date:
+            blood_taken_time = str_to_time(row["BLOODTM"])
+            if not blood_taken_time:
+                blood_taken_time = datetime.datetime.min.time()
+            our_args["blood_taken"] = timezone.make_aware(datetime.datetime.combine(
+                blood_taken_date, blood_taken_time
+            ))
+
+        blood_book = None
+        for bb in patient.bloodbook_set.all():
+            matched = True
+            for k, our_val in our_args.items():
+                their_val = getattr(bb, k)
+                if their_val and our_val and not their_val == our_val:
+                    matched = False
+            if matched:
+                blood_book = bb
+                break
+        if blood_book:
+            for k, our_val in our_args.items():
+                if getattr(blood_book, k) is None and our_val:
+                    setattr(blood_book, k, our_val)
+            blood_book.save()
+            created = False
+        else:
+            blood_book = patient.bloodbook_set.create()
+            for k, our_val in our_args.items():
+                setattr(blood_book, k, our_val)
+            blood_book.save()
+            created = True
+            return blood_book, True
 
         information = blood_book.information
         if row["Comment"]:
@@ -485,41 +474,57 @@ class Command(BaseCommand):
                 information = "{}\n{}: {}".format(
                     information, k, row[k]
                 )
-        blood_book.information = information.strip()
-        blood_book.save()
-
+        if information:
+            blood_book.information = information.strip()
+            blood_book.save()
         return blood_book, created
+
+    def get_result_details(self, row):
+        """
+        Return a list of the data that will be stored as results.
+        """
+        mapping = {
+            'RESULT': "result",
+            'ALLERGEN': "allergen",
+            'ANTIGENNO': "antigen_number",
+            'KUL': "kul",
+            'CLASS': "ige_class",
+            'RAST': "rast",
+            'precipitin': "precipitin",
+            'igg': "igg_mg",
+            'iggclass': "igg_class"
+        }
+        result = []
+        for i in range(1, 11):
+            result_data = {}
+            for csv_field, our_field in mapping.items():
+                iterfield = '{}{}'.format(csv_field, i)
+                value = row.get(iterfield, "")
+                if value:
+                    if csv_field == 'precipitin':
+                        value = get_precipitin(value)
+                    result_data[our_field] = value
+            if any(result_data.values()):
+                result.append(result_data)
+        return result
 
     @timing
     @transaction.atomic
     def create_blood_book_test_models(self, rows):
+        blood_books_created = 0
+        results_created = 0
         for row in rows:
-            if not row["SURNAME"].strip():
-                continue
-            blood_book_test, _ = self.get_or_create_blood_book_test(row)
-            mapping = {
-                'RESULT': "result",
-                'ALLERGEN': "allergen",
-                'ANTIGENNO': "antigen_number",
-                'KUL': "kul",
-                'CLASS': "ige_class",
-                'RAST': "rast",
-                'precipitin': "precipitin",
-                'igg': "igg_mg",
-                'iggclass': "igg_class"
-            }
-            for i in range(1, 11):
-                result_data = {}
-                for csv_field, our_field in mapping.items():
-                    iterfield = '{}{}'.format(csv_field, i)
-                    value = row.get(iterfield, "")
-                    if value:
-                        if csv_field == 'precipitin':
-                            value = get_precipitin(value)
-                        result_data[our_field] = value
-
-                if any(result_data.values()):
-                    allergen_result = blood_book_test.allergenresult_set.create()
-                    for k, v in result_data.items():
-                        setattr(allergen_result, k, v)
+            blood_book_test, bb_created = self.get_or_create_blood_book_test(row)
+            if bb_created:
+                blood_books_created += 1
+            results = self.get_result_details(row)
+            for result_data in results:
+                allergen_result = blood_book_test.allergenresult_set.create()
+                for k, v in result_data.items():
+                    setattr(allergen_result, k, v)
                 allergen_result.save()
+                results_created += 1
+        msg = "Blood books created {}. results created: {}".format(
+            blood_books_created, results_created
+        )
+        self.stdout.write(self.style.SUCCESS(msg))
