@@ -94,6 +94,7 @@ class BloodBookEpisode(models.Model):
     oh_provider = models.CharField(blank=True, null=True, max_length=256)
     employer = models.CharField(blank=True, null=True, max_length=256)
     referrer_name = models.CharField(blank=True, null=True, max_length=256)
+    exposures = models.TextField(blank=True, null=True)
 
 
 """

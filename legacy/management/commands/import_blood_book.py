@@ -141,12 +141,14 @@ def get_or_create_blood_book_episode(bb_patient, row):
     referrer_name = row["Referrername"].strip()
     oh_provider = row["OH Provider"].strip()
     employer = row["Employer"].strip()
+    exposures = row["EXPOSURE"].strip()
 
     return bb_patient.bloodbookepisode_set.get_or_create(
         blood_date=blood_date,
         referrer_name=referrer_name,
         oh_provider=oh_provider,
-        employer=employer
+        employer=employer,
+        exposures=exposures
     )
 
 
@@ -382,6 +384,13 @@ class Command(BaseCommand):
                 employment_changed = True
             if not employment.oh_provider and oh_provider:
                 employment.oh_provider = oh_provider
+                employment_changed = True
+            if not employment.exposures:
+                exposures = set(
+                    i.exposures.strip() for i in bb_episodes if i.exposures.strip()
+                )
+                if exposures:
+                    employment.exposures = "\n".join(sorted(list(exposures)))
                 employment_changed = True
 
             if employment_changed:
