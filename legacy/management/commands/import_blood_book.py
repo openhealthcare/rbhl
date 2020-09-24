@@ -172,6 +172,9 @@ class Command(BaseCommand):
                 continue
             cleaned_rows.append(row)
 
+        self.stdout.write(
+            self.style.SUCCESS("Rows skipped".format(len(rows), len(cleaned_rows)))
+        )
         self.create_blood_book_patients_and_episodes(cleaned_rows)
         self.create_rbhl_patients()
         self.create_rbhl_episodes()
@@ -187,13 +190,9 @@ class Command(BaseCommand):
         self.stdout.write("Creating blood book patient and episodes")
         patient_count = 0
         episode_count = 0
-        skipped = 0
         for row in rows:
             # Surname is our most reliable identifier, if its not populated
             # skip the row
-            if not row["SURNAME"].strip():
-                skipped += 1
-                continue
             bb_patient, bb_patient_created = get_or_create_blood_book_patient(row)
             bb_episode, bb_episode_created = get_or_create_blood_book_episode(
                 bb_patient, row
@@ -205,7 +204,6 @@ class Command(BaseCommand):
         msg = "Created blood book patients: {}, Created blood book episodes: {}".format(
             patient_count, episode_count
         )
-        msg = "{}. Skipped patients: {}".format(msg, skipped)
         self.stdout.write(self.style.SUCCESS(msg))
 
     @timing
