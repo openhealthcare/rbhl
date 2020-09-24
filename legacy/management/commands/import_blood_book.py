@@ -210,15 +210,21 @@ class Command(BaseCommand):
     @transaction.atomic
     def create_rbhl_patients(self):
         """
-        For the moment we get or create based on first_name, surname, dob
-        We can do better than this, but this should always be correct.
+        HN can be unreliable so we cannot use it as a single identifier.
+
+        So we do 3 matching theories.
+
+        1. first_name, surname, dob
+        2. hn, dob
+        3. hn, surname
+        4. if no hn or dob, map to first_name and surname
 
         When creating a patient for a hosptial number we use the longest unique
         bb patient hospital number that contains a numeric digit
         """
         self.stdout.write("Creating rbhl patients")
         patient_details = BloodBookPatient.objects.all().values(
-            "first_name", "surname", "date_of_birth"
+            "hospital_number", "first_name", "surname", "date_of_birth"
         ).distinct()
         patients_created = 0
         patients_found = 0
@@ -228,14 +234,31 @@ class Command(BaseCommand):
             raise ValueError("Distinct does not work like you think it does...")
 
         for patient_detail in patient_details:
+            hn = patient_detail["hospital_number"].strip()
+            dob = patient_detail["date_of_birth"]
+            surname = patient_detail["surname"].strip()
+            first_name = patient_detail["first_name"].strip()
             patient = Patient.objects.filter(
-                demographics__first_name__iexact=patient_detail["first_name"],
-                demographics__surname__iexact=patient_detail["surname"],
-                demographics__date_of_birth=patient_detail["date_of_birth"]
+                demographics__first_name__iexact=first_name,
+                demographics__surname__iexact=surname,
+                demographics__date_of_birth=dob
             ).first()
+            if not patient and hn and dob:
+                patient = Patient.objects.filter(
+                    demographics__hospital_number=hn,
+                    demographics__date_of_birth=dob
+                ).first()
+
+            if not patient and hn and dob:
+                patient = Patient.objects.filter(
+                    demographics__hospital_number=hn,
+                    demographics__surname__iexact=surname
+                ).first()
+
             if patient:
                 patients_found += 1
-            else:
+
+            if not patient:
                 rows = BloodBookPatient.objects.filter(**patient_detail)
                 hns = list(set([row.hospital_number for row in rows]))
                 hns = [i for i in hns if i and contains_numbers(i)]
