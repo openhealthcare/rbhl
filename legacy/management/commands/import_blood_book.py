@@ -163,18 +163,25 @@ class Command(BaseCommand):
             rows = list(csv.DictReader(f))
 
         cleaned_rows = []
+        no_results = 0
+        no_surname = 0
         for row in rows:
             # if a row has no surname or any results skip it.
             if not row["SURNAME"].strip():
+                no_surname += 1
                 continue
             blood_book_results = self.get_result_details(row)
             if not len(blood_book_results):
+                no_results += 1
                 continue
             cleaned_rows.append(row)
 
+        self.stdout.write("{} skipped due to no surname".format(no_surname))
+        self.stdout.write("{} skipped due to no results".format(no_results))
         self.stdout.write(
-            self.style.SUCCESS("Rows skipped".format(len(rows), len(cleaned_rows)))
+            "{} rows skipped out of {}".format(len(rows) - len(cleaned_rows), len(rows))
         )
+
         self.create_blood_book_patients_and_episodes(cleaned_rows)
         self.create_rbhl_patients()
         self.create_rbhl_episodes()
@@ -223,21 +230,15 @@ class Command(BaseCommand):
         bb patient hospital number that contains a numeric digit
         """
         self.stdout.write("Creating rbhl patients")
-        patient_details = BloodBookPatient.objects.all().values(
-            "hospital_number", "first_name", "surname", "date_of_birth"
-        ).distinct()
+        blood_book_patients = BloodBookPatient.objects.all()
         patients_created = 0
         patients_found = 0
 
-        disinct_patinet_details = set([tuple(i.values()) for i in patient_details])
-        if not len(patient_details) == len(disinct_patinet_details):
-            raise ValueError("Distinct does not work like you think it does...")
-
-        for patient_detail in patient_details:
-            hn = patient_detail["hospital_number"].strip()
-            dob = patient_detail["date_of_birth"]
-            surname = patient_detail["surname"].strip()
-            first_name = patient_detail["first_name"].strip()
+        for blood_book_patient in blood_book_patients:
+            hn = blood_book_patient.hospital_number
+            dob = blood_book_patient.date_of_birth
+            surname = blood_book_patient.surname
+            first_name = blood_book_patient.first_name
             patient = Patient.objects.filter(
                 demographics__first_name__iexact=first_name,
                 demographics__surname__iexact=surname,
@@ -256,36 +257,37 @@ class Command(BaseCommand):
                 ).first()
 
             if patient:
+                # if the patient exists, just save it on
+                # the blood book patient
                 patients_found += 1
+                blood_book_patient.patient = patient
+                blood_book_patient.save()
 
             if not patient:
-                rows = BloodBookPatient.objects.filter(**patient_detail)
-                hns = list(set([row.hospital_number for row in rows]))
-                hns = [i for i in hns if i and contains_numbers(i)]
-                hns = sorted(hns, key=lambda x: len(x), reverse=True)
+                # some of the hospital numbers are nonsense
+                # if its only
+                hn = blood_book_patient.hospital_number
                 hn_to_use = ""
-
-                for hn in hns:
-                    if BloodBookPatient.objects.exclude(**patient_detail).filter(
-                        hospital_number=hn
-                    ).exists():
-                        continue
-
+                if hn and contains_numbers(hn):
                     hn_to_use = hn
-                    break
+                    if BloodBookPatient.objects.exclude(
+                        surname=blood_book_patient.surname
+                    ).filter(
+                        hospital_number=hn_to_use
+                    ).exists():
+                        hn_to_use = ""
+
                 patient = Patient.objects.create()
                 patient.demographics_set.update(
-                    first_name=patient_detail["first_name"],
-                    surname=patient_detail["surname"],
-                    date_of_birth=patient_detail["date_of_birth"],
+                    first_name=blood_book_patient.first_name,
+                    surname=blood_book_patient.surname,
+                    date_of_birth=blood_book_patient.date_of_birth,
                     hospital_number=hn_to_use
                 )
+                blood_book_patient.patient = patient
+                blood_book_patient.save()
                 patients_created += 1
-            BloodBookPatient.objects.filter(
-                **patient_detail
-            ).update(
-                patient=patient
-            )
+
         msg = "Created patients: {}, Already existing patients: {}"
         self.stdout.write(
             self.style.SUCCESS(msg.format(patients_created, patients_found))
