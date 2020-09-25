@@ -22,12 +22,12 @@ angular.module('opal.controllers').controller('InvestigationsView', function($sc
     return _.uniq(_.map(allDates, function(d){ return displayDateFilter(d)}));
   }
 
-  this.combineAllergenResultResults = function(allergenResults){
+  this.combineBloodBookResultResults = function(bloodBookResults){
     /*
-    * The allergen result.result used to just be a freetext field
+    * The blood book result.result used to just be a freetext field
     * so lets combine them under one left column title header
     */
-    var allResults = _.pluck(allergenResults, "result");
+    var allResults = _.pluck(bloodBookResults, "result");
     return _.filter(allResults, function(i){
       return i && i.length
     });
@@ -65,3 +65,5 @@ angular.module('opal.controllers').controller('InvestigationsView', function($sc
     return SkinPrickTestHelper.isAtopic(skinPrickTests);
   }
 });
+
+

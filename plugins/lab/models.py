@@ -170,6 +170,28 @@ class BloodBook(RbhlSubrecord, models.PatientSubrecord):
     # A free text box for additional information
     information = fields.TextField(blank=True, default="")
 
+    def to_dict(self, user, fields=None):
+        if fields is None:
+            fields = self._get_fieldnames_to_serialize()
+        if "bloodbookresult_set" in fields:
+            fields.remove("bloodbookresult_set")
+        as_dict = super().to_dict(user, fields=fields)
+        as_dict["bloodbookresult_set"] = []
+        blood_book_result_fields_to_dict = [
+            i.name for i in BloodBookResult._meta.get_fields()
+        ]
+        blood_book_result_fields_to_dict.remove("allergen_fk")
+        blood_book_result_fields_to_dict.remove("allergen_ft")
+        blood_book_result_fields_to_dict.remove("blood_book")
+        blood_book_result_fields_to_dict.append("allergen")
+
+        for blood_book_result_set in self.bloodbookresult_set.all():
+            result = {}
+            for field in blood_book_result_fields_to_dict:
+                result[field] = getattr(blood_book_result_set, field)
+            as_dict["bloodbookresult_set"].append(result)
+        return as_dict
+
 
 class BloodBookResult(fields.Model):
     PRECIPITIN_CHOICES = enum("-ve", "+ve", "Weak +ve", '++ve')

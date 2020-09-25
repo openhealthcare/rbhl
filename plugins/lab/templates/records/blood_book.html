@@ -1,17 +1,17 @@
 {% load rbhl_panels %}
-<div ng-show="investigationsView.combineAllergenResultResults(item.allergenresult_set).length" class="row">
+<div ng-show="investigationsView.combineBloodBookResultResults(item.bloodbookresult_set).length" class="row">
   <div class="row">
     <div class="col-md-6">
       Result
     </div>
     <div class="col-md-6">
-      <span ng-repeat="r in investigationsView.combineAllergenResultResults(item.allergenresult_set) track by $index">
+      <span ng-repeat="r in investigationsView.combineBloodBookResultResults(item.bloodbookresult_set) track by $index">
         [[ r ]]<br />
       </span>
     </div>
   </div>
 </div>
-<div class="row" ng-repeat="result in item.allergenresult_set track by $index">
+<div class="row" ng-repeat="result in item.bloodbookresult_set track by $index">
   <div ng-hide="result.result" class="row">
     <div class="col-md-6">
       [[ result.allergen ]]
@@ -32,13 +32,23 @@
       <span ng-show="result.precipitin">
         Precipitin: [[ result.precipitin ]]<br />
       </span>
-      <span ng-show="result.igg_mg">
-        mg/L: [[ result.igg_mg ]]<br />
-      </span>
-      <span ng-show="result.igg_class">
-        IgG class: [[ result.igg_class ]]<br />
+      <span ng-show="result.igg_mg || result.igg_class">
+        IgG:
+        <span ng-show="result.igg_mg">
+          mg/L: [[ result.igg_mg ]]<br />
+        </span>
+        <span ng-show="result.igg_mg || result.igg_class">&nbsp;</span>
+        <span ng-show="result.igg_class">
+          class: [[ result.igg_class ]]<br />
+        </span>
       </span>
     </div>
+  </div>
+</div>
+<div class="row content-offset-10 content-offset-below-10" ng-show="item.information">
+  <div class="md-12">
+    Information<br />
+    [[ item.information ]]
   </div>
 </div>
 
