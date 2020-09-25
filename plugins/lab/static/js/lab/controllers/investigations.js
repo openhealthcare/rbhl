@@ -30,7 +30,7 @@ angular.module('opal.controllers').controller('InvestigationsView', function($sc
     var allResults = _.pluck(bloodBookResults, "result");
     return _.filter(allResults, function(i){
       return i && i.length
-    });
+    }).sort();
   }
 
 
@@ -44,7 +44,7 @@ angular.module('opal.controllers').controller('InvestigationsView', function($sc
       var bb_tests = _.filter($scope.episode[testType], function(test){
         return displayDateFilter(test.sample_received) === dateKey;
       });
-      return bb_tests;
+      return _.sortBy(bb_tests, function(x){return x.allergen});
     }
     else{
       var tests = _.filter($scope.episode[testType], function(test){
