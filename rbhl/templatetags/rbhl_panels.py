@@ -52,6 +52,8 @@ def field_display(
     )
     ctx["is_boolean"] = is_boolean(field)
     ctx["is_date"] = is_date(field)
+    ctx["is_text"] = isinstance(field, models.TextField)
+    ctx["is_Char"] = isinstance(field, models.CharField)
     return ctx
 
 

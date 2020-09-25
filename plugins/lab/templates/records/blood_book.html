@@ -1,0 +1,44 @@
+{% load rbhl_panels %}
+<div ng-show="investigationsView.combineAllergenResultResults(item.allergenresult_set).length" class="row">
+  <div class="row">
+    <div class="col-md-6">
+      Result
+    </div>
+    <div class="col-md-6">
+      <span ng-repeat="r in investigationsView.combineAllergenResultResults(item.allergenresult_set) track by $index">
+        [[ r ]]<br />
+      </span>
+    </div>
+  </div>
+</div>
+<div class="row" ng-repeat="result in item.allergenresult_set track by $index">
+  <div ng-hide="result.result" class="row">
+    <div class="col-md-6">
+      [[ result.allergen ]]
+      <span ng-show="result.antigen_number"> ([[result.antigen_number]])</span>
+    </div>
+    <div class="col-md-6">
+      <span ng-show="result.kul || result.ige_class">
+        IgE:
+        <span ng-show="result.kul">
+          [[ result.kul ]] kU/L
+        </span>
+        <span ng-show="result.kul || result.ige_class">&nbsp;</span>
+        <span ng-class="result.ige_class">&nbsp; [[ result.ige_class ]] CLASS</span>
+      </span>
+      <span ng-show="result.rast">
+        RAST %B: [[ result.rast ]]<br />
+      </span>
+      <span ng-show="result.precipitin">
+        Precipitin: [[ result.precipitin ]]<br />
+      </span>
+      <span ng-show="result.igg_mg">
+        mg/L: [[ result.igg_mg ]]<br />
+      </span>
+      <span ng-show="result.igg_class">
+        IgG class: [[ result.igg_class ]]<br />
+      </span>
+    </div>
+  </div>
+</div>
+
