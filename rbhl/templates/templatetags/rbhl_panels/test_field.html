@@ -1,5 +1,5 @@
 {% load forms %}
-<div ng-show="item.{{ field_name }} !== null" class="row">
+<div ng-show="item.{{ field_name }} !== null {% if is_text or is_char %}&& item.{{ field_name }}.length{% endif %}" class="row">
   <div class="col-md-6">
     {{ label }}
   </div>
@@ -8,8 +8,10 @@
     {% icon "fa-check" %}
     {% elif is_date %}
     [[ item.{{ field_name }}|displayDate ]]
+    {% elif is_text %}
+    <span class="test-markdown" markdown="{{ field_name }}"></span>
     {% else %}
-    [[ item.{{ field_name }} ]]{{ unit }}
+    [[ item.{{ field_name }} ]] {{ unit }}
     {% endif %}
   </div>
 </div>
