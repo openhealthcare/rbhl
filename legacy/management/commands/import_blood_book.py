@@ -9,10 +9,9 @@ from django.core.management import BaseCommand
 from django.db import transaction
 from django.db.models import Count
 from django.utils import timezone
-from rbhl.episode_categories import OccupationalLungDiseaseEpisode
 from legacy.utils import str_to_date
-from legacy.models import BloodBookPatient, BloodBookEpisode
-from opal.models import Patient, Episode
+from legacy.models import BloodBookPatient
+from opal.models import Patient
 from rbhl.models import Demographics
 
 
@@ -182,40 +181,32 @@ class Command(BaseCommand):
             "{} rows skipped out of {}".format(len(rows) - len(cleaned_rows), len(rows))
         )
 
-        self.create_blood_book_patients_and_episodes(cleaned_rows)
-        self.create_rbhl_patients()
-        self.create_rbhl_episodes()
+        self.create_blood_book_patients(cleaned_rows)
+        self.update_rbhl_patients()
         self.create_blood_book_test_models(cleaned_rows)
 
     @timing
     @transaction.atomic
-    def create_blood_book_patients_and_episodes(self, rows):
+    def create_blood_book_patients(self, rows):
         """
-        Saves distinct patient data and distinct episode/referral data.
-        These can then be collapsed down at a later date.
+        Saves distinct patient data (hn/first_name/surname/dob combinations)
         """
-        self.stdout.write("Creating blood book patient and episodes")
+        self.stdout.write("Creating blood book patient")
         patient_count = 0
-        episode_count = 0
         for row in rows:
             # Surname is our most reliable identifier, if its not populated
             # skip the row
             bb_patient, bb_patient_created = get_or_create_blood_book_patient(row)
-            bb_episode, bb_episode_created = get_or_create_blood_book_episode(
-                bb_patient, row
-            )
             if bb_patient_created:
                 patient_count += 1
-            if bb_episode_created:
-                episode_count += 1
-        msg = "Created blood book patients: {}, Created blood book episodes: {}".format(
-            patient_count, episode_count
+        msg = "Created blood book patients: {}".format(
+            patient_count
         )
         self.stdout.write(self.style.SUCCESS(msg))
 
     @timing
     @transaction.atomic
-    def create_rbhl_patients(self):
+    def update_rbhl_patients(self):
         """
         HN can be unreliable so we cannot use it as a single identifier.
 
@@ -231,7 +222,6 @@ class Command(BaseCommand):
         """
         self.stdout.write("Creating rbhl patients")
         blood_book_patients = BloodBookPatient.objects.all()
-        patients_created = 0
         patients_found = 0
 
         for blood_book_patient in blood_book_patients:
@@ -263,155 +253,15 @@ class Command(BaseCommand):
                 blood_book_patient.patient = patient
                 blood_book_patient.save()
 
-            if not patient:
-                # some of the hospital numbers are nonsense
-                # if its only
-                hn = blood_book_patient.hospital_number
-                hn_to_use = ""
-                if hn and contains_numbers(hn):
-                    hn_to_use = hn
-                    if BloodBookPatient.objects.exclude(
-                        surname=blood_book_patient.surname
-                    ).filter(
-                        hospital_number=hn_to_use
-                    ).exists():
-                        hn_to_use = ""
-
-                patient = Patient.objects.create()
-                patient.demographics_set.update(
-                    first_name=blood_book_patient.first_name,
-                    surname=blood_book_patient.surname,
-                    date_of_birth=blood_book_patient.date_of_birth,
-                    hospital_number=hn_to_use
-                )
-                blood_book_patient.patient = patient
-                blood_book_patient.save()
-                patients_created += 1
-
-        msg = "Created patients: {}, Already existing patients: {}"
-        self.stdout.write(
-            self.style.SUCCESS(msg.format(patients_created, patients_found))
-        )
+        msg = "{} Patients have been given blood book tests"
+        self.stdout.write(self.style.SUCCESS(msg.format(patients_found)))
         qs = Patient.objects.annotate(
             count=Count('bloodbookpatient')
         ).filter(count__gt=1)
         msg = "Single patients with multiple rows: {}".format(qs.count())
         self.stdout.write(self.style.SUCCESS(msg))
 
-    @timing
-    @transaction.atomic
-    def create_rbhl_episodes(self):
-        """
-        We consider a blood book referral to be a unique patient/blood date.
-
-        If there exists an episode within a year of the blood date, we will use
-        that episode.
-
-        If there are multiple bb episodes with patient/blood date we will use the
-        referral details employer details that are the longest.
-
-        If these have not been populated in existing episodes then we shall use these
-        """
-        self.stdout.write("Creating rbhl episodes")
-        episodes_created = 0
-        episodes_found = 0
-        referrals_updated = 0
-        employment_updated = 0
-        episode_details = BloodBookEpisode.objects.all().values(
-            "blood_book_patient_id", "blood_date"
-        ).distinct()
-        disinct_episode_details = set([tuple(i.values()) for i in episode_details])
-        if not len(episode_details) == len(disinct_episode_details):
-            raise ValueError("Distinct does not work like you think it does...")
-        episode_details = sorted(
-            episode_details,
-            key=lambda x: x["blood_date"] or datetime.datetime.max.date()
-        )
-        for episode_detail in episode_details:
-            patient = Patient.objects.get(
-                bloodbookpatient__id=episode_detail["blood_book_patient_id"]
-            )
-            episodes = patient.episode_set.all()
-
-            # If we have no blood date, use any episode
-            if not episode_detail["blood_date"]:
-                if not episodes:
-                    episode = patient.episode_set.create()
-                    episodes_created += 1
-            else:
-                # Get the episode that is within a year of the blood date.
-                # The existing system does not have duplicate episodes.
-                # but the blood book does.
-                earliest = episode_detail["blood_date"] - datetime.timedelta(
-                    365
-                )
-                latest = episode_detail["blood_date"] + datetime.timedelta(
-                    365
-                )
-                episode = patient.episode_set.filter(
-                    referral__date_of_referral__gt=earliest
-                ).filter(
-                    referral__date_of_referral__lt=latest
-                ).first()
-
-                if episode:
-                    episodes_found += 1
-                else:
-                    # If an episode does not exist create it.
-                    episode = patient.episode_set.create(
-                        category_name=OccupationalLungDiseaseEpisode.display_name
-                    )
-                    episodes_created += 1
-
-            bb_episodes = BloodBookEpisode.objects.filter(
-                **episode_detail
-            )
-            bb_episodes.update(episode=episode)
-            referrer_name = get_longest(*[i.referrer_name for i in bb_episodes])
-            oh_provider = get_longest(*[i.oh_provider for i in bb_episodes])
-            employer = get_longest(*[i.employer for i in bb_episodes])
-
-            referral = episode.referral_set.get()
-            if not referral.referrer_name:
-                referral.referrer_name = referrer_name
-                referrals_updated += 1
-                referral.save()
-
-            employment = episode.employment_set.get()
-            employment_changed = False
-            if not employment.employer and employer:
-                employment.employer = employer
-                employment_changed = True
-            if not employment.oh_provider and oh_provider:
-                employment.oh_provider = oh_provider
-                employment_changed = True
-            if not employment.exposures:
-                exposures = set(
-                    i.exposures.strip() for i in bb_episodes if i.exposures.strip()
-                )
-                if exposures:
-                    employment.exposures = "\n".join(sorted(list(exposures)))
-                employment_changed = True
-
-            if employment_changed:
-                employment_updated += 1
-                employment.save()
-        msg = "Created episodes: {}, Already existing episodes: {}"
-        self.stdout.write(
-            self.style.SUCCESS(msg.format(episodes_created, episodes_found))
-        )
-        msg = "Referrals updated: {}, Employment updated: {}"
-        self.stdout.write(
-            self.style.SUCCESS(msg.format(referrals_updated, employment_updated))
-        )
-
-        qs = Episode.objects.annotate(
-            count=Count('bloodbookepisode')
-        ).filter(count__gt=1)
-        msg = "Single episodes with multiple rows: {}".format(qs.count())
-        self.stdout.write(self.style.SUCCESS(msg))
-
-    def get_or_create_blood_book_test(self, row):
+    def get_or_create_blood_book_test(self, row, patient):
         """
         A blood book test is a
         unique
@@ -419,19 +269,6 @@ class Command(BaseCommand):
         report_submitted, reference_number, store, antigen_type
         as appears in the csv
         """
-        hospital_number = row["Hosp_no"].strip()
-        dob = str_to_date(
-            row['BIRTH'], no_future_dates=True
-        )
-        first_name = row["FIRSTNAME"].strip()
-        surname = row["SURNAME"].strip()
-
-        patient = BloodBookPatient.objects.get(
-            hospital_number=hospital_number,
-            date_of_birth=dob,
-            first_name=first_name,
-            surname=surname
-        ).patient
 
         # unique fields
         MAPPING = {
@@ -546,7 +383,29 @@ class Command(BaseCommand):
         blood_books_created = 0
         results_created = 0
         for row in rows:
-            blood_book_test, bb_created = self.get_or_create_blood_book_test(row)
+            hospital_number = row["Hosp_no"].strip()
+            dob = str_to_date(
+                row['BIRTH'], no_future_dates=True
+            )
+            first_name = row["FIRSTNAME"].strip()
+            surname = row["SURNAME"].strip()
+
+            bb_patient = BloodBookPatient.objects.get(
+                hospital_number=hospital_number,
+                date_of_birth=dob,
+                first_name=first_name,
+                surname=surname
+            )
+
+            if not bb_patient.patient:
+                continue
+
+            patient = bb_patient.patient
+
+            blood_book_test, bb_created = self.get_or_create_blood_book_test(
+                row, patient
+            )
+
             if bb_created:
                 blood_books_created += 1
             results = self.get_result_details(row)

@@ -4,7 +4,7 @@ Models for the RBH legacy transition
 import datetime
 from django.db import models
 from opal.models import (
-    PatientSubrecord, EpisodeSubrecord, Episode, Patient
+    PatientSubrecord, EpisodeSubrecord, Patient
 )
 
 
@@ -73,28 +73,6 @@ class BloodBookPatient(models.Model):
     first_name = models.CharField(blank=True, null=True, max_length=256)
     surname = models.CharField(blank=True, null=True, max_length=256)
     date_of_birth = models.DateField(blank=True, null=True)
-
-
-class BloodBookEpisode(models.Model):
-    """
-    For a patient an episode a referral. Some blood given over to
-    test for n exposures.
-
-    This model contains all unique combinations of the below so that
-    we can then collapse the bb episodes into rbhl episodes and trace
-    back to what their before information was.
-    """
-    episode = models.ForeignKey(
-        Episode, blank=True, null=True, on_delete=models.CASCADE
-    )
-    blood_book_patient = models.ForeignKey(
-        BloodBookPatient, blank=True, null=True, on_delete=models.CASCADE
-    )
-    blood_date = models.DateField(blank=True, null=True)
-    oh_provider = models.CharField(blank=True, null=True, max_length=256)
-    employer = models.CharField(blank=True, null=True, max_length=256)
-    referrer_name = models.CharField(blank=True, null=True, max_length=256)
-    exposures = models.TextField(blank=True, null=True)
 
 
 """
