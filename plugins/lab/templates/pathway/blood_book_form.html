@@ -1,0 +1,77 @@
+{% load forms %}
+<div pathway-step="{{ step.get_api_name }}">
+  <div ng-repeat="editing in [bloodBookTest]">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="horizontal-form">
+          {% input field="BloodBook.blood_number" style="vertical" %}
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="horizontal-form">
+          {% datepicker field="BloodBook.sample_received" style="vertical" %}
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="horizontal-form">
+          {% datepicker field="BloodBook.blood_taken" style="vertical" %}
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="horizontal-form">
+          {% checkbox field="BloodBook.store" style="vertical" %}
+        </div>
+      </div>
+    </div>
+    <hr>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="horizontal-form">
+          {% input field="BloodBook.assay_number" style="vertical" %}
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="horizontal-form">
+          {% datepicker field="BloodBook.assay_date" style="vertical" %}
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="horizontal-form">
+          {% select field="BloodBook.antigen_type" style="vertical" %}
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="horizontal-form">
+          {% datepicker field="BloodBook.antigen_date" style="vertical" %}
+        </div>
+      </div>
+    </div>
+    <hr>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="horizontal-form">
+          {% textarea field="BloodBook.information" style="vertical" %}
+        </div>
+      </div>
+    </div>
+    <hr>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="horizontal-form">
+          {% select field="BloodBook.method" style="vertical" %}
+        </div>
+      </div>
+    </div>
+    <div ng-repeat="result in editing.bloodbookresult_set" class="row">
+      <div ng-show="result.result" class="col-md-12">
+        {% textarea label="Result" model="result.result" style="vertical" %}
+      </div>
+    </div>
+  </div>
+</div>

@@ -25,7 +25,7 @@ class BloodBook(PagePathway):
     template = "pathway/base/rbhl_pathway_base.html"
     steps = [
         Step(
-            model=models.BloodBook,
+            models.BloodBook,
             base_template="pathway/blood_book_form.html",
             step_controller="BloodBookStep"
         )
