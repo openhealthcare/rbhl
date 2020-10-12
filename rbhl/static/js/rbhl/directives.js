@@ -1,10 +1,10 @@
-directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
+directives.directive("peakFlowGraph", function($timeout, displayDateFilter, $location) {
   "use strict";
 
   return {
     scope: {
       data: "=",
-      highlights: "="
+      highlights: "=",
     },
     link: function(scope, element, attrs) {
       let data = scope.data;
@@ -274,7 +274,71 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
           d3.select(element).selectAll(".c3-region.workingday rect").style("fill-opacity", "0.3");
         };
 
+
+
         let calculateGraphAxisAndHeight = function(columns){
+          var graphType = $location.search().graphType;
+          if(!graphType){
+            graphType = "current";
+          }
+          if(graphType === "current"){
+            return calculateCurrentMethod(columns);
+          }
+          if(graphType === "c3"){
+            return caluclateC3(columns)
+          }
+          if(graphType === "fixedRange"){
+            return calculateFixedRange(columns);
+          }
+          if(graphType === "thinGraph"){
+            return thinGraph(columns);
+          }
+          if(graphType === "fixedSingleDay"){
+            return fixedSingleDay(columns);
+          }
+        }
+
+        let caluclateC3 = function(columns){
+          return {
+            size: {
+              height: 560
+            },
+            axis: {}
+          }
+        }
+
+        let calculateFixedRange = function(columns){
+          return {
+            size: {
+              height: 560
+            },
+            axis: {
+              min: 100,
+              max:900
+            }
+          }
+        }
+
+        let thinGraph  = function(columns){
+          return {
+            size: {
+              height: 700,
+              width: 660
+            },
+          }
+        }
+
+        let fixedSingleDay  = function(columns){
+          var width = (columns[0].length -1) * 50;
+          return {
+            size: {
+              height: 700,
+              width: width
+            },
+          }
+        }
+
+        let calculateCurrentMethod = function(columns){
           /*
           * Its been requested that the graphs have a fixed axis
           * however the range of values is quite large but often
@@ -316,8 +380,6 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
               height: height
             },
             axis: {
-              max: max,
-              min: min,
               tick: {
                values: range
              }
