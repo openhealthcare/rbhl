@@ -21,6 +21,12 @@
   roles:
     - setup_rbhl
 
+- name: Set up AWS
+  user: ubuntu
+  hosts: webserver
+  roles:
+    - setup_aws
+
 - name: Set up our project
   user: ubuntu
   hosts: webserver
