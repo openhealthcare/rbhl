@@ -296,6 +296,9 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter, $loc
           if(graphType === "fixedSingleDay"){
             return fixedSingleDay(columns);
           }
+          if(graphType === "rigidAxis"){
+            return rigidAxis(columns);
+          }
         }
 
         let caluclateC3 = function(columns){
@@ -335,6 +338,57 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter, $loc
               height: 700,
               width: width
             },
+          }
+        }
+
+        let rigidAxis = function(columns){
+          /*
+          * Its been requested that the graphs have a fixed axis
+          * however the range of values is quite large but often
+          * the docs care about a small range.
+          *
+          * The solution to this is that we fix the axis to account
+          * for the vast majority of patients. We grow the axis
+          * for when they are above the usual min max so the axis
+          * are always the same but the graph grows to account for
+          * extremes.
+          */
+
+          // defaut mix max vaues
+          let min = 250;
+          let max = 700;
+
+          // look at the values actually to be rendered
+          // and adjust the min/maxes accordingly.
+          columns = columns.filter(column=> column[0] !== 'x');
+          let values = columns.flat();
+          values = values.filter(value => !_.isString(value) && !_.isUndefined(value) && !_.isNull(value));
+          let minInVaues = Math.min(...values);
+          let maxInValues = Math.max(...values);
+
+          if(minInVaues < min){
+            min = Math.floor(minInVaues/50) * 50
+          }
+
+          if(maxInValues > max){
+            max = (Math.floor(maxInValues/50) + 1) * 50
+          }
+
+          // the range is the min -50 and the max + 50
+          let range = _.range(min, max+50, 50);
+          let height = (max - min) * 1.6;
+
+          return {
+            size: {
+              height: height
+            },
+            axis: {
+              tick: {
+               values: range,
+             },
+             min: min,
+             max: max
+            }
           }
         }
 
@@ -381,8 +435,10 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter, $loc
             },
             axis: {
               tick: {
-               values: range
-             }
+               values: range,
+             },
+             min: min,
+             max: max
             }
           }
         }
