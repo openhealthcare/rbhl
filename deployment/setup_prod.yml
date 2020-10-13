@@ -27,7 +27,7 @@
   roles:
     - setup_aws
 
-- name: Set up our project
+- name: Deploy project
   user: ubuntu
   hosts: webserver
   roles:
