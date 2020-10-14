@@ -296,6 +296,9 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter, $loc
           if(graphType === "fixedSingleDay"){
             return fixedSingleDay(columns);
           }
+          if(graphType === "fixedSingleDay2"){
+            return fixedSingleDay2(columns);
+          }
           if(graphType === "rigidAxis"){
             return rigidAxis(columns);
           }
@@ -331,14 +334,11 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter, $loc
           }
         }
 
-        let fixedSingleDay  = function(columns){
-          var width = (columns[0].length -1) * 50;
-          return {
-            size: {
-              height: 700,
-              width: width
-            },
-          }
+        let fixedSingleDay2  = function(columns){
+          var result = calculateCurrentMethod(columns);
+          result.size.width = (columns[0].length -1) * 50;
+          result.size.height = 900;
+          return result;
         }
 
         let rigidAxis = function(columns){
