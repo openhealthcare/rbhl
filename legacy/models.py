@@ -3,7 +3,11 @@ Models for the RBH legacy transition
 """
 import datetime
 from django.db import models
-from opal.models import PatientSubrecord, EpisodeSubrecord
+from opal.core import lookuplists
+from opal.core.fields import enum
+from opal.models import (
+    PatientSubrecord, EpisodeSubrecord, ForeignKeyOrFreeText
+)
 
 
 """
@@ -52,9 +56,28 @@ class ActionLog(EpisodeSubrecord):
     finaldays           = models.IntegerField(blank=True, null=True)
 
 
-class BloodBook(EpisodeSubrecord):
+class Allergen(lookuplists.LookupList):
+    pass
+
+
+class Exposure(lookuplists.LookupList):
+    pass
+
+
+class BloodBook(PatientSubrecord):
     _exclude_from_extract = True
     _advanced_searchable = False
+
+    ANTIGEN_TYPE = enum("STANDARD", "BESPOKE")
+    METHODS = enum(
+        "ImmunoCAP",
+        "UniCAP",
+        "CAP",
+        "RAST",
+        "CAP & RAST",
+        "RAST & UniCAP",
+        "PRECIPITINS",
+    )
 
     reference_number   = models.CharField(blank=True, null=True,
                                           max_length=200)
@@ -62,7 +85,9 @@ class BloodBook(EpisodeSubrecord):
                                           max_length=200)
     oh_provider        = models.CharField(blank=True, null=True,
                                           max_length=100)
-    blood_date         = models.DateField(blank=True, null=True)
+    blood_date         = models.DateField(
+        blank=True, null=True, verbose_name="Sample received"
+    )
     blood_number       = models.CharField(blank=True, null=True,
                                           max_length=200)
     method             = models.CharField(blank=True, null=True,
@@ -80,12 +105,15 @@ class BloodBook(EpisodeSubrecord):
     assay_date         = models.DateField(blank=True, null=True)
     blood_taken        = models.DateField(blank=True, null=True)
     blood_tm           = models.DateField(blank=True, null=True)
-    report_dt          = models.DateField(blank=True, null=True)
-    report_st          = models.DateField(blank=True, null=True)
+    report_dt          = models.DateField(
+        blank=True, null=True, verbose_name="Report date"
+    )
+    report_st          = models.DateField(
+        blank=True, null=True, verbose_name="Report submitted"
+    )
     store              = models.CharField(blank=True, null=True,
                                           max_length=200)
-    exposure           = models.CharField(blank=True, null=True,
-                                          max_length=200)
+    exposure           = ForeignKeyOrFreeText(Exposure)
     antigen_date       = models.DateField(blank=True, null=True)
     antigen_type       = models.CharField(blank=True, null=True,
                                           max_length=200)
@@ -98,19 +126,35 @@ class BloodBook(EpisodeSubrecord):
     vials              = models.TextField(blank=True, null=True)
 
 
-class BloodBookResult(EpisodeSubrecord):
+class BloodBookResult(models.Model):
     _exclude_from_extract = True
     _advanced_searchable = False
 
-    result = models.CharField(blank=True, null=True, max_length=200)
-    allergen   = models.CharField(blank=True, null=True, max_length=200)
+    PRECIPITIN_CHOICES = enum("-ve", "+ve", "Weak +ve", '++ve')
+    blood_book = models.ForeignKey(BloodBook, on_delete=models.CASCADE)
+    result     = models.CharField(blank=True, null=True, max_length=200)
+    allergen   = ForeignKeyOrFreeText(Allergen)
     antigenno  = models.CharField(blank=True, null=True, max_length=200)
-    kul        = models.CharField(blank=True, null=True, max_length=200)
-    klass      = models.CharField(blank=True, null=True, max_length=200)
-    rast       = models.CharField(blank=True, null=True, max_length=200)
-    precipitin = models.CharField(blank=True, null=True, max_length=200)
-    igg        = models.CharField(blank=True, null=True, max_length=200)
-    iggclass   = models.CharField(blank=True, null=True, max_length=200)
+    kul        = models.CharField(
+        blank=True, null=True, max_length=200, verbose_name="KU/L"
+    )
+    klass      = models.CharField(
+        blank=True,
+        null=True,
+        max_length=200,
+        verbose_name="IgE Class",
+        choices=enum(*[str(i) for i in range(7)])
+    )
+    rast        = models.CharField(blank=True, null=True, max_length=200)
+    precipitin  = models.CharField(
+        blank=True, null=True, max_length=200, choices=PRECIPITIN_CHOICES
+    )
+    igg         = models.CharField(
+        blank=True, null=True, max_length=200, verbose_name="IgG mg/L"
+    )
+    iggclass    = models.CharField(
+        blank=True, null=True, max_length=200, verbose_name="IgG Class"
+    )
 
 
 """
