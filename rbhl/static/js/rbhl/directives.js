@@ -296,9 +296,6 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter, $loc
           if(graphType === "fixedSingleDay"){
             return fixedSingleDay(columns);
           }
-          if(graphType === "fixedSingleDay2"){
-            return fixedSingleDay2(columns);
-          }
           if(graphType === "rigidAxis"){
             return rigidAxis(columns);
           }
@@ -334,7 +331,9 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter, $loc
           }
         }
 
-        let fixedSingleDay2  = function(columns){
+        let fixedSingleDay  = function(columns){
+          // fix the height of any given unit on the yaxis
+          // fix the width of a day.
           var result = calculateCurrentMethod(columns);
           result.size.width = (columns[0].length -1) * 50;
           result.size.height = 900;
