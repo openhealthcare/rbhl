@@ -31,3 +31,8 @@
   args:
     chdir: "{{ PROJECT_PATH}}"
   command: "{{ VIRTUALENV_PATH }}/bin/python manage.py create_singletons"
+
+- name: Load lookuplists
+  args:
+    chdir: "{{ PROJECT_PATH}}"
+  command: "{{ VIRTUALENV_PATH }}/bin/python manage.py load_lookup_lists"
