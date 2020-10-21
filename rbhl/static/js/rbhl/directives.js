@@ -279,7 +279,7 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter, $loc
         let calculateGraphAxisAndHeight = function(columns){
           var graphType = $location.search().graphType;
           if(!graphType){
-            graphType = "current";
+            graphType = "fixedSingleDay";
           }
           if(graphType === "current"){
             return calculateCurrentMethod(columns);
@@ -298,6 +298,9 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter, $loc
           }
           if(graphType === "rigidAxis"){
             return rigidAxis(columns);
+          }
+          if(graphType === "fixedSingleDay2"){
+            return fixedSingleDay2(columns);
           }
         }
 
@@ -329,6 +332,49 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter, $loc
               width: 660
             },
           }
+        }
+
+        let fixedSingleDay2  = function(columns){
+          // fix the height of any given unit on the yaxis
+          // fix the width of a day.
+          // defaut mix max vaues
+          let min = 300;
+          let max = 400;
+
+          // look at the values actually to be rendered
+          // and adjust the min/maxes accordingly.
+          columns = columns.filter(column=> column[0] !== 'x');
+          let values = columns.flat();
+          values = values.filter(value => !_.isString(value) && !_.isUndefined(value) && !_.isNull(value));
+          let minInVaues = Math.min(...values);
+          let maxInValues = Math.max(...values);
+
+          if(minInVaues < min){
+            min = Math.floor(minInVaues/50) * 50
+          }
+
+          if(maxInValues > max){
+            max = (Math.floor(maxInValues/50) + 1) * 50
+          }
+
+          // the range is the min -50 and the max + 50
+          let range = _.range(min, max+50, 50);
+          let height = (max - min) * 2;
+
+          let result = {
+            size: {
+              height: height
+            },
+            axis: {
+              tick: {
+               values: range,
+             },
+             min: min,
+             max: max
+            }
+          }
+          result.size.width = (columns[0].length -1) * 50;
+          return result;
         }
 
         let fixedSingleDay  = function(columns){
@@ -370,7 +416,9 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter, $loc
              max: max
             }
           }
-          result.size.width = (columns[0].length -1) * 50;
+          if(columns[0].length < 26){
+            result.size.width = (columns[0].length -1) * 50;
+          }
           return result;
         }
 
