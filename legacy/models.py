@@ -111,8 +111,7 @@ class BloodBook(PatientSubrecord):
     report_st          = models.DateField(
         blank=True, null=True, verbose_name="Report submitted"
     )
-    store              = models.CharField(blank=True, null=True,
-                                          max_length=200)
+    store              = models.NullBooleanField()
     exposure           = ForeignKeyOrFreeText(Exposure)
     antigen_date       = models.DateField(blank=True, null=True)
     antigen_type       = models.CharField(blank=True, null=True,
