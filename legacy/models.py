@@ -104,7 +104,7 @@ class BloodBook(PatientSubrecord):
                                           max_length=200)
     assay_date         = models.DateField(blank=True, null=True)
     blood_taken        = models.DateField(blank=True, null=True)
-    blood_tm           = models.DateField(blank=True, null=True)
+    blood_tm           = models.CharField(blank=True, null=True, max_length=200)
     report_dt          = models.DateField(
         blank=True, null=True, verbose_name="Report date"
     )
