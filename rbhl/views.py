@@ -156,7 +156,7 @@ class ChangePasswordCheck(RedirectView):
 class TwoFactorSetupView(two_factor_core_views.SetupView):
     @property
     def success_url(self):
-        return reverse('home')
+        return reverse('change-password-check')
 
     def dispatch(self, request, *args, **kwargs):
         if not SetUpTwoFactor.allowed(request.user):
