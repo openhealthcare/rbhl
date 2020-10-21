@@ -4,11 +4,10 @@ Management command to import the blood book csv
 from django.core.management import BaseCommand
 import ffs
 
-from opal.core import match
+from plugins.trade import match, exceptions
 
-from legacy import episode_categories
 from legacy.utils import str_to_date
-from legacy.models import Referral, BloodBook, BloodBookResult
+from legacy.models import BloodBook, BloodBookResult
 
 
 class Matcher(match.Matcher):
@@ -86,24 +85,12 @@ class Command(BaseCommand):
                 matcher = Matcher(data)
                 # print(matcher.get_demographic_dict())
                 # import sys;sys.exit()
-                patient, created = matcher.match_or_create()
+                try:
+                    patient, created = matcher.match()
+                except exceptions.PatientNotFoundError:
+                    continue
 
-                if not created:
-                    demographics = patient.demographics_set.get()
-                    demographics.date_of_birth = data['birth']
-                    demographics.save()
-
-                print('Creating episdoe')
-                episode = patient.create_episode(
-                    category_name=episode_categories.BloodBook.display_name
-                )
-
-                print('Creating referral')
-                referral = Referral(episode=episode)
-                referral.referrer_name = row.referrername
-                referral.referrer_title = row.referrerttl
-                referral.save()
-
+                episode = patient.episode_set.first()
                 create_blood_book(row, episode)
 
                 print('Creating Blood results')
