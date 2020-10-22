@@ -276,15 +276,24 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
 
         let calculateGraphAxisAndHeight = function(columns){
           /*
-          * Its been requested that the graphs have a fixed axis
-          * however the range of values is quite large but often
-          * the docs care about a small range.
+          * The users would like to be able to compare graphs
+          * between different patients.
           *
-          * The solution to this is that we fix the axis to account
+          * This is a difficult problem as peak flows cover
+          * a different range of values (y axis) and
+          * a varied number of days (x axis)
+          *
+          * The solution for the y axis is to account
           * for the vast majority of patients. We grow the axis
           * for when they are above the usual min max so the axis
           * are always the same but the graph grows to account for
           * extremes.
+          *
+          * The solution for the x axis is to keep the length
+          * of a day on the x axis as a fixed amound, only when a patient
+          * has a significant number of days (> 31) we will start squishing
+          * it to make sure it fits on the page. (although it will horizontally
+          * scroll on small screens)
           */
 
           // defaut mix max vaues
@@ -309,9 +318,9 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
 
           // the range is the min -50 and the max + 50
           let range = _.range(min, max+50, 50);
-          let height = (max - min) * 1.6;
+          let height = (max - min) * 2
 
-          return {
+          let args = {
             size: {
               height: height
             },
@@ -323,6 +332,13 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
              }
             }
           }
+
+          if(columns[0].length < 32){
+            let colWidth = element.parent().parent().width()/32
+            args.size.width = (columns[0].length -1) * colWidth;
+          }
+
+          return args;
         }
 
         let calculatePadding = function(treatments){
