@@ -63,7 +63,7 @@ class Command(BaseCommand):
     @transaction.atomic
     def handle(self, *args, **options):
         file_name = options["file_name"]
-        print('Open CSV to read')
+        print('Opening {} to read'.format(file_name))
         with open(file_name) as f:
             rows = list(csv.DictReader(f))
 
@@ -126,11 +126,7 @@ class Command(BaseCommand):
 
     def create_blood_book_test(self, row, patient):
         """
-        A blood book test is a
-        unique
-        method, assay_number, assay_date, blood_number, sample_received, report_date,
-        report_submitted, reference_number, store, antigen_type
-        as appears in the csv
+        Creates a Blood Book Test, 1 per row of the csv.
         """
         MAPPING = {
             "reference_number": lambda row: translate_ref_num(row["REFERENCE NO"]),
@@ -187,8 +183,8 @@ class Command(BaseCommand):
         return BloodBook.objects.create(**our_args)
 
     def create_blood_book_results_for_row(self, row, blood_book):
-        """some_
-        Return a list of the data that will be stored as results.
+        """
+        Creates blood book results, a maximum of 11 per row of the csv.
         """
         mapping = {
             'RESULT': "result",
