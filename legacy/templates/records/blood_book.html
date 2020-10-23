@@ -1,104 +1,62 @@
-<span ng-show="item.reference_number">
-  <b>Reference Number</b> [[ item.reference_number ]]
-   <br />
-</span>
-<span ng-show="item.employer">
-  <b>Employer</b> [[ item.employer ]]
-   <br />
-</span>
-<span ng-show="item.oh_provider">
-  <b>OH Provider</b> [[ item.oh_provider ]]
-   <br />
-</span>
-<span ng-show="item.blood_date">
-  <b>Blood date</b> [[ item.blood_date | displayDate ]]
-   <br />
-</span>
-<span ng-show="item.blood_number">
-  <b>Blood Number</b> [[ item.blood_number ]]
-   <br />
-</span>
-<span ng-show="item.method">
-  <b>Method</b> [[ item.method ]]
-   <br />
-</span>
-<span ng-show="item.blood_collected">
-  <b>Blood collected</b>[[ item.blood_collected ]]
-   <br />
-</span>
-<span ng-show="item.date_dna_extracted">
-  <b>DNA Extraxted</b> [[ item.date_dna_extracted ]]
-   <br />
-</span>
-<span ng-show="item.information">
-  <b>Information</b> [[ item.information ]]
-   <br />
-</span>
-<span ng-show="item.assayno">
-  <b>Assayno</b> [[ item.assayno ]]
-   <br />
-</span>
-<span ng-show="item.assay_date">
-  <b>Assay date</b>[[ item.assay_date | displayDate ]]
-   <br />
-</span>
-<span ng-show="item.blood_taken">
-  <b>Blood taken</b>[[ item.blood_taken | displayDate ]]
-   <br />
-</span>
-<span ng-show="item.blood_tm">
-  <b>Blood tm</b>[[ item.blood_tm | displayDate ]]
-   <br />
-</span>
-<span ng-show="item.report_dt">
-  <b>Report dt</b>[[ item.report_dt | displayDate ]]
-   <br />
-</span>
-<span ng-show="item.report_st">
-  <b>Report st</b>[[ item.report_st | displayDate ]]
-   <br />
-</span>
-<span ng-show="item.store">
-  <b>Store</b>[[ item.store ]]
-   <br />
-</span>
-<span ng-show="item.exposure">
-  <b>Exposure</b> [[ item.exposure ]]
-   <br />
-</span>
-<span ng-show="item.antigen_date">
-  <b>Antigen date</b> [[ item.antigen_date | displayDate ]]
-   <br />
-</span>
-<span ng-show="item.antigen_type">
-  <b>Antigen type</b> [[ item.antigen_type ]]
-   <br />
-</span>
-<span ng-show="item.comment">
-  <b>Comment</b> [[ item.comment ]]
-   <br />
-</span>
-<span ng-show="item.batches">
-  <b>Batches</b> [[ item.batches ]]
-   <br />
-</span>
-<span ng-show="item.room">
-  <b>Room</b> [[ item.room ]]
-   <br />
-</span>
-<span ng-show="item.freezer">
-  <b>Freezer</b> [[ item.freezer ]]
-   <br />
-</span>
-<span ng-show="item.shelf">
-  <b>Shelf</b>[[ item.shelf ]]
-   <br />
-</span>
-<span ng-show="item.tray">
-  <b>Tray</b>[[ item.tray ]]
-   <br />
-</span>
-<span ng-show="item.vials">
-  <b>Vials</b>[[ item.vials ]]
-   <br />
-</span>
+{% load rbhl_panels %}
+<div ng-show="investigationsView.combineBloodBookResultResults(item.bloodbookresult_set).length" class="row">
+  <div class="row">
+    <div class="col-md-6">
+      Result
+    </div>
+    <div class="col-md-6">
+      <span ng-repeat="r in investigationsView.combineBloodBookResultResults(item.bloodbookresult_set) track by $index">
+        [[ r ]]<br />
+      </span>
+    </div>
+  </div>
+</div>
+<div class="row" ng-repeat="result in item.bloodbookresult_set track by $index">
+  <div ng-hide="result.result" class="row">
+    <div class="col-md-6">
+      [[ result.allergen ]]
+      <span ng-show="result.antigenno"> ([[result.antigenno]])</span>
+    </div>
+    <div class="col-md-6">
+      <span ng-show="result.kul || result.klass">
+        IgE:
+        <span ng-show="result.kul">
+          [[ result.kul ]] kU/L
+        </span>
+        <span ng-show="result.kul || result.klass">&nbsp;</span>
+        <span ng-class="result.klass">&nbsp; [[ result.klass ]] CLASS</span>
+      </span>
+      <span ng-show="result.rast">
+        RAST %B: [[ result.rast ]]<br />
+      </span>
+      <span ng-show="result.precipitin">
+        Precipitin: [[ result.precipitin ]]<br />
+      </span>
+      <span ng-show="result.igg || result.iggclass">
+        IgG:
+        <span ng-show="result.igg">
+          mg/L: [[ result.igg ]]<br />
+        </span>
+        <span ng-show="result.igg || result.iggclass">&nbsp;</span>
+        <span ng-show="result.iggclass">
+          class: [[ result.iggclass ]]<br />
+        </span>
+      </span>
+    </div>
+  </div>
+</div>
+<div class="row content-offset-10" ng-show="item.information">
+  <div class="md-12">
+    <p ng-show="item.store">
+      <span ng-show="item.store">STORED</span>
+    </p>
+      <span ng-show="item.batches">Batches: [[ item.batches ]] </span>
+      <span ng-show="item.room">Room: [[ item.room ]] </span>
+      <span ng-show="item.freezer">Freezer: [[ item.freezer ]] </span>
+      <span ng-show="item.shelf">Shelf: [[ item.shelf ]] </span>
+      <span ng-show="item.tray">Tray: [[ item.tray ]] </span>
+      <span ng-show="item.vials">Vials: [[ item.vials ]] </span>
+    <p markdown="information"></p>
+    <p markdown="comment"></p>
+  </div>
+</div>
