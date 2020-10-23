@@ -48,6 +48,14 @@ angular.module('opal.controllers').controller('InvestigationsView', function($sc
     return tests;
   }
 
+  this.splitResult = function(result){
+    var splitted = result.split(")");
+    if(splitted.length == 2){
+      return [splitted[0] + ")", splitted[1]];
+    }
+    return [r];
+  }
+
   this.combineBloodBookResultResults = function(bloodBookResults){
     /*
     * The blood book result.result used to be a generic term for a

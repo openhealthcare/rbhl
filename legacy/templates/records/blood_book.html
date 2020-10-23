@@ -1,10 +1,8 @@
 {% load rbhl_panels %}
 <div ng-show="investigationsView.combineBloodBookResultResults(item.bloodbookresult_set).length" class="row">
-  <div class="row">
-    <div class="col-md-12">
-      <span ng-repeat="r in investigationsView.combineBloodBookResultResults(item.bloodbookresult_set) track by $index">
-        [[ r ]]<br />
-      </span>
+  <div class="row" ng-repeat="resultRow in investigationsView.combineBloodBookResultResults(item.bloodbookresult_set) track by $index">
+    <div ng-repeat="r in investigationsView.splitResult(resultRow)" class="col-md-6">
+      [[ r ]]
     </div>
   </div>
 </div>
