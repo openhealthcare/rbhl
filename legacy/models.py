@@ -124,6 +124,13 @@ class BloodBook(PatientSubrecord):
     tray               = models.TextField(blank=True, null=True)
     vials              = models.TextField(blank=True, null=True)
 
+    def to_dict(self, user=None):
+        as_dict = super().to_dict(user=user)
+        as_dict["bloodbookresult_set"] = []
+        for result in self.bloodbookresult_set.all():
+            as_dict["bloodbookresult_set"].append(result.to_dict())
+        return as_dict
+
 
 class BloodBookResult(models.Model):
     _exclude_from_extract = True
@@ -154,6 +161,23 @@ class BloodBookResult(models.Model):
     iggclass    = models.CharField(
         blank=True, null=True, max_length=200, verbose_name="IgG Class"
     )
+
+    def get_fields(self):
+        blood_book_result_fields_to_dict = [
+            i.name for i in self._meta.get_fields()
+        ]
+        blood_book_result_fields_to_dict.remove("allergen_fk")
+        blood_book_result_fields_to_dict.remove("allergen_ft")
+        blood_book_result_fields_to_dict.remove("blood_book")
+        blood_book_result_fields_to_dict.append("allergen")
+        return blood_book_result_fields_to_dict
+
+    def to_dict(self):
+        fields = self.get_fields()
+        result = {}
+        for field in fields:
+            result[field] = getattr(self, field)
+        return result
 
 
 """

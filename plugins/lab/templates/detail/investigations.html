@@ -18,6 +18,26 @@
       <div class="row content-offset-25">
         <ul ng-controller="InvestigationsView as investigationsView" class="list-group">
           <li ng-repeat="testDate in investigationsView.getTestDateKeys()">
+            <div ng-show="investigationsView.getTestsForDateKey('{{ models.BloodBook.get_api_name }}', testDate).length">
+              <div class="row">
+                <div class="col-md-3">
+                  <strong style="text-transform: uppercase">{{ models.BloodBook.get_display_name }}</strong>
+                  <br />[[ testDate ]]
+                </div>
+              </div>
+            </div>
+            <div ng-repeat="item in investigationsView.getTestsForDateKey('{{ models.BloodBook.get_api_name }}', testDate) track by $index">
+              <div class="row test-row">
+                <div class="col-md-3">
+                  [[ item.exposure ]] [[ item.method ]]
+                </div>
+                <div class="col-md-8">
+                  <div class="col-md-9">
+                    {% include models.BloodBook.get_display_template %}
+                  </div>
+                </div>
+              </div>
+            </div>
             <div ng-show="investigationsView.getTestsForDateKey('{{ models.Spirometry.get_api_name }}', testDate).length">
               <div class="row">
                 <div class="col-md-3">
