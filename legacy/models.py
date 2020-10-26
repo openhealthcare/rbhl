@@ -131,6 +131,19 @@ class BloodBook(PatientSubrecord):
             as_dict["bloodbookresult_set"].append(result.to_dict())
         return as_dict
 
+    def update_from_dict(self, data, *args, **kwargs):
+        blood_book_result_set = data.pop("bloodbookresult_set", [])
+        super().update_from_dict(data, *args, **kwargs)
+        existing_ids = [i["id"] for i in blood_book_result_set if "id" in i]
+        self.bloodbookresult_set.exclude(id__in=existing_ids).delete()
+        for result_dict in blood_book_result_set:
+            result_id = result_dict.get("id", None)
+            if result_id:
+                result = self.bloodbookresult_set.get(id=result_id)
+            else:
+                result = BloodBookResult(blood_book=self)
+            result.update_from_dict(result_dict)
+
 
 class BloodBookResult(models.Model):
     _exclude_from_extract = True
@@ -178,6 +191,12 @@ class BloodBookResult(models.Model):
         for field in fields:
             result[field] = getattr(self, field)
         return result
+
+    def update_from_dict(self, data):
+        fields = self.get_fields()
+        for field in fields:
+            setattr(self, field, data.get(field))
+        self.save()
 
 
 """
