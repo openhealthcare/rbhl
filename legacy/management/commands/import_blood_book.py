@@ -180,7 +180,10 @@ class Command(BaseCommand):
 
         our_args["patient"] = patient
         self.bb_count += 1
-        return BloodBook.objects.create(**our_args)
+        bb = BloodBook.objects.create(**our_args)
+        bb.set_consistency_token()
+        bb.save()
+        return bb
 
     def create_blood_book_results_for_row(self, row, blood_book):
         """
