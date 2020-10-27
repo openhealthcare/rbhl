@@ -114,8 +114,9 @@ class BloodBook(PatientSubrecord):
     store              = models.NullBooleanField()
     exposure           = ForeignKeyOrFreeText(Exposure)
     antigen_date       = models.DateField(blank=True, null=True)
-    antigen_type       = models.CharField(blank=True, null=True,
-                                          max_length=200)
+    antigen_type       = models.CharField(
+        blank=True, null=True, choices=ANTIGEN_TYPE, max_length=200
+    )
     comment            = models.TextField(blank=True, null=True)
     batches            = models.TextField(blank=True, null=True)
     room               = models.TextField(blank=True, null=True)

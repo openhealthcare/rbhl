@@ -6,18 +6,36 @@ angular.module('opal.controllers').controller(
   * otherwise we create a new one.
   */
   var init = function(){
+    var bloodBookTest;
     scope.bloodBookTest = null;
     var id = $location.search().id;
     if(!id){
-      scope.bloodBookTest = {};
+      bloodBookTest = {};
     }
     else{
-      var bloodBookTest = _.findWhere(scope.editing.blood_book, {id: parseInt(id)});
+      bloodBookTest = _.findWhere(scope.editing.blood_book, {id: parseInt(id)});
       if(!bloodBookTest){
         alert('Unable to find blood book');
       }
-      scope.bloodBookTest = {blood_book: bloodBookTest};
+      // foreign keys aren't copied over by makeCopy so given we're
+      // always saving back and there are no date fields, pull the
+      // results of the episode.
+      var results = _.findWhere(episode.blood_book, {id: parseInt(id)});
+      bloodBookTest.bloodbookresult_set = results.bloodbookresult_set;
     }
+
+    scope.bloodBookTest = {blood_book: bloodBookTest};
+  }
+
+  scope.addResult = function(){
+    if(!scope.bloodBookTest.blood_book.bloodbookresult_set){
+      scope.bloodBookTest.blood_book.bloodbookresult_set = [];
+    }
+    scope.bloodBookTest.blood_book.bloodbookresult_set.push({});
+  }
+
+  scope.removeResult = function(idx){
+    this.peakFlowTimes.splice(idx, 1);
   }
 
   scope.preSave = function(editing){
