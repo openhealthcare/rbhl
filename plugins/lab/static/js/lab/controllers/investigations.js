@@ -53,7 +53,7 @@ angular.module('opal.controllers').controller('InvestigationsView', function($sc
     if(splitted.length == 2){
       return [splitted[0] + ")", splitted[1]];
     }
-    return [r];
+    return result;
   }
 
   this.combineBloodBookResultResults = function(bloodBookResults){
