@@ -84,8 +84,9 @@ class BloodBook(RBHLSubrecord, PatientSubrecord):
                                           max_length=200)
     employer           = models.CharField(blank=True, null=True,
                                           max_length=200)
-    oh_provider        = models.CharField(blank=True, null=True,
-                                          max_length=100)
+    oh_provider        = models.CharField(
+        blank=True, null=True, max_length=100, verbose_name="OH provider"
+    )
     blood_date         = models.DateField(
         blank=True, null=True, verbose_name="Sample received"
     )
@@ -156,7 +157,9 @@ class BloodBookResult(models.Model):
     blood_book = models.ForeignKey(BloodBook, on_delete=models.CASCADE)
     result     = models.CharField(blank=True, null=True, max_length=200)
     allergen   = ForeignKeyOrFreeText(Allergen)
-    antigenno  = models.CharField(blank=True, null=True, max_length=200)
+    antigenno  = models.CharField(
+        blank=True, null=True, max_length=200, verbose_name="Antigen number"
+    )
     kul        = models.CharField(
         blank=True, null=True, max_length=200, verbose_name="KU/L"
     )
