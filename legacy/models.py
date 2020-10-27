@@ -8,6 +8,7 @@ from opal.core.fields import enum
 from opal.models import (
     PatientSubrecord, EpisodeSubrecord, ForeignKeyOrFreeText
 )
+from rbhl.models import RBHLSubrecord
 
 
 """
@@ -64,7 +65,7 @@ class Exposure(lookuplists.LookupList):
     pass
 
 
-class BloodBook(PatientSubrecord):
+class BloodBook(RBHLSubrecord, PatientSubrecord):
     _exclude_from_extract = True
     _advanced_searchable = False
 
@@ -100,8 +101,9 @@ class BloodBook(PatientSubrecord):
                                           max_length=200)
     information        = models.CharField(blank=True, null=True,
                                           max_length=200)
-    assayno            = models.CharField(blank=True, null=True,
-                                          max_length=200)
+    assayno            = models.CharField(
+        blank=True, null=True, max_length=200, verbose_name="Assay number"
+    )
     assay_date         = models.DateField(blank=True, null=True)
     blood_taken        = models.DateField(blank=True, null=True)
     blood_tm           = models.CharField(blank=True, null=True, max_length=200)

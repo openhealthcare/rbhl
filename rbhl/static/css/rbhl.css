@@ -633,4 +633,8 @@ input[type="date"]::-webkit-input-placeholder {
   padding-left: 10px;
   padding-right: 10px;
 }
+
+.form-group label {
+  font-size: 15px;
+}
 /*# sourceMappingURL=rbhl.css.map */
