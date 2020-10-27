@@ -35,7 +35,7 @@ angular.module('opal.controllers').controller(
   }
 
   scope.removeResult = function(idx){
-    this.peakFlowTimes.splice(idx, 1);
+    scope.bloodBookTest.blood_book.bloodbookresult_set.splice(idx, 1);
   }
 
   scope.preSave = function(editing){
