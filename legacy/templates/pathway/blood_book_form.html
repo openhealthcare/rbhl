@@ -113,6 +113,11 @@
       <h2>Results <small><i class="fa pointer fa-plus-circle" ng-click="addResult()"></i></small></h2>
       </div>
     </div>
+    <div class="row" ng-show="!editing.blood_book.bloodbookresult_set.length">
+      <div class="col-md-12 text-center">
+        <h1 class="text-muted">No results recorded</h1>
+      </div>
+    </div>
     <div ng-repeat="result in editing.blood_book.bloodbookresult_set">
       <div class="row">
         <div class="col-md-2">
@@ -156,7 +161,32 @@
           </div>
         </div>
       </div>
+      <hr ng-show="!$last">
+    </div>
+  </div>
+  <div class="row content-offset content-offset-below-50">
+    <div class="col-md-12">
       <hr>
     </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="text-center" ng-show="form.$submitted && form.$invalid">
+        <strong class="help-block">Please fix errors</strong>
+      </div>
+      <button ng-show="bloodBookTest.blood_book.id" class="btn btn-lg btn-secondary btn-delete"
+      ng-click="delete()"
+      >
+        <i class="fa fa-trash-o"></i>
+        Delete
+      </button>
+    </div>
+    <div class="col-md-6 text-right">
+      <button class="btn btn-lg btn-primary btn-save"
+      ng-click="pathway.finish(editing)"
+      >
+        <i class="[[ pathway.finish_button_icon ]]"></i>
+        [[ pathway.finish_button_text ]]
+      </button>
   </div>
 </div>
