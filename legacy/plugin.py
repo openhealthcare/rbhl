@@ -8,4 +8,8 @@ class LegacyPlugin(plugins.OpalPlugin):
     """
     Expose this plugin to our Opal application
     """
-    pass
+    javascripts = {
+        'opal.controllers': [
+            'js/legacy/controllers/blood_book.js'
+        ]
+    }

@@ -8,6 +8,7 @@ from opal.core.fields import enum
 from opal.models import (
     PatientSubrecord, EpisodeSubrecord, ForeignKeyOrFreeText
 )
+from rbhl.models import RBHLSubrecord
 
 
 """
@@ -64,7 +65,7 @@ class Exposure(lookuplists.LookupList):
     pass
 
 
-class BloodBook(PatientSubrecord):
+class BloodBook(RBHLSubrecord, PatientSubrecord):
     _exclude_from_extract = True
     _advanced_searchable = False
 
@@ -83,8 +84,9 @@ class BloodBook(PatientSubrecord):
                                           max_length=200)
     employer           = models.CharField(blank=True, null=True,
                                           max_length=200)
-    oh_provider        = models.CharField(blank=True, null=True,
-                                          max_length=100)
+    oh_provider        = models.CharField(
+        blank=True, null=True, max_length=100, verbose_name="OH provider"
+    )
     blood_date         = models.DateField(
         blank=True, null=True, verbose_name="Sample received"
     )
@@ -100,8 +102,9 @@ class BloodBook(PatientSubrecord):
                                           max_length=200)
     information        = models.CharField(blank=True, null=True,
                                           max_length=200)
-    assayno            = models.CharField(blank=True, null=True,
-                                          max_length=200)
+    assayno            = models.CharField(
+        blank=True, null=True, max_length=200, verbose_name="Assay number"
+    )
     assay_date         = models.DateField(blank=True, null=True)
     blood_taken        = models.DateField(blank=True, null=True)
     blood_tm           = models.CharField(blank=True, null=True, max_length=200)
@@ -114,8 +117,9 @@ class BloodBook(PatientSubrecord):
     store              = models.NullBooleanField()
     exposure           = ForeignKeyOrFreeText(Exposure)
     antigen_date       = models.DateField(blank=True, null=True)
-    antigen_type       = models.CharField(blank=True, null=True,
-                                          max_length=200)
+    antigen_type       = models.CharField(
+        blank=True, null=True, choices=ANTIGEN_TYPE, max_length=200
+    )
     comment            = models.TextField(blank=True, null=True)
     batches            = models.TextField(blank=True, null=True)
     room               = models.TextField(blank=True, null=True)
@@ -131,6 +135,19 @@ class BloodBook(PatientSubrecord):
             as_dict["bloodbookresult_set"].append(result.to_dict())
         return as_dict
 
+    def update_from_dict(self, data, *args, **kwargs):
+        blood_book_result_set = data.pop("bloodbookresult_set", [])
+        super().update_from_dict(data, *args, **kwargs)
+        existing_ids = [i["id"] for i in blood_book_result_set if "id" in i]
+        self.bloodbookresult_set.exclude(id__in=existing_ids).delete()
+        for result_dict in blood_book_result_set:
+            result_id = result_dict.get("id", None)
+            if result_id:
+                result = self.bloodbookresult_set.get(id=result_id)
+            else:
+                result = BloodBookResult(blood_book=self)
+            result.update_from_dict(result_dict)
+
 
 class BloodBookResult(models.Model):
     _exclude_from_extract = True
@@ -140,7 +157,9 @@ class BloodBookResult(models.Model):
     blood_book = models.ForeignKey(BloodBook, on_delete=models.CASCADE)
     result     = models.CharField(blank=True, null=True, max_length=200)
     allergen   = ForeignKeyOrFreeText(Allergen)
-    antigenno  = models.CharField(blank=True, null=True, max_length=200)
+    antigenno  = models.CharField(
+        blank=True, null=True, max_length=200, verbose_name="Antigen number"
+    )
     kul        = models.CharField(
         blank=True, null=True, max_length=200, verbose_name="KU/L"
     )
@@ -178,6 +197,12 @@ class BloodBookResult(models.Model):
         for field in fields:
             result[field] = getattr(self, field)
         return result
+
+    def update_from_dict(self, data):
+        fields = self.get_fields()
+        for field in fields:
+            setattr(self, field, data.get(field))
+        self.save()
 
 
 """

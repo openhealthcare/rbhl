@@ -1,6 +1,6 @@
 import datetime
 from opal.core.test import OpalTestCase
-from legacy.models import BloodBook
+from legacy.models import BloodBook, BloodBookResult
 
 
 class BloodBookTestCase(OpalTestCase):
@@ -69,3 +69,66 @@ class BloodBookTestCase(OpalTestCase):
         }
         result = bb.to_dict(user=None)
         self.assertEqual(result, expected)
+
+    def test_update_from_dict_create(self):
+        update_dict = {
+            "exposure": "wheat",
+            "bloodbookresult_set": [{
+                "result": "result"
+            }]
+        }
+        bb = BloodBook(patient=self.patient)
+        bb.update_from_dict(update_dict, self.user)
+        bb_reloaded = BloodBook.objects.get()
+        self.assertEqual(
+            bb_reloaded.exposure, "wheat"
+        )
+        self.assertEqual(
+            bb_reloaded.bloodbookresult_set.get().result, "result"
+        )
+
+    def test_update_from_dict_delete(self):
+        bb = BloodBook(patient=self.patient)
+        bb.exposure = "wheat"
+        bb.save()
+        bb.bloodbookresult_set.create(result="result")
+        bb.update_from_dict({
+            "exposure": "wheat",
+            "bloodbookresult_set": []
+        }, self.user)
+        bb_reloaded = BloodBook.objects.get()
+        self.assertEqual(
+            bb_reloaded.exposure, "wheat"
+        )
+        self.assertFalse(
+            bb_reloaded.bloodbookresult_set.exists()
+        )
+
+    def test_update_from_dict_update(self):
+        bb = BloodBook(patient=self.patient)
+        bb.exposure = "wheat"
+        bb.save()
+        bb_result = bb.bloodbookresult_set.create(result="result")
+        bb.update_from_dict({
+            "exposure": "wheat",
+            "bloodbookresult_set": [{
+                "id": bb_result.id,
+                "result": "other result"
+            }]
+        }, self.user)
+        bb_reloaded = BloodBook.objects.get()
+        self.assertEqual(
+            bb_reloaded.exposure, "wheat"
+        )
+        self.assertEqual(
+            bb_reloaded.bloodbookresult_set.get().result,
+            "other result"
+        )
+
+    def test_cascade(self):
+        bb = BloodBook(patient=self.patient)
+        bb.exposure = "wheat"
+        bb.save()
+        bb.bloodbookresult_set.create(result="result")
+        bb.delete()
+        self.assertFalse(BloodBookResult.objects.exists())

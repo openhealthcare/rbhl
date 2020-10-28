@@ -1,0 +1,162 @@
+{% load forms %}
+<div pathway-step="{{ step.get_api_name }}">
+  <div ng-repeat="editing in [bloodBookTest]">
+    <!-- Employer/referral details -->
+    <div class="row">
+      <div class="col-md-6">
+        <div class="horizontal-form">
+          {% input field="BloodBook.oh_provider" style="vertical" %}
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="horizontal-form">
+          {% input field="BloodBook.reference_number" style="vertical" %}
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="horizontal-form">
+          {% input field="BloodBook.employer" style="vertical" %}
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="horizontal-form">
+          {% input field="BloodBook.information" style="vertical" %}
+        </div>
+      </div>
+    </div>
+    <hr>
+
+    <!-- Blood information -->
+    <div class="row">
+      <div class="col-md-6">
+        <div class="horizontal-form">
+          {% input field="BloodBook.blood_number" style="vertical" %}
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="horizontal-form">
+          {% datepicker field="BloodBook.blood_taken" style="vertical" %}
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="horizontal-form">
+          {% datepicker field="BloodBook.blood_date" style="vertical" %}
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="horizontal-form">
+          {% checkbox field="BloodBook.store" style="vertical" %}
+        </div>
+      </div>
+    </div>
+    <hr>
+
+    <!-- Assay information -->
+    <div class="row">
+      <div class="col-md-6">
+        <div class="horizontal-form">
+          {% input field="BloodBook.assayno" style="vertical" %}
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="horizontal-form">
+          {% datepicker field="BloodBook.assay_date" style="vertical" %}
+        </div>
+      </div>
+    </div>
+    <hr>
+
+    <!-- Report information -->
+    <div class="row">
+      <div class="col-md-6">
+        <div class="horizontal-form">
+          {% datepicker field="BloodBook.report_dt" style="vertical" %}
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="horizontal-form">
+          {% datepicker field="BloodBook.report_st" style="vertical" %}
+        </div>
+      </div>
+    </div>
+    <hr>
+
+    <!-- Test information -->
+    <div class="row">
+      <div class="col-md-6">
+        <div class="horizontal-form">
+          {% input field="BloodBook.exposure" style="vertical" %}
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="horizontal-form">
+          {% input field="BloodBook.method" style="vertical" %}
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="horizontal-form">
+          {% select field="BloodBook.antigen_type" style="vertical" %}
+        </div>
+      </div>
+    </div>
+    <hr>
+
+    <!-- Restuls -->
+    <div class="col-md-12">
+      <div class="row">
+      <h2>Results <small><i class="fa pointer fa-plus-circle" ng-click="addResult()"></i></small></h2>
+      </div>
+    </div>
+    <div ng-repeat="result in editing.blood_book.bloodbookresult_set">
+      <div class="row">
+        <div class="col-md-2">
+          <div class="col-md-12">
+            <h2>[[ $index + 1 ]] <small><i class="fa pointer fa-trash-o" ng-click="removeResult($index)"></i></h2>
+          </div>
+        </div>
+        <div class="col-md-10">
+          <div class="row">
+            <div class="col-md-6">
+              {% input label="Allergen" model="result.allergen" style="vertical" lookuplist="allergen_list" %}
+            </div>
+            <div class="col-md-6">
+              {% input label="Antigen number" model="result.antigenno" style="vertical" %}
+            </div>
+          </div>
+          <div class="row" ng-show="result.result">
+            <div class="col-md-12">
+              {% input label="Result" model="result.result" style="vertical" %}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-2">
+              {% input label="KU/L" model="result.kul" style="vertical" %}
+            </div>
+            <div class="col-md-2">
+              {% input label="Class" model="result.klass" style="vertical" %}
+            </div>
+            <div class="col-md-2">
+              {% input label="RAST %B" model="result.rast" style="vertical" %}
+            </div>
+            <div class="col-md-2">
+              {% select label="Precipitin" model="result.precipitin" lookuplist="['-ve', '+ve', 'Weak +ve', '++ve']" style="vertical" %}
+            </div>
+            <div class="col-md-2">
+              {% input label="IgG mg/L" model="result.igg" style="vertical" %}
+            </div>
+            <div class="col-md-2">
+              {% input label="IgG class" model="result.iggclass" style="vertical" %}
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr>
+    </div>
+  </div>
+</div>
