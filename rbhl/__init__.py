@@ -67,7 +67,7 @@ class Application(application.OpalApplication):
                             index=999
                         )
                     )
-                if user.profile.can_extract:
+                if user.profile.can_extract or user.is_superuser:
                     items.append(
                         menus.MenuItem(
                             href="/search/#/extract/",
