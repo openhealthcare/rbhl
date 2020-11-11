@@ -1,6 +1,6 @@
 # cryptography is required for heroku deployment
 coverage==3.6
-django==2.0.13
+django==2.2.16
 dj-database-url==0.2.1
 gunicorn==19.5.0
 psycopg2==2.7.6.1
@@ -11,7 +11,7 @@ ffs==0.0.8.2
 letter==0.5
 requests==2.20.1
 djangorestframework==3.7.4
-django-compressor==2.2
+django-compressor==2.4
 python-dateutil==2.7.5
 django-celery==3.2.2
 celery==3.1.25
@@ -20,4 +20,4 @@ django-two-factor-auth==1.8.0
 django-formtools==2.1
 flake8==3.6.0
 boto3==1.9.178
-opal==0.18.3
+-e git+https://github.com/openhealthcare/opal@bump-compressor#egg=opal
