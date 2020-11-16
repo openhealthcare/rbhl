@@ -1,5 +1,6 @@
 angular.module('opal.controllers').controller(
   'BloodBookStep', function(scope, step, episode, $location) {
+  "use strict";
   /*
   * The blood book step works on a single blood book instance.
   * if there is an id as a GET param in the url, then it is that instance
