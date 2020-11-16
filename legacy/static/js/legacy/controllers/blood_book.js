@@ -9,6 +9,14 @@ angular.module('opal.controllers').controller(
     var bloodBookTest;
     scope.bloodBookTest = null;
     var id = $location.search().id;
+    // foreign keys aren't copy over so we have to manually copy them
+    // over to post back.
+    // we don't need serialization because there are no date fields
+    _.each(episode.blood_book, function(bb){
+      var editingBB = _.findWhere(scope.editing.blood_book, {id: bb.id});
+      editingBB.bloodbookresult_set = bb.bloodbookresult_set;
+    });
+
     if(!id){
       bloodBookTest = {};
     }
@@ -17,12 +25,8 @@ angular.module('opal.controllers').controller(
       if(!bloodBookTest){
         alert('Unable to find blood book');
       }
-      // foreign keys aren't copied over by makeCopy so given we're
-      // always saving back and there are no date fields, pull the
-      // results of the episode.
-      var results = _.findWhere(episode.blood_book, {id: parseInt(id)});
-      bloodBookTest.bloodbookresult_set = results.bloodbookresult_set;
     }
+
 
     scope.bloodBookTest = {blood_book: bloodBookTest};
   }
