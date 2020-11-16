@@ -151,6 +151,7 @@ class Command(BaseCommand):
             "antigen_type": "ANTIGENTYP",
             "comment": "Comment",
             "room": "Room",
+            "batches": "Batches",
             "freezer": "Freezer",
             "shelf": "Shelf",
             "tray": "Tray",
