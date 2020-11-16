@@ -51,26 +51,6 @@ class PeakFlowGraphData(LoginRequiredViewset):
 
         return result
 
-    def get_completeness(self, day_dicts):
-        """
-        A complete day is every day where the patient has
-        added at least 6 entries.
-
-        If they miss a day, that's a day counted as incomplete
-        """
-
-        all_total_days = [i["day_num"] for i in day_dicts]
-        if not day_dicts:
-            return
-        total_days = max(all_total_days)
-
-        entries = sum(
-            [i["num_entries"] for i in day_dicts if i["num_entries"]]
-        )
-
-        completeness = Decimal(entries)/Decimal(total_days*6)
-        return min(100, round(completeness * 100))
-
     def get_complete_days(self, day_dicts):
         """
         The data is considered significant if there are more than
@@ -137,10 +117,15 @@ class PeakFlowGraphData(LoginRequiredViewset):
                 peak_flow_days[0].date, episode, trial_num
             )
             days = [self.day_to_dict(i, pef) for i in peak_flow_days]
+        complete_days = self.get_complete_days(days)
+        if not days:
+            completeness = 0
+        else:
+            completeness = round(Decimal(complete_days)/len(days) * 100)
         return {
             "days": days,
-            "completeness": self.get_completeness(days),
-            "complete_days": self.get_complete_days(days),
+            "completeness": completeness,
+            "complete_days": complete_days,
             "treatments": self.get_treatments(days),
             "overrall_mean": self.get_overrall_mean(peak_flow_days),
             "pef_mean": pef,
