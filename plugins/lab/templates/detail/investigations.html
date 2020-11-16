@@ -10,6 +10,7 @@
     </div>
     <div class="panel-body">
       <div class="row">
+        {% add_button models.BloodBook link="/pathway/#/blood_book/[[ patient.id ]]/[[ episode.id ]]" %}
         {% add_button models.Spirometry %}
         {% add_button models.SkinPrickTest link="/pathway/#/skin_prick_test/[[ patient.id ]]/[[ episode.id ]]?new=1" %}
         {% add_button models.BronchialTest %}
