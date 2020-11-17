@@ -16,7 +16,7 @@ DB_PASSWORD: !vault |
 PROJECT_PATH: /usr/lib/ohc/rbhl
 BACKUPS_DIR: /usr/lib/ohc/var
 GIT_REPO: https://github.com/openhealthcare/rbhl
-GIT_BRANCH: compressor-bump-test
+GIT_BRANCH: v1.12
 LOG_DIR: /usr/lib/ohc/log
 PROJECT_NAME: rbhl
 SECRET_KEY: !vault |
@@ -60,4 +60,4 @@ S3_SECRET: !vault |
 
 VIRTUALENV_PATH: /home/ubuntu/.virtualenvs/rbhl
 REQUIREMENTS_FILE: requirements.txt
-DOMAIN: indigo-rbht-test.openhealthcare.org.uk
+DOMAIN: indigo-rbht.openhealthcare.org.uk
