@@ -67,7 +67,7 @@ class Exposure(lookuplists.LookupList):
 
 class BloodBook(RBHLSubrecord, PatientSubrecord):
     _exclude_from_extract = True
-    _advanced_searchable = True
+    _advanced_searchable = False
 
     ANTIGEN_TYPE = enum("STANDARD", "BESPOKE")
     METHODS = enum(

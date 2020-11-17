@@ -18,8 +18,6 @@
         <span ng-show="result.kul">
           [[ result.kul ]] kU/L
         </span>
-        <span ng-show="result.kul || result.klass">&nbsp;</span>
-        <span ng-class="result.klass">&nbsp; [[ result.klass ]] CLASS</span>
       </span>
       <span ng-show="result.rast">
         RAST %B: [[ result.rast ]]<br />
@@ -31,10 +29,6 @@
         IgG:
         <span ng-show="result.igg">
           mg/L: [[ result.igg ]]<br />
-        </span>
-        <span ng-show="result.igg || result.iggclass">&nbsp;</span>
-        <span ng-show="result.iggclass">
-          class: [[ result.iggclass ]]<br />
         </span>
       </span>
     </div>
