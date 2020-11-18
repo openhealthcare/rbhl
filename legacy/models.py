@@ -188,11 +188,32 @@ class BloodBookResult(models.Model):
         blood_book_result_fields_to_dict.append("allergen")
         return blood_book_result_fields_to_dict
 
+    def is_significant(self):
+        if self.precipitin:
+            if not self.precipitin == self.NEGATIVE:
+                return True
+        if self.rast and self.rast >= 2:
+            return True
+        if self.kul:
+            # sometimes the user puts in < 0.1, < 0.35, > 100
+            if "<" in self.kul:
+                kul = self.kul.strip(" <>")
+                if float(kul) <= 0.35:
+                    return False
+            kul = self.kul.strip(" <>")
+            if float(kul) >= 0.35:
+                return True
+        if self.igg:
+            # any igg is significant
+            return True
+        return False
+
     def to_dict(self):
         fields = self.get_fields()
         result = {}
         for field in fields:
             result[field] = getattr(self, field)
+        result["significant"] = self.is_significant()
         return result
 
     def update_from_dict(self, data):

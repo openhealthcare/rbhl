@@ -41,6 +41,7 @@ class BloodBookTestCase(OpalTestCase):
                     "precipitin": "+ve",
                     "rast": None,
                     "result": None,
+                    "significant": True
                 }
             ],
             'comment': None,
@@ -132,3 +133,44 @@ class BloodBookTestCase(OpalTestCase):
         bb.bloodbookresult_set.create(result="result")
         bb.delete()
         self.assertFalse(BloodBookResult.objects.exists())
+
+
+class BloodBookResultTestCase(OpalTestCase):
+    def setUp(self):
+        patient, _ = self.new_patient_and_episode_please()
+        bb = patient.bloodbook_set.create()
+        self.bb_result = bb.bloodbookresult_set.create()
+
+    def test_not_significant(self):
+        self.assertFalse(self.bb_result.is_significant())
+
+    def test_significant_rast(self):
+        self.bb_result.rast = 2.0
+        self.assertTrue(self.bb_result.is_significant())
+
+        self.bb_result.rast = 1.99
+        self.assertFalse(self.bb_result.is_significant())
+
+    def test_significant_precipitin(self):
+        self.bb_result.precipitin = "+ve"
+        self.assertTrue(self.bb_result.is_significant())
+
+        self.bb_result.precipitin = "-ve"
+        self.assertFalse(self.bb_result.is_significant())
+
+    def test_significant_igg(self):
+        self.bb_result.igg = 2
+        self.assertTrue(self.bb_result.is_significant())
+
+    def test_significant_kul(self):
+        self.bb_result.kul = "< 0.35"
+        self.assertFalse(self.bb_result.is_significant())
+
+        self.bb_result.kul = "0.1"
+        self.assertFalse(self.bb_result.is_significant())
+
+        self.bb_result.kul = "0.35"
+        self.assertTrue(self.bb_result.is_significant())
+
+        self.bb_result.kul = "> 100"
+        self.assertTrue(self.bb_result.is_significant())
