@@ -153,7 +153,8 @@ class BloodBookResult(models.Model):
     _exclude_from_extract = True
     _advanced_searchable = False
 
-    PRECIPITIN_CHOICES = enum("-ve", "+ve", "Weak +ve", '++ve')
+    NEGATIVE = "-ve"
+    PRECIPITIN_CHOICES = enum(NEGATIVE, "+ve", "Weak +ve", '++ve')
     blood_book = models.ForeignKey(BloodBook, on_delete=models.CASCADE)
     result     = models.CharField(blank=True, null=True, max_length=200)
     allergen   = ForeignKeyOrFreeText(Allergen)
@@ -163,22 +164,18 @@ class BloodBookResult(models.Model):
     kul        = models.CharField(
         blank=True, null=True, max_length=200, verbose_name="KU/L"
     )
-    klass      = models.CharField(
+    klass      = models.IntegerField(
         blank=True,
         null=True,
-        max_length=200,
         verbose_name="IgE Class",
-        choices=enum(*[str(i) for i in range(7)])
     )
-    rast        = models.CharField(blank=True, null=True, max_length=200)
+    rast        = models.FloatField(blank=True, null=True)
     precipitin  = models.CharField(
         blank=True, null=True, max_length=200, choices=PRECIPITIN_CHOICES
     )
-    igg         = models.CharField(
-        blank=True, null=True, max_length=200, verbose_name="IgG mg/L"
-    )
-    iggclass    = models.CharField(
-        blank=True, null=True, max_length=200, verbose_name="IgG Class"
+    igg         = models.FloatField(blank=True, null=True)
+    iggclass    = models.IntegerField(
+        blank=True, null=True, verbose_name="IgG Class"
     )
 
     def get_fields(self):
