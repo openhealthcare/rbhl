@@ -170,7 +170,7 @@ class BloodBookResult(models.Model):
         verbose_name="IgE Class",
         choices=enum(*[str(i) for i in range(7)])
     )
-    rast        = models.CharField(blank=True, null=True, max_length=200)
+    rast        = models.FloatField(blank=True, null=True, max_length=200)
     precipitin  = models.CharField(
         blank=True, null=True, max_length=200, choices=PRECIPITIN_CHOICES
     )
