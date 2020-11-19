@@ -3,7 +3,9 @@ from legacy.models import BloodBook
 
 
 class LabWorkList(ListView):
-    queryset = BloodBook.objects.filter(bloodbookresult=None).prefetch_related(
+    queryset = BloodBook.objects.filter(bloodbookresult=None).exclude(
+        room=""
+    ).prefetch_related(
         "patient__demographics_set"
     )
     template_name = 'patient_lists/lab_work_list.html'
