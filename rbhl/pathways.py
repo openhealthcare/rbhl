@@ -33,6 +33,23 @@ class NewReferral(WizardPathway):
         return patient, episode
 
 
+class LabReferral(WizardPathway):
+    display_name = 'New referral'
+    icon = 'fa-plus'
+    slug = 'new_blood_book_referral'
+    finish_button_text = "Create new referral"
+    finish_button_icon = None
+    template = "pathway/base/rbhl_referral_base.html"
+    steps = [
+        FindPatientStep(
+            base_template="pathway/steps/step_base_without_display_name.html"
+        )
+    ]
+
+    def redirect_url(self, user=None, patient=None, episode=None):
+        return "/#/patient/{0}/investigations".format(patient.id)
+
+
 class PeakFlowStep(Step):
     """
     The peak flow step assumes an arbitrary key of `trial_num`
