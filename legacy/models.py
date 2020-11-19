@@ -205,12 +205,18 @@ class BloodBookResult(models.Model):
             return True
         if self.kul:
             # sometimes the user puts in < 0.1, < 0.35, > 100
+            lt = False
             if "<" in self.kul:
-                kul = self.kul.strip(" <>")
-                if float(kul) <= 0.35:
-                    return False
+                lt = True
             kul = self.kul.strip(" <>")
-            if float(kul) >= 0.35:
+            try:
+                kul = float(kul)
+            except ValueError:
+                return True
+            if lt:
+                if kul <= 0.35:
+                    return False
+            if kul >= 0.35:
                 return True
         if self.igg:
             # any igg is significant
