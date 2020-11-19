@@ -45,10 +45,19 @@ class Application(application.OpalApplication):
     @classmethod
     def get_menu_items(klass, user=None):
         # we import here as settings must be set before this is imported
-        from rbhl.pathways import NewReferral
+        from rbhl.pathways import NewReferral, LabReferral
+        if user and user.profile.roles.filter(
+            name=constants.LAB_USER
+        ).exists():
+            referral = LabReferral.as_menuitem(
+                index=1,
+                display="New referral"
+            )
+        else:
+            referral = NewReferral.as_menuitem(index=1)
 
         items = [
-            NewReferral.as_menuitem(index=1),
+            referral,
             menus.MenuItem(
                 activepattern=reverse('active-list'),
                 href=reverse('active-list'),
