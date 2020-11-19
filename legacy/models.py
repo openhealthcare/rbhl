@@ -121,6 +121,8 @@ class BloodBook(RBHLSubrecord, PatientSubrecord):
         blank=True, null=True, choices=ANTIGEN_TYPE, max_length=200
     )
     comment            = models.TextField(blank=True, null=True)
+    # Batches was only ever used 10 times and hasn't been
+    # used for 6 years. User says they don't need it.
     batches            = models.TextField(blank=True, null=True)
     room               = models.TextField(blank=True, null=True)
     freezer            = models.TextField(blank=True, null=True)
