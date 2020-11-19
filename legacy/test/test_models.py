@@ -29,7 +29,7 @@ class BloodBookTestCase(OpalTestCase):
             "blood_number": None,
             "blood_taken": None,
             "blood_tm": None,
-            "bloodbookresult_set": [
+            "bloodbookresult": [
                 {
                     "allergen": "flour",
                     "antigenno": None,
@@ -73,7 +73,7 @@ class BloodBookTestCase(OpalTestCase):
     def test_update_from_dict_create(self):
         update_dict = {
             "exposure": "wheat",
-            "bloodbookresult_set": [{
+            "bloodbookresult": [{
                 "result": "result"
             }]
         }
@@ -94,7 +94,7 @@ class BloodBookTestCase(OpalTestCase):
         bb.bloodbookresult_set.create(result="result")
         bb.update_from_dict({
             "exposure": "wheat",
-            "bloodbookresult_set": []
+            "bloodbookresult": []
         }, self.user)
         bb_reloaded = BloodBook.objects.get()
         self.assertEqual(
@@ -111,7 +111,7 @@ class BloodBookTestCase(OpalTestCase):
         bb_result = bb.bloodbookresult_set.create(result="result")
         bb.update_from_dict({
             "exposure": "wheat",
-            "bloodbookresult_set": [{
+            "bloodbookresult": [{
                 "id": bb_result.id,
                 "result": "other result"
             }]

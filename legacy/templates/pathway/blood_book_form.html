@@ -53,8 +53,45 @@
         </div>
       </div>
     </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="horizontal-form">
+          {% textarea field="BloodBook.comment" style="vertical" %}
+        </div>
+      </div>
+    </div>
     <hr>
-
+    <!-- Blood location -->
+    <div class="row">
+      <div class="col-md-4">
+        <div class="horizontal-form">
+        {% input field="BloodBook.room" style="vertical" %}
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="horizontal-form">
+        {% input field="BloodBook.freezer" style="vertical" %}
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="horizontal-form">
+        {% input field="BloodBook.shelf" style="vertical" %}
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="horizontal-form">
+        {% input field="BloodBook.tray" style="vertical" %}
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="horizontal-form">
+        {% input field="BloodBook.vials" style="vertical" %}
+        </div>
+      </div>
+    </div>
+    <hr>
     <!-- Assay information -->
     <div class="row">
       <div class="col-md-6">
@@ -113,12 +150,12 @@
       <h2>Results <small><i class="fa pointer fa-plus-circle" ng-click="addResult()"></i></small></h2>
       </div>
     </div>
-    <div class="row" ng-show="!editing.blood_book.bloodbookresult_set.length">
+    <div class="row" ng-show="!editing.blood_book.bloodbookresult.length">
       <div class="col-md-12 text-center">
         <h1 class="text-muted">No results recorded</h1>
       </div>
     </div>
-    <div ng-repeat="result in editing.blood_book.bloodbookresult_set">
+    <div ng-repeat="result in editing.blood_book.bloodbookresult">
       <div class="row">
         <div class="col-md-2">
           <div class="col-md-12">
