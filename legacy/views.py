@@ -11,7 +11,7 @@ class LabWorkList(ListView):
     def get_ordering(self):
         order_param = self.request.GET.get("order")
         if not order_param:
-            return ["-room", "freezer", "tray", "vials"]
+            return "-blood_date"
         if order_param == "name":
             return "patient__demographics__first_name"
 
