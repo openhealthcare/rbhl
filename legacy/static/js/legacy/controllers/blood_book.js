@@ -1,6 +1,6 @@
 angular.module('opal.controllers').controller(
-  'BloodBookStep', function(scope, step, episode, $location) {
-  "use strict";
+  'BloodBookStep', function(scope, step, episode, $window, $location, $modal) {
+  "use strict"
   /*
   * The blood book step works on a single blood book instance.
   * if there is an id as a GET param in the url, then it is that instance
@@ -18,25 +18,36 @@ angular.module('opal.controllers').controller(
       if(!bloodBookTest){
         alert('Unable to find blood book');
       }
-      // foreign keys aren't copied over by makeCopy so given we're
-      // always saving back and there are no date fields, pull the
-      // results of the episode.
-      var results = _.findWhere(episode.blood_book, {id: parseInt(id)});
-      bloodBookTest.bloodbookresult_set = results.bloodbookresult_set;
     }
 
     scope.bloodBookTest = {blood_book: bloodBookTest};
   }
 
   scope.addResult = function(){
-    if(!scope.bloodBookTest.blood_book.bloodbookresult_set){
-      scope.bloodBookTest.blood_book.bloodbookresult_set = [];
+    if(!scope.bloodBookTest.blood_book.bloodbookresult){
+      scope.bloodBookTest.blood_book.bloodbookresult = [];
     }
-    scope.bloodBookTest.blood_book.bloodbookresult_set.push({});
+    scope.bloodBookTest.blood_book.bloodbookresult.push({});
   }
 
   scope.removeResult = function(idx){
-    scope.bloodBookTest.blood_book.bloodbookresult_set.splice(idx, 1);
+    scope.bloodBookTest.blood_book.bloodbookresult.splice(idx, 1);
+  }
+
+  scope.delete = function(){
+    var item = _.findWhere(episode.blood_book, {id: scope.bloodBookTest.blood_book.id})
+    var deleteModal =  $modal.open({
+      templateUrl: '/templates/pathway/delete_blood_book_modal.html',
+      controller: 'DeleteItemConfirmationCtrl',
+      resolve: {
+        item: item
+      }
+    });
+    deleteModal.result.then(function(result){
+      if(result === 'deleted'){
+        $window.location.href = "/#/patient/" + item.patient_id + "/investigations";
+      }
+    });
   }
 
   scope.preSave = function(editing){

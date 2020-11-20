@@ -67,7 +67,7 @@ class Exposure(lookuplists.LookupList):
 
 class BloodBook(RBHLSubrecord, PatientSubrecord):
     _exclude_from_extract = True
-    _advanced_searchable = True
+    _advanced_searchable = False
 
     ANTIGEN_TYPE = enum("STANDARD", "BESPOKE")
     METHODS = enum(
@@ -121,6 +121,8 @@ class BloodBook(RBHLSubrecord, PatientSubrecord):
         blank=True, null=True, choices=ANTIGEN_TYPE, max_length=200
     )
     comment            = models.TextField(blank=True, null=True)
+    # Batches was only ever used 10 times and hasn't been
+    # used for 6 years. User says they don't need it.
     batches            = models.TextField(blank=True, null=True)
     room               = models.TextField(blank=True, null=True)
     freezer            = models.TextField(blank=True, null=True)
@@ -128,19 +130,26 @@ class BloodBook(RBHLSubrecord, PatientSubrecord):
     tray               = models.TextField(blank=True, null=True)
     vials              = models.TextField(blank=True, null=True)
 
-    def to_dict(self, user=None):
-        as_dict = super().to_dict(user=user)
-        as_dict["bloodbookresult_set"] = []
-        for result in self.bloodbookresult_set.all():
-            as_dict["bloodbookresult_set"].append(result.to_dict())
-        return as_dict
+    @classmethod
+    def _get_fieldnames_to_serialize(cls):
+        result = super()._get_fieldnames_to_serialize()
+        result.append("bloodbookresult")
+        return result
 
-    def update_from_dict(self, data, *args, **kwargs):
-        blood_book_result_set = data.pop("bloodbookresult_set", [])
-        super().update_from_dict(data, *args, **kwargs)
-        existing_ids = [i["id"] for i in blood_book_result_set if "id" in i]
+    def get_bloodbookresult(self, user):
+        result = []
+        for bb_result in self.bloodbookresult_set.all():
+            result.append(bb_result.to_dict())
+        return result
+
+    def set_bloodbookresult(self, value, user, data):
+        existing_ids = [i["id"] for i in value if "id" in i]
+        # you cannot save foriegn keys if the parent model (ie this)
+        # does not have an id (ie has no id)
+        if not self.id:
+            self.save()
         self.bloodbookresult_set.exclude(id__in=existing_ids).delete()
-        for result_dict in blood_book_result_set:
+        for result_dict in value:
             result_id = result_dict.get("id", None)
             if result_id:
                 result = self.bloodbookresult_set.get(id=result_id)
