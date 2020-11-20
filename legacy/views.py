@@ -1,4 +1,4 @@
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 from legacy.models import BloodBook
 
 
@@ -21,3 +21,8 @@ class UnresultedList(ListView):
             return "-patient__demographics__first_name"
 
         return order_param
+
+
+class LabReport(DetailView):
+    model = BloodBook
+    template_name = "lab_report.html"

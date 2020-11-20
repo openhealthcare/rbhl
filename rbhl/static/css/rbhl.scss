@@ -678,3 +678,23 @@ input[type="date"]::-webkit-input-placeholder{
 .form-group label{
     font-size: 15px;
 }
+
+h1.static-title{
+    margin-top: 4px;
+    margin-left: 35px;
+    font-size: 36px;
+    color: $slate;
+    display: inline-block;
+
+    a{
+        color: $slate;
+    }
+
+    i{
+        font-size: 36px;
+    }
+}
+
+body{
+    overflow-y: scroll;
+}
