@@ -212,7 +212,7 @@ class BloodBookResult(models.Model):
             try:
                 kul = float(kul)
             except ValueError:
-                return True
+                return False
             if lt:
                 if kul <= 0.35:
                     return False

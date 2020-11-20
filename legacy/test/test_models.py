@@ -176,4 +176,4 @@ class BloodBookResultTestCase(OpalTestCase):
         self.assertTrue(self.bb_result.is_significant())
 
         self.bb_result.kul = "flawed"
-        self.assertTrue(self.bb_result.is_significant())
+        self.assertFalse(self.bb_result.is_significant())
