@@ -2,13 +2,13 @@ from django.views.generic import ListView
 from legacy.models import BloodBook
 
 
-class LabWorkList(ListView):
+class UnresultedList(ListView):
     queryset = BloodBook.objects.filter(bloodbookresult=None).exclude(
         room=""
     ).prefetch_related(
         "patient__demographics_set"
     )
-    template_name = 'patient_lists/lab_work_list.html'
+    template_name = 'patient_lists/unresulted_list.html'
 
     def get_ordering(self):
         order_param = self.request.GET.get("order")

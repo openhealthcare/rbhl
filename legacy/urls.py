@@ -3,8 +3,8 @@ from legacy import views
 
 urlpatterns = [
     url(
-        r'^patient-lists/lab-work-list/$',
-        views.LabWorkList.as_view(),
-        name="lab-work-list"
+        r'^patient-lists/unresulted-list/$',
+        views.UnresultedList.as_view(),
+        name="unresulted-list"
     )
 ]
