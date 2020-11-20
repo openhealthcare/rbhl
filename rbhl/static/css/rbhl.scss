@@ -22,6 +22,16 @@ $twocolwidth: 16.6666666667%;
     background: transparent;
 }
 
+// bootstrap uses width 100%.
+// when there is a vertical scroll bar
+// this is a different value.
+// doing this means the page does not
+// jump when there is a scroll bar.
+// Forcing a scroll bar looks good.
+html {
+    overflow-y: scroll;
+}
+
 
 /* Layout */
 #center-col {
