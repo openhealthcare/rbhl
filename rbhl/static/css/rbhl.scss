@@ -688,7 +688,12 @@ h1.static-title{
 
     a{
         color: $slate;
+        &:hover{
+            text-decoration: none;
+            color: $dark-blue;
+        }
     }
+
 
     i{
         font-size: 36px;

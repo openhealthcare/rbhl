@@ -650,6 +650,11 @@ h1.static-title a {
   color: #434c3d;
 }
 
+h1.static-title a:hover {
+  text-decoration: none;
+  color: #345ea4;
+}
+
 h1.static-title i {
   font-size: 36px;
 }
