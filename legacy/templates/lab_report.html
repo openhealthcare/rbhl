@@ -17,16 +17,10 @@
 
 
 {% block title %}
-<i class="fa fa-user"></i>
-<a href="/#/patient/{{ object.patient_id }}">
+Lab report
+(<a href="/#/patient/{{ object.patient_id }}">
 {{ object.patient.demographics.name }}
-</a>
-<small>
-{% if object.patient.demographics.date_of_birth  %}
-({{ object.patient.demographics.date_of_birth }})
-{% endif %}
-{{ object.patient.demographics.hospital_number }}
-</small>
+</a>)
 {% endblock %}
 
 {% block page_content %}
