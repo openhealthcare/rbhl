@@ -19,7 +19,6 @@ angular.module('opal.controllers').controller(
         alert('Unable to find blood book');
       }
     }
-
     scope.bloodBookTest = {blood_book: bloodBookTest};
   }
 
