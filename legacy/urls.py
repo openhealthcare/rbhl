@@ -8,6 +8,11 @@ urlpatterns = [
         name="unresulted-list"
     ),
     url(
+        r'^patient-lists/your-recently-resulted-list/$',
+        views.YourRecentlyResultedList.as_view(),
+        name="your-recently-resulted-list"
+    ),
+    url(
         r'^lab-report/(?P<pk>\d+)/$',
         views.LabReport.as_view(),
         name="lab-report"

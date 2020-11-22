@@ -8,7 +8,7 @@ from rbhl.episode_categories import OccupationalLungDiseaseEpisode
 from rbhl import constants
 
 
-class SeenByMeMenuItem(menus.MenuItem):
+class DoctorMenuItem(menus.MenuItem):
     def for_user(self, user):
         from opal.models import UserProfile
         return UserProfile.objects.filter(
@@ -17,10 +17,17 @@ class SeenByMeMenuItem(menus.MenuItem):
         ).exists()
 
 
-seen_by_me_menu_item = SeenByMeMenuItem(
+seen_by_me_menu_item = DoctorMenuItem(
     activepattern=reverse_lazy('seen-by-me-list'),
     href=reverse_lazy('seen-by-me-list'),
     display='Seen by me',
+    icon="fa-table"
+)
+
+your_recently_resulted = DoctorMenuItem(
+    activepattern=reverse_lazy('your-recently-resulted-list'),
+    href=reverse_lazy('your-recently-resulted-list'),
+    display='Your Resulted',
     icon="fa-table"
 )
 
@@ -80,6 +87,8 @@ class Application(application.OpalApplication):
 
                 if seen_by_me_menu_item.for_user(user):
                     items.append(seen_by_me_menu_item)
+                if your_recently_resulted.for_user(user):
+                    items.append(your_recently_resulted)
                 if user.is_staff:
                     items.append(
                         menus.MenuItem(
