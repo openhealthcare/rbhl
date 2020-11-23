@@ -162,7 +162,8 @@ class BloodBookResult(models.Model):
     _exclude_from_extract = True
     _advanced_searchable = False
 
-    PRECIPITIN_CHOICES = enum("-ve", "+ve", "Weak +ve", '++ve')
+    NEGATIVE = "-ve"
+    PRECIPITIN_CHOICES = enum(NEGATIVE, "+ve", "Weak +ve", '++ve')
     blood_book = models.ForeignKey(BloodBook, on_delete=models.CASCADE)
     result     = models.CharField(blank=True, null=True, max_length=200)
     allergen   = ForeignKeyOrFreeText(Allergen)
@@ -172,22 +173,18 @@ class BloodBookResult(models.Model):
     kul        = models.CharField(
         blank=True, null=True, max_length=200, verbose_name="KU/L"
     )
-    klass      = models.CharField(
+    klass      = models.IntegerField(
         blank=True,
         null=True,
-        max_length=200,
         verbose_name="IgE Class",
-        choices=enum(*[str(i) for i in range(7)])
     )
-    rast        = models.CharField(blank=True, null=True, max_length=200)
+    rast        = models.FloatField(blank=True, null=True)
     precipitin  = models.CharField(
         blank=True, null=True, max_length=200, choices=PRECIPITIN_CHOICES
     )
-    igg         = models.CharField(
-        blank=True, null=True, max_length=200, verbose_name="IgG mg/L"
-    )
-    iggclass    = models.CharField(
-        blank=True, null=True, max_length=200, verbose_name="IgG Class"
+    igg         = models.FloatField(blank=True, null=True)
+    iggclass    = models.IntegerField(
+        blank=True, null=True, verbose_name="IgG Class"
     )
 
     def get_fields(self):
@@ -200,11 +197,38 @@ class BloodBookResult(models.Model):
         blood_book_result_fields_to_dict.append("allergen")
         return blood_book_result_fields_to_dict
 
+    def is_significant(self):
+        if self.precipitin:
+            if not self.precipitin == self.NEGATIVE:
+                return True
+        if self.rast and self.rast >= 2:
+            return True
+        if self.kul:
+            # sometimes the user puts in < 0.1, < 0.35, > 100
+            lt = False
+            if "<" in self.kul:
+                lt = True
+            kul = self.kul.strip(" <>")
+            try:
+                kul = float(kul)
+            except ValueError:
+                return False
+            if lt:
+                if kul <= 0.35:
+                    return False
+            if kul >= 0.35:
+                return True
+        if self.igg:
+            # any igg is significant
+            return True
+        return False
+
     def to_dict(self):
         fields = self.get_fields()
         result = {}
         for field in fields:
             result[field] = getattr(self, field)
+        result["significant"] = self.is_significant()
         return result
 
     def update_from_dict(self, data):

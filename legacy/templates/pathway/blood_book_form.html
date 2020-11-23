@@ -181,19 +181,19 @@
               {% input label="KU/L" model="result.kul" style="vertical" %}
             </div>
             <div class="col-md-2">
-              {% input label="Class" model="result.klass" style="vertical" %}
+              {% input label="Class" model="result.klass" element_type="number" style="vertical" %}
             </div>
             <div class="col-md-2">
-              {% input label="RAST %B" model="result.rast" style="vertical" %}
+              {% input label="RAST %B" model="result.rast" style="vertical" element_type="number" %}
             </div>
             <div class="col-md-2">
               {% select label="Precipitin" model="result.precipitin" lookuplist="['-ve', '+ve', 'Weak +ve', '++ve']" style="vertical" %}
             </div>
             <div class="col-md-2">
-              {% input label="IgG mg/L" model="result.igg" style="vertical" %}
+              {% input label="IgG mg/L" element_type="number" model="result.igg" style="vertical" %}
             </div>
             <div class="col-md-2">
-              {% input label="IgG class" model="result.iggclass" style="vertical" %}
+              {% input label="IgG class" model="result.iggclass" element_type="number" style="vertical" %}
             </div>
           </div>
         </div>
