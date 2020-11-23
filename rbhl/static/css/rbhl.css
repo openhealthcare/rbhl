@@ -10,6 +10,10 @@
   background: transparent;
 }
 
+html {
+  overflow-y: scroll;
+}
+
 /* Layout */
 #center-col {
   margin-left: 16.66667%;
