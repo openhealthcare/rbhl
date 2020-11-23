@@ -1,0 +1,29 @@
+{% extends 'static_page.html' %}
+
+{% block javascripts %}
+{% endblock %}
+
+{% block angularapp %}
+
+{% endblock %}
+{% block application_javascripts %}
+{% endblock %}
+
+
+{% block static_content %}
+<nav class="navbar navbar-default navbar-primary navbar-fixed-top screen-only top-navbar" role="navigation">
+  <div class="container-fluid">
+      <h1 class="static-title">
+        {% block title %}
+        {% endblock %}
+      </h1>
+      <!-- Brand and toggle get grouped for better mobile display -->
+      {% include 'partials/_nav_search.html' %}
+  </div><!-- /.container-fluid -->
+</nav>
+<div class="content-offset-10">
+{% block page_content %}
+
+{% endblock %}
+</div>
+{% endblock %}

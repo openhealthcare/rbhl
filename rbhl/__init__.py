@@ -46,27 +46,38 @@ class Application(application.OpalApplication):
     def get_menu_items(klass, user=None):
         # we import here as settings must be set before this is imported
         from rbhl.pathways import NewReferral, LabReferral
-        if user and user.profile.roles.filter(
-            name=constants.LAB_USER
-        ).exists():
-            referral = LabReferral.as_menuitem(
-                index=1,
-                display="New referral"
-            )
-        else:
-            referral = NewReferral.as_menuitem(index=1)
 
-        items = [
-            referral,
-            menus.MenuItem(
-                activepattern=reverse('active-list'),
-                href=reverse('active-list'),
-                display=('Active patients'),
-                icon="fa-table"
-            )
-        ]
         if user:
             if user.is_authenticated:
+                lab_user = user.profile.roles.filter(
+                    name=constants.LAB_USER
+                ).exists()
+
+                if lab_user:
+                    items = [
+                        LabReferral.as_menuitem(
+                            index=1,
+                            display="New referral"
+                        ),
+                        menus.MenuItem(
+                            activepattern=reverse('unresulted-list'),
+                            href=reverse('unresulted-list'),
+                            display=('Unresulted samples'),
+                            icon="fa-table"
+                        )
+                    ]
+                else:
+                    items = [NewReferral.as_menuitem(index=1)]
+
+                items.append(
+                    menus.MenuItem(
+                        activepattern=reverse('active-list'),
+                        href=reverse('active-list'),
+                        display=('Active patients'),
+                        icon="fa-table"
+                    )
+                )
+
                 if seen_by_me_menu_item.for_user(user):
                     items.append(seen_by_me_menu_item)
                 if user.is_staff:
