@@ -26,6 +26,7 @@ class UnresultedList(ListView):
 class YourRecentlyResultedList(ListView):
     model = BloodBook
     template_name = 'patient_lists/recently_resulted.html'
+    AMOUNT = 50
 
     def initials(self):
         first_name = self.request.user.first_name or " "
@@ -41,7 +42,7 @@ class YourRecentlyResultedList(ListView):
             qs = qs.filter(
                 patient__episode__cliniclog__seen_by__icontains=self.initials()
             )
-            return qs.order_by("-assay_date")
+            return qs.order_by("-assay_date")[:self.AMOUNT]
         return qs.none()
 
 
