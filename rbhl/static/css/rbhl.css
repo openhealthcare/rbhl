@@ -83,7 +83,7 @@ a {
   top: 60px;
   position: absolute;
   left: 300px;
-  width: 80%;
+  width: calc(100% - 300px);
 }
 
 /**** Colours ****/
