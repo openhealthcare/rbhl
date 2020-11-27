@@ -147,6 +147,10 @@ h1 small {
 }
 #center-col {
     background: white;
+
+    @media print{
+        margin-left: 0 !important;
+    }
 }
 #left-col h1 small {
   color: white;
@@ -687,4 +691,11 @@ input[type="date"]::-webkit-input-placeholder{
 
 .form-group label{
     font-size: 15px;
+}
+
+@media print{
+    @page {
+        margin-top: 1cm;
+        margin-bottom: 1cm;
+    }
 }

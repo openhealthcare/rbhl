@@ -299,6 +299,7 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
           // defaut mix max vaues
           let min = 300;
           let max = 650;
+          let height;
 
           // look at the values actually to be rendered
           // and adjust the min/maxes accordingly.
@@ -318,7 +319,13 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
 
           // the range is the min -50 and the max + 50
           let range = _.range(min, max+50, 50);
-          let height = (max - min) * 2
+
+          if(window.matchMedia('print')){
+            height = (max - min) * 1.5
+          }
+          else{
+            height = (max - min) * 2
+          }
 
           let args = {
             size: {

@@ -104,6 +104,12 @@ h1 small {
   background: white;
 }
 
+@media print {
+  #center-col {
+    margin-left: 0 !important;
+  }
+}
+
 #left-col h1 small {
   color: white;
 }
@@ -640,5 +646,12 @@ input[type="date"]::-webkit-input-placeholder {
 
 .form-group label {
   font-size: 15px;
+}
+
+@media print {
+  @page {
+    margin-top: 1cm;
+    margin-bottom: 1cm;
+  }
 }
 /*# sourceMappingURL=rbhl.css.map */
