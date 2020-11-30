@@ -698,4 +698,28 @@ input[type="date"]::-webkit-input-placeholder{
         margin-top: 1cm;
         margin-bottom: 1cm;
     }
+    h1.static-title{
+        margin-top: 4px;
+        margin-left: 35px;
+        font-size: 36px;
+        color: $slate;
+        display: inline-block;
+
+        a{
+            color: $slate;
+            &:hover{
+                text-decoration: none;
+                color: $dark-blue;
+            }
+        }
+
+
+        i{
+            font-size: 36px;
+        }
+    }
+
+    body{
+        overflow-y: scroll;
+    }
 }

@@ -6,7 +6,7 @@
     </div>
   </div>
 </div>
-<div class="row" ng-repeat="result in item.bloodbookresult track by $index">
+<div class="row" ng-class="{'text-muted': !item.significant}" ng-repeat="result in item.bloodbookresult track by $index">
   <div ng-hide="result.result" class="row">
     <div class="col-md-6">
       [[ result.allergen ]]

@@ -33,11 +33,17 @@
                   [[ item.exposure ]] [[ item.method ]]
                 </div>
                 <div class="col-md-8">
-                  <div class="col-md-9">
-                    {% include models.BloodBook.get_display_template %}
-                  </div>
-                  <div class="col-md-1">
-                    <a href="/pathway/#/blood_book/[[ patient.id ]]/[[ episode.id ]]?id=[[ item.id ]]"><i class="fa fa-pencil edit pull-right pointer"></i></a>
+                  <div class="row">
+                    <div class="col-md-8">
+                      {% include models.BloodBook.get_display_template %}
+                    </div>
+                    <div class="col-md-2">
+                      <a href="/pathway/#/blood_book/[[ patient.id ]]/[[ episode.id ]]?id=[[ item.id ]]"><i class="fa fa-pencil edit pull-right pointer"></i></a>
+                      <a target="_blank" href="/lab-report/[[ item.id ]]/">
+                        <i class="fa fa-eye edit pull-right pointer">
+                        </i>
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>

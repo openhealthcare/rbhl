@@ -8,7 +8,7 @@ from rbhl.episode_categories import OccupationalLungDiseaseEpisode
 from rbhl import constants
 
 
-class SeenByMeMenuItem(menus.MenuItem):
+class DoctorMenuItem(menus.MenuItem):
     def for_user(self, user):
         from opal.models import UserProfile
         return UserProfile.objects.filter(
@@ -17,10 +17,17 @@ class SeenByMeMenuItem(menus.MenuItem):
         ).exists()
 
 
-seen_by_me_menu_item = SeenByMeMenuItem(
+seen_by_me_menu_item = DoctorMenuItem(
     activepattern=reverse_lazy('seen-by-me-list'),
     href=reverse_lazy('seen-by-me-list'),
     display='Seen by me',
+    icon="fa-table"
+)
+
+your_recently_resulted = DoctorMenuItem(
+    activepattern=reverse_lazy('your-recently-resulted-list'),
+    href=reverse_lazy('your-recently-resulted-list'),
+    display='Your Resulted',
     icon="fa-table"
 )
 
@@ -46,29 +53,42 @@ class Application(application.OpalApplication):
     def get_menu_items(klass, user=None):
         # we import here as settings must be set before this is imported
         from rbhl.pathways import NewReferral, LabReferral
-        if user and user.profile.roles.filter(
-            name=constants.LAB_USER
-        ).exists():
-            referral = LabReferral.as_menuitem(
-                index=1,
-                display="New referral"
-            )
-        else:
-            referral = NewReferral.as_menuitem(index=1)
 
-        items = [
-            referral,
-            menus.MenuItem(
-                activepattern=reverse('active-list'),
-                href=reverse('active-list'),
-                display=('Active patients'),
-                icon="fa-table"
-            )
-        ]
         if user:
             if user.is_authenticated:
+                lab_user = user.profile.roles.filter(
+                    name=constants.LAB_USER
+                ).exists()
+
+                if lab_user:
+                    items = [
+                        LabReferral.as_menuitem(
+                            index=1,
+                            display="New referral"
+                        ),
+                        menus.MenuItem(
+                            activepattern=reverse('unresulted-list'),
+                            href=reverse('unresulted-list'),
+                            display=('Unresulted samples'),
+                            icon="fa-table"
+                        )
+                    ]
+                else:
+                    items = [NewReferral.as_menuitem(index=1)]
+
+                items.append(
+                    menus.MenuItem(
+                        activepattern=reverse('active-list'),
+                        href=reverse('active-list'),
+                        display=('Active patients'),
+                        icon="fa-table"
+                    )
+                )
+
                 if seen_by_me_menu_item.for_user(user):
                     items.append(seen_by_me_menu_item)
+                if your_recently_resulted.for_user(user):
+                    items.append(your_recently_resulted)
                 if user.is_staff:
                     items.append(
                         menus.MenuItem(
