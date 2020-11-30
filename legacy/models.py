@@ -179,6 +179,9 @@ class BloodBookResult(models.Model):
         verbose_name="IgE Class",
     )
     rast        = models.FloatField(blank=True, null=True)
+    rast_score  = models.FloatField(
+        blank=True, null=True, verbose_name="RAST score"
+    )
     precipitin  = models.CharField(
         blank=True, null=True, max_length=200, choices=PRECIPITIN_CHOICES
     )
@@ -198,6 +201,9 @@ class BloodBookResult(models.Model):
         return blood_book_result_fields_to_dict
 
     def is_significant(self):
+        # we are waiting for the exact details from the user
+        if self.rast_score:
+            return True
         if self.precipitin:
             if not self.precipitin == self.NEGATIVE:
                 return True
