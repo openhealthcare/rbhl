@@ -10,6 +10,10 @@
   background: transparent;
 }
 
+html {
+  overflow-y: scroll;
+}
+
 /* Layout */
 #center-col {
   margin-left: 16.66667%;
@@ -79,7 +83,7 @@ a {
   top: 60px;
   position: absolute;
   left: 300px;
-  width: 80%;
+  width: calc(100% - 300px);
 }
 
 /**** Colours ****/
@@ -98,6 +102,12 @@ h1 small {
 
 #center-col {
   background: white;
+}
+
+@media print {
+  #center-col {
+    margin-left: 0 !important;
+  }
 }
 
 #left-col h1 small {
@@ -636,5 +646,12 @@ input[type="date"]::-webkit-input-placeholder {
 
 .form-group label {
   font-size: 15px;
+}
+
+@media print {
+  @page {
+    margin-top: 1cm;
+    margin-bottom: 1cm;
+  }
 }
 /*# sourceMappingURL=rbhl.css.map */

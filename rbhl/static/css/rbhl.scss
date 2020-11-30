@@ -22,6 +22,16 @@ $twocolwidth: 16.6666666667%;
     background: transparent;
 }
 
+// bootstrap uses width 100%.
+// when there is a vertical scroll bar
+// this is a different value.
+// doing this means the page does not
+// jump when there is a scroll bar.
+// Forcing a scroll bar looks good.
+html {
+    overflow-y: scroll;
+}
+
 
 /* Layout */
 #center-col {
@@ -119,7 +129,7 @@ a {
   position: absolute;
   left: 300px;
   // height: 90vh;
-  width: 80%;
+  width: calc(100% - 300px);
 }
 /**** Colours ****/
 
@@ -137,6 +147,10 @@ h1 small {
 }
 #center-col {
     background: white;
+
+    @media print{
+        margin-left: 0 !important;
+    }
 }
 #left-col h1 small {
   color: white;
@@ -677,4 +691,11 @@ input[type="date"]::-webkit-input-placeholder{
 
 .form-group label{
     font-size: 15px;
+}
+
+@media print{
+    @page {
+        margin-top: 1cm;
+        margin-bottom: 1cm;
+    }
 }

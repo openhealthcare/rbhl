@@ -35,9 +35,5 @@ def main(db_name, db_user, bucket_name, key, secret_file):
 
 
 if __name__ == "__main__":
-    try:
-        _, db_name, db_user, bucket_name, key, secret_file = sys.argv
-
-        main(db_name, db_user, bucket_name, key, secret_file)
-    except Exception as e:
-        print("errored with {}".format(str(e)))
+    _, db_name, db_user, bucket_name, key, secret_file = sys.argv
+    main(db_name, db_user, bucket_name, key, secret_file)

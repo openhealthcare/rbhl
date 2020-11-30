@@ -6,13 +6,7 @@ gunicorn==19.5.0
 psycopg2==2.7.6.1
 dj-static==0.0.6
 django-reversion==3.0.1
-#django-axes==1.4.0
-ffs==0.0.8.2
-letter==0.5
-requests==2.20.1
-djangorestframework==3.7.4
 django-compressor==2.2
-python-dateutil==2.7.5
 django-celery==3.2.2
 celery==3.1.25
 django_otp==0.5.1
@@ -20,4 +14,4 @@ django-two-factor-auth==1.8.0
 django-formtools==2.1
 flake8==3.6.0
 boto3==1.9.178
-opal==0.18.3
+opal==0.18.4
