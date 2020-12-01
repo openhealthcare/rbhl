@@ -41,6 +41,7 @@ class BloodBookTestCase(OpalTestCase):
                     "precipitin": "+ve",
                     "rast": None,
                     "result": None,
+                    "rast_score": None,
                     "significant": True
                 }
             ],
