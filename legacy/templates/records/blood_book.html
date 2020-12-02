@@ -13,7 +13,7 @@
       <span ng-show="result.antigenno"> ([[result.antigenno]])</span>
     </div>
     <div class="col-md-6">
-      <span ng-show="result.kul || result.klass">
+      <span ng-show="result.kul">
         IgE:
         <span ng-show="result.kul">
           [[ result.kul ]] kU/L
@@ -25,7 +25,7 @@
       <span ng-show="result.precipitin">
         Precipitin: [[ result.precipitin ]]<br />
       </span>
-      <span ng-show="result.igg || result.iggclass">
+      <span ng-show="result.igg">
         IgG:
         <span ng-show="result.igg">
           mg/L: [[ result.igg ]]<br />
