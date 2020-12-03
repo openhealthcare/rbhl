@@ -1,46 +1,1492 @@
 {
   "allergen": [
-       {
-            "name": "Hdi"
-       },
-       {
-            "name": "Alt. alternata"
-       },
-       {
-            "name": "Soy bean"
-       },
-       {
-            "name": "Savinase"
-       },
-       {
-            "name": "Dog dander"
-       },
-       {
-            "name": "Asp. fumigatus"
-       },
-       {
-            "name": "Rabbit epith"
-       },
-       {
-            "name": "Latex"
-       },
-       {
-            "name": "Rat epith"
-       },
-       {
-            "name": "Mouse epith"
-       },
-       {
-            "name": "Rat urine"
-       },
-       {
-            "name": "Mouse urine"
-       },
-       {
-            "name": "Plain flour"
-       },
-       {
-            "name": "Alpha amylase"
-       }
+    {
+      "name": "2221033 PERU",
+      "synonyms": [],
+      "coding": {
+        "code": "1288D",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "A. SIRO",
+      "synonyms": [],
+      "coding": {
+        "code": "D70",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "AIR CONDITIONING FILTER",
+      "synonyms": [],
+      "coding": {
+        "code": "1155D",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "ALMOND",
+      "synonyms": [],
+      "coding": {
+        "code": "F20",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "ALOPECURUS MYOSUROIDES (BLACK GRASS)",
+      "synonyms": [],
+      "coding": {
+        "code": "1240B",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "ALPHA AMYLASE",
+      "synonyms": [],
+      "coding": {
+        "code": "442",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "ALT. ALTERNATA",
+      "synonyms": [],
+      "coding": {
+        "code": "M6",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "AMAQU POLLEN",
+      "synonyms": [],
+      "coding": {
+        "code": "1234F",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "AMAQU RUMBLE",
+      "synonyms": [],
+      "coding": {
+        "code": "1234E",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "AMAQU SEED",
+      "synonyms": [],
+      "coding": {
+        "code": "1234B",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "AMAQU SEED SEP",
+      "synonyms": [],
+      "coding": {
+        "code": "1234C",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "AMAQU THRESH FINAL",
+      "synonyms": [],
+      "coding": {
+        "code": "1234D",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "AMATA POLLEN",
+      "synonyms": [],
+      "coding": {
+        "code": "1236C",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "AMBLYSEIUS CUCUMERIS",
+      "synonyms": [],
+      "coding": {
+        "code": "1235",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "ANOPHELES STEPHENSI",
+      "synonyms": [],
+      "coding": {
+        "code": "1213A",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "ASP. FLAVUS",
+      "synonyms": [],
+      "coding": {
+        "code": "M228",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "ASP. FUMIGATUS",
+      "synonyms": [],
+      "coding": {
+        "code": "M3",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "ASP. NIGER",
+      "synonyms": [],
+      "coding": {
+        "code": "M207",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "ASP. TERREUS",
+      "synonyms": [],
+      "coding": {
+        "code": "M36",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "ASP. VERSICOLOR",
+      "synonyms": [],
+      "coding": {
+        "code": "GM25",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "ASPERGILLUS FUMIGATUS",
+      "synonyms": [],
+      "coding": {
+        "code": "GM3",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "BAKEZYME BXP 25001",
+      "synonyms": [],
+      "coding": {
+        "code": "1195F",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "BAKEZYME GD 10000",
+      "synonyms": [],
+      "coding": {
+        "code": "1195D",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "BAKEZYME HS10000",
+      "synonyms": [],
+      "coding": {
+        "code": "1195C",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "BAKEZYME P500 BG",
+      "synonyms": [],
+      "coding": {
+        "code": "1195B",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "BAKEZYME PPL IBG",
+      "synonyms": [],
+      "coding": {
+        "code": "1195E",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "BAKEZYME WHOLEGRAIN",
+      "synonyms": [],
+      "coding": {
+        "code": "1195A",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "BANANA",
+      "synonyms": [],
+      "coding": {
+        "code": "F92",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "BARLEY",
+      "synonyms": [],
+      "coding": {
+        "code": "F6",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "BARN, FROM ROOF",
+      "synonyms": [],
+      "coding": {
+        "code": "1228A",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "BAT POO",
+      "synonyms": [],
+      "coding": {
+        "code": "1228B",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "BEKS MUNERWER",
+      "synonyms": [],
+      "coding": {
+        "code": "1274D",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "BLACK : HUMAN SERUM ALBUMIN",
+      "synonyms": [],
+      "coding": {
+        "code": "1217B",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "BLACK PEPPER",
+      "synonyms": [],
+      "coding": {
+        "code": "F280",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "BLUEBILL (SHAW GROVE)",
+      "synonyms": [],
+      "coding": {
+        "code": "1274C",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "BRA1014 BRASIL",
+      "synonyms": [],
+      "coding": {
+        "code": "1288A",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "BROWN MEAT, CRAB",
+      "synonyms": [],
+      "coding": {
+        "code": "1077B",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "BRUCHID BEETLES",
+      "synonyms": [],
+      "coding": {
+        "code": "1106A",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "BURYING BEETLE",
+      "synonyms": [],
+      "coding": {
+        "code": "1270A",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "BUTTER VANILLA 504044",
+      "synonyms": [],
+      "coding": {
+        "code": "1246B",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "CACAO",
+      "synonyms": [],
+      "coding": {
+        "code": "F93",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "CAN. ALBICANS",
+      "synonyms": [],
+      "coding": {
+        "code": "M5",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "CAT DANDER",
+      "synonyms": [],
+      "coding": {
+        "code": "E1",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "CHICKEN DROPPINGS",
+      "synonyms": [],
+      "coding": {
+        "code": "E218",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "CHICKEN DUST",
+      "synonyms": [],
+      "coding": {
+        "code": "1310B",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "CHICKEN FEATHERS",
+      "synonyms": [],
+      "coding": {
+        "code": "E85",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "CHLORHEXIDINE",
+      "synonyms": [],
+      "coding": {
+        "code": "C8",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "CLAD. HERBARUM",
+      "synonyms": [],
+      "coding": {
+        "code": "M2",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "COCKLES",
+      "synonyms": [],
+      "coding": {
+        "code": "1291A",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "COL1004 COLOMBIAN",
+      "synonyms": [],
+      "coding": {
+        "code": "1288B",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "COMMON SILVER BIRCH",
+      "synonyms": [],
+      "coding": {
+        "code": "T3",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "COMPOST FROM BOTTOM OF BEETLE BOX",
+      "synonyms": [],
+      "coding": {
+        "code": "1270B",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "COOKED KING PRAWN",
+      "synonyms": [],
+      "coding": {
+        "code": "1291E",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "COW DANDER",
+      "synonyms": [],
+      "coding": {
+        "code": "E4",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "CRAB",
+      "synonyms": [],
+      "coding": {
+        "code": "F23",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "CRICKETS",
+      "synonyms": [],
+      "coding": {
+        "code": "1137",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "D. PTERONYSSINUS",
+      "synonyms": [],
+      "coding": {
+        "code": "D1",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "DIAMONDBACK ADULT MOTHS",
+      "synonyms": [],
+      "coding": {
+        "code": "1156B",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "DOG DANDER",
+      "synonyms": [],
+      "coding": {
+        "code": "E5",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "DROSOPHILA, WHOLE",
+      "synonyms": [],
+      "coding": {
+        "code": "1026",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "DROSOPHILA, WILD TYPE",
+      "synonyms": [],
+      "coding": {
+        "code": "1263",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "DUCK FEATHERS, DUVET AND PILLOW",
+      "synonyms": [],
+      "coding": {
+        "code": "1090",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "DUST",
+      "synonyms": [],
+      "coding": {
+        "code": "1106B",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "EARL GREY TEA",
+      "synonyms": [],
+      "coding": {
+        "code": "1205O",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "EGG",
+      "synonyms": [],
+      "coding": {
+        "code": "F245",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "EGG WHITE",
+      "synonyms": [],
+      "coding": {
+        "code": "F1",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "EGG YOLK",
+      "synonyms": [],
+      "coding": {
+        "code": "F75",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "FACE MASKS (MIX)",
+      "synonyms": [],
+      "coding": {
+        "code": "1306",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "FAECAL SAMPLE",
+      "synonyms": [],
+      "coding": {
+        "code": "1310A",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "FEATHERS",
+      "synonyms": [],
+      "coding": {
+        "code": "1209",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "FERRET URINE",
+      "synonyms": [],
+      "coding": {
+        "code": "1047",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "FILTER",
+      "synonyms": [],
+      "coding": {
+        "code": "1160",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "FIVELBORG",
+      "synonyms": [],
+      "coding": {
+        "code": "1274A",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "FLOUR, PIZZA EXPRESS",
+      "synonyms": [],
+      "coding": {
+        "code": "1189",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "FORMALDEHYDE",
+      "synonyms": [],
+      "coding": {
+        "code": "K80",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "G. PIG EPITH",
+      "synonyms": [],
+      "coding": {
+        "code": "E6",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "GOAT EPITH",
+      "synonyms": [],
+      "coding": {
+        "code": "E80",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "GREEN COFFEE BEAN",
+      "synonyms": [],
+      "coding": {
+        "code": "K70",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "HAMSTER EPITH",
+      "synonyms": [],
+      "coding": {
+        "code": "E84",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "HAZEL NUT",
+      "synonyms": [],
+      "coding": {
+        "code": "F17",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "HDI",
+      "synonyms": [],
+      "coding": {
+        "code": "K77",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "HDI:HUMAN SERUM ALBUMIN",
+      "synonyms": [],
+      "coding": {
+        "code": "896A",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "HONEY BEE",
+      "synonyms": [],
+      "coding": {
+        "code": "I1",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "HORSE DANDER",
+      "synonyms": [],
+      "coding": {
+        "code": "E3",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "IND1025 INDIAN MONSOON MALABAR",
+      "synonyms": [],
+      "coding": {
+        "code": "1288C",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "IROKO",
+      "synonyms": [],
+      "coding": {
+        "code": "1036B",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "ISPAGHULA",
+      "synonyms": [],
+      "coding": {
+        "code": "K72",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "JANET SHAW, 1MG/ML",
+      "synonyms": [],
+      "coding": {
+        "code": "147",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "KALAMAZOO, 1MG/ML",
+      "synonyms": [],
+      "coding": {
+        "code": "148",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "L. DESTRUCTOR",
+      "synonyms": [],
+      "coding": {
+        "code": "D71",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "L. MIGRATORIA, GUTS",
+      "synonyms": [],
+      "coding": {
+        "code": "89A",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "LATEX",
+      "synonyms": [],
+      "coding": {
+        "code": "K82",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "LIPOLASE",
+      "synonyms": [],
+      "coding": {
+        "code": "824",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "LIPTONS YELLOW TEA",
+      "synonyms": [],
+      "coding": {
+        "code": "1205G",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "LOBSTER",
+      "synonyms": [],
+      "coding": {
+        "code": "F80",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "LOBSTER MEAT",
+      "synonyms": [],
+      "coding": {
+        "code": "1077A",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "LOCUST",
+      "synonyms": [],
+      "coding": {
+        "code": "1178A",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "LOCUST FAECES",
+      "synonyms": [],
+      "coding": {
+        "code": "1178B",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "LOLIUM FLOWER AND POLLEN",
+      "synonyms": [],
+      "coding": {
+        "code": "1236A",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "LOLIUM MULTIFLORUM",
+      "synonyms": [],
+      "coding": {
+        "code": "1240A",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "LOMICRO GROUND GINGER 227027",
+      "synonyms": [],
+      "coding": {
+        "code": "1246A",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "M1, GM2, M4, GM6 MIX",
+      "synonyms": [],
+      "coding": {
+        "code": "GMX6",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "MA:HUMAN SERUM ALBUMIN",
+      "synonyms": [],
+      "coding": {
+        "code": "604",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "MACAQUE URINE",
+      "synonyms": [],
+      "coding": {
+        "code": "1089",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "MAIZE",
+      "synonyms": [],
+      "coding": {
+        "code": "F8",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "MAIZE POLLEN",
+      "synonyms": [],
+      "coding": {
+        "code": "1238B",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "MDI",
+      "synonyms": [],
+      "coding": {
+        "code": "K76",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "MDI : HUMAN SERUM ALBUMIN",
+      "synonyms": [],
+      "coding": {
+        "code": "898A",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "MDI:HUMAN SERUM ALBUMIN",
+      "synonyms": [],
+      "coding": {
+        "code": "896C",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "METAL WORKING FLUID",
+      "synonyms": [],
+      "coding": {
+        "code": "1051",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "MILK",
+      "synonyms": [],
+      "coding": {
+        "code": "F2",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "MIXED CRAB",
+      "synonyms": [],
+      "coding": {
+        "code": "1291C",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "MOSQUITO",
+      "synonyms": [],
+      "coding": {
+        "code": "I71",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "MOULD",
+      "synonyms": [],
+      "coding": {
+        "code": "1156C",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "MOULD MIX 1",
+      "synonyms": [],
+      "coding": {
+        "code": "MX1",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "MOULD MIX 2",
+      "synonyms": [],
+      "coding": {
+        "code": "MX2",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "MOULD MIX 4",
+      "synonyms": [],
+      "coding": {
+        "code": "MX4",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "MOUSE EPITH",
+      "synonyms": [],
+      "coding": {
+        "code": "E71",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "MOUSE SERUM PROTEINS",
+      "synonyms": [],
+      "coding": {
+        "code": "E76",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "MOUSE URINE",
+      "synonyms": [],
+      "coding": {
+        "code": "E72",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "MUGWORT",
+      "synonyms": [],
+      "coding": {
+        "code": "W6",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "NOVOZYME 27159",
+      "synonyms": [],
+      "coding": {
+        "code": "1195G",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "NOVOZYME BAN 800MG",
+      "synonyms": [],
+      "coding": {
+        "code": "1195H",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "OAT",
+      "synonyms": [],
+      "coding": {
+        "code": "F7",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "OLD BEANS",
+      "synonyms": [],
+      "coding": {
+        "code": "1106C",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "ORGANIC PRAWNS",
+      "synonyms": [],
+      "coding": {
+        "code": "1077D",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "ORIENT GENESIS",
+      "synonyms": [],
+      "coding": {
+        "code": "1274E",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "PA:HUMAN SERUM ALBUMIN",
+      "synonyms": [],
+      "coding": {
+        "code": "603",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "PEANUT",
+      "synonyms": [],
+      "coding": {
+        "code": "F13",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "PEN. NOTATUM",
+      "synonyms": [],
+      "coding": {
+        "code": "M1",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "PENICILLOYL G",
+      "synonyms": [],
+      "coding": {
+        "code": "C1",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "PENICILLOYL V",
+      "synonyms": [],
+      "coding": {
+        "code": "C2",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "PEPPERMINT TEA",
+      "synonyms": [],
+      "coding": {
+        "code": "1205I",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "PICHIA YEAST",
+      "synonyms": [],
+      "coding": {
+        "code": "1142",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "PIGEON SERUM PROTEINS, FEATHERS AND DROPPINGS",
+      "synonyms": [],
+      "coding": {
+        "code": "GE91",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "PILOT FLOUR 227044",
+      "synonyms": [],
+      "coding": {
+        "code": "1246E",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "PINK BOLLWORM ADULT MOTHS",
+      "synonyms": [],
+      "coding": {
+        "code": "1156A",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "PLAIN FLOUR",
+      "synonyms": [],
+      "coding": {
+        "code": "1016",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "PRAWNS",
+      "synonyms": [],
+      "coding": {
+        "code": "1291F",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "PURADAX",
+      "synonyms": [],
+      "coding": {
+        "code": "985C",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "RABBIT EPITH",
+      "synonyms": [],
+      "coding": {
+        "code": "E82",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "RAT ALBUMIN",
+      "synonyms": [],
+      "coding": {
+        "code": "969",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "RAT EPITH",
+      "synonyms": [],
+      "coding": {
+        "code": "E73",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "RAT SERUM PROTEINS",
+      "synonyms": [],
+      "coding": {
+        "code": "E75",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "RAT URINE",
+      "synonyms": [],
+      "coding": {
+        "code": "E74",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "RAW KING PRAWN",
+      "synonyms": [],
+      "coding": {
+        "code": "1291D",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "RAW PRAWNS",
+      "synonyms": [],
+      "coding": {
+        "code": "1077E",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "RED CEDAR",
+      "synonyms": [],
+      "coding": {
+        "code": "1036A",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "RICE",
+      "synonyms": [],
+      "coding": {
+        "code": "F9",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "RYE",
+      "synonyms": [],
+      "coding": {
+        "code": "F5",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "S. GREGARIA",
+      "synonyms": [],
+      "coding": {
+        "code": "137",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "SAPELE",
+      "synonyms": [],
+      "coding": {
+        "code": "1036C",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "SAVINASE",
+      "synonyms": [],
+      "coding": {
+        "code": "898C",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "SCALLOPS",
+      "synonyms": [],
+      "coding": {
+        "code": "1291B",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "SCARLET : HUMAN SERUM ALBUMIN",
+      "synonyms": [],
+      "coding": {
+        "code": "1217A",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "SCRAPINGS FROM BREWERY 1MG/ML",
+      "synonyms": [],
+      "coding": {
+        "code": "1082",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "SEKUSEPT",
+      "synonyms": [],
+      "coding": {
+        "code": "1157",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "SHEEP EPITH",
+      "synonyms": [],
+      "coding": {
+        "code": "E81",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "SHRIMP",
+      "synonyms": [],
+      "coding": {
+        "code": "F24",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "SOY BEAN",
+      "synonyms": [],
+      "coding": {
+        "code": "F14",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "SOY FLOUR",
+      "synonyms": [],
+      "coding": {
+        "code": "1119A",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "SOYA HULLS",
+      "synonyms": [],
+      "coding": {
+        "code": "1019",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "SUM1022 SUMATRA",
+      "synonyms": [],
+      "coding": {
+        "code": "1288E",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "SWINE EPITH",
+      "synonyms": [],
+      "coding": {
+        "code": "E83",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "TCPA:HUMAN SERUM ALBUMIN",
+      "synonyms": [],
+      "coding": {
+        "code": "605",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "TDI",
+      "synonyms": [],
+      "coding": {
+        "code": "K75",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "TDI : HUMAN SERUM ALBUMIN",
+      "synonyms": [],
+      "coding": {
+        "code": "898B",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "TDI:HUMAN SERUM ALBUMIN",
+      "synonyms": [],
+      "coding": {
+        "code": "896B",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "TEA 0635 PG-LYONS",
+      "synonyms": [],
+      "coding": {
+        "code": "1205H",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "TERMAMYL",
+      "synonyms": [],
+      "coding": {
+        "code": "898D",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "TIGER BREAD POWDER",
+      "synonyms": [],
+      "coding": {
+        "code": "1185A",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "TIMOTHY",
+      "synonyms": [],
+      "coding": {
+        "code": "G6",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "TMA",
+      "synonyms": [],
+      "coding": {
+        "code": "K86",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "TMA:HUMAN SERUM ALBUMIN",
+      "synonyms": [],
+      "coding": {
+        "code": "609",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "TOBACCO LEAF",
+      "synonyms": [],
+      "coding": {
+        "code": "1163A",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "TOBACCO LEAF, FREEZE DRIED",
+      "synonyms": [],
+      "coding": {
+        "code": "1163B",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "ULTRA TIGER",
+      "synonyms": [],
+      "coding": {
+        "code": "1274B",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "VANILLA V93371",
+      "synonyms": [],
+      "coding": {
+        "code": "1246C",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "WAFER 2436",
+      "synonyms": [],
+      "coding": {
+        "code": "1246D",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "WHEAT",
+      "synonyms": [],
+      "coding": {
+        "code": "F4",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "WHEAT POLLEN",
+      "synonyms": [],
+      "coding": {
+        "code": "1238A",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "WHITE MEAT, CRAB",
+      "synonyms": [],
+      "coding": {
+        "code": "1077C",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "WOOD PELLETS",
+      "synonyms": [],
+      "coding": {
+        "code": "1203",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "XANTHIUM STRUMMARIUM",
+      "synonyms": [],
+      "coding": {
+        "code": "1234A",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "YEAST",
+      "synonyms": [],
+      "coding": {
+        "code": "F45",
+        "system": "antigen_no"
+      }
+    },
+    {
+      "name": "YELLOW : HUMAN SERUM ALBUMIN",
+      "synonyms": [],
+      "coding": {
+        "code": "1217C",
+        "system": "antigen_no"
+      }
+    }
   ]
 }
