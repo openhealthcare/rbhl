@@ -183,7 +183,7 @@
                   KU/L
                 </label>
                 <div ng-class="{'errored-state': form.$submitted && form['result_kul' + $index].$invalid}">
-                  <input class="form-control" type="text" ng-model="result.kul" autocomplete="off" ng-pattern="/^[\<\>]?\s*\d+(\.\d+)?$/" name="[[ 'result_kul' + $index  ]]">
+                  <input class="form-control" type="text" ng-model="result.kul" autocomplete="off" ng-pattern="/^[\<\>]?\s?\d+(\.\d+)?$/" name="[[ 'result_kul' + $index  ]]">
                 </div>
                 <span class="help-block" ng-show="form.$submitted && form['result_kul' + $index].$invalid">
                   KU/L must be a number or less than/greater than a number. <br />e.g. 1.2 or < 0.35
