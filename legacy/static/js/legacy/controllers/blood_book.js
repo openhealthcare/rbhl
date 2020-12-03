@@ -33,6 +33,13 @@ angular.module('opal.controllers').controller(
     scope.bloodBookTest.blood_book.bloodbookresult.splice(idx, 1);
   }
 
+  scope.selectAllergen = function($item, result){
+    if($item){
+      result.antigenno = $item.code
+    }
+  }
+
+
   scope.delete = function(){
     var item = _.findWhere(episode.blood_book, {id: scope.bloodBookTest.blood_book.id})
     var deleteModal =  $modal.open({
