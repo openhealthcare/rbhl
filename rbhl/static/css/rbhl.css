@@ -678,5 +678,8 @@ body {
     margin-top: 1cm;
     margin-bottom: 1cm;
   }
+  body {
+    overflow-y: hidden;
+  }
 }
 /*# sourceMappingURL=rbhl.css.map */
