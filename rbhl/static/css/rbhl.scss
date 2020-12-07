@@ -128,6 +128,7 @@ a {
   position: absolute;
   left: 300px;
   width: calc(100% - 300px);
+  padding-left: 45px;
 }
 /**** Colours ****/
 
@@ -697,7 +698,7 @@ input[type="date"]::-webkit-input-placeholder{
 
 h1.static-title{
     margin-top: 4px;
-    margin-left: 35px;
+    margin-left: 25px;
     font-size: 36px;
     color: $slate;
     display: inline-block;
