@@ -648,30 +648,35 @@ input[type="date"]::-webkit-input-placeholder {
   font-size: 15px;
 }
 
+h1.static-title {
+  margin-top: 4px;
+  margin-left: 35px;
+  font-size: 36px;
+  color: #434c3d;
+  display: inline-block;
+}
+
+h1.static-title a {
+  color: #434c3d;
+}
+
+h1.static-title a:hover {
+  text-decoration: none;
+  color: #345ea4;
+}
+
+h1.static-title i {
+  font-size: 36px;
+}
+
+body {
+  overflow-y: scroll;
+}
+
 @media print {
   @page {
     margin-top: 1cm;
     margin-bottom: 1cm;
-  }
-  h1.static-title {
-    margin-top: 4px;
-    margin-left: 35px;
-    font-size: 36px;
-    color: #434c3d;
-    display: inline-block;
-  }
-  h1.static-title a {
-    color: #434c3d;
-  }
-  h1.static-title a:hover {
-    text-decoration: none;
-    color: #345ea4;
-  }
-  h1.static-title i {
-    font-size: 36px;
-  }
-  body {
-    overflow-y: scroll;
   }
 }
 /*# sourceMappingURL=rbhl.css.map */
