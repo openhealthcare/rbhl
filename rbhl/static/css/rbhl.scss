@@ -28,15 +28,14 @@ $twocolwidth: 16.6666666667%;
 // doing this means the page does not
 // jump when there is a scroll bar.
 // Forcing a scroll bar looks good.
-html {
+html, body{
     overflow-y: scroll;
+    height: 100%;
+    @media print{
+        overflow: visible;
+    }
 }
 
-
-/* Layout */
-#center-col {
-    margin-left: $twocolwidth;
-}
 .loading {
     margin-left: $twocolwidth;
     width: 100%;
@@ -128,7 +127,6 @@ a {
   top: 60px;
   position: absolute;
   left: 300px;
-  // height: 90vh;
   width: calc(100% - 300px);
 }
 /**** Colours ****/
@@ -147,9 +145,13 @@ h1 small {
 }
 #center-col {
     background: white;
+    margin-left: $twocolwidth;
+    min-height: 100%;
 
     @media print{
         margin-left: 0 !important;
+        // stops it going over 2 pages
+        border: 1px solid white;
     }
 }
 #left-col h1 small {
@@ -713,16 +715,9 @@ h1.static-title{
     }
 }
 
-body{
-    overflow-y: scroll;
-}
-
 @media print{
     @page {
         margin-top: 1cm;
         margin-bottom: 1cm;
-    }
-    body{
-        overflow-y: hidden;
     }
 }
