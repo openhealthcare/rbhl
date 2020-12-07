@@ -49,11 +49,11 @@
         <div peak-flow-graph data="peakFlowTrial" highlights="highlights[trialNum]"></div>
         <div ng-show="peakFlowTrial.notes.length" class="row content-offset-below">
           <div class="row">
-            <div class="col-md-1 text-right">
+            <div class="col-xs-1 text-right">
               <strong>Notes:</strong>
             </div>
             {# The markdown directive requires a field that is item[directive arg] #}
-            <div ng-repeat="item in [peakFlowTrial]" class="col-md-10">
+            <div ng-repeat="item in [peakFlowTrial]" class="col-xs-10">
               <div markdown="notes"></div>
             </div>
           </div>
