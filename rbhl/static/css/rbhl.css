@@ -10,13 +10,15 @@
   background: transparent;
 }
 
-html {
+html, body {
   overflow-y: scroll;
+  height: 100%;
 }
 
-/* Layout */
-#center-col {
-  margin-left: 16.66667%;
+@media print {
+  html, body {
+    overflow: visible;
+  }
 }
 
 .loading {
@@ -82,8 +84,9 @@ a {
 .static-content {
   top: 60px;
   position: absolute;
-  left: 300px;
-  width: calc(100% - 300px);
+  left: 16.66667%;
+  width: calc(100% - 16.66667%);
+  padding-left: 45px;
 }
 
 /**** Colours ****/
@@ -102,11 +105,14 @@ h1 small {
 
 #center-col {
   background: white;
+  margin-left: 16.66667%;
+  min-height: 100%;
 }
 
 @media print {
   #center-col {
     margin-left: 0 !important;
+    border: 1px solid white;
   }
 }
 
@@ -650,7 +656,7 @@ input[type="date"]::-webkit-input-placeholder {
 
 h1.static-title {
   margin-top: 4px;
-  margin-left: 35px;
+  margin-left: 25px;
   font-size: 36px;
   color: #434c3d;
   display: inline-block;
@@ -669,17 +675,14 @@ h1.static-title i {
   font-size: 36px;
 }
 
-body {
-  overflow-y: scroll;
+.lab-report {
+  margin-left: 15px;
 }
 
 @media print {
   @page {
     margin-top: 1cm;
     margin-bottom: 1cm;
-  }
-  body {
-    overflow-y: hidden;
   }
 }
 /*# sourceMappingURL=rbhl.css.map */
