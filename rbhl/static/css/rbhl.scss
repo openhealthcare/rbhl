@@ -126,8 +126,8 @@ a {
 .static-content {
   top: 60px;
   position: absolute;
-  left: 300px;
-  width: calc(100% - 300px);
+  left: $twocolwidth;
+  width: calc(100% - #{$twocolwidth});
   padding-left: 45px;
 }
 /**** Colours ****/
@@ -714,6 +714,10 @@ h1.static-title{
     i{
         font-size: 36px;
     }
+}
+
+.lab-report{
+    margin-left: 15px;
 }
 
 @media print{
