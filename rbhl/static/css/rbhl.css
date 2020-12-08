@@ -27,7 +27,7 @@ html {
 
 @media (min-width: 1200px) {
   .container {
-    width: calc(1170px - 16.6666666667%);
+    width: calc(100% - 16.66667%);
   }
 }
 
@@ -82,8 +82,8 @@ a {
 .static-content {
   top: 60px;
   position: absolute;
-  left: 300px;
-  width: calc(100% - 300px);
+  left: calc(16.66667% + 20px);
+  width: calc(100% - 16.66667% - 20px);
 }
 
 /**** Colours ****/
