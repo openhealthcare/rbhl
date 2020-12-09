@@ -128,6 +128,11 @@ a {
   // add a 20px gutter before we start displaying data
   left: calc(#{$twocolwidth} + 20px);
   width: calc(100% - #{$twocolwidth} - 20px);
+
+  @media print{
+    left: 0%;
+    width: 100%;
+  }
 }
 /**** Colours ****/
 
@@ -713,10 +718,6 @@ h1.static-title{
     i{
         font-size: 36px;
     }
-}
-
-.lab-report{
-    margin-left: 15px;
 }
 
 @media print{
