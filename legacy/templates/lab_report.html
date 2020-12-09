@@ -1,22 +1,16 @@
 {% extends 'static_base.html' %}
-{% block javascripts %}
-<style>
-  @media print{
-    @page {
-        size: auto !important;
-        margin-top: 2cm !important;
-        margin-bottom: 2cm !important;
-    }
-    .static-content{
-        left: 10% !important;
-        width: 90% !important;
-    }
-  }
-</style>
-{% endblock %}
 
 
 {% block title %}
+<style>
+  @media print{
+    @page {
+      size: auto;
+      margin-left: 3cm;
+      margin-right: 3cm
+    }
+  }
+</style>
 Lab report
 (<a href="/#/patient/{{ object.patient_id }}">
 {{ object.patient.demographics.name }}
@@ -25,17 +19,16 @@ Lab report
 
 {% block page_content %}
 <div class="lab-report">
-  <div class="row">
-    <div class="row print-only">
-      <div class="col-xs-12">
-        <h2>
-          {{ object.patient.demographics.name }}
-          {% if object.patient.demographics.date_of_birth %}
-            ({{ object.patient.demographics.date_of_birth }})
-          {% endif %}
-        </h2>
-      </div>
+  <div class="row print-only">
+    <div class="col-xs-12">
+      <h2 class="text-center">
+        {{ object.patient.demographics.name }}
+        {% if object.patient.demographics.date_of_birth %}
+          ({{ object.patient.demographics.date_of_birth }})
+        {% endif %}
+      </h2>
     </div>
+  </div>
   <div class="row content-offset-20">
     <div class="col-xs-6">
       <div class="row">
@@ -102,9 +95,8 @@ Lab report
       </div>
     </div>
   </div>
-  
   <div class="row content-offset">
-    <div class="col-md-9 col-xs-10">
+    <div class="col-md-9 col-xs-12">
       <table class="table">
         <thead>
           <tr>
@@ -147,7 +139,6 @@ Lab report
       </table>
     </div>
   </div>
-</div>
 </div>
 
 {% endblock %}

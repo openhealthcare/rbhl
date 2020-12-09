@@ -36,6 +36,10 @@ html, body{
     }
 }
 
+/* Layout */
+#center-col {
+    margin-left: $twocolwidth;
+}
 .loading {
     margin-left: $twocolwidth;
     width: 100%;
@@ -44,8 +48,7 @@ html, body{
 
 @media (min-width: 1200px){
   .container {
-      // Why doesn't this accept $twocolwidth ?
-      width: calc(1170px - 16.6666666667%);
+      width: calc(100% - #{$twocolwidth})
   }
 }
 
@@ -126,9 +129,14 @@ a {
 .static-content {
   top: 60px;
   position: absolute;
-  left: $twocolwidth;
-  width: calc(100% - #{$twocolwidth});
-  padding-left: 45px;
+  // add a 20px gutter before we start displaying data
+  left: calc(#{$twocolwidth} + 20px);
+  width: calc(100% - #{$twocolwidth} - 20px);
+
+  @media print{
+    left: 0%;
+    width: 100%;
+  }
 }
 /**** Colours ****/
 
@@ -151,7 +159,8 @@ h1 small {
 
     @media print{
         margin-left: 0 !important;
-        // stops it going over 2 pages
+        // stops the peak flow graph from printing
+        // a subsequent empty page
         border: 1px solid white;
     }
 }
@@ -714,10 +723,6 @@ h1.static-title{
     i{
         font-size: 36px;
     }
-}
-
-.lab-report{
-    margin-left: 15px;
 }
 
 @media print{
