@@ -36,6 +36,10 @@ html, body{
     }
 }
 
+/* Layout */
+#center-col {
+    margin-left: $twocolwidth;
+}
 .loading {
     margin-left: $twocolwidth;
     width: 100%;
@@ -155,7 +159,8 @@ h1 small {
 
     @media print{
         margin-left: 0 !important;
-        // stops it going over 2 pages
+        // stops the peak flow graph from printing
+        // a subsequent empty page
         border: 1px solid white;
     }
 }

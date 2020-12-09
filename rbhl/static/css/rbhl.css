@@ -21,6 +21,11 @@ html, body {
   }
 }
 
+/* Layout */
+#center-col {
+  margin-left: 16.66667%;
+}
+
 .loading {
   margin-left: 16.66667%;
   width: 100%;
