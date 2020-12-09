@@ -44,8 +44,7 @@ html, body{
 
 @media (min-width: 1200px){
   .container {
-      // Why doesn't this accept $twocolwidth ?
-      width: calc(1170px - 16.6666666667%);
+      width: calc(100% - #{$twocolwidth})
   }
 }
 
@@ -126,9 +125,9 @@ a {
 .static-content {
   top: 60px;
   position: absolute;
-  left: $twocolwidth;
-  width: calc(100% - #{$twocolwidth});
-  padding-left: 45px;
+  // add a 20px gutter before we start displaying data
+  left: calc(#{$twocolwidth} + 20px);
+  width: calc(100% - #{$twocolwidth} - 20px);
 }
 /**** Colours ****/
 
