@@ -10,8 +10,15 @@
   background: transparent;
 }
 
-html {
+html, body {
   overflow-y: scroll;
+  height: 100%;
+}
+
+@media print {
+  html, body {
+    overflow: visible;
+  }
 }
 
 /* Layout */
@@ -86,6 +93,13 @@ a {
   width: calc(100% - 16.66667% - 20px);
 }
 
+@media print {
+  .static-content {
+    left: 0%;
+    width: 100%;
+  }
+}
+
 /**** Colours ****/
 body {
   background-color: white;
@@ -102,11 +116,14 @@ h1 small {
 
 #center-col {
   background: white;
+  margin-left: 16.66667%;
+  min-height: 100%;
 }
 
 @media print {
   #center-col {
     margin-left: 0 !important;
+    border: 1px solid white;
   }
 }
 
@@ -648,30 +665,31 @@ input[type="date"]::-webkit-input-placeholder {
   font-size: 15px;
 }
 
+h1.static-title {
+  margin-top: 4px;
+  margin-left: 25px;
+  font-size: 36px;
+  color: #434c3d;
+  display: inline-block;
+}
+
+h1.static-title a {
+  color: #434c3d;
+}
+
+h1.static-title a:hover {
+  text-decoration: none;
+  color: #345ea4;
+}
+
+h1.static-title i {
+  font-size: 36px;
+}
+
 @media print {
   @page {
     margin-top: 1cm;
     margin-bottom: 1cm;
-  }
-  h1.static-title {
-    margin-top: 4px;
-    margin-left: 35px;
-    font-size: 36px;
-    color: #434c3d;
-    display: inline-block;
-  }
-  h1.static-title a {
-    color: #434c3d;
-  }
-  h1.static-title a:hover {
-    text-decoration: none;
-    color: #345ea4;
-  }
-  h1.static-title i {
-    font-size: 36px;
-  }
-  body {
-    overflow-y: scroll;
   }
 }
 /*# sourceMappingURL=rbhl.css.map */

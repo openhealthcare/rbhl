@@ -28,8 +28,12 @@ $twocolwidth: 16.6666666667%;
 // doing this means the page does not
 // jump when there is a scroll bar.
 // Forcing a scroll bar looks good.
-html {
+html, body{
     overflow-y: scroll;
+    height: 100%;
+    @media print{
+        overflow: visible;
+    }
 }
 
 /* Layout */
@@ -128,6 +132,11 @@ a {
   // add a 20px gutter before we start displaying data
   left: calc(#{$twocolwidth} + 20px);
   width: calc(100% - #{$twocolwidth} - 20px);
+
+  @media print{
+    left: 0%;
+    width: 100%;
+  }
 }
 /**** Colours ****/
 
@@ -145,9 +154,14 @@ h1 small {
 }
 #center-col {
     background: white;
+    margin-left: $twocolwidth;
+    min-height: 100%;
 
     @media print{
         margin-left: 0 !important;
+        // stops the peak flow graph from printing
+        // a subsequent empty page
+        border: 1px solid white;
     }
 }
 #left-col h1 small {
@@ -691,33 +705,29 @@ input[type="date"]::-webkit-input-placeholder{
     font-size: 15px;
 }
 
+h1.static-title{
+    margin-top: 4px;
+    margin-left: 25px;
+    font-size: 36px;
+    color: $slate;
+    display: inline-block;
+
+    a{
+        color: $slate;
+        &:hover{
+            text-decoration: none;
+            color: $dark-blue;
+        }
+    }
+
+    i{
+        font-size: 36px;
+    }
+}
+
 @media print{
     @page {
         margin-top: 1cm;
         margin-bottom: 1cm;
-    }
-    h1.static-title{
-        margin-top: 4px;
-        margin-left: 35px;
-        font-size: 36px;
-        color: $slate;
-        display: inline-block;
-
-        a{
-            color: $slate;
-            &:hover{
-                text-decoration: none;
-                color: $dark-blue;
-            }
-        }
-
-
-        i{
-            font-size: 36px;
-        }
-    }
-
-    body{
-        overflow-y: scroll;
     }
 }
