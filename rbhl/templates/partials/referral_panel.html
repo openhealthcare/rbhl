@@ -1,0 +1,16 @@
+{# A full width panel which is ordered by the most recent referral first #}
+<div class="panel panel-default record-panel">
+  <div class="panel-heading">
+    <h3>
+      <i class="{{ models.Referral.get_icon }}"></i> {{ models.Referral.get_display_name }}
+      <span >
+        <i class="fa fa-plus-circle edit pull-right pointer" ng-click="episode.recordEditor.newItem('{{ models.Referral.get_api_name }}')"></i>
+      </span>
+    </h3>
+  </div>
+  <ul class="list-group">
+    <li class="list-group-item" ng-repeat="item in episode.referral|orderBy:'-date_of_referral'">
+      {% include models.Referral.get_detail_template %}
+    </li>
+  </ul>
+</div>
