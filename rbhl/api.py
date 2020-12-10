@@ -27,7 +27,7 @@ def get_ranges(numbers):
 
 
 class PeakFlowGraphData(LoginRequiredViewset):
-    base_name = "peak_flow_graph_data"
+    basename = "peak_flow_graph_data"
 
     def day_to_dict(self, peak_flow_day, pef):
         aggregates = peak_flow_day.get_aggregate_data()
@@ -164,4 +164,4 @@ class PeakFlowGraphData(LoginRequiredViewset):
 
 
 indigo_router = OPALRouter()
-indigo_router.register(PeakFlowGraphData.base_name, PeakFlowGraphData)
+indigo_router.register(PeakFlowGraphData.basename, PeakFlowGraphData)
