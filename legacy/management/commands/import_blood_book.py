@@ -129,9 +129,9 @@ class Command(BaseCommand):
         Creates a Blood Book Test, 1 per row of the csv.
         """
         MAPPING = {
-            "reference_number": lambda row: translate_ref_num(row["REFERENCE NO"]),
-            "employer": "Employer",
-            "oh_provider": "OH Provider",
+            # "reference_number": lambda row: translate_ref_num(row["REFERENCE NO"]),
+            # "employer": "Employer",
+            # "oh_provider": "OH Provider",
             "blood_date": lambda row: str_to_date(row["BLOODDAT"]),
             "blood_number": "BLOODNO",
             "method": "METHOD",
