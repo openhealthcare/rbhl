@@ -4,8 +4,16 @@
     {% field_display "Referral.date_of_referral" %}
   </div>
   <div class="second-column-field">
-    <div class="col-md-6 ">
-    {% field_display "Referral.referral_reason" %}
+    <div class="col-md-6">
+      <div class="row">
+        <div class="col-md-5">
+            <b>Referrer name:</b>
+        </div>
+        <div class="col-md-7" ng-show="item.referrer_name">
+          [[ item.referrer_name ]]
+          <span ng-show="item.reference_number">([[ item.reference_number ]])</span>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -15,13 +23,14 @@
   </div>
   <div class="second-column-field">
     <div class="col-md-6">
-      {% field_display "Referral.referrer_name" %}
+      {% field_display "Referral.geographical_area" %}
     </div>
   </div>
 </div>
+<hr />
 <div class="row">
   <div class="col-md-6">
-    {% field_display "Referral.geographical_area" %}
+    {% field_display "Referral.referral_reason" %}
   </div>
   <div class="second-column-field">
     <div class="col-md-6">
@@ -29,7 +38,6 @@
     </div>
   </div>
 </div>
-<hr />
 <div class="row">
   <div class="col-md-6">
     {% field_display "Referral.date_referral_received" %}
