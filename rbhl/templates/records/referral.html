@@ -1,18 +1,17 @@
 {% load rbhl_panels %}
+
 <div class="row">
   <div class="col-md-6">
     {% field_display "Referral.date_of_referral" %}
   </div>
-  <div class="second-column-field">
-    <div class="col-md-6">
-      <div class="row">
-        <div class="col-md-5">
-            <b>Referrer name:</b>
-        </div>
-        <div class="col-md-7" ng-show="item.referrer_name">
-          [[ item.referrer_name ]]
-          <span ng-show="item.reference_number">([[ item.reference_number ]])</span>
-        </div>
+  <div class="col-md-6">
+    <div class="row">
+      <div class="col-md-5">
+          <b>Referrer name:</b>
+      </div>
+      <div style="padding-right: 34px" class="col-md-7" ng-show="item.referrer_name">
+        [[ item.referrer_name ]]
+        <span ng-show="item.reference_number">([[ item.reference_number ]])</span>
       </div>
     </div>
   </div>
@@ -21,31 +20,24 @@
   <div class="col-md-6">
     {% field_display "Referral.referral_source" %}
   </div>
-  <div class="second-column-field">
-    <div class="col-md-6">
-      {% field_display "Referral.geographical_area" %}
-    </div>
+  <div class="col-md-6">
+    {% field_display "Referral.geographical_area" %}
   </div>
 </div>
-<hr />
-<div class="row">
+<div class="row content-offset-10">
   <div class="col-md-6">
     {% field_display "Referral.referral_reason" %}
   </div>
-  <div class="second-column-field">
-    <div class="col-md-6">
-      {% field_display "Referral.referral_disease" %}
-    </div>
+  <div class="col-md-6">
+    {% field_display "Referral.referral_disease" %}
   </div>
 </div>
 <div class="row">
   <div class="col-md-6">
     {% field_display "Referral.date_referral_received" %}
   </div>
-  <div class="second-column-field">
-    <div class="col-md-6">
-      {% field_display "Referral.date_first_appointment" %}
-    </div>
+  <div class="col-md-6">
+    {% field_display "Referral.date_first_appointment" %}
   </div>
 </div>
 <div class="row">
@@ -54,8 +46,7 @@
   </div>
 </div>
 <span ng-show="item.comments">
-  <hr>
-  <div class="row">
+  <div class="row content-offset-10">
     <div class="col-md-12">
       <strong>Comments:</strong>
       <div markdown="comments"></div>
