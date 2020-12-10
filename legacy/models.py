@@ -72,12 +72,9 @@ class BloodBook(RBHLSubrecord, PatientSubrecord):
     ANTIGEN_TYPE = enum("STANDARD", "BESPOKE")
     METHODS = enum(
         "ImmunoCAP",
-        "UniCAP",
-        "CAP",
         "RAST",
-        "CAP & RAST",
-        "RAST & UniCAP",
-        "PRECIPITINS",
+        "RAST Score",
+        "Precipitins"
     )
 
     reference_number   = models.CharField(blank=True, null=True,
@@ -92,8 +89,9 @@ class BloodBook(RBHLSubrecord, PatientSubrecord):
     )
     blood_number       = models.CharField(blank=True, null=True,
                                           max_length=200)
-    method             = models.CharField(blank=True, null=True,
-                                          max_length=200)
+    method             = models.CharField(
+        blank=True, null=True, max_length=200, choices=METHODS
+    )
     blood_collected    = models.CharField(
         verbose_name='EDTA blood collected',
         blank=True, null=True,
