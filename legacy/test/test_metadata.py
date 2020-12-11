@@ -12,4 +12,4 @@ class MetadataTestCase(OpalTestCase):
             )
         )
         result = self.client.get(url)
-        self.assertIn("allergen", result.json())
+        self.assertIn("phadia_test_code", result.json())

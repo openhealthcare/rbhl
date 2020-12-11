@@ -156,7 +156,7 @@ class BloodBookResult(models.Model):
     blood_book = models.ForeignKey(BloodBook, on_delete=models.CASCADE)
     result     = models.CharField(blank=True, null=True, max_length=200)
     allergen   = ForeignKeyOrFreeText(Allergen)
-    antigenno  = models.CharField(
+    phadia_test_code  = models.CharField(
         blank=True, null=True, max_length=200, verbose_name="Antigen number"
     )
     kul        = models.CharField(

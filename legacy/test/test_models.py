@@ -32,7 +32,7 @@ class BloodBookTestCase(OpalTestCase):
             "bloodbookresult": [
                 {
                     "allergen": "flour",
-                    "antigenno": None,
+                    "phadia_test_code": None,
                     "id": bb_result.id,
                     "igg": None,
                     "iggclass": None,

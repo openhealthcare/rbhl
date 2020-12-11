@@ -8,5 +8,5 @@ class AllergenAndAntigenNo(metadata.Metadata):
     @classmethod
     def to_dict(klass, **kwargs):
         return {
-            'allergen': list(Allergen.objects.values('name', 'code'))
+            'phadia_test_code': list(Allergen.objects.values('name', 'code'))
         }
