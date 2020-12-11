@@ -4,6 +4,11 @@
   <div class="col-md-6">
     {% field_display "Referral.date_of_referral" %}
   </div>
+  {% comment %}
+  The display is lined up to use full width columns with non singletons.
+  Use of a normal record panel would shift this panel's columns out of line so
+  instead we put in an edit button with padding.
+  {% endcomment %}
   <div class="col-md-6">
     <div class="row">
       <div class="col-md-5">
