@@ -77,13 +77,6 @@ class BloodBook(RBHLSubrecord, PatientSubrecord):
         "Precipitins"
     )
 
-    reference_number   = models.CharField(blank=True, null=True,
-                                          max_length=200)
-    employer           = models.CharField(blank=True, null=True,
-                                          max_length=200)
-    oh_provider        = models.CharField(
-        blank=True, null=True, max_length=100, verbose_name="OH provider"
-    )
     blood_date         = models.DateField(
         blank=True, null=True, verbose_name="Sample received"
     )
@@ -97,8 +90,6 @@ class BloodBook(RBHLSubrecord, PatientSubrecord):
         blank=True, null=True,
         max_length=200)
     date_dna_extracted = models.CharField(blank=True, null=True,
-                                          max_length=200)
-    information        = models.CharField(blank=True, null=True,
                                           max_length=200)
     assayno            = models.CharField(
         blank=True, null=True, max_length=200, verbose_name="Assay number"

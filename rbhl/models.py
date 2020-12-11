@@ -150,7 +150,6 @@ class GeographicalArea(lookuplists.LookupList):
 
 class Referral(RBHLSubrecord, models.EpisodeSubrecord):
     _icon         = 'fa fa-level-up'
-    _is_singleton = True
 
     REASONS = enum(
         "Environmental",
@@ -182,6 +181,9 @@ class Referral(RBHLSubrecord, models.EpisodeSubrecord):
     referrer_title         = models.ForeignKeyOrFreeText(models.Title)
     referrer_name = fields.CharField(
         blank=True, null=True, max_length=100, verbose_name="Referrer name"
+    )
+    reference_number = fields.CharField(
+        blank=True, null=True, max_length=200, verbose_name="Their reference number"
     )
     date_of_referral       = fields.DateField(
         blank=True, null=True
@@ -232,7 +234,6 @@ class JobTitle(lookuplists.LookupList):
 
 class Employment(RBHLSubrecord, models.EpisodeSubrecord):
     _icon         = 'fa fa-building-o'
-    _is_singleton = True
 
     employer = fields.CharField(blank=True, null=True, max_length=100)
     job_title = models.ForeignKeyOrFreeText(JobTitle)

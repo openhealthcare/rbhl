@@ -1,11 +1,25 @@
 {% load rbhl_panels %}
+
 <div class="row">
   <div class="col-md-6">
     {% field_display "Referral.date_of_referral" %}
   </div>
-  <div class="second-column-field">
-    <div class="col-md-6 ">
-    {% field_display "Referral.referral_reason" %}
+  {% comment %}
+  The display is lined up to use full width columns with non singletons.
+  Use of a normal record panel would shift this panel's columns out of line so
+  instead we put in an edit button with padding.
+  {% endcomment %}
+  <div class="col-md-6">
+    <div class="row">
+      <div class="col-md-5">
+          <b>Referrer name:</b>
+      </div>
+      <div class="col-md-7 edit-item-padding" ng-show="item.referrer_name">
+        [[ item.referrer_name ]]
+        <span ng-show="item.reference_number">([[ item.reference_number ]])</span>
+
+        <i class="fa fa-pencil edit pointer edit-item" ng-click="episode.recordEditor.editItem('referral', item)"></i>
+      </div>
     </div>
   </div>
 </div>
@@ -13,31 +27,24 @@
   <div class="col-md-6">
     {% field_display "Referral.referral_source" %}
   </div>
-  <div class="second-column-field">
-    <div class="col-md-6">
-      {% field_display "Referral.referrer_name" %}
-    </div>
-  </div>
-</div>
-<div class="row">
   <div class="col-md-6">
     {% field_display "Referral.geographical_area" %}
   </div>
-  <div class="second-column-field">
-    <div class="col-md-6">
-      {% field_display "Referral.referral_disease" %}
-    </div>
+</div>
+<div class="row content-offset-10">
+  <div class="col-md-6">
+    {% field_display "Referral.referral_reason" %}
+  </div>
+  <div class="col-md-6">
+    {% field_display "Referral.referral_disease" %}
   </div>
 </div>
-<hr />
 <div class="row">
   <div class="col-md-6">
     {% field_display "Referral.date_referral_received" %}
   </div>
-  <div class="second-column-field">
-    <div class="col-md-6">
-      {% field_display "Referral.date_first_appointment" %}
-    </div>
+  <div class="col-md-6">
+    {% field_display "Referral.date_first_appointment" %}
   </div>
 </div>
 <div class="row">
@@ -46,8 +53,7 @@
   </div>
 </div>
 <span ng-show="item.comments">
-  <hr>
-  <div class="row">
+  <div class="row content-offset-10">
     <div class="col-md-12">
       <strong>Comments:</strong>
       <div markdown="comments"></div>

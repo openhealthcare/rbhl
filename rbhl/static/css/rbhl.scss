@@ -570,6 +570,16 @@ input[type="date"]::-webkit-input-placeholder{
     margin-bottom: 0;
 }
 
+.edit-item-padding{
+    padding-right: 34px;
+}
+
+.edit-item{
+    position: absolute;
+    right: 10px;
+    top: 0
+}
+
 .table-sortable{
     th.sorting-desc:after{
         content: "￬";

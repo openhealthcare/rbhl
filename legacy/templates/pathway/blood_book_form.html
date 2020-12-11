@@ -1,33 +1,6 @@
 {% load forms %}
 <div pathway-step="{{ step.get_api_name }}">
   <div ng-repeat="editing in [bloodBookTest]">
-    <!-- Employer/referral details -->
-    <div class="row">
-      <div class="col-md-6">
-        <div class="horizontal-form">
-          {% input field="BloodBook.oh_provider" style="vertical" %}
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="horizontal-form">
-          {% input field="BloodBook.reference_number" style="vertical" %}
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-6">
-        <div class="horizontal-form">
-          {% input field="BloodBook.employer" style="vertical" %}
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="horizontal-form">
-          {% input field="BloodBook.information" style="vertical" %}
-        </div>
-      </div>
-    </div>
-    <hr>
-
     <!-- Blood information -->
     <div class="row">
       <div class="col-md-6">
