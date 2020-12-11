@@ -242,105 +242,8 @@ class PeakFlowGraphDataTestCase(OpalTestCase):
         m = self.api.get_overrall_mean(self.episode.peakflowday_set.all())
         self.assertIsNone(m)
 
-    def test_completeness(self):
-        day_dicts = [
-            {
-                'treatment_taken': None,
-                'day_num': 1,
-                'date': datetime.date(2019, 8, 3),
-                'work_day': False,
-                'pef_flow': None,
-                'min_flow': 500,
-                'mean_flow': 600,
-                'max_flow': 700,
-                'variabilty': 29,
-                'num_entries': 6
-            },
-            {
-                'treatment_taken': None,
-                'day_num': 2,
-                'date': datetime.date(2019, 8, 4),
-                'work_day': False,
-                'pef_flow': None,
-                'min_flow': 500,
-                'mean_flow': 625,
-                'max_flow': 700,
-                'variabilty': 29,
-                'num_entries': 0
-            }
-        ]
-        self.assertEqual(self.api.get_completeness(day_dicts), 50)
-
-    def test_completeness_with_empty_row(self):
-        day_dicts = [
-            {
-                'treatment_taken': None,
-                'day_num': 1,
-                'date': datetime.date(2019, 8, 3),
-                'work_day': False,
-                'pef_flow': None,
-                'min_flow': 500,
-                'mean_flow': 600,
-                'max_flow': 700,
-                'variabilty': 29,
-                'num_entries': 6
-            },
-            {
-                'treatment_taken': None,
-                'day_num': 2,
-                'date': datetime.date(2019, 8, 4),
-                'work_day': False,
-                'pef_flow': None,
-                'min_flow': None,
-                'mean_flow': None,
-                'max_flow': None,
-                'variabilty': None,
-                'num_entries': None
-            }
-        ]
-        self.assertEqual(self.api.get_completeness(day_dicts), 50)
-
-    def test_completeness_with_only_empty_rows(self):
-        day_dicts = [
-            {
-                'treatment_taken': None,
-                'day_num': 1,
-                'date': datetime.date(2019, 8, 4),
-                'work_day': False,
-                'pef_flow': None,
-                'min_flow': None,
-                'mean_flow': None,
-                'max_flow': None,
-                'variabilty': None,
-                'num_entries': None
-            }
-        ]
-        self.assertEqual(self.api.get_completeness(day_dicts), 0)
-
-    def test_completeness_with_too_much_data(self):
-        """
-        Make sure completeness never goes over 100%
-        """
-        day_dicts = []
-
-        day_dict = {
-            'treatment_taken': None,
-            'day_num': 1,
-            'date': datetime.date(2019, 8, 3),
-            'work_day': False,
-            'pef_flow': None,
-            'min_flow': 500,
-            'mean_flow': 600,
-            'max_flow': 700,
-            'variabilty': 29,
-            'num_entries': 6
-        }
-
-        for i in range(12):
-            day_dicts.append(day_dict)
-        self.assertEqual(self.api.get_completeness(day_dicts), 100)
-
     def test_trial_data(self):
+        self.maxDiff = None
         self.episode.peakflowday_set.create(
             day_num=1,
             date=datetime.date(2019, 8, 3),
@@ -389,7 +292,7 @@ class PeakFlowGraphDataTestCase(OpalTestCase):
                     'num_entries': 4
                 }
             ],
-            'completeness': 58,
+            'completeness': 50,
             'complete_days': 1,
             'treatments': {},
             'overrall_mean': 614,
@@ -399,6 +302,40 @@ class PeakFlowGraphDataTestCase(OpalTestCase):
             'trial_num': 1
         }
 
+        self.assertEqual(result, expected)
+
+    def test_trial_data_with_one_day_with_no_entries(self):
+        self.episode.peakflowday_set.create(
+            day_num=1,
+            date=datetime.date(2019, 8, 3)
+        )
+        result = self.api.trial_data(
+            self.episode,
+            1,
+            self.episode.peakflowday_set.all()
+        )
+        expected = {
+            'days': [{
+                'date': datetime.date(2019, 8, 3),
+                'day_num': 1,
+                'max_flow': None,
+                'mean_flow': None,
+                'min_flow': None,
+                'num_entries': None,
+                'pef_flow': None,
+                'treatment_taken': None,
+                'variabilty': None,
+                'work_day': False
+            }],
+            'completeness': 0,
+            'complete_days': 0,
+            'treatments': {},
+            'overrall_mean': None,
+            'pef_mean': None,
+            'notes': "",
+            'start_date': datetime.date(2019, 8, 3),
+            'trial_num': 1
+        }
         self.assertEqual(result, expected)
 
     def test_api(self):
