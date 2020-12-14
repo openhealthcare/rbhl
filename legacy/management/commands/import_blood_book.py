@@ -139,7 +139,7 @@ class Command(BaseCommand):
             "blood_collected": "EDTA blood collected",
             # Filled in with poor data
             "date_dna_extracted": "Date DNA extracted",
-            "information": "INFORMATION",
+            # "information": "INFORMATION",
             "assayno": "ASSAYNO",
             "assay_date": lambda row: str_to_date(row["ASSAYDATE"]),
             "blood_taken": lambda row: str_to_date(row["BLOODTK"]),
