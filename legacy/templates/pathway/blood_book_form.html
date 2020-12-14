@@ -128,6 +128,11 @@
         <h1 class="text-muted">No results recorded</h1>
       </div>
     </div>
+    <script type="text/ng-template" id="phadiaTestCodeTemplate.html">
+      <a>
+          [[ match.model.name ]] ([[ match.model.code ]])
+      </a>
+    </script>
     <div ng-repeat="result in editing.blood_book.bloodbookresult">
       <div class="row">
         <div class="col-md-2">
@@ -138,7 +143,23 @@
         <div class="col-md-10">
           <div class="row">
             <div class="col-md-6">
-              {% input label="Allergen" model="result.allergen" style="vertical" lookuplist="allergen_list" %}
+            <label for="[[ 'phadia_test_code' + $index ]]">Allergen</label>
+            <div ng-class="form.$submitted && form['allergen' + $index].$error.required">
+              {# A lookup list when you select an option in allergen.metadata it will update result.phadia_test_code with the appropriate allergen.code #}
+              <input id="[[ 'phadia_test_code' + $index ]]"
+                     name="[[ 'phadia_test_code' + $index ]]"
+                     ng-required="result.kul || result.klass || result.rast || result.rast_score"
+                     class="form-control"
+                     autocomplete="off"
+                     ng-model="result.allergen"
+                     typeahead-on-select="selectAllergen($item, result)"
+                     uib-typeahead="phadia_test_code.name as phadia_test_code for phadia_test_code in metadata.phadia_test_code | filter:{name:$viewValue} | limitTo:8"
+                     typeahead-template-url="phadiaTestCodeTemplate.html"
+              />
+            </div>
+            <span class="help-block" ng-show="(form['phadia_test_code' + $index].$dirty || form.$submitted) && form['phadia_test_code' + $index].$error.required">
+              Allergen is required when we have a result
+            </span>
             </div>
             <div class="col-md-6">
               {% input label="Antigen number" model="result.antigenno" style="vertical" %}

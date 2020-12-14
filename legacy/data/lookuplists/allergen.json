@@ -1,46 +1,1492 @@
 {
   "allergen": [
-       {
-            "name": "Hdi"
-       },
-       {
-            "name": "Alt. alternata"
-       },
-       {
-            "name": "Soy bean"
-       },
-       {
-            "name": "Savinase"
-       },
-       {
-            "name": "Dog dander"
-       },
-       {
-            "name": "Asp. fumigatus"
-       },
-       {
-            "name": "Rabbit epith"
-       },
-       {
-            "name": "Latex"
-       },
-       {
-            "name": "Rat epith"
-       },
-       {
-            "name": "Mouse epith"
-       },
-       {
-            "name": "Rat urine"
-       },
-       {
-            "name": "Mouse urine"
-       },
-       {
-            "name": "Plain flour"
-       },
-       {
-            "name": "Alpha amylase"
-       }
+    {
+      "name": "2221033 PERU",
+      "synonyms": [],
+      "coding": {
+        "code": "1288D",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "A. SIRO",
+      "synonyms": [],
+      "coding": {
+        "code": "D70",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "AIR CONDITIONING FILTER",
+      "synonyms": [],
+      "coding": {
+        "code": "1155D",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "ALMOND",
+      "synonyms": [],
+      "coding": {
+        "code": "F20",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "ALOPECURUS MYOSUROIDES (BLACK GRASS)",
+      "synonyms": [],
+      "coding": {
+        "code": "1240B",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "ALPHA AMYLASE",
+      "synonyms": [],
+      "coding": {
+        "code": "442",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "ALT. ALTERNATA",
+      "synonyms": [],
+      "coding": {
+        "code": "M6",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "AMAQU POLLEN",
+      "synonyms": [],
+      "coding": {
+        "code": "1234F",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "AMAQU RUMBLE",
+      "synonyms": [],
+      "coding": {
+        "code": "1234E",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "AMAQU SEED",
+      "synonyms": [],
+      "coding": {
+        "code": "1234B",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "AMAQU SEED SEP",
+      "synonyms": [],
+      "coding": {
+        "code": "1234C",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "AMAQU THRESH FINAL",
+      "synonyms": [],
+      "coding": {
+        "code": "1234D",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "AMATA POLLEN",
+      "synonyms": [],
+      "coding": {
+        "code": "1236C",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "AMBLYSEIUS CUCUMERIS",
+      "synonyms": [],
+      "coding": {
+        "code": "1235",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "ANOPHELES STEPHENSI",
+      "synonyms": [],
+      "coding": {
+        "code": "1213A",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "ASP. FLAVUS",
+      "synonyms": [],
+      "coding": {
+        "code": "M228",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "ASP. FUMIGATUS",
+      "synonyms": [],
+      "coding": {
+        "code": "M3",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "ASP. NIGER",
+      "synonyms": [],
+      "coding": {
+        "code": "M207",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "ASP. TERREUS",
+      "synonyms": [],
+      "coding": {
+        "code": "M36",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "ASP. VERSICOLOR",
+      "synonyms": [],
+      "coding": {
+        "code": "GM25",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "ASPERGILLUS FUMIGATUS",
+      "synonyms": [],
+      "coding": {
+        "code": "GM3",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "BAKEZYME BXP 25001",
+      "synonyms": [],
+      "coding": {
+        "code": "1195F",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "BAKEZYME GD 10000",
+      "synonyms": [],
+      "coding": {
+        "code": "1195D",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "BAKEZYME HS10000",
+      "synonyms": [],
+      "coding": {
+        "code": "1195C",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "BAKEZYME P500 BG",
+      "synonyms": [],
+      "coding": {
+        "code": "1195B",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "BAKEZYME PPL IBG",
+      "synonyms": [],
+      "coding": {
+        "code": "1195E",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "BAKEZYME WHOLEGRAIN",
+      "synonyms": [],
+      "coding": {
+        "code": "1195A",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "BANANA",
+      "synonyms": [],
+      "coding": {
+        "code": "F92",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "BARLEY",
+      "synonyms": [],
+      "coding": {
+        "code": "F6",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "BARN, FROM ROOF",
+      "synonyms": [],
+      "coding": {
+        "code": "1228A",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "BAT POO",
+      "synonyms": [],
+      "coding": {
+        "code": "1228B",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "BEKS MUNERWER",
+      "synonyms": [],
+      "coding": {
+        "code": "1274D",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "BLACK : HUMAN SERUM ALBUMIN",
+      "synonyms": [],
+      "coding": {
+        "code": "1217B",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "BLACK PEPPER",
+      "synonyms": [],
+      "coding": {
+        "code": "F280",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "BLUEBILL (SHAW GROVE)",
+      "synonyms": [],
+      "coding": {
+        "code": "1274C",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "BRA1014 BRASIL",
+      "synonyms": [],
+      "coding": {
+        "code": "1288A",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "BROWN MEAT, CRAB",
+      "synonyms": [],
+      "coding": {
+        "code": "1077B",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "BRUCHID BEETLES",
+      "synonyms": [],
+      "coding": {
+        "code": "1106A",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "BURYING BEETLE",
+      "synonyms": [],
+      "coding": {
+        "code": "1270A",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "BUTTER VANILLA 504044",
+      "synonyms": [],
+      "coding": {
+        "code": "1246B",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "CACAO",
+      "synonyms": [],
+      "coding": {
+        "code": "F93",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "CAN. ALBICANS",
+      "synonyms": [],
+      "coding": {
+        "code": "M5",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "CAT DANDER",
+      "synonyms": [],
+      "coding": {
+        "code": "E1",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "CHICKEN DROPPINGS",
+      "synonyms": [],
+      "coding": {
+        "code": "E218",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "CHICKEN DUST",
+      "synonyms": [],
+      "coding": {
+        "code": "1310B",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "CHICKEN FEATHERS",
+      "synonyms": [],
+      "coding": {
+        "code": "E85",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "CHLORHEXIDINE",
+      "synonyms": [],
+      "coding": {
+        "code": "C8",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "CLAD. HERBARUM",
+      "synonyms": [],
+      "coding": {
+        "code": "M2",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "COCKLES",
+      "synonyms": [],
+      "coding": {
+        "code": "1291A",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "COL1004 COLOMBIAN",
+      "synonyms": [],
+      "coding": {
+        "code": "1288B",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "COMMON SILVER BIRCH",
+      "synonyms": [],
+      "coding": {
+        "code": "T3",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "COMPOST FROM BOTTOM OF BEETLE BOX",
+      "synonyms": [],
+      "coding": {
+        "code": "1270B",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "COOKED KING PRAWN",
+      "synonyms": [],
+      "coding": {
+        "code": "1291E",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "COW DANDER",
+      "synonyms": [],
+      "coding": {
+        "code": "E4",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "CRAB",
+      "synonyms": [],
+      "coding": {
+        "code": "F23",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "CRICKETS",
+      "synonyms": [],
+      "coding": {
+        "code": "1137",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "D. PTERONYSSINUS",
+      "synonyms": [],
+      "coding": {
+        "code": "D1",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "DIAMONDBACK ADULT MOTHS",
+      "synonyms": [],
+      "coding": {
+        "code": "1156B",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "DOG DANDER",
+      "synonyms": [],
+      "coding": {
+        "code": "E5",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "DROSOPHILA, WHOLE",
+      "synonyms": [],
+      "coding": {
+        "code": "1026",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "DROSOPHILA, WILD TYPE",
+      "synonyms": [],
+      "coding": {
+        "code": "1263",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "DUCK FEATHERS, DUVET AND PILLOW",
+      "synonyms": [],
+      "coding": {
+        "code": "1090",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "DUST",
+      "synonyms": [],
+      "coding": {
+        "code": "1106B",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "EARL GREY TEA",
+      "synonyms": [],
+      "coding": {
+        "code": "1205O",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "EGG",
+      "synonyms": [],
+      "coding": {
+        "code": "F245",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "EGG WHITE",
+      "synonyms": [],
+      "coding": {
+        "code": "F1",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "EGG YOLK",
+      "synonyms": [],
+      "coding": {
+        "code": "F75",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "FACE MASKS (MIX)",
+      "synonyms": [],
+      "coding": {
+        "code": "1306",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "FAECAL SAMPLE",
+      "synonyms": [],
+      "coding": {
+        "code": "1310A",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "FEATHERS",
+      "synonyms": [],
+      "coding": {
+        "code": "1209",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "FERRET URINE",
+      "synonyms": [],
+      "coding": {
+        "code": "1047",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "FILTER",
+      "synonyms": [],
+      "coding": {
+        "code": "1160",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "FIVELBORG",
+      "synonyms": [],
+      "coding": {
+        "code": "1274A",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "FLOUR, PIZZA EXPRESS",
+      "synonyms": [],
+      "coding": {
+        "code": "1189",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "FORMALDEHYDE",
+      "synonyms": [],
+      "coding": {
+        "code": "K80",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "G. PIG EPITH",
+      "synonyms": [],
+      "coding": {
+        "code": "E6",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "GOAT EPITH",
+      "synonyms": [],
+      "coding": {
+        "code": "E80",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "GREEN COFFEE BEAN",
+      "synonyms": [],
+      "coding": {
+        "code": "K70",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "HAMSTER EPITH",
+      "synonyms": [],
+      "coding": {
+        "code": "E84",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "HAZEL NUT",
+      "synonyms": [],
+      "coding": {
+        "code": "F17",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "HDI",
+      "synonyms": [],
+      "coding": {
+        "code": "K77",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "HDI:HUMAN SERUM ALBUMIN",
+      "synonyms": [],
+      "coding": {
+        "code": "896A",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "HONEY BEE",
+      "synonyms": [],
+      "coding": {
+        "code": "I1",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "HORSE DANDER",
+      "synonyms": [],
+      "coding": {
+        "code": "E3",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "IND1025 INDIAN MONSOON MALABAR",
+      "synonyms": [],
+      "coding": {
+        "code": "1288C",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "IROKO",
+      "synonyms": [],
+      "coding": {
+        "code": "1036B",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "ISPAGHULA",
+      "synonyms": [],
+      "coding": {
+        "code": "K72",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "JANET SHAW, 1MG/ML",
+      "synonyms": [],
+      "coding": {
+        "code": "147",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "KALAMAZOO, 1MG/ML",
+      "synonyms": [],
+      "coding": {
+        "code": "148",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "L. DESTRUCTOR",
+      "synonyms": [],
+      "coding": {
+        "code": "D71",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "L. MIGRATORIA, GUTS",
+      "synonyms": [],
+      "coding": {
+        "code": "89A",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "LATEX",
+      "synonyms": [],
+      "coding": {
+        "code": "K82",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "LIPOLASE",
+      "synonyms": [],
+      "coding": {
+        "code": "824",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "LIPTONS YELLOW TEA",
+      "synonyms": [],
+      "coding": {
+        "code": "1205G",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "LOBSTER",
+      "synonyms": [],
+      "coding": {
+        "code": "F80",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "LOBSTER MEAT",
+      "synonyms": [],
+      "coding": {
+        "code": "1077A",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "LOCUST",
+      "synonyms": [],
+      "coding": {
+        "code": "1178A",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "LOCUST FAECES",
+      "synonyms": [],
+      "coding": {
+        "code": "1178B",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "LOLIUM FLOWER AND POLLEN",
+      "synonyms": [],
+      "coding": {
+        "code": "1236A",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "LOLIUM MULTIFLORUM",
+      "synonyms": [],
+      "coding": {
+        "code": "1240A",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "LOMICRO GROUND GINGER 227027",
+      "synonyms": [],
+      "coding": {
+        "code": "1246A",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "M1, GM2, M4, GM6 MIX",
+      "synonyms": [],
+      "coding": {
+        "code": "GMX6",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "MA:HUMAN SERUM ALBUMIN",
+      "synonyms": [],
+      "coding": {
+        "code": "604",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "MACAQUE URINE",
+      "synonyms": [],
+      "coding": {
+        "code": "1089",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "MAIZE",
+      "synonyms": [],
+      "coding": {
+        "code": "F8",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "MAIZE POLLEN",
+      "synonyms": [],
+      "coding": {
+        "code": "1238B",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "MDI",
+      "synonyms": [],
+      "coding": {
+        "code": "K76",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "MDI : HUMAN SERUM ALBUMIN",
+      "synonyms": [],
+      "coding": {
+        "code": "898A",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "MDI:HUMAN SERUM ALBUMIN",
+      "synonyms": [],
+      "coding": {
+        "code": "896C",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "METAL WORKING FLUID",
+      "synonyms": [],
+      "coding": {
+        "code": "1051",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "MILK",
+      "synonyms": [],
+      "coding": {
+        "code": "F2",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "MIXED CRAB",
+      "synonyms": [],
+      "coding": {
+        "code": "1291C",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "MOSQUITO",
+      "synonyms": [],
+      "coding": {
+        "code": "I71",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "MOULD",
+      "synonyms": [],
+      "coding": {
+        "code": "1156C",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "MOULD MIX 1",
+      "synonyms": [],
+      "coding": {
+        "code": "MX1",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "MOULD MIX 2",
+      "synonyms": [],
+      "coding": {
+        "code": "MX2",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "MOULD MIX 4",
+      "synonyms": [],
+      "coding": {
+        "code": "MX4",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "MOUSE EPITH",
+      "synonyms": [],
+      "coding": {
+        "code": "E71",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "MOUSE SERUM PROTEINS",
+      "synonyms": [],
+      "coding": {
+        "code": "E76",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "MOUSE URINE",
+      "synonyms": [],
+      "coding": {
+        "code": "E72",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "MUGWORT",
+      "synonyms": [],
+      "coding": {
+        "code": "W6",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "NOVOZYME 27159",
+      "synonyms": [],
+      "coding": {
+        "code": "1195G",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "NOVOZYME BAN 800MG",
+      "synonyms": [],
+      "coding": {
+        "code": "1195H",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "OAT",
+      "synonyms": [],
+      "coding": {
+        "code": "F7",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "OLD BEANS",
+      "synonyms": [],
+      "coding": {
+        "code": "1106C",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "ORGANIC PRAWNS",
+      "synonyms": [],
+      "coding": {
+        "code": "1077D",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "ORIENT GENESIS",
+      "synonyms": [],
+      "coding": {
+        "code": "1274E",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "PA:HUMAN SERUM ALBUMIN",
+      "synonyms": [],
+      "coding": {
+        "code": "603",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "PEANUT",
+      "synonyms": [],
+      "coding": {
+        "code": "F13",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "PEN. NOTATUM",
+      "synonyms": [],
+      "coding": {
+        "code": "M1",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "PENICILLOYL G",
+      "synonyms": [],
+      "coding": {
+        "code": "C1",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "PENICILLOYL V",
+      "synonyms": [],
+      "coding": {
+        "code": "C2",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "PEPPERMINT TEA",
+      "synonyms": [],
+      "coding": {
+        "code": "1205I",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "PICHIA YEAST",
+      "synonyms": [],
+      "coding": {
+        "code": "1142",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "PIGEON SERUM PROTEINS, FEATHERS AND DROPPINGS",
+      "synonyms": [],
+      "coding": {
+        "code": "GE91",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "PILOT FLOUR 227044",
+      "synonyms": [],
+      "coding": {
+        "code": "1246E",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "PINK BOLLWORM ADULT MOTHS",
+      "synonyms": [],
+      "coding": {
+        "code": "1156A",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "PLAIN FLOUR",
+      "synonyms": [],
+      "coding": {
+        "code": "1016",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "PRAWNS",
+      "synonyms": [],
+      "coding": {
+        "code": "1291F",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "PURADAX",
+      "synonyms": [],
+      "coding": {
+        "code": "985C",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "RABBIT EPITH",
+      "synonyms": [],
+      "coding": {
+        "code": "E82",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "RAT ALBUMIN",
+      "synonyms": [],
+      "coding": {
+        "code": "969",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "RAT EPITH",
+      "synonyms": [],
+      "coding": {
+        "code": "E73",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "RAT SERUM PROTEINS",
+      "synonyms": [],
+      "coding": {
+        "code": "E75",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "RAT URINE",
+      "synonyms": [],
+      "coding": {
+        "code": "E74",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "RAW KING PRAWN",
+      "synonyms": [],
+      "coding": {
+        "code": "1291D",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "RAW PRAWNS",
+      "synonyms": [],
+      "coding": {
+        "code": "1077E",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "RED CEDAR",
+      "synonyms": [],
+      "coding": {
+        "code": "1036A",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "RICE",
+      "synonyms": [],
+      "coding": {
+        "code": "F9",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "RYE",
+      "synonyms": [],
+      "coding": {
+        "code": "F5",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "S. GREGARIA",
+      "synonyms": [],
+      "coding": {
+        "code": "137",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "SAPELE",
+      "synonyms": [],
+      "coding": {
+        "code": "1036C",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "SAVINASE",
+      "synonyms": [],
+      "coding": {
+        "code": "898C",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "SCALLOPS",
+      "synonyms": [],
+      "coding": {
+        "code": "1291B",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "SCARLET : HUMAN SERUM ALBUMIN",
+      "synonyms": [],
+      "coding": {
+        "code": "1217A",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "SCRAPINGS FROM BREWERY 1MG/ML",
+      "synonyms": [],
+      "coding": {
+        "code": "1082",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "SEKUSEPT",
+      "synonyms": [],
+      "coding": {
+        "code": "1157",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "SHEEP EPITH",
+      "synonyms": [],
+      "coding": {
+        "code": "E81",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "SHRIMP",
+      "synonyms": [],
+      "coding": {
+        "code": "F24",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "SOY BEAN",
+      "synonyms": [],
+      "coding": {
+        "code": "F14",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "SOY FLOUR",
+      "synonyms": [],
+      "coding": {
+        "code": "1119A",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "SOYA HULLS",
+      "synonyms": [],
+      "coding": {
+        "code": "1019",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "SUM1022 SUMATRA",
+      "synonyms": [],
+      "coding": {
+        "code": "1288E",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "SWINE EPITH",
+      "synonyms": [],
+      "coding": {
+        "code": "E83",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "TCPA:HUMAN SERUM ALBUMIN",
+      "synonyms": [],
+      "coding": {
+        "code": "605",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "TDI",
+      "synonyms": [],
+      "coding": {
+        "code": "K75",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "TDI : HUMAN SERUM ALBUMIN",
+      "synonyms": [],
+      "coding": {
+        "code": "898B",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "TDI:HUMAN SERUM ALBUMIN",
+      "synonyms": [],
+      "coding": {
+        "code": "896B",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "TEA 0635 PG-LYONS",
+      "synonyms": [],
+      "coding": {
+        "code": "1205H",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "TERMAMYL",
+      "synonyms": [],
+      "coding": {
+        "code": "898D",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "TIGER BREAD POWDER",
+      "synonyms": [],
+      "coding": {
+        "code": "1185A",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "TIMOTHY",
+      "synonyms": [],
+      "coding": {
+        "code": "G6",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "TMA",
+      "synonyms": [],
+      "coding": {
+        "code": "K86",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "TMA:HUMAN SERUM ALBUMIN",
+      "synonyms": [],
+      "coding": {
+        "code": "609",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "TOBACCO LEAF",
+      "synonyms": [],
+      "coding": {
+        "code": "1163A",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "TOBACCO LEAF, FREEZE DRIED",
+      "synonyms": [],
+      "coding": {
+        "code": "1163B",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "ULTRA TIGER",
+      "synonyms": [],
+      "coding": {
+        "code": "1274B",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "VANILLA V93371",
+      "synonyms": [],
+      "coding": {
+        "code": "1246C",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "WAFER 2436",
+      "synonyms": [],
+      "coding": {
+        "code": "1246D",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "WHEAT",
+      "synonyms": [],
+      "coding": {
+        "code": "F4",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "WHEAT POLLEN",
+      "synonyms": [],
+      "coding": {
+        "code": "1238A",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "WHITE MEAT, CRAB",
+      "synonyms": [],
+      "coding": {
+        "code": "1077C",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "WOOD PELLETS",
+      "synonyms": [],
+      "coding": {
+        "code": "1203",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "XANTHIUM STRUMMARIUM",
+      "synonyms": [],
+      "coding": {
+        "code": "1234A",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "YEAST",
+      "synonyms": [],
+      "coding": {
+        "code": "F45",
+        "system": "phadia_test_code"
+      }
+    },
+    {
+      "name": "YELLOW : HUMAN SERUM ALBUMIN",
+      "synonyms": [],
+      "coding": {
+        "code": "1217C",
+        "system": "phadia_test_code"
+      }
+    }
   ]
 }
