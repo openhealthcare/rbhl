@@ -1,16 +1,15 @@
 <div class="row">
   <div class="col-md-12 col-md-push-2">
       <p class="lead">
-        Let's check to see if the patient is not already on the system
+        Let's check to see whether the patient is already on the system...
       </p>
-
   </div>
 </div>
 
 
 <div class="row">
   <div class="col-md-8 col-md-push-2">
-    <label>Search</label>
+    <label>Search (hospital number or name)</label>
     <input class="form-control" type="text" ng-model="search.query_term" autocomplete="off"
         autofocus name="query" ng-maxlength="255"
         ng-keypress="$event.keyCode == 13 && query()">
