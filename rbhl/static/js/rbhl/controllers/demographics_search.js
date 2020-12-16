@@ -10,6 +10,7 @@ angular
     var thisStep = this;
 
     scope.query = function() {
+      scope.hideFooter = false;
       DemographicsSearchLookup.find(
         step.search_end_point,
         scope.search.query_term,
@@ -28,18 +29,17 @@ angular
       scope.hideFooter = true;
     };
 
-    scope.reset = function(){
-      if(scope.patientList){
-        scope.state = "patient_list";
-        scope.hideFooter = true;
+    scope.back = function(){
+      if(!scope.patientList || scope.state === "patient_list"){
+        thisStep.initialise(scope);
       }
       else{
-        thisStep.initialise(scope);
+        scope.state = "patient_list";
       }
     }
 
+
     scope.new_patient = function() {
-      scope.hideFooter = false;
       scope.state = "editing_demographics";
     };
 

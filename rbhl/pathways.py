@@ -39,7 +39,7 @@ class LabReferral(WizardPathway):
     slug = 'new_blood_book_referral'
     finish_button_text = "Create new referral"
     finish_button_icon = None
-    template = "pathway/base/rbhl_add_patient_base.html"
+    template = "pathway/base/rbhl_demographics_search_base.html"
     steps = [
         DemographicsSearchStep(
             base_template="pathway/steps/step_base_without_display_name.html"
