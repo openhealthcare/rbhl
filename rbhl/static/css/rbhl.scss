@@ -562,8 +562,16 @@ input[type="date"]::-webkit-input-placeholder{
     }
 }
 
+.content-offset-100{
+    margin-top: 100px;
+}
+
 .content-offset-below-100{
     margin-bottom: 100px
+}
+
+.content-offset-below-40{
+    margin-bottom: 40px
 }
 
 .content-offset-below-0{

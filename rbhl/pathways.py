@@ -3,7 +3,7 @@ Pathways for the rbhl app
 """
 from opal.core.pathway import Step, WizardPathway, PagePathway
 from plugins.add_patient_step import FindPatientStep
-
+from rbhl.steps import DemographicsSearchStep
 from rbhl import models
 
 
@@ -41,7 +41,7 @@ class LabReferral(WizardPathway):
     finish_button_icon = None
     template = "pathway/base/rbhl_referral_base.html"
     steps = [
-        FindPatientStep(
+        DemographicsSearchStep(
             base_template="pathway/steps/step_base_without_display_name.html"
         )
     ]

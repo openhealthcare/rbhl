@@ -1,0 +1,27 @@
+<div class="row">
+  <div class="col-md-12 col-md-push-2">
+      <p class="lead">
+        Let's check to see if the patient is not already on the system
+      </p>
+
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="col-md-8 col-md-push-2">
+      <div class="horizontal-form">
+          <label>Search</label>
+          <input class="form-control" type="text" ng-model="search.query_term" autocomplete="off"
+              autofocus name="query" ng-maxlength="255"
+              ng-keypress="$event.keyCode == 13 && query()">
+      </div>
+  </div>
+</div>
+
+
+
+<button class="btn btn-lg btn-primary pull-right" ng-click="query()">
+  <i class="fa fa-search"></i>
+  Search
+</button>
