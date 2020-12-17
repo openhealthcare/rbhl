@@ -1,0 +1,38 @@
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-18.04
+    services:
+      postgres:
+        image: postgres:11
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: ci_db_test
+        ports:
+          - 5432:5432
+    strategy:
+      fail-fast: false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up Python 3.6
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.6
+      - name: Set up ruby for coveralls
+        uses: actions/setup-ruby@v1
+      - name: Set up js
+        uses: actions/setup-node@v1
+      - name: Install js dependencies
+        run: npm install karma karma-coverage jasmine-core karma-jasmine karma-firefox-launcher karma-coveralls
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: run tests
+        run: opal test
+      - name: flake 8
+        run: flake8
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}"
