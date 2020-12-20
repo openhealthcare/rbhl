@@ -16,7 +16,7 @@ DB_PASSWORD: !vault |
 PROJECT_PATH: /usr/lib/ohc/rbhl
 BACKUPS_DIR: /usr/lib/ohc/var
 GIT_REPO: https://github.com/openhealthcare/rbhl
-GIT_BRANCH: v1.12
+GIT_BRANCH: django-3.1-upgrade
 LOG_DIR: /usr/lib/ohc/log
 PROJECT_NAME: rbhl
 SECRET_KEY: !vault |
