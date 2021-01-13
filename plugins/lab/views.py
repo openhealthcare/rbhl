@@ -49,3 +49,15 @@ class YourRecentlyResultedList(ListView):
 class LabReport(DetailView):
     model = Bloods
     template_name = "lab_report.html"
+
+    def get_context_data(self, *args, **kwargs):
+        ctx = super().get_context_data(*args, **kwargs)
+        obj = ctx["object"]
+        episode = obj.patient.episode_set.get()
+
+        # TODO this is should be better
+        referral = episode.referral_set.last()
+        employment = episode.employment_set.last()
+        ctx["employment"] = employment
+        ctx["referral"] = referral
+        return ctx
