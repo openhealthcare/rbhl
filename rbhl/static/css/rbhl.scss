@@ -131,7 +131,7 @@ a {
   position: absolute;
   // add a 20px gutter before we start displaying data
   left: calc(#{$twocolwidth} + 20px);
-  width: calc(100% - #{$twocolwidth} - 20px);
+  width: calc(100% - #{$twocolwidth} - 80px);
 
   @media print{
     left: 0%;
