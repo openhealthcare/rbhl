@@ -52,7 +52,6 @@ Lab report
       </div>
     </div>
   </div>
-  {% if employment %}
   <div class="row content-offset-10">
     <div class="col-xs-6">
       <div class="row">
@@ -60,7 +59,9 @@ Lab report
           Employer:
         </div>
         <div class="col-xs-7 col-md-9">
+          {% if employment %}
           {{ employment.employer }}
+          {% endif %}
         </div>
       </div>
     </div>
@@ -70,24 +71,25 @@ Lab report
           OH Provider:
         </div>
         <div class="col-xs-7 col-md-9">
+          {% if employment %}
           {{ employment.oh_provider }}
+          {% endif %}
         </div>
       </div>
     </div>
   </div>
-  {% endif %}
   <div class="row content-offset-10">
     <div class="col-xs-6">
-      {% if referral %}
       <div class="row">
         <div class="col-xs-5 col-md-3">
           Referrer:
         </div>
         <div class="col-xs-7 col-md-9">
+          {% if referral %}
           {{ referral.referrer_name }}
+          {% endif %}
         </div>
       </div>
-      {% endif %}
     </div>
     <div class="col-xs-6">
       <div class="row">
