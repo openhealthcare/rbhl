@@ -321,7 +321,12 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
           let range = _.range(min, max+50, 50);
 
           if(window.matchMedia('print')){
-            height = (max - min) * 1.5
+            var printPageSize = 700;
+            var titleHeight = $("#page-title").height();
+            var notesHeight = $("#notes").height();
+            var pageHeight = printPageSize - titleHeight - notesHeight;
+            var otherHeight = (max - min) * 1.5;
+            height = Math.min(otherHeight, pageHeight);
           }
           else{
             height = (max - min) * 2
