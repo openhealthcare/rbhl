@@ -1,23 +1,23 @@
 import datetime
 from opal.core.test import OpalTestCase
-from legacy.models import BloodBook, BloodBookResult
+from plugins.lab.models import Bloods, BloodResult
 
 
-class BloodBookTestCase(OpalTestCase):
+class BloodsTestCase(OpalTestCase):
     def setUp(self, *args, **kwargs):
         self.patient, _ = self.new_patient_and_episode_please()
 
     def test_to_dict(self):
         self.maxDiff = None
-        bb = BloodBook(patient=self.patient)
-        bb.blood_date = datetime.date(2020, 9, 28)
-        bb.assayno = "123"
-        bb.store = False
-        bb.save()
-        bb_result = bb.bloodbookresult_set.create()
-        bb_result.allergen = "flour"
-        bb_result.precipitin = "+ve"
-        bb_result.save()
+        bloods = Bloods(patient=self.patient)
+        bloods.blood_date = datetime.date(2020, 9, 28)
+        bloods.assayno = "123"
+        bloods.store = False
+        bloods.save()
+        bloods_result = bloods.bloodresult_set.create()
+        bloods_result.allergen = "flour"
+        bloods_result.precipitin = "+ve"
+        bloods_result.save()
         expected = {
             "antigen_date": None,
             "antigen_type": None,
@@ -29,11 +29,11 @@ class BloodBookTestCase(OpalTestCase):
             "blood_number": None,
             "blood_taken": None,
             "blood_tm": None,
-            "bloodbookresult": [
+            "bloodresult": [
                 {
                     "allergen": "flour",
                     "phadia_test_code": None,
-                    "id": bb_result.id,
+                    "id": bloods_result.id,
                     "igg": None,
                     "iggclass": None,
                     "klass": None,
@@ -52,7 +52,7 @@ class BloodBookTestCase(OpalTestCase):
             'date_dna_extracted': None,
             'exposure': '',
             'freezer': None,
-            "id": bb.id ,
+            "id": bloods.id ,
             "method": None,
             "patient_id": self.patient.id,
             "report_dt": None,
@@ -65,112 +65,112 @@ class BloodBookTestCase(OpalTestCase):
             "updated_by_id": None,
             "vials": None
         }
-        result = bb.to_dict(user=None)
+        result = bloods.to_dict(user=None)
         self.assertEqual(result, expected)
 
     def test_update_from_dict_create(self):
         update_dict = {
             "exposure": "wheat",
-            "bloodbookresult": [{
+            "bloodresult": [{
                 "result": "result"
             }]
         }
-        bb = BloodBook(patient=self.patient)
-        bb.update_from_dict(update_dict, self.user)
-        bb_reloaded = BloodBook.objects.get()
+        bloods = Bloods(patient=self.patient)
+        bloods.update_from_dict(update_dict, self.user)
+        bloods_reloaded = Bloods.objects.get()
         self.assertEqual(
-            bb_reloaded.exposure, "wheat"
+            bloods_reloaded.exposure, "wheat"
         )
         self.assertEqual(
-            bb_reloaded.bloodbookresult_set.get().result, "result"
+            bloods.bloodresult_set.get().result, "result"
         )
 
     def test_update_from_dict_delete(self):
-        bb = BloodBook(patient=self.patient)
+        bb = Bloods(patient=self.patient)
         bb.exposure = "wheat"
         bb.save()
-        bb.bloodbookresult_set.create(result="result")
+        bb.bloodresult_set.create(result="result")
         bb.update_from_dict({
             "exposure": "wheat",
-            "bloodbookresult": []
+            "bloodresult": []
         }, self.user)
-        bb_reloaded = BloodBook.objects.get()
+        bb_reloaded = Bloods.objects.get()
         self.assertEqual(
             bb_reloaded.exposure, "wheat"
         )
         self.assertFalse(
-            bb_reloaded.bloodbookresult_set.exists()
+            bb_reloaded.bloodresult_set.exists()
         )
 
     def test_update_from_dict_update(self):
-        bb = BloodBook(patient=self.patient)
+        bb = Bloods(patient=self.patient)
         bb.exposure = "wheat"
         bb.save()
-        bb_result = bb.bloodbookresult_set.create(result="result")
+        bb_result = bb.bloodresult_set.create(result="result")
         bb.update_from_dict({
             "exposure": "wheat",
-            "bloodbookresult": [{
+            "bloodresult": [{
                 "id": bb_result.id,
                 "result": "other result"
             }]
         }, self.user)
-        bb_reloaded = BloodBook.objects.get()
+        bb_reloaded = Bloods.objects.get()
         self.assertEqual(
             bb_reloaded.exposure, "wheat"
         )
         self.assertEqual(
-            bb_reloaded.bloodbookresult_set.get().result,
+            bb_reloaded.bloodresult_set.get().result,
             "other result"
         )
 
     def test_cascade(self):
-        bb = BloodBook(patient=self.patient)
+        bb = Bloods(patient=self.patient)
         bb.exposure = "wheat"
         bb.save()
-        bb.bloodbookresult_set.create(result="result")
+        bb.bloodresult_set.create(result="result")
         bb.delete()
-        self.assertFalse(BloodBookResult.objects.exists())
+        self.assertFalse(BloodResult.objects.exists())
 
 
-class BloodBookResultTestCase(OpalTestCase):
+class BloodResultTestCase(OpalTestCase):
     def setUp(self):
         patient, _ = self.new_patient_and_episode_please()
-        bb = patient.bloodbook_set.create()
-        self.bb_result = bb.bloodbookresult_set.create()
+        bloods = patient.bloods_set.create()
+        self.blood_result = bloods.bloodresult_set.create()
 
     def test_not_significant(self):
-        self.assertFalse(self.bb_result.is_significant())
+        self.assertFalse(self.blood_result.is_significant())
 
     def test_significant_rast(self):
-        self.bb_result.rast = 2.0
-        self.assertTrue(self.bb_result.is_significant())
+        self.blood_result.rast = 2.0
+        self.assertTrue(self.blood_result.is_significant())
 
-        self.bb_result.rast = 1.99
-        self.assertFalse(self.bb_result.is_significant())
+        self.blood_result.rast = 1.99
+        self.assertFalse(self.blood_result.is_significant())
 
     def test_significant_precipitin(self):
-        self.bb_result.precipitin = "+ve"
-        self.assertTrue(self.bb_result.is_significant())
+        self.blood_result.precipitin = "+ve"
+        self.assertTrue(self.blood_result.is_significant())
 
-        self.bb_result.precipitin = "-ve"
-        self.assertFalse(self.bb_result.is_significant())
+        self.blood_result.precipitin = "-ve"
+        self.assertFalse(self.blood_result.is_significant())
 
     def test_significant_igg(self):
-        self.bb_result.igg = 2
-        self.assertTrue(self.bb_result.is_significant())
+        self.blood_result.igg = 2
+        self.assertTrue(self.blood_result.is_significant())
 
     def test_significant_kul(self):
-        self.bb_result.kul = "< 0.35"
-        self.assertFalse(self.bb_result.is_significant())
+        self.blood_result.kul = "< 0.35"
+        self.assertFalse(self.blood_result.is_significant())
 
-        self.bb_result.kul = "0.1"
-        self.assertFalse(self.bb_result.is_significant())
+        self.blood_result.kul = "0.1"
+        self.assertFalse(self.blood_result.is_significant())
 
-        self.bb_result.kul = "0.35"
-        self.assertTrue(self.bb_result.is_significant())
+        self.blood_result.kul = "0.35"
+        self.assertTrue(self.blood_result.is_significant())
 
-        self.bb_result.kul = "> 100"
-        self.assertTrue(self.bb_result.is_significant())
+        self.blood_result.kul = "> 100"
+        self.assertTrue(self.blood_result.is_significant())
 
-        self.bb_result.kul = "flawed"
-        self.assertFalse(self.bb_result.is_significant())
+        self.blood_result.kul = "flawed"
+        self.assertFalse(self.blood_result.is_significant())

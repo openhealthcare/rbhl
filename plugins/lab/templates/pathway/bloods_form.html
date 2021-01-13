@@ -1,35 +1,35 @@
 {% load forms %}
 <div pathway-step="{{ step.get_api_name }}">
-  <div ng-repeat="editing in [bloodBookTest]">
+  <div ng-repeat="editing in [bloodTest]">
     <!-- Blood information -->
     <div class="row">
       <div class="col-md-6">
         <div class="horizontal-form">
-          {% input field="BloodBook.blood_number" style="vertical" %}
+          {% input field="Bloods.blood_number" style="vertical" %}
         </div>
       </div>
       <div class="col-md-6">
         <div class="horizontal-form">
-          {% datepicker field="BloodBook.blood_taken" style="vertical" %}
+          {% datepicker field="Bloods.blood_taken" style="vertical" %}
         </div>
       </div>
     </div>
     <div class="row">
       <div class="col-md-6">
         <div class="horizontal-form">
-          {% datepicker field="BloodBook.blood_date" style="vertical" %}
+          {% datepicker field="Bloods.blood_date" style="vertical" %}
         </div>
       </div>
       <div class="col-md-6">
         <div class="horizontal-form">
-          {% checkbox field="BloodBook.store" style="vertical" %}
+          {% checkbox field="Bloods.store" style="vertical" %}
         </div>
       </div>
     </div>
     <div class="row">
       <div class="col-md-12">
         <div class="horizontal-form">
-          {% textarea field="BloodBook.comment" style="vertical" %}
+          {% textarea field="Bloods.comment" style="vertical" %}
         </div>
       </div>
     </div>
@@ -38,29 +38,29 @@
     <div class="row">
       <div class="col-md-4">
         <div class="horizontal-form">
-        {% input field="BloodBook.room" style="vertical" %}
+        {% input field="Bloods.room" style="vertical" %}
         </div>
       </div>
       <div class="col-md-4">
         <div class="horizontal-form">
-        {% input field="BloodBook.freezer" style="vertical" %}
+        {% input field="Bloods.freezer" style="vertical" %}
         </div>
       </div>
       <div class="col-md-4">
         <div class="horizontal-form">
-        {% input field="BloodBook.shelf" style="vertical" %}
+        {% input field="Bloods.shelf" style="vertical" %}
         </div>
       </div>
     </div>
     <div class="row">
       <div class="col-md-4">
         <div class="horizontal-form">
-        {% input field="BloodBook.tray" style="vertical" %}
+        {% input field="Bloods.tray" style="vertical" %}
         </div>
       </div>
       <div class="col-md-4">
         <div class="horizontal-form">
-        {% input field="BloodBook.vials" style="vertical" %}
+        {% input field="Bloods.vials" style="vertical" %}
         </div>
       </div>
     </div>
@@ -69,12 +69,12 @@
     <div class="row">
       <div class="col-md-6">
         <div class="horizontal-form">
-          {% input field="BloodBook.assayno" style="vertical" %}
+          {% input field="Bloods.assayno" style="vertical" %}
         </div>
       </div>
       <div class="col-md-6">
         <div class="horizontal-form">
-          {% datepicker field="BloodBook.assay_date" style="vertical" %}
+          {% datepicker field="Bloods.assay_date" style="vertical" %}
         </div>
       </div>
     </div>
@@ -84,12 +84,12 @@
     <div class="row">
       <div class="col-md-6">
         <div class="horizontal-form">
-          {% datepicker field="BloodBook.report_dt" style="vertical" %}
+          {% datepicker field="Bloods.report_dt" style="vertical" %}
         </div>
       </div>
       <div class="col-md-6">
         <div class="horizontal-form">
-          {% datepicker field="BloodBook.report_st" style="vertical" %}
+          {% datepicker field="Bloods.report_st" style="vertical" %}
         </div>
       </div>
     </div>
@@ -99,19 +99,19 @@
     <div class="row">
       <div class="col-md-6">
         <div class="horizontal-form">
-          {% input field="BloodBook.exposure" style="vertical" %}
+          {% input field="Bloods.exposure" style="vertical" %}
         </div>
       </div>
       <div class="col-md-6">
         <div class="horizontal-form">
-          {% select field="BloodBook.method" style="vertical" %}
+          {% select field="Bloods.method" style="vertical" %}
         </div>
       </div>
     </div>
     <div class="row">
       <div class="col-md-6">
         <div class="horizontal-form">
-          {% select field="BloodBook.antigen_type" style="vertical" %}
+          {% select field="Bloods.antigen_type" style="vertical" %}
         </div>
       </div>
     </div>
@@ -123,7 +123,7 @@
       <h2>Results <small><i class="fa pointer fa-plus-circle" ng-click="addResult()"></i></small></h2>
       </div>
     </div>
-    <div class="row" ng-show="!editing.blood_book.bloodbookresult.length">
+    <div class="row" ng-show="!editing.bloods.bloodresult.length">
       <div class="col-md-12 text-center">
         <h1 class="text-muted">No results recorded</h1>
       </div>
@@ -133,7 +133,7 @@
           [[ match.model.name ]] ([[ match.model.code ]])
       </a>
     </script>
-    <div ng-repeat="result in editing.blood_book.bloodbookresult">
+    <div ng-repeat="result in editing.bloods.bloodresult">
       <div class="row">
         <div class="col-md-2">
           <div class="col-md-12">
@@ -224,7 +224,7 @@
   </div>
   <div class="row">
     <div class="col-md-6">
-      <button ng-show="bloodBookTest.blood_book.id" class="btn btn-lg btn-secondary btn-delete"
+      <button ng-show="bloodTest.bloods.id" class="btn btn-lg btn-secondary btn-delete"
       ng-click="delete()"
       >
         <i class="fa fa-trash-o"></i>

@@ -144,7 +144,7 @@ Lab report
           </tr>
         </thead>
         <tbody>
-          {% for result in object.bloodbookresult_set.all %}
+          {% for result in object.bloodresult_set.all %}
           {# For int/float fields make sure they show if they are 0 #}
           {% if result.kul or result.rast is not None or result.rast_score is not None or result.precipitin or result.igg is not None %}
           <tr>

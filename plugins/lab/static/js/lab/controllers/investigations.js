@@ -10,7 +10,7 @@ angular.module('opal.controllers').controller('InvestigationsView', function($sc
       allDates = allDates.concat(_.pluck($scope.episode[key], 'date'));
     });
 
-    allDates = allDates.concat(_.pluck($scope.episode.blood_book, "blood_date"));
+    allDates = allDates.concat(_.pluck($scope.episode.bloods, "blood_date"));
 
     allDates = _.sortBy(allDates,function(someDate){
       if(!someDate){
@@ -28,7 +28,7 @@ angular.module('opal.controllers').controller('InvestigationsView', function($sc
     * all tests for that day.
     */
     var tests;
-    if(testType == "blood_book"){
+    if(testType == "bloods"){
       var bb_tests = _.filter($scope.episode[testType], function(test){
         return displayDateFilter(test.blood_date) === dateKey;
       });
@@ -56,16 +56,16 @@ angular.module('opal.controllers').controller('InvestigationsView', function($sc
     return result;
   }
 
-  this.combineBloodBookResultResults = function(bloodBookResults){
+  this.combineBloodResultResults = function(bloodResults){
     /*
-    * The blood book result.result used to be a generic term for a
+    * The bloods result.result used to be a generic term for a
     * free text input of all lab test information.
     *
     * This means every result for a field with a 'result' value
     * is of type result, to stop a list of result result result
     * lets combine them all.
     */
-    var allResults = _.pluck(bloodBookResults, "result");
+    var allResults = _.pluck(bloodResults, "result");
     return _.filter(allResults, function(i){
       return i && i.length
     }).sort();
