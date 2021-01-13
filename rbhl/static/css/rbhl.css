@@ -700,6 +700,11 @@ h1.static-title i {
   @page {
     margin-top: 1cm;
     margin-bottom: 1cm;
+    svg {
+      -o-object-fit: contain;
+         object-fit: contain;
+      page-break-inside: avoid;
+    }
   }
 }
 /*# sourceMappingURL=rbhl.css.map */
