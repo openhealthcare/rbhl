@@ -1,4 +1,4 @@
-from legacy.models import Allergen
+from plugins.lab.models import Allergen
 from opal.core import metadata
 
 

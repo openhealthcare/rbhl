@@ -10,7 +10,7 @@
     </div>
     <div class="panel-body">
       <div class="row">
-        {% add_button models.BloodBook link="/pathway/#/blood_book/[[ patient.id ]]/[[ episode.id ]]" %}
+        {% add_button models.Bloods link="/pathway/#/bloods/[[ patient.id ]]/[[ episode.id ]]" %}
         {% add_button models.Spirometry %}
         {% add_button models.SkinPrickTest link="/pathway/#/skin_prick_test/[[ patient.id ]]/[[ episode.id ]]?new=1" %}
         {% add_button models.BronchialTest %}
@@ -19,15 +19,15 @@
       <div class="row content-offset-25">
         <ul ng-controller="InvestigationsView as investigationsView" class="list-group">
           <li ng-repeat="testDate in investigationsView.getTestDateKeys()">
-            <div ng-show="investigationsView.getTestsForDateKey('{{ models.BloodBook.get_api_name }}', testDate).length">
+            <div ng-show="investigationsView.getTestsForDateKey('{{ models.Bloods.get_api_name }}', testDate).length">
               <div class="row">
                 <div class="col-md-3">
-                  <strong style="text-transform: uppercase">{{ models.BloodBook.get_display_name }}</strong>
+                  <strong style="text-transform: uppercase">{{ models.Bloods.get_display_name }}</strong>
                   <br />[[ testDate ]]
                 </div>
               </div>
             </div>
-            <div ng-repeat="item in investigationsView.getTestsForDateKey('{{ models.BloodBook.get_api_name }}', testDate) track by $index">
+            <div ng-repeat="item in investigationsView.getTestsForDateKey('{{ models.Bloods.get_api_name }}', testDate) track by $index">
               <div class="row test-row">
                 <div class="col-md-3">
                   [[ item.exposure ]] [[ item.method ]]
@@ -35,10 +35,10 @@
                 <div class="col-md-8">
                   <div class="row">
                     <div class="col-md-8">
-                      {% include models.BloodBook.get_display_template %}
+                      {% include models.Bloods.get_display_template %}
                     </div>
                     <div class="col-md-2">
-                      <a href="/pathway/#/blood_book/[[ patient.id ]]/[[ episode.id ]]?id=[[ item.id ]]"><i class="fa fa-pencil edit pull-right pointer"></i></a>
+                      <a href="/pathway/#/bloods/[[ patient.id ]]/[[ episode.id ]]?id=[[ item.id ]]"><i class="fa fa-pencil edit pull-right pointer"></i></a>
                       <a target="_blank" href="/lab-report/[[ item.id ]]/">
                         <i class="fa fa-eye edit pull-right pointer">
                         </i>
