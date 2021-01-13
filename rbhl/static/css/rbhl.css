@@ -90,7 +90,7 @@ a {
   top: 60px;
   position: absolute;
   left: calc(16.66667% + 20px);
-  width: calc(100% - 16.66667% - 20px);
+  width: calc(100% - 16.66667% - 80px);
 }
 
 @media print {
