@@ -148,7 +148,7 @@ class Command(BaseCommand):
         Details.geographical_area or Details.geographical_area_other ->
             Referral.geographical_area
         Details.is_smoker = SocialHistory.smoker
-        Details.smokes_per_day = SocialHistory.cigerettes_per_day
+        Details.smokes_per_day = SocialHistory.cigarettes_per_day
         """
         episode = patient.episode_set.first()
         details = patient.details_set.all()[0]
@@ -249,9 +249,9 @@ class Command(BaseCommand):
                 else:
                     social_history.smoker = details.is_smoker
 
-        if not social_history.cigerettes_per_day:
+        if not social_history.cigarettes_per_day:
             if details.smokes_per_day:
-                social_history.cigerettes_per_day = details.smokes_per_day
+                social_history.cigarettes_per_day = details.smokes_per_day
         social_history.save()
 
     def build_suspect_occupational_category(self, patientLUT, rows):
