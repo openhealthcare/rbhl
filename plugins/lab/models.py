@@ -162,6 +162,9 @@ class Bloods(RbhlSubrecord, models.PatientSubrecord):
     report_st          = fields.DateField(
         blank=True, null=True, verbose_name="Report submitted"
     )
+    authorised_by      = fields.CharField(
+        blank=True, null=True, max_length=255
+    )
     store              = fields.NullBooleanField()
     exposure           = models.ForeignKeyOrFreeText(Exposure)
     antigen_date       = fields.DateField(blank=True, null=True)
