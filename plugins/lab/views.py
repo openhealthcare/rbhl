@@ -54,7 +54,7 @@ class RecentlyRecievedSamples(ListView):
 
     def get_querset(self, *args, **kwargs):
         two_months_ago = timezone.now() - datetime.timedelta(60)
-        return Bloods.objects.filter(bloodresult=None).exclude(
+        return Bloods.objects.filter(
             blood_date__gte=two_months_ago.date()
         ).prefetch_related(
             "patient__demographics_set"
