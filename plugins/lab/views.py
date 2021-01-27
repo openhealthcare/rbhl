@@ -81,7 +81,7 @@ class RecentlyRecievedSamples(ListView):
             rows.append({
                 "Name": instance.patient.demographics_set.all()[0].name,
                 "OH Provider": oh_provider,
-                "Their ref number": ref_number,
+                "Their ref number": ref_number or "",
                 "Blood number": instance.blood_number,
                 "Exposure": instance.exposure,
                 "Sample received": instance.blood_date or "",
