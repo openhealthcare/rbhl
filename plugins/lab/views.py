@@ -96,6 +96,13 @@ class RecentlyRecievedSamples(ListView):
             if order_param.startswith("-"):
                 reverse = True
                 order_param = order_param.lstrip("-")
+            if order_param in ["Sample received", "Report submitted"]:
+                min_date = datetime.datetime.min.date()
+                # you can't sort by a mix of datetime and None, make None become
+                # datetime.datetime.min for the purposese of sorting
+                return sorted(
+                    rows, key=lambda x: x[order_param] or min_date, reverse=reverse
+                )
             return sorted(rows, key=lambda x: x[order_param], reverse=reverse)
         return rows
 
