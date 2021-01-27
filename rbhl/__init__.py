@@ -71,6 +71,12 @@ class Application(application.OpalApplication):
                             href=reverse('unresulted-list'),
                             display=('Unresulted samples'),
                             icon="fa-table"
+                        ),
+                        menus.MenuItem(
+                            activepattern=reverse('recently-recieved-samples-list'),
+                            href=reverse('recently-recieved-samples-list'),
+                            display=('Recently received samples'),
+                            icon="fa-table"
                         )
                     ]
                 else:
