@@ -125,8 +125,8 @@ class Exposure(lookuplists.LookupList):
 
 
 class Bloods(RbhlSubrecord, models.PatientSubrecord):
-    _exclude_from_extract = True
-    _advanced_searchable = False
+    _exclude_from_extract = False
+    _advanced_searchable = True
 
     ANTIGEN_TYPE = enum("STANDARD", "BESPOKE")
     METHODS = enum(
