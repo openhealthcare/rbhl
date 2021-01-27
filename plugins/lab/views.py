@@ -78,8 +78,10 @@ class RecentlyRecievedSamples(ListView):
                 oh_provider = employer.oh_provider
             if referral:
                 ref_number = referral.reference_number
+            demographics = instance.patient.demographics_set.all()[0]
             rows.append({
-                "Name": instance.patient.demographics_set.all()[0].name,
+                "Name": demographics.name,
+                "Hospital number": demographics.hospital_number,
                 "OH Provider": oh_provider,
                 "Their ref number": ref_number or "",
                 "Blood number": instance.blood_number,
