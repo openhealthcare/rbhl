@@ -1,5 +1,8 @@
-from django.utils import timezone
+import csv
 import datetime
+import io
+from django.http import HttpResponse
+from django.utils import timezone
 from django.views.generic import ListView, DetailView
 from plugins.lab.models import Bloods
 
@@ -52,7 +55,22 @@ class RecentlyRecievedSamples(ListView):
     model = Bloods
     template_name = 'patient_lists/recently_received_samples.html'
 
-    def get_querset(self, *args, **kwargs):
+    def post(self, *args, **kwargs):
+        qs = self.get_queryset()
+        rows = self.get_rows(qs)
+        for row in rows:
+            row.pop("patient_id")
+        buffer = io.StringIO()
+        if rows:
+            wr = csv.DictWriter(buffer, fieldnames=rows[0].keys())
+            wr.writeheader()
+            wr.writerows(rows)
+            buffer.seek(0)
+        resp = HttpResponse(buffer, content_type='text/csv')
+        resp['Content-Disposition'] = 'attachment; filename=recent_samples.csv'
+        return resp
+
+    def get_queryset(self, *args, **kwargs):
         two_months_ago = timezone.now() - datetime.timedelta(60)
         return Bloods.objects.filter(
             blood_date__gte=two_months_ago.date()
