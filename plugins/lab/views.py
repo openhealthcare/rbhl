@@ -72,7 +72,7 @@ class RecentlyRecievedSamples(ListView):
             episode = list(instance.patient.episode_set.all())[-1]
             referral = episode.referral_set.last()
             rows.append({
-                "Name": instance.patient.demographics_set.all().name,
+                "Name": instance.patient.demographics_set.all()[0].name,
                 "OH Provider": referral.oh_provider,
                 "Their ref number": referral.reference_number,
                 "Blood number": instance.blood_number,
