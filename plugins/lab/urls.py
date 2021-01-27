@@ -16,6 +16,11 @@ urlpatterns = [
         name="your-recently-resulted-list"
     ),
     url(
+        r'^patient-lists/recently-recieved-samples-list/$',
+        views.RecentlyRecievedSamples.as_view(),
+        name="recently-recieved-samples-list"
+    ),
+    url(
         r'^lab-report/(?P<pk>\d+)/$',
         views.LabReport.as_view(),
         name="lab-report"
