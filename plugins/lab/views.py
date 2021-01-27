@@ -84,8 +84,8 @@ class RecentlyRecievedSamples(ListView):
                 "Their ref number": ref_number,
                 "Blood number": instance.blood_number,
                 "Exposure": instance.exposure,
-                "Sample received": instance.blood_date,
-                "Report submitted": instance.report_st,
+                "Sample received": instance.blood_date or "",
+                "Report submitted": instance.report_st or "",
                 "patient_id": instance.patient_id
             })
 
