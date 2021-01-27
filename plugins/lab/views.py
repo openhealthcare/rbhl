@@ -71,9 +71,10 @@ class RecentlyRecievedSamples(ListView):
         for instance in queryset:
             episode = list(instance.patient.episode_set.all())[-1]
             referral = episode.referral_set.last()
+            employer = episode.employment_set.last()
             rows.append({
                 "Name": instance.patient.demographics_set.all()[0].name,
-                "OH Provider": referral.oh_provider,
+                "OH Provider": employer.oh_provider,
                 "Their ref number": referral.reference_number,
                 "Blood number": instance.blood_number,
                 "Exposure": instance.exposure,
