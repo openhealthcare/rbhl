@@ -16,10 +16,11 @@
               [[ result.first_name ]] [[ result.surname ]] [[ result.hospitalNumber ]]
             </a>
             <a ng-show="!result.first_name && !result.surname && !result.hospitalNumber" class="orange-link" ng-href="[[ result.link ]]">
-              No name entered
+              Lab patient
             </a>
           </h4>
           <span ng-show="result.dateOfBirth">
+            Indigo id: [[ result.patientId ]]
             ([[ result.dateOfBirth | displayDate ]])
           </span>
         </div>
