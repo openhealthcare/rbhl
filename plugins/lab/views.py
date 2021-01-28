@@ -59,10 +59,18 @@ class RecentlyRecievedSamples(ListView):
         qs = self.get_queryset()
         rows = self.get_rows(qs)
         for row in rows:
-            row.pop("patient_id")
+            patient_id = row.pop("patient_id")
+            row["indigo link"] = "{}://{}/#/patient/{}".format(
+                self.request.scheme,
+                self.request.get_host(),
+                patient_id
+            )
         buffer = io.StringIO()
         if rows:
-            wr = csv.DictWriter(buffer, fieldnames=rows[0].keys())
+            field_names = list(rows[0].keys())
+            field_names.remove("indigo link")
+            field_names.insert(0, "indigo link")
+            wr = csv.DictWriter(buffer, fieldnames=field_names)
             wr.writeheader()
             wr.writerows(rows)
             buffer.seek(0)
