@@ -75,7 +75,7 @@ class Application(application.OpalApplication):
                         menus.MenuItem(
                             activepattern=reverse('recently-recieved-samples-list'),
                             href=reverse('recently-recieved-samples-list'),
-                            display=('Recently received samples'),
+                            display=('Recent samples'),
                             icon="fa-table"
                         )
                     ]
