@@ -1,4 +1,4 @@
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, TemplateView
 from plugins.lab.models import Bloods
 
 
@@ -49,3 +49,7 @@ class YourRecentlyResultedList(ListView):
 class LabReport(DetailView):
     model = Bloods
     template_name = "lab_report.html"
+
+
+class LabOverview(TemplateView):
+    template_name = "stats/lab_overview.html"
