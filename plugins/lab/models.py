@@ -205,6 +205,9 @@ class Bloods(RbhlSubrecord, models.PatientSubrecord):
                 result = BloodResult(bloods=self)
             result.update_from_dict(result_dict)
 
+    def get_employment(self):
+        return self.patient.episode_set.last().employment_set.last()
+
 
 class BloodResult(fields.Model):
     _exclude_from_extract = True

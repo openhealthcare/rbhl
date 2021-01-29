@@ -7,14 +7,35 @@ Lab overview
   <div class="row">
     <div style="padding-right: 90px;" class="col-md-12">
       <div id="six-month-line-graph">
-        hello
       </div>
     </div>
   </div>
   <div class="row">
     <div class="col-md-12">
-      <table class="table">
-
+      <table class="table content-offset">
+        <tr>
+          <th></th>
+          {% for start_date, _ in view.date_ranges %}
+          <th>{{ start_date.month }}/{{ start_date.year }}</th>
+          {% endfor %}
+        </tr>
+        {{ table_data.3 }}
+        {% for row_set in table_data %}
+          {% for row_type, rows in row_set.items %}
+          <tr>
+            <td>{{ row_type }}</td>
+            {% for row in rows.values %}
+            <td {% if not row %}class="text-muted"{% endif %}>{{ row }}</td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+          <tr>
+            <td>&nbsp</td>
+            {% for _ in view.date_ranges %}
+            <td>&nbsp</td>
+            {% endfor %}
+          </tr>
+        {% endfor %}
       </table>
     </div>
   </div>
@@ -24,11 +45,7 @@ c3.generate({
   bindto: '#six-month-line-graph',
   data: {
     x: 'x',
-    columns: [
-        ['x', '2020-07-01', '2020-08-01', '2020-09-01', '2020-10-01', '2020-11-01', '2020-12-01'],
-        ['Number of samples received', 12, 34, 36, 12, 11, 20],
-        ['Number of tests assayed', 31, 66, 74, 20, 27, 33]
-    ]
+    columns: {{ graph_data | safe }}
   },
   axis: {
       x: {
