@@ -19,5 +19,10 @@ urlpatterns = [
         r'^lab-report/(?P<pk>\d+)/$',
         views.LabReport.as_view(),
         name="lab-report"
+    ),
+    url(
+        r'^six-month-stats/$',
+        views.LabOverview.as_view(),
+        name="six-month-stats"
     )
 ]

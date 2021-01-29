@@ -1,0 +1,43 @@
+{% extends 'static_base.html' %}
+{% block title %}
+Lab overview
+{% endblock %}
+{% block page_content %}
+<div class="container-fluid">
+  <div class="row">
+    <div style="padding-right: 90px;" class="col-md-12">
+      <div id="six-month-line-graph">
+        hello
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <table class="table">
+
+      </table>
+    </div>
+  </div>
+</div>
+<script>
+c3.generate({
+  bindto: '#six-month-line-graph',
+  data: {
+    x: 'x',
+    columns: [
+        ['x', '2020-07-01', '2020-08-01', '2020-09-01', '2020-10-01', '2020-11-01', '2020-12-01'],
+        ['Number of samples received', 12, 34, 36, 12, 11, 20],
+        ['Number of tests assayed', 31, 66, 74, 20, 27, 33]
+    ]
+  },
+  axis: {
+      x: {
+          type: 'timeseries',
+          tick: {
+              format: '%m/%Y'
+          }
+      }
+  }
+});
+</script>
+{% endblock %}

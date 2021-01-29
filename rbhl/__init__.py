@@ -71,6 +71,12 @@ class Application(application.OpalApplication):
                             href=reverse('unresulted-list'),
                             display=('Unresulted samples'),
                             icon="fa-table"
+                        ),
+                        menus.MenuItem(
+                            activepattern=reverse('six-month-stats'),
+                            href=reverse('six-month-stats'),
+                            display=('Lab stats'),
+                            icon="fa-bar-chart"
                         )
                     ]
                 else:
