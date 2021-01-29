@@ -109,6 +109,7 @@ class RecentlyRecievedSamples(ListView):
                 "Name": demographics.name,
                 "Hospital number": demographics.hospital_number,
                 "OH Provider": oh_provider,
+                "Employer": employer.employer,
                 "Their ref number": ref_number or "",
                 "Blood number": instance.blood_number,
                 "Exposure": instance.exposure,
