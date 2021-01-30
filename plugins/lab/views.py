@@ -139,8 +139,8 @@ class LabOverview(TemplateView):
         and number of blood results created
         """
         date_ranges = self.date_ranges
-        number_of_samples_received = {}
-        number_of_tests_assayed = {}
+        number_of_samples_received = {"name": "Number of samples received"}
+        number_of_tests_assayed = {"name": "Number of tests assayed"}
         for month_start, month_end in date_ranges:
             my = f"{month_start.month}/{month_start.year}"
 
@@ -154,10 +154,8 @@ class LabOverview(TemplateView):
                 bloods__blood_date__lt=month_end
             ).count()
 
-        return {
-            "Number of samples received": number_of_samples_received,
-            "Number of tests assayed": number_of_tests_assayed
-        }
+        rows = [number_of_samples_received, number_of_tests_assayed]
+        return rows
 
     def get_requests_by_exposure(self):
         """
@@ -180,12 +178,13 @@ class LabOverview(TemplateView):
             by_month[my] = by_exposure
 
         exposures = sorted(list(exposures))
-        result = {}
+        rows = []
         for exposure in exposures:
-            result[exposure] = {
-                dt: by_exposure[exposure] for dt, by_exposure in by_month.items()
-            }
-        return result
+            row = {"name": exposure}
+            for dt, by_exposure in by_month.items():
+                row[dt] = by_exposure[exposure]
+            rows.append(row)
+        return rows
 
     def get_requests_by_oh_provider(self):
         """
@@ -216,14 +215,13 @@ class LabOverview(TemplateView):
                 oh_providers.add(employer_referrer)
             by_month[my] = by_provider
         oh_providers = sorted(list(oh_providers))
-        result = {}
-
-        result = {}
+        rows = []
         for oh_provider in oh_providers:
-            result[oh_provider] = {
-                dt: by_provider[oh_provider] for dt, by_provider in by_month.items()
-            }
-        return result
+            row = {"name": oh_provider}
+            for dt, by_provider in by_month.items():
+                row[dt] = by_provider[oh_provider]
+            rows.append(row)
+        return rows
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
@@ -234,9 +232,22 @@ class LabOverview(TemplateView):
             self.get_requests_by_oh_provider()
         ]
         graph_data = [["x"] + [i[0].strftime("%Y-%m-%d") for i in self.date_ranges]]
-        for k, v in overview.items():
-            graph_data.append(
-                [k] + list(v.values())
-            )
+        graph_data.extend([list(i.values()) for i in overview])
         ctx["graph_data"] = json.dumps(graph_data)
         return ctx
+
+    def post(self, *args, **kwargs):
+        zip_file_name = "lab_summary.zip"
+        with ZipCsvWriter(zip_file_name) as zf:
+            zf.write_csv(
+                "overview.csv", self.get_overview()
+            )
+            zf.write_csv(
+                "requests_by_exposure.csv",
+                self.get_requests_by_exposure()
+            )
+            zf.write_csv(
+                "requests_by_oh_provider.csv",
+                self.get_requests_by_oh_provider()
+            )
+        return zip_file_to_response(zf.name)
