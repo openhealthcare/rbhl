@@ -30,8 +30,8 @@ class ZipCsvWriter:
 
     def __enter__(self):
         temp_dir = tempfile.mkdtemp()
-        zip_file = os.path.join(temp_dir, f'{self.folder_name}')
-        self.zipfile = zipfile.ZipFile(zip_file, mode='w')
+        self.zip_file_name = os.path.join(temp_dir, f'{self.folder_name}')
+        self.zipfile = zipfile.ZipFile(self.zip_file_name, mode='w')
         return self
 
     def write_csv(self, file_name, list_of_dicts):
@@ -40,10 +40,15 @@ class ZipCsvWriter:
         if list_of_dicts:
             headers = list_of_dicts[0].keys()
             wr = csv.DictWriter(
-                buffer, field_names=headers
+                buffer, fieldnames=headers
             )
+            wr.writeheader()
             wr.writerows(list_of_dicts)
-        self.zipfile.writestr(file_name, buffer.get_value())
+        self.zipfile.writestr(file_name, buffer.getvalue())
+
+    @property
+    def name(self):
+        return self.zip_file_name
 
     def __exit__(self, *args):
         self.zipfile.close()
@@ -135,26 +140,33 @@ class LabOverview(TemplateView):
 
     def get_overview(self):
         """
-        Number of distinct blood numbers received
+        Number of distinct blood numbers received,
+        Number of blood numbers exposures tested,
         and number of blood results created
         """
         date_ranges = self.date_ranges
         number_of_samples_received = {"name": "Number of samples received"}
+        number_of_exposures = {"name": "Number of exposures tests on samples"}
         number_of_tests_assayed = {"name": "Number of tests assayed"}
         for month_start, month_end in date_ranges:
             my = f"{month_start.month}/{month_start.year}"
 
-            number_of_samples_received[my] = len(set(Bloods.objects.filter(
+            bloods = Bloods.objects.filter(
                 blood_date__gte=month_start,
                 blood_date__lt=month_end
-            ).values_list("blood_number").distinct()))
-
+            )
+            number_of_samples_received[my] = len(set([i.blood_number for i in bloods]))
+            number_of_exposures[my] = len(
+                set([(i.blood_number, i.exposure,) for i in bloods])
+            )
             number_of_tests_assayed[my] = BloodResult.objects.filter(
                 bloods__blood_date__gte=month_start,
                 bloods__blood_date__lt=month_end
             ).count()
 
-        rows = [number_of_samples_received, number_of_tests_assayed]
+        rows = [
+            number_of_samples_received, number_of_exposures, number_of_tests_assayed
+        ]
         return rows
 
     def get_requests_by_exposure(self):
@@ -239,15 +251,13 @@ class LabOverview(TemplateView):
     def post(self, *args, **kwargs):
         zip_file_name = "lab_summary.zip"
         with ZipCsvWriter(zip_file_name) as zf:
+            rows = []
+            rows.extend(self.get_overview())
+            rows.append({})
+            rows.extend(self.get_requests_by_exposure())
+            rows.append({})
+            rows.extend(self.get_requests_by_oh_provider())
             zf.write_csv(
-                "overview.csv", self.get_overview()
-            )
-            zf.write_csv(
-                "requests_by_exposure.csv",
-                self.get_requests_by_exposure()
-            )
-            zf.write_csv(
-                "requests_by_oh_provider.csv",
-                self.get_requests_by_oh_provider()
+                "lab_summary.csv", rows
             )
         return zip_file_to_response(zf.name)
