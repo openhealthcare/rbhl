@@ -21,9 +21,8 @@ Lab overview
         </tr>
         {{ table_data.3 }}
         {% for row_set in table_data %}
-          {% for row_type, rows in row_set.items %}
+          {% for rows in row_set %}
           <tr>
-            <td>{{ row_type }}</td>
             {% for row in rows.values %}
             <td {% if not row %}class="text-muted"{% endif %}>{{ row }}</td>
             {% endfor %}
