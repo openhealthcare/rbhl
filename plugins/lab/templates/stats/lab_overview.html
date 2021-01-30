@@ -38,6 +38,17 @@ Lab overview
       </table>
     </div>
   </div>
+  <div class="row">
+    <div class="col-md-12 text-center content-offset-below">
+      <form method="post" target="_blank">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-secondary btn-lg">
+          <span class="glyphicon glyphicon-download"></span>
+          Download this data
+        </button>
+      </form>
+    </div>
+  </div>
 </div>
 <script>
 c3.generate({
