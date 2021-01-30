@@ -1,10 +1,63 @@
 import datetime
 import json
+import tempfile
+import zipfile
+import os
+import csv
+import io
+from pathlib import Path
 from collections import defaultdict
+from django.http import HttpResponse
 from django.utils.functional import cached_property
 from django.views.generic import ListView, DetailView, TemplateView
 from dateutil.relativedelta import relativedelta
 from plugins.lab.models import BloodResult, Bloods
+
+
+class ZipCsvWriter:
+    """
+    Write a list of dicts to a zip file
+
+    example code
+
+    with ZipCsvWriter("extract01092020") as z:
+        z.write_csv("allergens.cvs", [{"allergen": "flour"}])
+
+    return z.name
+    """
+    def __init__(self, folder_name):
+        self.folder_name = folder_name
+
+    def __enter__(self):
+        temp_dir = tempfile.mkdtemp()
+        zip_file = os.path.join(temp_dir, f'{self.folder_name}')
+        self.zipfile = zipfile.ZipFile(zip_file, mode='w')
+        return self
+
+    def write_csv(self, file_name, list_of_dicts):
+        buffer = io.StringIO()
+        wr = None
+        if list_of_dicts:
+            headers = list_of_dicts[0].keys()
+            wr = csv.DictWriter(
+                buffer, field_names=headers
+            )
+            wr.writerows(list_of_dicts)
+        self.zipfile.writestr(file_name, buffer.get_value())
+
+    def __exit__(self, *args):
+        self.zipfile.close()
+
+
+def zip_file_to_response(file_with_path):
+    with open(file_with_path, 'rb') as download:
+        content = download.read()
+
+    file_name = Path(file_with_path).name
+    resp = HttpResponse(content)
+    disp = f'attachment; filename="{file_name}"'
+    resp['Content-Disposition'] = disp
+    return resp
 
 
 class UnresultedList(ListView):
