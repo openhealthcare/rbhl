@@ -4,7 +4,8 @@ Lab overview
 {% endblock %}
 {% block page_content %}
 <div class="container-fluid">
-  <div class="row">
+  {% include 'partials/lab_stats_menu.html' %}
+  <div class="row content-offset">
     <div style="padding-right: 90px;" class="col-md-12">
       <div id="six-month-line-graph">
       </div>
@@ -19,7 +20,6 @@ Lab overview
           <th>{{ start_date.month }}/{{ start_date.year }}</th>
           {% endfor %}
         </tr>
-        {{ table_data.3 }}
         {% for row_set in table_data %}
           {% for rows in row_set %}
           <tr>

@@ -114,7 +114,16 @@ class LabReport(DetailView):
     template_name = "lab_report.html"
 
 
-class LabOverview(TemplateView):
+class AbstractLabStatsPage(TemplateView):
+    def menu_dates(self):
+        result = []
+        today = datetime.date.today()
+        for i in reversed(range(3)):
+            result.append(today - relativedelta(months=i+1))
+        return result
+
+
+class LabOverview(AbstractLabStatsPage):
     template_name = "stats/lab_overview.html"
 
     @cached_property
@@ -246,6 +255,9 @@ class LabOverview(TemplateView):
         graph_data = [["x"] + [i[0].strftime("%Y-%m-%d") for i in self.date_ranges]]
         graph_data.extend([list(i.values()) for i in overview])
         ctx["graph_data"] = json.dumps(graph_data)
+        menu_dates = self.date_ranges[-3:]
+        menu_dates.reverse()
+        ctx["menu_dates"] = [month[0] for month in menu_dates]
         return ctx
 
     def post(self, *args, **kwargs):
@@ -261,3 +273,40 @@ class LabOverview(TemplateView):
                 "lab_summary.csv", rows
             )
         return zip_file_to_response(zf.name)
+
+
+class LabMonthReview(AbstractLabStatsPage):
+    template_name = "stats/lab_month_review.html"
+
+    def get_rows(self, month, year):
+        bloods = Bloods.objects.filter(blood_date__month=month).filter(
+            blood_date__year=year
+        ).order_by("blood_date")
+        result = []
+        for blood in bloods:
+            row = {
+                "Sample received": blood.blood_date,
+                "Referrer name": blood.get_referral().referrer_name,
+                "Blood num": blood.blood_number,
+                "Employer": blood.get_employment().employer,
+                "Exposure": blood.exposure,
+                "Allergens": ", ".join(
+                    sorted(list({i.allergen for i in blood.bloodresult_set.all()}))
+                ),
+                "Report Submitted": blood.report_st,
+                "Num tests": blood.bloodresult_set.count(),
+            }
+            if blood.report_st and blood.blood_date:
+                row["Days"] = (blood.report_st - blood.blood_date).days
+            else:
+                row["Days"] = ""
+            result.append(row)
+        return result
+
+    def get_context_data(self, *args, **kwargs):
+        ctx = super().get_context_data(*args, **kwargs)
+        year = int(kwargs["year"])
+        month = int(kwargs["month"])
+        ctx["date"] = datetime.date(year, month, 1)
+        ctx["rows"] = self.get_rows(month, year)
+        return ctx

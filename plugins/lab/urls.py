@@ -24,5 +24,10 @@ urlpatterns = [
         r'^six-month-stats/$',
         views.LabOverview.as_view(),
         name="six-month-stats"
+    ),
+    url(
+        r'^lab-month-review/(?P<year>\d+)/(?P<month>\d+)$',
+        views.LabMonthReview.as_view(),
+        name="lab-month-review"
     )
 ]
