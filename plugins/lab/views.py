@@ -234,7 +234,7 @@ class LabOverview(AbstractLabStatsPage):
                 elif employment:
                     employer_referrer = employment.employer or employment.oh_provider
                 else:
-                    employer_referrer = ""
+                    employer_referrer = "None entered"
                 by_provider[employer_referrer] += 1
                 oh_providers.add(employer_referrer)
             by_month[my] = by_provider
