@@ -609,6 +609,7 @@ input[type="date"]::-webkit-input-placeholder{
     position: absolute;
     top: 53px;
     right: 28px;
+    z-index: 10;
 
     .btn{
         padding: 0px 20px; margin-top: 4px;
