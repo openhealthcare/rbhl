@@ -289,15 +289,16 @@ class LabOverview(AbstractLabStatsPage):
                 blood_date__lt=month_end
             )
             for blood in bloods:
-                by_exposure[blood.exposure] += 1
-                exposures.add(blood.exposure)
+                exposure = blood.exposure
+                if not exposure:
+                    exposure = "No exposure"
+                by_exposure[exposure] += 1
+                exposures.add(exposure)
             by_month[my] = by_exposure
 
         exposures = sorted(list(exposures))
         rows = []
         for exposure in exposures:
-            if not exposure:
-                exposure = "No exposure"
             row = {"name": exposure}
             for dt, by_exposure in by_month.items():
                 row[dt] = by_exposure[exposure]
@@ -330,7 +331,7 @@ class LabOverview(AbstractLabStatsPage):
                 elif employment:
                     employer_referrer = employment.employer or employment.oh_provider
                 else:
-                    employer_referrer = "None entered"
+                    employer_referrer = "No employer"
                 by_provider[employer_referrer] += 1
                 oh_providers.add(employer_referrer)
             by_month[my] = by_provider
