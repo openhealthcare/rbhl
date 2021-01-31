@@ -323,7 +323,7 @@ class LabOverview(AbstractLabStatsPage):
                 elif employment:
                     employer_referrer = employment.employer or employment.oh_provider
                 else:
-                    employer_referrer = ""
+                    employer_referrer = "None entered"
                 by_provider[employer_referrer] += 1
                 oh_providers.add(employer_referrer)
             by_month[my] = by_provider
@@ -410,7 +410,7 @@ class LabMonthReview(AbstractLabStatsPage):
                     "type": "Mean response (days)", "value": mean_days,
                 },
                 {"type": "Median response (days)", "value": statistics.median(days)},
-                {"type": "Mode response (days)", "value": statistics.mode(days)},
+                {"type": "Mode response (days)", "value": statistics.multimode(days)},
             ]
         return []
 
