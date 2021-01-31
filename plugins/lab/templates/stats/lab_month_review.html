@@ -5,6 +5,27 @@
 {% block page_content %}
 <div class="container-fluid">
   {% include 'partials/lab_stats_menu.html' %}
+  <div class="row content-offset">
+    <div class="col-md-4">
+      <h3 class="text-center">Activity by employer</h3>
+      <div id="employer-pie-chart"></div>
+    </div>
+    <div class="col-md-4">
+      <h3 class="text-center">Activity by exposure</h3>
+      <div id="exposure-pie-chart"></div>
+    </div>
+    <div class="col-md-4">
+      <table class="table content-offset">
+        {% for row in summary %}
+        <tr>
+        {% for v in row.values %}
+          <td>{{ v }}</td>
+        {% endfor %}
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+  </div>
   {% if rows %}
   <div class="row">
     <div class="col-md-12">
@@ -16,8 +37,12 @@
         </tr>
         {% for row in rows %}
         <tr>
-          {% for value in row.values %}
-          <td>{{ value }}</td>
+          {% for key, value in row.items %}
+          <td {% if key == "Num tests" or key == "Days" %}class="text-center"{% endif %}>
+            {% if not value == None %}
+            {{ value }}
+            {% endif %}
+          </td>
           {% endfor %}
         </tr>
         {% endfor %}
@@ -34,4 +59,21 @@
   </div>
   {% endif %}
 </div>
+<script>
+  c3.generate({
+    bindto: '#employer-pie-chart',
+    data: {
+      columns: {{ employer_pie_chart | safe }},
+      type: 'pie'
+    },
+  });
+  c3.generate({
+    bindto: '#exposure-pie-chart',
+    data: {
+      columns: {{ exposure_pie_chart | safe }},
+      type: 'pie'
+    },
+    type: 'pie'
+  });
+</script>
 {% endblock %}

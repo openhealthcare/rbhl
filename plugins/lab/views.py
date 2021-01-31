@@ -5,6 +5,7 @@ import zipfile
 import os
 import csv
 import io
+import statistics
 from pathlib import Path
 from collections import defaultdict
 from django.http import HttpResponse
@@ -293,7 +294,7 @@ class LabMonthReview(AbstractLabStatsPage):
                 "Allergens": ", ".join(
                     sorted(list({i.allergen for i in blood.bloodresult_set.all()}))
                 ),
-                "Report Submitted": blood.report_st,
+                "Report submitted": blood.report_st,
                 "Num tests": blood.bloodresult_set.count(),
             }
             if blood.report_st and blood.blood_date:
@@ -303,10 +304,42 @@ class LabMonthReview(AbstractLabStatsPage):
             result.append(row)
         return result
 
+    def get_summary(self, rows):
+        days = [i["Days"] for i in rows if not i["Days"] == ""]
+        if days:
+            num_tests = [i["Num tests"] for i in rows if not i["Days"] == ""]
+            mean_days = "{:.2f}".format(statistics.mean(days))
+            return [
+                {"type": "Num tests", "value": sum(num_tests)},
+                {
+                    "type": "Mean response (days)", "value": mean_days,
+                },
+                {"type": "Median response (days)", "value": statistics.median(days)},
+                {"type": "Mode response (days)", "value": statistics.mode(days)},
+            ]
+        return []
+
+    def get_employers_pie_chart(self, rows):
+        by_employer = defaultdict(int)
+        for row in rows:
+            by_employer[row["Employer"]] += 1
+        return sorted([[i, v] for i, v in by_employer.items()], key=lambda x: x[0])
+
+    def get_exposure_pie_chart(self, rows):
+        by_exposure = defaultdict(int)
+        for row in rows:
+            by_exposure[row["Exposure"]] += 1
+        return sorted([[i, v] for i, v in by_exposure.items()], key=lambda x: x[0])
+
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
         year = int(kwargs["year"])
         month = int(kwargs["month"])
         ctx["date"] = datetime.date(year, month, 1)
         ctx["rows"] = self.get_rows(month, year)
+        ctx["summary"] = self.get_summary(ctx["rows"])
+        ctx["employer_pie_chart"] = json.dumps(
+            self.get_employers_pie_chart(ctx["rows"])
+        )
+        ctx["exposure_pie_chart"] = json.dumps(self.get_exposure_pie_chart(ctx["rows"]))
         return ctx
