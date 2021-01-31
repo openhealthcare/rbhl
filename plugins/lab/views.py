@@ -316,12 +316,14 @@ class LabOverview(AbstractLabStatsPage):
                     continue
                 blood_nums_seen.add(blood.blood_number)
                 employment = blood.get_employment()
-                if employment.employer and employment.oh_provider:
+                if employment and employment.employer and employment.oh_provider:
                     employer_referrer = "{}/{}".format(
                         employment.employer, employment.oh_provider
                     )
-                else:
+                elif employment:
                     employer_referrer = employment.employer or employment.oh_provider
+                else:
+                    employer_referrer = ""
                 by_provider[employer_referrer] += 1
                 oh_providers.add(employer_referrer)
             by_month[my] = by_provider
@@ -376,12 +378,13 @@ class LabMonthReview(AbstractLabStatsPage):
         for blood in bloods:
             patient_id = blood.patient_id
             episode_id = blood.patient.episode_set.last().id
+            employment = blood.get_employment()
             row = {
                 "Link": f"/pathway/#/bloods/{patient_id}/{episode_id}?id={blood.id}",
                 "Sample received": blood.blood_date,
-                "Referrer name": blood.get_referral().referrer_name,
+                "OH Provider": employment.oh_provider,
                 "Blood num": blood.blood_number,
-                "Employer": blood.get_employment().employer,
+                "Employer": employment.employer,
                 "Exposure": blood.exposure,
                 "Allergens": ", ".join(
                     sorted(list({i.allergen for i in blood.bloodresult_set.all()}))
