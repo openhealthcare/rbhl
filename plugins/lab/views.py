@@ -474,7 +474,7 @@ class LabMonthReview(AbstractLabStatsPage):
         for row in rows:
             row["Link"] = f"https://indigo-rbht.openhealthcare.org.uk{row['Link']}"
         summary = self.get_summary(rows)
-        employers = list({i["Employer"] for i in rows})
+        employers = list({i["Employer"] for i in rows if i})
         with ZipCsvWriter(zip_file_name) as zf:
             zf.write_csv("rows.csv", rows)
             zf.write_csv("summary.csv", summary)
