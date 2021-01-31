@@ -21,7 +21,7 @@ class ZipCsvWriter:
 
     example code
 
-    with ZipCsvWriter("extract01092020") as z:
+    with ZipCsvWriter("extract01092020.zip"") as z:
         z.write_csv("allergens.cvs", [{"allergen": "flour"}])
 
     return z.name
@@ -135,7 +135,7 @@ class LabOverview(AbstractLabStatsPage):
             start_date.year, start_date.month, 1
         )
         if not start_date == month_start:
-            date_range = [(start_date, month_start)]
+            ranges = [(month_start, month_start + relativedelta(months=1))]
             num_months = 5
         else:
             num_months = 6
@@ -285,7 +285,10 @@ class LabMonthReview(AbstractLabStatsPage):
         ).order_by("blood_date")
         result = []
         for blood in bloods:
+            patient_id = blood.patient_id
+            episode_id = blood.patient.episode_set.last().id
             row = {
+                "Link": f"/pathway/#/bloods/{patient_id}/{episode_id}?id={blood.id}",
                 "Sample received": blood.blood_date,
                 "Referrer name": blood.get_referral().referrer_name,
                 "Blood num": blood.blood_number,
@@ -343,3 +346,29 @@ class LabMonthReview(AbstractLabStatsPage):
         )
         ctx["exposure_pie_chart"] = json.dumps(self.get_exposure_pie_chart(ctx["rows"]))
         return ctx
+
+    def post(self, *args, **kwargs):
+        zip_file_name = "lab_summary.zip"
+        year = int(kwargs["year"])
+        month = int(kwargs["month"])
+        dt = datetime.date(year, month, 1)
+        month_name = dt.strftime("%B").lower()
+        zip_file_name = f"{month_name}_review.zip"
+        rows = self.get_rows(month, year)
+        for row in rows:
+            row["Link"] = f"https://indigo-rbht.openhealthcare.org.uk{row['Link']}"
+        summary = self.get_summary(rows)
+        employers = list({i["Employer"] for i in rows})
+        with ZipCsvWriter(zip_file_name) as zf:
+            zf.write_csv("rows.csv", rows)
+            zf.write_csv("summary.csv", summary)
+            for row in rows:
+                row.pop("Link")
+            for employer in employers:
+                employer_rows = [row for row in rows if row["Employer"] == employer]
+                employer_name = employer.lower().replace(" ", "_")
+                zf.write_csv(
+                    f"oem_{employer_name}_{month_name}_{year}.csv", employer_rows
+                )
+
+        return zip_file_to_response(zf.name)
