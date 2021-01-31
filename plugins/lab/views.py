@@ -399,18 +399,32 @@ class LabMonthReview(AbstractLabStatsPage):
             result.append(row)
         return result
 
+    def get_multi_mode(self, some_list):
+        """
+        In python 3.8 we can use statistics.multimode
+
+        statistics.mode fails if there are multipe of the
+        same values, this returns this as a list
+        """
+        result = defaultdict(int)
+        for some_val in some_list:
+            result[some_val] += 1
+        largest = max(*result.values())
+        return [i for i, v in result.items() if v == largest]
+
     def get_summary(self, rows):
         days = [i["Days"] for i in rows if not i["Days"] == ""]
         if days:
             num_tests = [i["Num tests"] for i in rows if not i["Days"] == ""]
             mean_days = "{:.2f}".format(statistics.mean(days))
+            mode_days = ", ".join([str(i) for i in self.get_multi_mode(days)])
             return [
                 {"type": "Num tests", "value": sum(num_tests)},
                 {
                     "type": "Mean response (days)", "value": mean_days,
                 },
                 {"type": "Median response (days)", "value": statistics.median(days)},
-                {"type": "Mode response (days)", "value": statistics.multimode(days)},
+                {"type": "Mode response (days)", "value": mode_days},
             ]
         return []
 
