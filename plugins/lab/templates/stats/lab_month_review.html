@@ -1,0 +1,37 @@
+{% extends 'static_base.html' %}
+{% block title %}
+{{ date|date:"F" }} review
+{% endblock %}
+{% block page_content %}
+<div class="container-fluid">
+  {% include 'partials/lab_stats_menu.html' %}
+  {% if rows %}
+  <div class="row">
+    <div class="col-md-12">
+      <table class="table content-offset">
+        <tr>
+          {% for header in rows.0.keys %}
+          <th>{{ header }}</th>
+          {% endfor %}
+        </tr>
+        {% for row in rows %}
+        <tr>
+          {% for value in row.values %}
+          <td>{{ value }}</td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+  </div>
+  {% else %}
+  <div class="row headed-content-offset">
+    <div class="col-md-12 text-center">
+      <h1 class="text-muted">
+        No data available
+      </h1>
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
