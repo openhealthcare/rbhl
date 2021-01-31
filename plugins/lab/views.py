@@ -321,7 +321,7 @@ class LabMonthReview(AbstractLabStatsPage):
                     "type": "Mean response (days)", "value": mean_days,
                 },
                 {"type": "Median response (days)", "value": statistics.median(days)},
-                {"type": "Mode response (days)", "value": statistics.mode(days)},
+                {"type": "Mode response (days)", "value": statistics.multimode(days)},
             ]
         return []
 
