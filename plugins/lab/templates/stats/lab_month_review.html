@@ -64,7 +64,9 @@
   </div>
   {% endif %}
 </div>
+{% if rows %}
 {% include "partials/download_button.html" %}
+{% endif %}
 <script>
   c3.generate({
     bindto: '#employer-pie-chart',
