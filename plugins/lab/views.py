@@ -119,8 +119,13 @@ class AbstractLabStatsPage(TemplateView):
     def menu_dates(self):
         result = []
         today = datetime.date.today()
-        for i in reversed(range(3)):
-            result.append(today - relativedelta(months=i+1))
+        if today.day == 1:
+            date_range = range(1, 5)
+        else:
+            date_range = range(4)
+
+        for i in reversed(date_range):
+            result.append(today - relativedelta(months=i))
         return result
 
 
