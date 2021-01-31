@@ -207,6 +207,8 @@ class LabOverview(AbstractLabStatsPage):
         exposures = sorted(list(exposures))
         rows = []
         for exposure in exposures:
+            if not exposure:
+                exposure = "No exposure"
             row = {"name": exposure}
             for dt, by_exposure in by_month.items():
                 row[dt] = by_exposure[exposure]
@@ -295,8 +297,8 @@ class LabMonthReview(AbstractLabStatsPage):
             patient_id = blood.patient_id
             episode_id = blood.patient.episode_set.last().id
             employment = blood.get_employment()
-            employer = ""
-            oh_provider = ""
+            employer = "No employer"
+            oh_provider = "No provider"
             if employment:
                 employer = employment.employer
                 oh_provider = employment.oh_provider
@@ -306,7 +308,7 @@ class LabMonthReview(AbstractLabStatsPage):
                 "OH Provider": oh_provider,
                 "Blood num": blood.blood_number,
                 "Employer": employer,
-                "Exposure": blood.exposure,
+                "Exposure": blood.exposure or "No exposure",
                 "Allergens": ", ".join(
                     sorted(list({i.allergen for i in blood.bloodresult_set.all()}))
                 ),
