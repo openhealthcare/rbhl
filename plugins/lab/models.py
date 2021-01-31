@@ -208,6 +208,9 @@ class Bloods(RbhlSubrecord, models.PatientSubrecord):
     def get_employment(self):
         return self.patient.episode_set.last().employment_set.last()
 
+    def get_referral(self):
+        return self.patient.episode_set.last().referral_set.last()
+
 
 class BloodResult(fields.Model):
     _exclude_from_extract = True
