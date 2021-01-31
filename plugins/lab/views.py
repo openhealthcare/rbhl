@@ -289,12 +289,13 @@ class LabMonthReview(AbstractLabStatsPage):
         for blood in bloods:
             patient_id = blood.patient_id
             episode_id = blood.patient.episode_set.last().id
+            employment = blood.get_employment()
             row = {
                 "Link": f"/pathway/#/bloods/{patient_id}/{episode_id}?id={blood.id}",
                 "Sample received": blood.blood_date,
-                "Referrer name": blood.get_referral().referrer_name,
+                "OH Provider": employment.oh_provider,
                 "Blood num": blood.blood_number,
-                "Employer": blood.get_employment().employer,
+                "Employer": employment.employer,
                 "Exposure": blood.exposure,
                 "Allergens": ", ".join(
                     sorted(list({i.allergen for i in blood.bloodresult_set.all()}))
