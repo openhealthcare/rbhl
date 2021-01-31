@@ -13,7 +13,7 @@ Lab overview
   </div>
   <div class="row">
     <div class="col-md-12">
-      <table class="table content-offset">
+      <table class="table table-striped content-offset">
         <tr>
           <th></th>
           {% for start_date, _ in view.date_ranges %}
@@ -28,27 +28,19 @@ Lab overview
             {% endfor %}
           </tr>
           {% endfor %}
+          {% if not forloop.last %}
           <tr>
             <td>&nbsp</td>
             {% for _ in view.date_ranges %}
             <td>&nbsp</td>
             {% endfor %}
           </tr>
+          {% endif %}
         {% endfor %}
       </table>
     </div>
   </div>
-  <div class="row">
-    <div class="col-md-12 text-center content-offset-below">
-      <form method="post" target="_blank">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-secondary btn-lg">
-          <span class="glyphicon glyphicon-download"></span>
-          Download this data
-        </button>
-      </form>
-    </div>
-  </div>
+  {% include "partials/download_button.html" %}
 </div>
 <script>
 c3.generate({
