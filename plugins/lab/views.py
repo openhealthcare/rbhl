@@ -472,7 +472,9 @@ class LabMonthReview(AbstractLabStatsPage):
         zip_file_name = f"{month_name}_review.zip"
         rows = self.get_rows(month, year)
         for row in rows:
-            row["Link"] = f"https://indigo-rbht.openhealthcare.org.uk{row['Link']}"
+            scheme = self.request.scheme,
+            host = self.request.get_host(),
+            row["Link"] = f"{scheme}://{host}{row['Link']}"
         summary = self.get_summary(rows)
         employers = list({i["Employer"] for i in rows if i})
         with ZipCsvWriter(zip_file_name) as zf:
