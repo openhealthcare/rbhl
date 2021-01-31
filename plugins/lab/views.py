@@ -301,8 +301,8 @@ class LabMonthReview(AbstractLabStatsPage):
             employer = "No employer"
             oh_provider = "No provider"
             if employment:
-                employer = employment.employer
-                oh_provider = employment.oh_provider
+                employer = employment.employer or "No employer"
+                oh_provider = employment.oh_provider or "No OH provider"
             row = {
                 "Link": f"/pathway/#/bloods/{patient_id}/{episode_id}?id={blood.id}",
                 "Sample received": blood.blood_date,
