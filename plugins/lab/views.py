@@ -413,6 +413,20 @@ class LabMonthReview(AbstractLabStatsPage):
             result.append(row)
         return result
 
+    def get_day_count(self, start_dt, report_date):
+        """
+        Returns the count of week days inclusive
+        between the blood date and the report date
+        """
+        count = 0
+        if start_dt > report_date:
+            return count
+        while start_dt <= report_date:
+            if start_dt.weekday() < 5:
+                count += 1
+            start_dt = start_dt + datetime.timedelta(1)
+        return count
+
     def get_multi_mode(self, some_list):
         """
         In python 3.8 we can use statistics.multimode
@@ -432,13 +446,21 @@ class LabMonthReview(AbstractLabStatsPage):
             num_tests = [i["Num tests"] for i in rows if not i["Days"] == ""]
             mean_days = "{:.2f}".format(statistics.mean(days))
             mode_days = ", ".join([str(i) for i in self.get_multi_mode(days)])
+            num_days_gt_5 = len([
+                i["Num tests"] for i in rows if not i["Days"] == "" and i["Days"] > 5
+            ])
             return [
                 {"type": "Num tests", "value": sum(num_tests)},
+                {
+                    "type": "Num samples",
+                    "value": len({i["Blood num"] for i in rows})
+                },
                 {
                     "type": "Mean response (days)", "value": mean_days,
                 },
                 {"type": "Median response (days)", "value": statistics.median(days)},
                 {"type": "Mode response (days)", "value": mode_days},
+                {"type": "Num days > 5", "value": num_days_gt_5}
             ]
         return []
 
