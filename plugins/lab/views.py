@@ -299,13 +299,22 @@ class LabMonthReview(AbstractLabStatsPage):
             episode_id = blood.patient.episode_set.last().id
             employment = blood.get_employment()
             employer = "No employer"
-            oh_provider = "No provider"
-            if employment:
-                employer = employment.employer or "No employer"
-                oh_provider = employment.oh_provider or "No OH provider"
+            oh_provider = "No OH provider"
+            if employment and employment.employer:
+                employer = employment.employer
+
+            if employment and employment.oh_provider:
+                oh_provider = employment.oh_provider
+
+            referral = blood.get_referral()
+            referral_source = "No referral source"
+            if referral and referral.referral_source:
+                referral_source = referral.referral_source
+
             row = {
                 "Link": f"/pathway/#/bloods/{patient_id}/{episode_id}?id={blood.id}",
                 "Sample received": blood.blood_date,
+                "Referral source": referral_source,
                 "OH Provider": oh_provider,
                 "Blood num": blood.blood_number,
                 "Employer": employer,
