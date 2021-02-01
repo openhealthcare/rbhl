@@ -155,13 +155,14 @@ class RecentlyRecievedSamples(ListView):
             queryset = queryset.order_by("-blood_date")
 
         for instance in queryset:
-            episode = list(instance.patient.episode_set.all())[-1]
-            referral = episode.referral_set.last()
-            employer = episode.employment_set.last()
+            referral = instance.referral
+            employment = instance.employment
             oh_provider = ""
+            employer = ""
             ref_number = ""
-            if employer:
-                oh_provider = employer.oh_provider
+            if employment:
+                oh_provider = employment.oh_provider
+                employer = employment.employer
             if referral:
                 ref_number = referral.reference_number
             demographics = instance.patient.demographics_set.all()[0]
@@ -169,7 +170,7 @@ class RecentlyRecievedSamples(ListView):
                 "Name": demographics.name,
                 "Hospital number": demographics.hospital_number,
                 "OH Provider": oh_provider,
-                "Employer": employer.employer,
+                "Employer": employer,
                 "Their ref number": ref_number or "",
                 "Blood number": instance.blood_number,
                 "Exposure": instance.exposure,
