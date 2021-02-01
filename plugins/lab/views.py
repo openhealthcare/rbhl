@@ -388,23 +388,25 @@ class LabMonthReview(AbstractLabStatsPage):
             episode_id = blood.patient.episode_set.last().id
             employment = blood.get_employment()
             employer = "No employer"
-            oh_provider = "no OH provider"
-            referrer = blood.get_referral()
-            referral_source = "No referral source"
-            if referrer and referrer.referral_source:
-                referral_source = referrer.referral_source
+            oh_provider = "No OH provider"
+            if employment and employment.employer:
+                employer = employment.employer
 
-            if employment:
-                employer = employment.employer or "No employer"
-                oh_provider = employment.oh_provider or "no OH provider"
+            if employment and employment.oh_provider:
+                oh_provider = employment.oh_provider
+
+            referral = blood.get_referral()
+            referral_source = "No referral source"
+            if referral and referral.referral_source:
+                referral_source = referral.referral_source
 
             row = {
                 "Link": f"/pathway/#/bloods/{patient_id}/{episode_id}?id={blood.id}",
                 "Sample received": blood.blood_date,
+                "Referral source": referral_source,
                 "OH Provider": oh_provider,
                 "Blood num": blood.blood_number,
-                "Employer/provider": f"{employer}/{oh_provider}",
-                "Referral source": referral_source,
+                "Employer": employer,
                 "Exposure": blood.exposure or "No exposure",
                 "Allergens": ", ".join(
                     sorted(list({i.allergen for i in blood.bloodresult_set.all()}))
