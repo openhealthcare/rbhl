@@ -357,13 +357,21 @@ class LabMonthReview(AbstractLabStatsPage):
             num_tests = [i["Num tests"] for i in rows if not i["Days"] == ""]
             mean_days = "{:.2f}".format(statistics.mean(days))
             mode_days = ", ".join([str(i) for i in self.get_multi_mode(days)])
+            num_days_gt_5 = len([
+                i["Num tests"] for i in rows if not i["Days"] == "" and i["Days"] > 5
+            ])
             return [
                 {"type": "Num tests", "value": sum(num_tests)},
+                {
+                    "type": "Num samples",
+                    "value": len({i["Blood num"] for i in rows})
+                },
                 {
                     "type": "Mean response (days)", "value": mean_days,
                 },
                 {"type": "Median response (days)", "value": statistics.median(days)},
                 {"type": "Mode response (days)", "value": mode_days},
+                {"type": "Num days > 5", "value": num_days_gt_5}
             ]
         return []
 
