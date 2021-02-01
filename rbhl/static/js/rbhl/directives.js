@@ -500,3 +500,32 @@ directives.directive("reemit", function($parse, $timeout) {
     }
   };
 });
+
+
+directives.directive('convertToNumber', function() {
+  /*
+  * Select ng-models are always strings.
+  * This converts an ngmodel that was a string into an int so that it can match
+  * options with int values.
+  *
+  * This is taken from the angularjs docs
+  * https://code.angularjs.org/1.4.6/docs/api/ng/directive/select#binding-select-to-a-non-string-value-via-ngmodel-parsing-formatting
+  *
+  * Its been editted to allow for nulls
+  */
+  return {
+    require: 'ngModel',
+    link: function(scope, element, attrs, ngModel) {
+      ngModel.$parsers.push(function(val) {
+        if(val){
+          return parseInt(val, 10);
+        }
+      });
+      ngModel.$formatters.push(function(val) {
+        if(val){
+          return '' + val;
+        }
+      });
+    }
+  }
+});

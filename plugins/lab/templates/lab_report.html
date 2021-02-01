@@ -37,7 +37,7 @@ Lab report
           Ref num:
         </div>
         <div class="col-xs-7 col-md-9">
-          {{ object.reference_number }}
+          {{ object.referral.reference_number }}
         </div>
       </div>
     </div>
@@ -59,9 +59,7 @@ Lab report
           Employer:
         </div>
         <div class="col-xs-7 col-md-9">
-          {% if employment %}
-          {{ employment.employer }}
-          {% endif %}
+          {{ object.employment.employer }}
         </div>
       </div>
     </div>
@@ -71,9 +69,7 @@ Lab report
           OH Provider:
         </div>
         <div class="col-xs-7 col-md-9">
-          {% if employment %}
-          {{ employment.oh_provider }}
-          {% endif %}
+          {{ object.employment.oh_provider }}
         </div>
       </div>
     </div>
