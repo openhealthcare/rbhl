@@ -1,5 +1,5 @@
 angular.module('opal.controllers').controller(
-  'BloodsStep', function(scope, step, episode, $window, $location, $modal) {
+  'BloodsStep', function(scope, step, episode, $window, $location, $modal, displayDateFilter) {
   "use strict"
   /*
   * The bloods step works on a single bloods instance.
@@ -20,6 +20,68 @@ angular.module('opal.controllers').controller(
       }
     }
     scope.bloodTest = {bloods: bloodTest};
+  }
+
+  scope.employer_display = function(employment){
+    var result;
+    if(employment.employer && employment.oh_provider){
+      result = employment.employer + "/" + employment.oh_provider;
+    }
+    else{
+      result = employment.employer || employment.oh_provider;
+    }
+    if(employment.job_title){
+      result += " (" + employment.job_title + ")";
+    }
+    return result;
+  }
+
+  scope.referral_display = function(referral){
+    var result = displayDateFilter(referral.date_of_referral) || "";
+    result = result + " " + referral.referrer_name;
+    if(result && referral.reference_number){
+      result += " (" + referral.reference_number + ")";
+    }
+    return result;
+  }
+
+  scope.addSubrecord = function(subrecordName){
+    /*
+    * The form has a select box to choo
+    *
+    *
+    * Employer used to be a singleton
+    * if there is a model with no creted timestamp
+    * use that rather than creating a new employment model
+    */
+    var subrecordSet = episode[subrecordName];
+    var subrecord = _.find(subrecordSet, function(subrecord){
+      return !subrecord.created && !subrecord.updated;
+    });
+    if(subrecord){
+      episode.recordEditor.editItem(subrecordName, subrecord).then(function(result){
+        if(result == 'deleted' || result == 'cancel'){
+          return;
+        }
+        var field = subrecordName + "_id";
+        scope.bloodTest.bloods[field] = subrecord.id;
+      });
+    }
+    else{
+      var idsBefore = _.pluck(subrecordSet, "id");
+      episode.recordEditor.newItem(subrecordName).then(function(result){
+        if(result == 'deleted' || result == 'cancel'){
+          return;
+        }
+        // find the new id that's been added
+        var idsAfter = _.pluck(episode[subrecordName], "id");
+        var newIds = _.difference(idsAfter, idsBefore);
+        if(newIds.length){
+          var field = subrecordName + "_id";
+          scope.bloodTest.bloods[field] = newIds[0];
+        }
+      });
+    }
   }
 
   scope.addResult = function(){
