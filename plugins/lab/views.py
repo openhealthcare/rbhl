@@ -324,6 +324,20 @@ class LabMonthReview(AbstractLabStatsPage):
             result.append(row)
         return result
 
+    def get_day_count(self, start_dt, report_date):
+        """
+        Returns the count of week days inclusive
+        between the blood date and the report date
+        """
+        count = 0
+        if start_dt > report_date:
+            return count
+        while start_dt <= report_date:
+            if start_dt.weekday() < 5:
+                count += 1
+            start_dt = start_dt + datetime.timedelta(1)
+        return count
+
     def get_multi_mode(self, some_list):
         """
         In python 3.8 we can use statistics.multimode
