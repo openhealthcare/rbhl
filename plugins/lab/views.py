@@ -1,14 +1,15 @@
+import csv
 import datetime
+import io
+from django.http import HttpResponse
+from django.utils import timezone
 import json
 import tempfile
 import zipfile
 import os
-import csv
-import io
 import statistics
 from pathlib import Path
 from collections import defaultdict
-from django.http import HttpResponse
 from django.utils.functional import cached_property
 from django.views.generic import ListView, DetailView, TemplateView
 from dateutil.relativedelta import relativedelta
@@ -108,6 +109,94 @@ class YourRecentlyResultedList(ListView):
             )
             return qs.order_by("-assay_date")[:self.AMOUNT]
         return qs.none()
+
+
+class RecentlyRecievedSamples(ListView):
+    model = Bloods
+    template_name = 'patient_lists/recently_received_samples.html'
+
+    def post(self, *args, **kwargs):
+        qs = self.get_queryset()
+        rows = self.get_rows(qs)
+        for row in rows:
+            patient_id = row.pop("patient_id")
+            row["indigo link"] = "{}://{}/#/patient/{}".format(
+                self.request.scheme,
+                self.request.get_host(),
+                patient_id
+            )
+        buffer = io.StringIO()
+        if rows:
+            field_names = list(rows[0].keys())
+            field_names.remove("indigo link")
+            field_names.insert(0, "indigo link")
+            wr = csv.DictWriter(buffer, fieldnames=field_names)
+            wr.writeheader()
+            wr.writerows(rows)
+            buffer.seek(0)
+        resp = HttpResponse(buffer, content_type='text/csv')
+        resp['Content-Disposition'] = 'attachment; filename=recent_samples.csv'
+        return resp
+
+    def get_queryset(self, *args, **kwargs):
+        two_months_ago = timezone.now() - datetime.timedelta(60)
+        return Bloods.objects.filter(
+            blood_date__gte=two_months_ago.date()
+        ).prefetch_related(
+            "patient__demographics_set"
+        ).prefetch_related(
+            "patient__episode_set"
+        )
+
+    def get_rows(self, queryset):
+        rows = []
+        order_param = self.request.GET.get("order")
+        if not order_param:
+            queryset = queryset.order_by("-blood_date")
+
+        for instance in queryset:
+            episode = list(instance.patient.episode_set.all())[-1]
+            referral = episode.referral_set.last()
+            employer = episode.employment_set.last()
+            oh_provider = ""
+            ref_number = ""
+            if employer:
+                oh_provider = employer.oh_provider
+            if referral:
+                ref_number = referral.reference_number
+            demographics = instance.patient.demographics_set.all()[0]
+            rows.append({
+                "Name": demographics.name,
+                "Hospital number": demographics.hospital_number,
+                "OH Provider": oh_provider,
+                "Employer": employer.employer,
+                "Their ref number": ref_number or "",
+                "Blood number": instance.blood_number,
+                "Exposure": instance.exposure,
+                "Sample received": instance.blood_date or "",
+                "Report submitted": instance.report_st or "",
+                "patient_id": instance.patient_id
+            })
+
+        if order_param:
+            reverse = False
+            if order_param.startswith("-"):
+                reverse = True
+                order_param = order_param.lstrip("-")
+            if order_param in ["Sample received", "Report submitted"]:
+                min_date = datetime.datetime.min.date()
+                # you can't sort by a mix of datetime and None, make None become
+                # datetime.datetime.min for the purposese of sorting
+                return sorted(
+                    rows, key=lambda x: x[order_param] or min_date, reverse=reverse
+                )
+            return sorted(rows, key=lambda x: x[order_param], reverse=reverse)
+        return rows
+
+    def get_context_data(self, *args, **kwargs):
+        ctx = super().get_context_data(*args, **kwargs)
+        ctx["rows"] = self.get_rows(ctx["object_list"])
+        return ctx
 
 
 class LabReport(DetailView):
@@ -299,25 +388,23 @@ class LabMonthReview(AbstractLabStatsPage):
             episode_id = blood.patient.episode_set.last().id
             employment = blood.get_employment()
             employer = "No employer"
-            oh_provider = "No OH provider"
-            if employment and employment.employer:
-                employer = employment.employer
-
-            if employment and employment.oh_provider:
-                oh_provider = employment.oh_provider
-
-            referral = blood.get_referral()
+            oh_provider = "no OH provider"
+            referrer = blood.get_referral()
             referral_source = "No referral source"
-            if referral and referral.referral_source:
-                referral_source = referral.referral_source
+            if referrer and referrer.referral_source:
+                referral_source = referrer.referral_source
+
+            if employment:
+                employer = employment.employer or "No employer"
+                oh_provider = employment.oh_provider or "no OH provider"
 
             row = {
                 "Link": f"/pathway/#/bloods/{patient_id}/{episode_id}?id={blood.id}",
                 "Sample received": blood.blood_date,
-                "Referral source": referral_source,
                 "OH Provider": oh_provider,
                 "Blood num": blood.blood_number,
-                "Employer": employer,
+                "Employer/provider": f"{employer}/{oh_provider}",
+                "Referral source": referral_source,
                 "Exposure": blood.exposure or "No exposure",
                 "Allergens": ", ".join(
                     sorted(list({i.allergen for i in blood.bloodresult_set.all()}))
