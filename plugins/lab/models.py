@@ -207,10 +207,12 @@ class Bloods(RbhlSubrecord, models.PatientSubrecord):
                 result = BloodResult(bloods=self)
             result.update_from_dict(result_dict)
 
-    def get_employment(self):
+    @property
+    def employment(self):
         return self.patient.episode_set.last().employment_set.last()
 
-    def get_referral(self):
+    @property
+    def referral(self):
         return self.patient.episode_set.last().referral_set.last()
 
 

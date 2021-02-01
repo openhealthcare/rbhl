@@ -323,7 +323,7 @@ class LabOverview(AbstractLabStatsPage):
                 if blood.blood_number in blood_nums_seen:
                     continue
                 blood_nums_seen.add(blood.blood_number)
-                employment = blood.get_employment()
+                employment = blood.employment
                 if employment and employment.employer and employment.oh_provider:
                     employer_referrer = "{}/{}".format(
                         employment.employer, employment.oh_provider
@@ -386,7 +386,7 @@ class LabMonthReview(AbstractLabStatsPage):
         for blood in bloods:
             patient_id = blood.patient_id
             episode_id = blood.patient.episode_set.last().id
-            employment = blood.get_employment()
+            employment = blood.employment
             employer = "No employer"
             oh_provider = "No OH provider"
             if employment and employment.employer:
@@ -395,7 +395,7 @@ class LabMonthReview(AbstractLabStatsPage):
             if employment and employment.oh_provider:
                 oh_provider = employment.oh_provider
 
-            referral = blood.get_referral()
+            referral = blood.referral
             referral_source = "No referral source"
             if referral and referral.referral_source:
                 referral_source = referral.referral_source
