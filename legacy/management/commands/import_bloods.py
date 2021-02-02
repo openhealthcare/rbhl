@@ -1,5 +1,5 @@
 """
-Management command to import the blood book csv
+Management command to import the blood csv
 """
 import csv
 from time import time
@@ -7,7 +7,7 @@ from functools import wraps
 from django.core.management import BaseCommand
 from django.db import transaction
 from legacy.utils import str_to_date
-from legacy.models import BloodBook
+from plugins.lab.models import Bloods
 from rbhl.models import Demographics
 
 
@@ -106,11 +106,11 @@ class Command(BaseCommand):
                 continue
 
             patient = demographics.get().patient
-            blood_book = self.create_blood_book_test(row, patient)
-            if blood_book is None:
+            bloods = self.create_bloods_test(row, patient)
+            if bloods is None:
                 no_results += 1
                 continue
-            self.create_blood_book_results_for_row(row, blood_book)
+            self.create_blood_results_for_row(row, bloods)
 
         self.stdout.write("Skipped {}/{} rows because no patient was found".format(
             no_patients, row_count
@@ -124,9 +124,9 @@ class Command(BaseCommand):
         self.stdout.write("{} created blood books".format(self.bb_count))
         self.stdout.write("{} created blood book results".format(self.result_count))
 
-    def create_blood_book_test(self, row, patient):
+    def create_bloods_test(self, row, patient):
         """
-        Creates a Blood Book Test, 1 per row of the csv.
+        Creates a Bloods Test, 1 per row of the csv.
         """
         MAPPING = {
             # "reference_number": lambda row: translate_ref_num(row["REFERENCE NO"]),
@@ -181,16 +181,16 @@ class Command(BaseCommand):
 
         our_args["patient"] = patient
         self.bb_count += 1
-        return BloodBook.objects.create(**our_args)
+        return Bloods.objects.create(**our_args)
 
-    def create_blood_book_results_for_row(self, row, blood_book):
+    def create_blood_results_for_row(self, row, bloods):
         """
-        Creates blood book results, a maximum of 11 per row of the csv.
+        Creates blood results, a maximum of 11 per row of the csv.
         """
         mapping = {
             'RESULT': "result",
             'ALLERGEN': "allergen",
-            'ANTIGENNO': "antigenno",
+            'ANTIGENNO': "phadia_test_code",
             'KUL': "kul",
             'CLASS': "klass",
             'RAST': "rast",
@@ -208,5 +208,5 @@ class Command(BaseCommand):
                         value = get_precipitin(value)
                     result_data[our_field] = value
             if any(result_data.values()):
-                blood_book.bloodbookresult_set.create(**result_data)
+                bloods.bloodresult_set.create(**result_data)
                 self.result_count += 1

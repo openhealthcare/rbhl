@@ -6,7 +6,7 @@
         <h4>
           <div class="row">
             <div class="col-md-12">
-              <h3>
+              <h3 id="page-title">
                 [[ episode.demographics[0].first_name ]] [[ episode.demographics[0].surname ]]
                 <small>[[ episode.demographics[0].hospital_number ]]</small>
                 - Peak flow trial [[ peakFlowTrial.start_date | displayDate ]]
@@ -47,7 +47,7 @@
           </tr>
         </table>
         <div peak-flow-graph data="peakFlowTrial" highlights="highlights[trialNum]"></div>
-        <div ng-show="peakFlowTrial.notes.length" class="row content-offset-below">
+        <div id="notes" ng-show="peakFlowTrial.notes.length" class="row content-offset-below">
           <div class="row">
             <div class="col-xs-1 text-right">
               <strong>Notes:</strong>

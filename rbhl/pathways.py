@@ -36,7 +36,7 @@ class NewReferral(WizardPathway):
 class LabReferral(WizardPathway):
     display_name = 'New referral'
     icon = 'fa-plus'
-    slug = 'new_blood_book_referral'
+    slug = 'new_lab_referral'
     finish_button_text = "Create new referral"
     finish_button_icon = None
     template = "pathway/base/rbhl_demographics_search_base.html"

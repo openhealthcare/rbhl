@@ -753,5 +753,9 @@ h1.static-title{
     @page {
         margin-top: 1cm;
         margin-bottom: 1cm;
+        svg{
+            object-fit: contain;
+            page-break-inside: avoid;
+        }
     }
 }

@@ -1,11 +1,13 @@
 {% extends 'patient_lists/static_patient_list_base.html' %}
 
 {% block patient_list_name %}
-<h1>Your recently resulted samples</h1>
+<h1>Unresulted samples</h1>
 {% endblock %}
+
+
 {% block patient_list_table %}
 <p class="lead">
-  A list of samples that have recently processed for patients seen by you ({{ view.initials }})
+  A list of all samples currently stored without results.
 </p>
 <table class="table table-striped table-hover table-sortable">
   <tr>
@@ -17,15 +19,15 @@
     {% include "partials/table_header.html" with display_name="Tray" slug="tray" %}
     {% include "partials/table_header.html" with display_name="Vials" slug="vials" %}
   </tr>
-  {% for blood_book in object_list %}
-    <tr onclick=window.location="/#/patient/{{ blood_book.patient_id }}/investigations" class="pointer">
-      <td>{{ blood_book.patient.demographics_set.all.0.name }}</td>
-      <td>{{ blood_book.blood_date }}</td>
-      <td>{{ blood_book.exposure }}</td>
-      <td>{{ blood_book.room }}</td>
-      <td>{{ blood_book.freezer }}</td>
-      <td>{{ blood_book.tray }}</td>
-      <td>{{ blood_book.vials }}</td>
+  {% for bloods in object_list %}
+    <tr onclick=window.location="/#/patient/{{ bloods.patient_id }}/investigations" class="pointer">
+      <td>{{ bloods.patient.demographics_set.all.0.name }}</td>
+      <td>{{ bloods.blood_date }}</td>
+      <td>{{ bloods.exposure }}</td>
+      <td>{{ bloods.room }}</td>
+      <td>{{ bloods.freezer }}</td>
+      <td>{{ bloods.tray }}</td>
+      <td>{{ bloods.vials }}</td>
     </tr>
   {% endfor %}
 </table>
