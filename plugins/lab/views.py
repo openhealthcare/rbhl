@@ -235,13 +235,15 @@ class LabOverview(AbstractLabStatsPage):
                     continue
                 blood_nums_seen.add(blood.blood_number)
                 employment = blood.employment
-                employer_referrer = "No employer"
+                employer_referrer = None
                 if employment and employment.employer and employment.oh_provider:
                     employer_referrer = "{}/{}".format(
                         employment.employer, employment.oh_provider
                     )
                 elif employment:
                     employer_referrer = employment.employer or employment.oh_provider
+                if not employer_referrer:
+                    employer_referrer = "No employer"
                 by_provider[employer_referrer] += 1
                 oh_providers.add(employer_referrer)
             by_month[my] = by_provider
