@@ -113,6 +113,9 @@
       <div class="col-md-1">
         <i ng-click="diagnosisDisplay.editItem('{{ models.AsthmaDetails.get_api_name }}', item, '/templates/modals/asthma.html')" class="fa fa-pencil edit pull-right pointer" ></i>
       </div>
+      <div class="row">
+        <div class="col-md-12"></div>
+      </div>
     </li>
     <li ng-repeat="item in episode.rhinitis_details" class="diagnosis-row content-offset-below-20"class="list-group-item">
       <div class="col-md-11">
@@ -120,6 +123,9 @@
       </div>
       <div class="col-md-1">
         <i ng-click="diagnosisDisplay.editItem('{{ models.RhinitisDetails.get_api_name }}', item, '/templates/modals/rhinitis.html')" class="fa fa-pencil edit pull-right pointer" ></i>
+      </div>
+      <div class="row">
+        <div class="col-md-12"></div>
       </div>
     </li>
     <li ng-repeat="item in episode.diagnosis" ng-show="item.category !== '{{ models.Diagnosis.ASTHMA }}' && item.category !== '{{ models.Diagnosis.RHINITIS }}'" class="diagnosis-row content-offset-below-20"class="list-group-item">
