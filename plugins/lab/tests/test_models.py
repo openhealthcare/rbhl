@@ -85,7 +85,7 @@ class BloodsTestCase(OpalTestCase):
             bloods.bloodresult_set.get().result, "result"
         )
 
-    def test_updsate_from_dict_empty_result(self):
+    def test_update_from_dict_empty_result(self):
         update_dict = {
             "exposure": "wheat",
         }
