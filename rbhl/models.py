@@ -127,7 +127,7 @@ class SocialHistory(RBHLSubrecord, models.EpisodeSubrecord):
     smoker = fields.CharField(
         blank=True, null=True, max_length=256, choices=SMOKING_CHOICES
     )
-    cigerettes_per_day = fields.IntegerField(null=True, blank=True)
+    cigarettes_per_day = fields.IntegerField(null=True, blank=True)
 
 
 class ContactDetails(RBHLSubrecord, models.PatientSubrecord):
