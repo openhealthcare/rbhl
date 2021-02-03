@@ -12,12 +12,24 @@
   <div class="col-md-6">
     <div class="row">
       <div class="col-md-5">
-          <b>Referrer name:</b>
-      </div>
-      <div class="col-md-7 edit-item-padding" ng-show="item.referrer_name">
-        [[ item.referrer_name ]]
-        <span ng-show="item.reference_number">([[ item.reference_number ]])</span>
+        {% comment %}
+        The field is Referrer name if there is a referrer name and it
+        displays referrer name (reference number).
 
+        If there is no referrer name but there is a reference number then it
+        changes the name to reference number and displays the reference number
+        {% endcomment %}
+        <span ng-if="!item.referrer_name && item.reference_number">
+          <b>Their reference number:</b>
+        </span>
+        <span ng-if="item.referrer_name || !item.reference_number">
+          <b>Referrer name:</b>
+        </span>
+      </div>
+      <div class="col-md-7 edit-item-padding">
+        [[ item.referrer_name ]]
+        <span ng-show="item.reference_number && item.referrer_name">([[ item.reference_number ]])</span>
+        <span ng-show="!item.referrer_name">[[ item.reference_number ]]</span>
         <i class="fa fa-pencil edit pointer edit-item" ng-click="episode.recordEditor.editItem('referral', item)"></i>
       </div>
     </div>
