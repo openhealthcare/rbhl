@@ -194,6 +194,8 @@ class Bloods(RbhlSubrecord, models.PatientSubrecord):
         return result
 
     def set_bloodresult(self, value, user, data):
+        if not value:
+            value = []
         existing_ids = [i["id"] for i in value if "id" in i]
         # you cannot save foriegn keys if the parent model (ie this)
         # does not have an id (ie has no id)

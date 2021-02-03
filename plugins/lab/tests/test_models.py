@@ -86,6 +86,18 @@ class BloodsTestCase(OpalTestCase):
             bloods.bloodresult_set.get().result, "result"
         )
 
+    def test_update_from_dict_empty_result(self):
+        update_dict = {
+            "exposure": "wheat",
+        }
+        bloods = Bloods(patient=self.patient)
+        bloods.update_from_dict(update_dict, self.user)
+        bloods_reloaded = Bloods.objects.get()
+        self.assertEqual(
+            bloods_reloaded.exposure, "wheat"
+        )
+        self.assertFalse(bloods.bloodresult_set.exists())
+
     def test_update_from_dict_delete(self):
         bb = Bloods(patient=self.patient)
         bb.exposure = "wheat"
