@@ -131,6 +131,16 @@ Lab report
         </div>
       </div>
     </div>
+    <div class="col-xs-6">
+      <div class="row">
+        <div class="col-xs-5 col-md-3">
+          Authorised by:
+        </div>
+        <div class="col-xs-7 col-md-9">
+          {% if object.authorised_by %}{{ object.authorised_by }}{% endif %}
+        </div>
+      </div>
+    </div>
   </div>
   <div class="row content-offset">
     <div class="col-md-9 col-xs-12">
