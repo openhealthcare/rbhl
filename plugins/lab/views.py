@@ -321,6 +321,7 @@ class LabMonthReview(AbstractLabStatsPage):
                 "Link": f"/pathway/#/bloods/{patient_id}/{episode_id}?id={blood.id}",
                 "Sample received": blood.blood_date,
                 "Referral source": referral_source,
+                "Hospital number": blood.patient.demographics().hospital_number,
                 "OH Provider": oh_provider,
                 "Blood num": blood.blood_number,
                 "Employer": employer,
