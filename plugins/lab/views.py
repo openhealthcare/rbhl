@@ -445,6 +445,10 @@ class LabMonthReview(AbstractLabStatsPage):
         statistics.mode fails if there are multipe of the
         same values, this returns this as a list
         """
+        if not some_list:
+            return
+        if len(some_list) == 1:
+            return [some_list[0]]
         result = defaultdict(int)
         for some_val in some_list:
             result[some_val] += 1

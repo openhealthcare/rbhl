@@ -39,6 +39,20 @@ class LabMonthReviewTestCase(OpalTestCase):
             self.view.get_day_count(start_dt, end_dt), 1
         )
 
+    def test_get_multi_mode(self):
+        self.assertEqual(
+            self.view.get_multi_mode([]), None
+        )
+        self.assertEqual(
+            self.view.get_multi_mode([1]), [1]
+        )
+        self.assertEqual(
+            self.view.get_multi_mode([1, 2]), [1, 2]
+        )
+        self.assertEqual(
+            self.view.get_multi_mode([1, 2, 2]), [2]
+        )
+
     def test_get(self):
         patient, _ = self.new_patient_and_episode_please()
         bloods = Bloods.objects.create(

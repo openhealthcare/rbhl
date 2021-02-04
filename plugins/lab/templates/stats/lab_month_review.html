@@ -29,7 +29,7 @@
         {% for row in summary %}
         <tr>
         {% for v in row.values %}
-          <td>{{ v }}</td>
+          <td>{% if v is not None %}{{ v }}{% endif %}</td>
         {% endfor %}
         </tr>
         {% endfor %}
@@ -52,7 +52,7 @@
           {% if not key == "Link" %}
           <td {% if key == "Num tests" or key == "Days" %}class="text-center"{% endif %}>
             {% if not value == None %}
-            {{ value }}
+            {{ value|join:", " }}
             {% endif %}
           </td>
           {% endif %}
