@@ -8,6 +8,7 @@ import tempfile
 import zipfile
 import os
 import statistics
+import holidays
 from pathlib import Path
 from collections import defaultdict
 from django.utils.functional import cached_property
@@ -380,6 +381,10 @@ class LabOverview(AbstractLabStatsPage):
 class LabMonthReview(AbstractLabStatsPage):
     template_name = "stats/lab_month_review.html"
 
+    @cached_property
+    def holidays(self):
+        return holidays.UnitedKingdom()
+
     def get_rows(self, month, year):
         bloods = Bloods.objects.filter(blood_date__month=month).filter(
             blood_date__year=year
@@ -406,12 +411,13 @@ class LabMonthReview(AbstractLabStatsPage):
                 "Link": f"/pathway/#/bloods/{patient_id}/{episode_id}?id={blood.id}",
                 "Sample received": blood.blood_date,
                 "Referral source": referral_source,
+                "Hospital number": blood.patient.demographics().hospital_number,
                 "OH Provider": oh_provider,
                 "Blood num": blood.blood_number,
                 "Employer": employer,
                 "Exposure": blood.exposure or "No exposure",
-                "Allergens": ", ".join(
-                    sorted(list({i.allergen for i in blood.bloodresult_set.all()}))
+                "Allergens": sorted(
+                    list(i.allergen for i in blood.bloodresult_set.all() if i.allergen)
                 ),
                 "Report submitted": blood.report_st,
                 "Num tests": blood.bloodresult_set.count(),
@@ -428,13 +434,16 @@ class LabMonthReview(AbstractLabStatsPage):
         """
         Returns the count of week days inclusive
         between the blood date and the report date
+
+        It also excludes bank holidays
         """
         count = 0
         if start_dt > report_date:
             return count
         while start_dt <= report_date:
             if start_dt.weekday() < 5:
-                count += 1
+                if start_dt not in self.holidays:
+                    count += 1
             start_dt = start_dt + datetime.timedelta(1)
         return count
 
@@ -513,9 +522,10 @@ class LabMonthReview(AbstractLabStatsPage):
         zip_file_name = f"{month_name}_review.zip"
         rows = self.get_rows(month, year)
         for row in rows:
-            scheme = self.request.scheme,
-            host = self.request.get_host(),
+            scheme = self.request.scheme
+            host = self.request.get_host()
             row["Link"] = f"{scheme}://{host}{row['Link']}"
+            row["Allergens"] = ", ".join(row["Allergens"])
         summary = self.get_summary(rows)
         employers = list({i["Employer"] for i in rows if i})
         with ZipCsvWriter(zip_file_name) as zf:
