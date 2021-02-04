@@ -28,8 +28,17 @@
       <table class="table content-offset">
         {% for row in summary %}
         <tr>
-        {% for v in row.values %}
-          <td>{% if v is not None %}{{ v }}{% endif %}</td>
+        {% for k, v in row.items %}
+          <td>
+            {% if v is not None %}
+            {# mode is a list so join appropriately #}
+            {% if k is "mode" %}
+            {{ value|join:", " }}
+            {% else %}
+            {{ v }}
+            {% endif %}
+            {% endif %}
+         </td>
         {% endfor %}
         </tr>
         {% endfor %}
@@ -52,7 +61,7 @@
           {% if not key == "Link" %}
           <td {% if key == "Num tests" or key == "Days" %}class="text-center"{% endif %}>
             {% if not value == None %}
-            {{ value|join:", " }}
+            {{ value }}
             {% endif %}
           </td>
           {% endif %}
