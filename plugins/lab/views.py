@@ -418,7 +418,7 @@ class LabMonthReview(AbstractLabStatsPage):
             }
             if blood.report_st and blood.blood_date:
                 # dates are usually inclusive, e.g. 2nd - 5th if 4 days not 3
-                row["Days"] = (blood.report_st - blood.blood_date).days + 1
+                row["Days"] = self.get_day_count(blood.blood_date, blood.report_st)
             else:
                 row["Days"] = ""
             result.append(row)
