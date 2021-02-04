@@ -60,8 +60,12 @@
           {% for key, value in row.items %}
           {% if not key == "Link" %}
           <td {% if key == "Num tests" or key == "Days" %}class="text-center"{% endif %}>
+            {% if key == "Allergens" %}
+            {% for allergen in value %}{{ allergen }}<br />{% endfor %}
+            {% else %}
             {% if not value == None %}
             {{ value }}
+            {% endif %}
             {% endif %}
           </td>
           {% endif %}

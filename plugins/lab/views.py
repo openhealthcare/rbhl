@@ -325,8 +325,8 @@ class LabMonthReview(AbstractLabStatsPage):
                 "Blood num": blood.blood_number,
                 "Employer": employer,
                 "Exposure": blood.exposure or "No exposure",
-                "Allergens": ", ".join(
-                    sorted(list({i.allergen for i in blood.bloodresult_set.all()}))
+                "Allergens": sorted(
+                    list(i.allergen for i in blood.bloodresult_set.all() if i.allergen)
                 ),
                 "Report submitted": blood.report_st,
                 "Num tests": blood.bloodresult_set.count(),
@@ -434,6 +434,7 @@ class LabMonthReview(AbstractLabStatsPage):
             scheme = self.request.scheme,
             host = self.request.get_host(),
             row["Link"] = f"{scheme}://{host}{row['Link']}"
+            row["Allergens"] = ", ".join(row["Allergens"])
         summary = self.get_summary(rows)
         employers = list({i["Employer"] for i in rows if i})
         with ZipCsvWriter(zip_file_name) as zf:
