@@ -431,8 +431,8 @@ class LabMonthReview(AbstractLabStatsPage):
         zip_file_name = f"{month_name}_review.zip"
         rows = self.get_rows(month, year)
         for row in rows:
-            scheme = self.request.scheme,
-            host = self.request.get_host(),
+            scheme = self.request.scheme
+            host = self.request.get_host()
             row["Link"] = f"{scheme}://{host}{row['Link']}"
             row["Allergens"] = ", ".join(row["Allergens"])
         summary = self.get_summary(rows)
