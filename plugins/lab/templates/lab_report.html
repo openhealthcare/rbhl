@@ -151,6 +151,9 @@ Lab report
               {% if result.antigenno %}
               ({{ result.antigenno }})
               {% endif %}
+              {% if result.comment %}
+              - {{ result.comment }}
+              {% endif %}
             </td>
             <td>
               {% if result.kul %}
