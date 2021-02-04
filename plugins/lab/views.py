@@ -6,6 +6,7 @@ import os
 import csv
 import io
 import statistics
+import holidays
 from pathlib import Path
 from collections import defaultdict
 from django.http import HttpResponse
@@ -290,6 +291,10 @@ class LabOverview(AbstractLabStatsPage):
 class LabMonthReview(AbstractLabStatsPage):
     template_name = "stats/lab_month_review.html"
 
+    @cached_property
+    def holidays(self):
+        return holidays.UnitedKingdom()
+
     def get_rows(self, month, year):
         bloods = Bloods.objects.filter(blood_date__month=month).filter(
             blood_date__year=year
@@ -338,13 +343,16 @@ class LabMonthReview(AbstractLabStatsPage):
         """
         Returns the count of week days inclusive
         between the blood date and the report date
+
+        It also excludes bank holidays
         """
         count = 0
         if start_dt > report_date:
             return count
         while start_dt <= report_date:
             if start_dt.weekday() < 5:
-                count += 1
+                if start_dt not in self.holidays:
+                    count += 1
             start_dt = start_dt + datetime.timedelta(1)
         return count
 

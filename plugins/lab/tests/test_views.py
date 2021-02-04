@@ -39,6 +39,18 @@ class LabMonthReviewTestCase(OpalTestCase):
             self.view.get_day_count(start_dt, end_dt), 1
         )
 
+    def test_skips_bank_holidays(self):
+        # should skip the may day bank holiday
+        # it always occurs in the first week of may
+        # therefore in the first week of may there
+        # should always be 4 work days, (2 weekends, 1 bank holiday)
+        year = datetime.date.today().year
+        start_dt = datetime.date(year, 5, 1)
+        end_dt = datetime.date(year, 5, 7)
+        self.assertEqual(
+            self.view.get_day_count(start_dt, end_dt), 4
+        )
+
     def test_get_multi_mode(self):
         self.assertEqual(
             self.view.get_multi_mode([]), None
