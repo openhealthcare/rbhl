@@ -9,7 +9,7 @@
           </a>
           {% for menu_date in view.menu_dates %}
           {% url 'lab-month-activity' year=menu_date.year month=menu_date.month as lab_month_activity_url %}
-          <a href="{{ lab_month_activity_url }}" class="btn {% if request.path == lab_month_review_url %}btn-info{% else %}btn-default{% endif %}">
+          <a href="{{ lab_month_activity_url }}" class="btn {% if request.path == lab_month_activity_url %}btn-info{% else %}btn-default{% endif %}">
             <h4>
               {{ menu_date|date:"F" }}
             </h4>
