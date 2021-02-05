@@ -211,9 +211,9 @@ class AbstractLabStatsPage(TemplateView):
         result = []
         today = datetime.date.today()
         if today.day == 1:
-            date_range = range(1, 5)
+            date_range = range(1, 7)
         else:
-            date_range = range(4)
+            date_range = range(6)
 
         for i in reversed(date_range):
             result.append(today - relativedelta(months=i))
@@ -232,9 +232,9 @@ class LabOverview(AbstractLabStatsPage):
         )
         if not start_date == month_start:
             ranges = [(month_start, month_start + relativedelta(months=1))]
-            num_months = 5
+            num_months = 11
         else:
-            num_months = 6
+            num_months = 12
 
         for i in range(0, num_months):
             date_range = (
