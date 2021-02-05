@@ -161,9 +161,9 @@ class LabOverview(AbstractLabStatsPage):
         and number of blood results created
         """
         date_ranges = self.date_ranges
-        number_of_samples_received = {"name": "Number of samples received"}
-        number_of_exposures = {"name": "Number of exposures tests on samples"}
-        number_of_tests_assayed = {"name": "Number of tests assayed"}
+        number_of_samples_received = {"name": "Samples received"}
+        number_of_exposures = {"name": "Exposure tests on samples"}
+        number_of_tests_assayed = {"name": "Tests assayed"}
         for month_start, month_end in date_ranges:
             my = f"{month_start.month}/{month_start.year}"
 
