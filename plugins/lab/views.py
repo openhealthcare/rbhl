@@ -257,16 +257,20 @@ class LabOverview(AbstractLabStatsPage):
             rows.append(row)
         return rows
 
+    def get_table_data(self):
+        return {
+            "Overview": self.get_overview(),
+            "By exposure": self.get_requests_by_exposure(),
+            "By OH provider": self.get_requests_by_oh_provider()
+        }
+
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
-        overview = self.get_overview()
-        ctx["table_data"] = [
-            overview,
-            self.get_requests_by_exposure(),
-            self.get_requests_by_oh_provider()
-        ]
+        ctx["table_data"] = self.get_table_data()
         graph_data = [["x"] + [i[0].strftime("%Y-%m-%d") for i in self.date_ranges]]
-        graph_data.extend([list(i.values()) for i in overview])
+
+        # add the overview data for the graphs
+        graph_data.extend([list(i.values()) for i in ctx["table_data"]["Overview"]])
         ctx["graph_data"] = json.dumps(graph_data)
         menu_dates = self.date_ranges[-3:]
         menu_dates.reverse()
@@ -275,13 +279,14 @@ class LabOverview(AbstractLabStatsPage):
 
     def post(self, *args, **kwargs):
         zip_file_name = "lab_summary.zip"
+        table_data = self.get_table_data()
         with ZipCsvWriter(zip_file_name) as zf:
             rows = []
-            rows.extend(self.get_overview())
-            rows.append({})
-            rows.extend(self.get_requests_by_exposure())
-            rows.append({})
-            rows.extend(self.get_requests_by_oh_provider())
+            for section_name, row_set in table_data.items():
+                if not section_name == "Overview":
+                    rows.append({"name": section_name})
+                rows.extend(row_set)
+                rows.append({})
             zf.write_csv(
                 "lab_summary.csv", rows
             )
