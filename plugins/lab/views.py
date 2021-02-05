@@ -303,7 +303,7 @@ class LabMonthActivity(AbstractLabStatsPage):
     def get_rows(self, month, year):
         bloods = Bloods.objects.filter(blood_date__month=month).filter(
             blood_date__year=year
-        ).order_by("blood_date")
+        ).select_related("employment", "referral").order_by("blood_date")
         result = []
         for blood in bloods:
             patient_id = blood.patient_id
