@@ -56,7 +56,8 @@ c3.generate({
   bindto: '#six-month-line-graph',
   data: {
     x: 'x',
-    columns: {{ graph_data | safe }}
+    columns: {{ graph_data | safe }},
+    type: 'bar',
   },
   axis: {
       x: {
@@ -65,6 +66,11 @@ c3.generate({
               format: '%m/%Y'
           }
       }
+  },
+  bar: {
+    width: {
+      ratio: 0.6 // this makes bar width 50% of length between ticks
+    }
   }
 });
 </script>
