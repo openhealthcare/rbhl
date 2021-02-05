@@ -12,6 +12,7 @@
 <table class="table table-striped table-hover table-sortable">
   <tr>
     {% include "partials/table_header.html" with display_name="Name" slug="name" %}
+    {% include "partials/table_header.html" with display_name="Blood number" slug="blood_number" %}
     {% include "partials/table_header.html" with display_name="Sample received" slug="blood_date" %}
     {% include "partials/table_header.html" with display_name="Exposure" slug="exposure" %}
     {% include "partials/table_header.html" with display_name="Room" slug="room" %}
@@ -22,6 +23,7 @@
   {% for bloods in object_list %}
     <tr onclick=window.location="/#/patient/{{ bloods.patient_id }}/investigations" class="pointer">
       <td>{{ bloods.patient.demographics_set.all.0.name }}</td>
+      <td>{{ bloods.blood_number }}</td>
       <td>{{ bloods.blood_date }}</td>
       <td>{{ bloods.exposure }}</td>
       <td>{{ bloods.room }}</td>
