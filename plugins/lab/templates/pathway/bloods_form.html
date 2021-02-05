@@ -23,11 +23,11 @@
           <select name="bloods_employment" class="form-control" ng-model="editing.bloods.employment_id" convert-to-number>
             <option value="">---------</option>
             <option value="[[ i.id ]]" ng-if="i.created || i.updated" ng-repeat="i in episode.employment">
-              [[ employer_display(i) ]]
+              [[ employment_display(i) ]]
             </option>
           </select>
           <span class="help-block">
-            Or <a ng-click="addSubrecord('employment')">add a new employment</a>
+            Or <a class="pointer" ng-click="addSubrecord('employment')">add a new employment</a>
           </span>
         </div>
       </div>
@@ -43,7 +43,7 @@
             </option>
           </select>
           <span class="help-block">
-            Or <a ng-click="addSubrecord('referral')">add a new referral</a>
+            Or <a class="pointer" ng-click="addSubrecord('referral')">add a new referral</a>
           </span>
         </div>
       </div>
