@@ -20,7 +20,16 @@ Lab overview
           <th>{{ start_date.month }}/{{ start_date.year }}</th>
           {% endfor %}
         </tr>
-        {% for row_set in table_data %}
+
+        {% for section_name, row_set in table_data.items %}
+          {% if not section_name == "Overview" %}
+          <tr>
+            <th>
+              {{ section_name }}
+            </th>
+            {% for start_date, _ in view.date_ranges %}<th></th>{% endfor %}
+          </tr>
+          {% endif %}
           {% for rows in row_set %}
           <tr>
             {% for row in rows.values %}

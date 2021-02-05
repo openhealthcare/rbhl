@@ -251,9 +251,9 @@ class LabOverview(AbstractLabStatsPage):
         and number of blood results created
         """
         date_ranges = self.date_ranges
-        number_of_samples_received = {"name": "Number of samples received"}
-        number_of_exposures = {"name": "Number of exposures tests on samples"}
-        number_of_tests_assayed = {"name": "Number of tests assayed"}
+        number_of_samples_received = {"name": "Samples received"}
+        number_of_exposures = {"name": "Exposure tests on samples"}
+        number_of_tests_assayed = {"name": "Tests assayed"}
         for month_start, month_end in date_ranges:
             my = f"{month_start.month}/{month_start.year}"
 
@@ -347,16 +347,20 @@ class LabOverview(AbstractLabStatsPage):
             rows.append(row)
         return rows
 
+    def get_table_data(self):
+        return {
+            "Overview": self.get_overview(),
+            "By exposure": self.get_requests_by_exposure(),
+            "By OH provider": self.get_requests_by_oh_provider()
+        }
+
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
-        overview = self.get_overview()
-        ctx["table_data"] = [
-            overview,
-            self.get_requests_by_exposure(),
-            self.get_requests_by_oh_provider()
-        ]
+        ctx["table_data"] = self.get_table_data()
         graph_data = [["x"] + [i[0].strftime("%Y-%m-%d") for i in self.date_ranges]]
-        graph_data.extend([list(i.values()) for i in overview])
+
+        # add the overview data for the graphs
+        graph_data.extend([list(i.values()) for i in ctx["table_data"]["Overview"]])
         ctx["graph_data"] = json.dumps(graph_data)
         menu_dates = self.date_ranges[-3:]
         menu_dates.reverse()
@@ -365,21 +369,22 @@ class LabOverview(AbstractLabStatsPage):
 
     def post(self, *args, **kwargs):
         zip_file_name = "lab_summary.zip"
+        table_data = self.get_table_data()
         with ZipCsvWriter(zip_file_name) as zf:
             rows = []
-            rows.extend(self.get_overview())
-            rows.append({})
-            rows.extend(self.get_requests_by_exposure())
-            rows.append({})
-            rows.extend(self.get_requests_by_oh_provider())
+            for section_name, row_set in table_data.items():
+                if not section_name == "Overview":
+                    rows.append({"name": section_name})
+                rows.extend(row_set)
+                rows.append({})
             zf.write_csv(
                 "lab_summary.csv", rows
             )
         return zip_file_to_response(zf.name)
 
 
-class LabMonthReview(AbstractLabStatsPage):
-    template_name = "stats/lab_month_review.html"
+class LabMonthActivity(AbstractLabStatsPage):
+    template_name = "stats/lab_month_activity.html"
 
     @cached_property
     def holidays(self):
