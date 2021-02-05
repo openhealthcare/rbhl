@@ -22,7 +22,11 @@ angular.module('opal.controllers').controller(
     scope.bloodTest = {bloods: bloodTest};
   }
 
-  scope.employer_display = function(employment){
+  scope.employment_display = function(employment){
+    /*
+    * Options do not allow if statements so we format the display
+    * name of the employment in here.
+    */
     var result;
     if(employment.employer && employment.oh_provider){
       result = employment.employer + "/" + employment.oh_provider;
@@ -37,6 +41,10 @@ angular.module('opal.controllers').controller(
   }
 
   scope.referral_display = function(referral){
+    /*
+    * Options do not allow if statements so we format the display
+    * name of the employment in here.
+    */
     var result = displayDateFilter(referral.date_of_referral) || "";
     result = result + " " + referral.referrer_name;
     if(result && referral.reference_number){
@@ -47,7 +55,8 @@ angular.module('opal.controllers').controller(
 
   scope.addSubrecord = function(subrecordName){
     /*
-    * The form has a select box to choo
+    * The form has a select box to choose existing employent/referral subrecords.
+    * If a subrecord does not exist, this allows them to create one.
     *
     *
     * Employer used to be a singleton
