@@ -97,41 +97,49 @@
   </div>
   <ul class="list-group">
     <li ng-repeat="item in episode.diagnosis | filter:{category: '{{ models.Diagnosis.NAD }}'} as hasNAD" class="content-offset-below-20">
-      <div class="col-md-11">
-        {% include models.Diagnosis.get_display_template %}
-      </div>
-      <div class="col-md-1">
-        <i ng-click="diagnosisDisplay.editItem('diagnosis', item, '/templates/modals/nad.html')" class="fa fa-pencil edit pull-right pointer" ></i>
+      <div class="row">
+        <div class="col-md-11">
+          {% include models.Diagnosis.get_display_template %}
+        </div>
+        <div class="col-md-1">
+          <i ng-click="diagnosisDisplay.editItem('diagnosis', item, '/templates/modals/nad.html')" class="fa fa-pencil edit pull-right pointer" ></i>
+        </div>
       </div>
     </li>
   </ul>
   <ul ng-show="!hasNAD.length" class="list-group">
     <li ng-repeat="item in episode.asthma_details" class="diagnosis-row content-offset-below-20"class="list-group-item">
-      <div class="col-md-11">
-        {% include models.AsthmaDetails.get_display_template %}
-      </div>
-      <div class="col-md-1">
-        <i ng-click="diagnosisDisplay.editItem('{{ models.AsthmaDetails.get_api_name }}', item, '/templates/modals/asthma.html')" class="fa fa-pencil edit pull-right pointer" ></i>
+      <div class="row">
+        <div class="col-md-11">
+          {% include models.AsthmaDetails.get_display_template %}
+        </div>
+        <div class="col-md-1">
+          <i ng-click="diagnosisDisplay.editItem('{{ models.AsthmaDetails.get_api_name }}', item, '/templates/modals/asthma.html')" class="fa fa-pencil edit pull-right pointer" ></i>
+        </div>
       </div>
     </li>
     <li ng-repeat="item in episode.rhinitis_details" class="diagnosis-row content-offset-below-20"class="list-group-item">
-      <div class="col-md-11">
-        {% include models.RhinitisDetails.get_display_template %}
-      </div>
-      <div class="col-md-1">
-        <i ng-click="diagnosisDisplay.editItem('{{ models.RhinitisDetails.get_api_name }}', item, '/templates/modals/rhinitis.html')" class="fa fa-pencil edit pull-right pointer" ></i>
+      <div class="row">
+        <div class="col-md-11">
+          {% include models.RhinitisDetails.get_display_template %}
+        </div>
+        <div class="col-md-1">
+          <i ng-click="diagnosisDisplay.editItem('{{ models.RhinitisDetails.get_api_name }}', item, '/templates/modals/rhinitis.html')" class="fa fa-pencil edit pull-right pointer" ></i>
+        </div>
       </div>
     </li>
     <li ng-repeat="item in episode.diagnosis" ng-show="item.category !== '{{ models.Diagnosis.ASTHMA }}' && item.category !== '{{ models.Diagnosis.RHINITIS }}'" class="diagnosis-row content-offset-below-20"class="list-group-item">
-      <div class="col-md-11">
-        {% include models.Diagnosis.get_display_template %}
-      </div>
-      <div class="col-md-1">
-        <i ng-show="item.category==='{{ models.Diagnosis.CHRONIC_AIR_FLOW_LIMITATION }}'" ng-click="diagnosisDisplay.editItem('diagnosis', item, '/templates/modals/chronic_air_flow_limitation.html')" class="fa fa-pencil edit pull-right pointer" ></i>
-        <i ng-show="item.category==='{{ models.Diagnosis.MALIGNANCY }}'" ng-click="diagnosisDisplay.editItem('diagnosis', item, '/templates/modals/malignancy.html')" class="fa fa-pencil edit pull-right pointer" ></i>
-        <i ng-show="item.category==='{{ models.Diagnosis.BENIGN_PLEURAL_DISEASE }}'" ng-click="diagnosisDisplay.editItem('diagnosis', item, '/templates/modals/benign_pleural_disease.html')" class="fa fa-pencil edit pull-right pointer" ></i>
-        <i ng-show="item.category==='{{ models.Diagnosis.DIFFUSE_LUNG_DISEASE }}'" ng-click="diagnosisDisplay.editItem('diagnosis', item, '/templates/modals/diffuse_lung_disease.html')" class="fa fa-pencil edit pull-right pointer" ></i>
-        <i ng-show="item.category==='{{ models.Diagnosis.OTHER }}'" ng-click="diagnosisDisplay.editItem('diagnosis', item, '/templates/modals/other_diagnosis.html')" class="fa fa-pencil edit pull-right pointer" ></i>
+      <div class="row">
+        <div class="col-md-11">
+          {% include models.Diagnosis.get_display_template %}
+        </div>
+        <div class="col-md-1">
+          <i ng-show="item.category==='{{ models.Diagnosis.CHRONIC_AIR_FLOW_LIMITATION }}'" ng-click="diagnosisDisplay.editItem('diagnosis', item, '/templates/modals/chronic_air_flow_limitation.html')" class="fa fa-pencil edit pull-right pointer" ></i>
+          <i ng-show="item.category==='{{ models.Diagnosis.MALIGNANCY }}'" ng-click="diagnosisDisplay.editItem('diagnosis', item, '/templates/modals/malignancy.html')" class="fa fa-pencil edit pull-right pointer" ></i>
+          <i ng-show="item.category==='{{ models.Diagnosis.BENIGN_PLEURAL_DISEASE }}'" ng-click="diagnosisDisplay.editItem('diagnosis', item, '/templates/modals/benign_pleural_disease.html')" class="fa fa-pencil edit pull-right pointer" ></i>
+          <i ng-show="item.category==='{{ models.Diagnosis.DIFFUSE_LUNG_DISEASE }}'" ng-click="diagnosisDisplay.editItem('diagnosis', item, '/templates/modals/diffuse_lung_disease.html')" class="fa fa-pencil edit pull-right pointer" ></i>
+          <i ng-show="item.category==='{{ models.Diagnosis.OTHER }}'" ng-click="diagnosisDisplay.editItem('diagnosis', item, '/templates/modals/other_diagnosis.html')" class="fa fa-pencil edit pull-right pointer" ></i>
+        </div>
       </div>
     </li>
   </ul>
