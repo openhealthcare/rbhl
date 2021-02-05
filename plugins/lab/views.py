@@ -293,8 +293,8 @@ class LabOverview(AbstractLabStatsPage):
         return zip_file_to_response(zf.name)
 
 
-class LabMonthReview(AbstractLabStatsPage):
-    template_name = "stats/lab_month_review.html"
+class LabMonthActivity(AbstractLabStatsPage):
+    template_name = "stats/lab_month_activity.html"
 
     @cached_property
     def holidays(self):
