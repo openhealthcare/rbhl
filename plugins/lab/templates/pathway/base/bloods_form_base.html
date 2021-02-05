@@ -11,8 +11,14 @@
         <h1>
           {% if pathway.icon %}{% icon pathway.icon %}{% endif %} {{ pathway.display_name }}
           <span ng-show="episode">
-            (<a href="/#/patient/[[ episode.demographics[0].patient_id ]]/[[ episode.demographics[0].id ]]">[[
-              episode.demographics[0].first_name ]] [[ episode.demographics[0].surname ]]</a>)
+            (<a href="/#/patient/[[ episode.demographics[0].patient_id ]]/[[ episode.demographics[0].id ]]">
+              <span ng-if="episode.demographics[0].first_name || episode.demographics[0].surname">
+              [[ episode.demographics[0].first_name ]] [[ episode.demographics[0].surname ]]
+              </span>
+              <span ng-if="!episode.demographics[0].first_name && !episode.demographics[0].surname">
+                Lab patient
+              </span>
+            </a>)
           </span>
         </h1>
         {% endblock pathway_header %}

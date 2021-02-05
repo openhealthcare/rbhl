@@ -125,9 +125,6 @@ class Exposure(lookuplists.LookupList):
 
 
 class Bloods(RbhlSubrecord, models.PatientSubrecord):
-    _exclude_from_extract = True
-    _advanced_searchable = False
-
     ANTIGEN_TYPE = enum("STANDARD", "BESPOKE")
     METHODS = enum(
         "ImmunoCAP",
@@ -141,6 +138,12 @@ class Bloods(RbhlSubrecord, models.PatientSubrecord):
     )
     blood_number       = fields.CharField(blank=True, null=True,
                                           max_length=200)
+    employment           = fields.ForeignKey(
+        "rbhl.Employment", blank=True, null=True, on_delete=fields.SET_NULL
+    )
+    referral           = fields.ForeignKey(
+        "rbhl.Referral", blank=True, null=True, on_delete=fields.SET_NULL
+    )
     method             = fields.CharField(
         blank=True, null=True, max_length=200, choices=METHODS
     )
@@ -161,6 +164,9 @@ class Bloods(RbhlSubrecord, models.PatientSubrecord):
     )
     report_st          = fields.DateField(
         blank=True, null=True, verbose_name="Report submitted"
+    )
+    authorised_by      = fields.CharField(
+        blank=True, null=True, max_length=255
     )
     store              = fields.NullBooleanField()
     exposure           = models.ForeignKeyOrFreeText(Exposure)
@@ -191,6 +197,8 @@ class Bloods(RbhlSubrecord, models.PatientSubrecord):
         return result
 
     def set_bloodresult(self, value, user, data):
+        if not value:
+            value = []
         existing_ids = [i["id"] for i in value if "id" in i]
         # you cannot save foriegn keys if the parent model (ie this)
         # does not have an id (ie has no id)
@@ -221,8 +229,9 @@ class BloodResult(fields.Model):
     NEGATIVE = "-ve"
     PRECIPITIN_CHOICES = enum(NEGATIVE, "+ve", "Weak +ve", '++ve')
     bloods = fields.ForeignKey(Bloods, on_delete=fields.CASCADE)
-    result     = fields.CharField(blank=True, null=True, max_length=200)
-    allergen   = models.ForeignKeyOrFreeText(Allergen)
+    result = fields.CharField(blank=True, null=True, max_length=200)
+    allergen = models.ForeignKeyOrFreeText(Allergen)
+    comment = fields.TextField(blank=True, null=True)
     phadia_test_code  = fields.CharField(
         blank=True, null=True, max_length=200, verbose_name="Antigen number"
     )
