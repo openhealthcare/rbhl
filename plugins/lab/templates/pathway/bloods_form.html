@@ -17,6 +17,40 @@
     <div class="row">
       <div class="col-md-6">
         <div class="horizontal-form">
+          <label class="control-label">
+            Employment
+          </label>
+          <select name="bloods_employment" class="form-control" ng-model="editing.bloods.employment_id" convert-to-number>
+            <option value="">---------</option>
+            <option value="[[ i.id ]]" ng-if="i.created || i.updated" ng-repeat="i in episode.employment">
+              [[ employment_display(i) ]]
+            </option>
+          </select>
+          <span class="help-block">
+            Or <a class="pointer" ng-click="addSubrecord('employment')">add a new employment</a>
+          </span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="horizontal-form">
+          <label class="control-label">
+            Referral
+          </label>
+          <select name="bloods_referral" class="form-control" ng-model="editing.bloods.referral_id" convert-to-number>
+            <option value="">---------</option>
+            <option value="[[ i.id ]]" ng-if="i.created || i.updated" ng-repeat="i in episode.referral">
+              [[ referral_display(i) ]]
+            </option>
+          </select>
+          <span class="help-block">
+            Or <a class="pointer" ng-click="addSubrecord('referral')">add a new referral</a>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="horizontal-form">
           {% datepicker field="Bloods.blood_date" style="vertical" %}
         </div>
       </div>

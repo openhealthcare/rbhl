@@ -30,6 +30,8 @@ class BloodsTestCase(OpalTestCase):
             "blood_taken": None,
             "blood_tm": None,
             "authorised_by": None,
+            "employment_id": None,
+            "referral_id": None,
             "bloodresult": [
                 {
                     "allergen": "flour",
