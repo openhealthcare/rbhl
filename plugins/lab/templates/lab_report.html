@@ -12,9 +12,23 @@
   }
 </style>
 Lab report
-(<a href="/#/patient/{{ object.patient_id }}">
-{{ object.patient.demographics.name }}
-</a>)
+(
+  <a href="/#/patient/{{ object.patient_id }}">
+  {% if object.patient.demographics.name %}
+  {{ object.patient.demographics.name }}
+  {% else %}
+  Lab patient
+  {% endif %}
+  </a>
+  {% if object.blood_number %}
+  -
+  <a href="/pathway/#/bloods/{{ object.patient_id }}/{{ object.patient.episode_set.last.id }}?id={{ object.id }}">
+    {{ object.blood_number }}
+  </a>
+  {% endif %}
+
+
+)
 {% endblock %}
 
 {% block page_content %}
