@@ -1,9 +1,9 @@
-{% extends 'patient_lists/static_patient_list_base.html' %}
+{% extends 'static_base.html' %}
 
-{% block patient_list_name %}
-<h1>Your recently resulted samples</h1>
+{% block title %}
+Your recently resulted samples
 {% endblock %}
-{% block patient_list_table %}
+{% block page_content %}
 <p class="lead">
   A list of samples that have recently processed for patients seen by you ({{ view.initials }})
 </p>

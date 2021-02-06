@@ -1,11 +1,10 @@
-{% extends 'patient_lists/static_patient_list_base.html' %}
-
-{% block patient_list_name %}
-<h1>Unresulted samples</h1>
+{% extends 'static_base.html' %}
+{% block title %}
+Unresulted samples
 {% endblock %}
 
 
-{% block patient_list_table %}
+{% block page_content %}
 <p class="lead">
   A list of all samples currently stored without results.
 </p>
