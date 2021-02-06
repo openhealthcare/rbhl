@@ -107,3 +107,13 @@ def add_to_text_button(
     }
 
     return ctx
+
+
+@register.filter(name='none_as_empty')
+def none_as_empty(value):
+    """
+    Rather than put None in the template, put an empty string
+    """
+    if value is None:
+        return ""
+    return value
