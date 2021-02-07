@@ -1,25 +1,10 @@
-{% extends 'patient_lists/static_patient_list_base.html' %}
+{% extends 'static_base.html' %}
 
-{% block patient_list_name %}
-<div class="row">
-  <div class="col-md-9">
-    <h1>Recently received samples</h1>
-    <p class="lead">
-      A list of samples received in the last 60 days.
-    </p>
-  </div>
-  <div class="col-md-3 content-offset-20">
-    <form action="{% url 'recently-recieved-samples-list' %}" method="post" target="_blank">
-      {% csrf_token %}
-      <button type="submit" class="btn btn-secondary btn-lg">
-        <span class="glyphicon glyphicon-download"></span>
-        Download this data
-      </button>
-    </form>
-  </div>
-</div>
-{% endblock %}
-{% block patient_list_table %}
+{% block title %}Recently received samples{% endblock %}
+{% block page_content %}
+<p class="lead">
+  A list of samples received in the last 60 days.
+</p>
 <table class="table table-striped table-hover table-sortable">
   <tr>
     {% include "partials/table_header.html" with display_name="Name" slug="Name" %}
