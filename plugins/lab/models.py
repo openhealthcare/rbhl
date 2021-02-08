@@ -130,7 +130,8 @@ class Bloods(RbhlSubrecord, models.PatientSubrecord):
         "ImmunoCAP",
         "RAST",
         "RAST Score",
-        "Precipitins"
+        "Precipitins",
+        "Lymphocyte Proliferation Test"
     )
 
     blood_date         = fields.DateField(
@@ -246,6 +247,10 @@ class BloodResult(fields.Model):
     iggclass    = fields.IntegerField(
         blank=True, null=True, verbose_name="IgG Class"
     )
+
+    # Stimulation checks are used by the Lymphocyte Proliferation Test method
+    stimulation_index_day_5 = fields.FloatField(blank=True, null=True)
+    stimulation_index_day_7 = fields.FloatField(blank=True, null=True)
 
     def get_fields(self):
         blood_result_fields_to_dict = [
