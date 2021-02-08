@@ -46,7 +46,9 @@ class BloodsTestCase(OpalTestCase):
                     "rast": None,
                     "result": None,
                     "rast_score": None,
-                    "significant": True
+                    "significant": True,
+                    'stimulation_index_day_5': None,
+                    'stimulation_index_day_7': None
                 }
             ],
             'comment': None,

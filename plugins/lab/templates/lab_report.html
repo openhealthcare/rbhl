@@ -192,7 +192,7 @@ Lab report
         <tbody>
           {% for result in object.bloodresult_set.all %}
           {# For int/float fields make sure they show if they are 0 #}
-          {% if result.kul or result.rast is not None or result.rast_score is not None or result.precipitin or result.igg is not None %}
+          {% if result.kul or result.rast is not None or result.rast_score is not None or result.precipitin or result.igg is not None or result.stimulation_index_day_5 is not None or result.stimulation_index_day_7 is not None %}
           <tr>
             <td>
               {{ result.allergen }}
@@ -219,6 +219,16 @@ Lab report
               {% if result.igg is not None  %}
                 {{ result.igg }} mg/L
               {% endif %}
+
+              {# For method Lymphocyte Proliferation Test #}
+              {% if result.stimulation_index_day_5 is not None %}
+              Stimulation index day 5: {{ result.stimulation_index_day_5 }}
+              {% endif %}
+              {% if result.stimulation_index_day_7 is not None %}
+              {% if result.stimulation_index_day_5 is not None %}<br />{% endif %}
+              Stimulation index day 7: {{ result.stimulation_index_day_7 }}
+              {% endif %}
+              {# end Lymphocyte Proliferation Test #}
             </td>
           </tr>
           {% endif %}
