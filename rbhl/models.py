@@ -250,7 +250,6 @@ class Employment(RBHLSubrecord, models.EpisodeSubrecord):
     firefighter = fields.NullBooleanField(
         verbose_name="Firefighter pre-employment"
     )
-    notes = fields.TextField(blank=True, default="")
 
 
 class ClinicLog(RBHLSubrecord, models.EpisodeSubrecord):

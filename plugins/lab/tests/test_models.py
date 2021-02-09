@@ -35,7 +35,6 @@ class BloodsTestCase(OpalTestCase):
             "bloodresult": [
                 {
                     "allergen": "flour",
-                    'comment': None,
                     "phadia_test_code": None,
                     "id": bloods_result.id,
                     "igg": None,
