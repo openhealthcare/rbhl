@@ -289,6 +289,10 @@ class BloodResult(fields.Model):
         if self.igg:
             # any igg is significant
             return True
+        if self.stimulation_index_day_5 and self.stimulation_index_day_5 > 2:
+            return True
+        if self.stimulation_index_day_7 and self.stimulation_index_day_7 > 2:
+            return True
         return False
 
     def to_dict(self):
