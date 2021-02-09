@@ -1,4 +1,5 @@
 {% extends 'static_base.html' %}
+{% load rbhl_panels %}
 
 
 {% block title %}
@@ -12,31 +13,57 @@
   }
 </style>
 Lab report
-(<a href="/#/patient/{{ object.patient_id }}">
-{{ object.patient.demographics.name }}
-</a>)
+(
+  <a href="/#/patient/{{ object.patient_id }}">
+  {% if object.patient.demographics.name %}
+  {{ object.patient.demographics.name }}
+  {% else %}
+  Lab patient
+  {% endif %}
+  </a>
+  {% if object.blood_number %}
+  -
+  <a href="/pathway/#/bloods/{{ object.patient_id }}/{{ object.patient.episode_set.last.id }}?id={{ object.id }}">
+    {{ object.blood_number }}
+  </a>
+  {% endif %}
+
+
+)
 {% endblock %}
 
 {% block page_content %}
 <div class="lab-report">
-  <div class="row print-only">
-    <div class="col-xs-12">
-      <h2 class="text-center">
-        {{ object.patient.demographics.name }}
-        {% if object.patient.demographics.date_of_birth %}
-          ({{ object.patient.demographics.date_of_birth }})
-        {% endif %}
-      </h2>
+  <div class="row content-offset-20">
+    <div class="col-xs-6">
+      <div class="row">
+        <div class="col-xs-5 col-md-3">
+          Name:
+        </div>
+        <div class="col-xs-7 col-md-9">
+          {{ object.patient.demographics.name }}
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-6">
+      <div class="row">
+        <div class="col-xs-5 col-md-3">
+          Date of birth:
+        </div>
+        <div class="col-xs-7 col-md-9">
+          {{ object.patient.demographics.date_of_birth | none_as_empty }}
+        </div>
+      </div>
     </div>
   </div>
-  <div class="row content-offset-20">
+  <div class="row content-offset-10">
     <div class="col-xs-6">
       <div class="row">
         <div class="col-xs-5 col-md-3">
           Ref num:
         </div>
         <div class="col-xs-7 col-md-9">
-          {{ object.referral.reference_number }}
+          {{ object.referral.reference_number | none_as_empty }}
         </div>
       </div>
     </div>
@@ -80,9 +107,7 @@ Lab report
           Referrer:
         </div>
         <div class="col-xs-7 col-md-9">
-          {% if referral %}
-          {{ referral.referrer_name }}
-          {% endif %}
+          {{ referral.referrer_name  | none_as_empty }}
         </div>
       </div>
     </div>
@@ -92,7 +117,7 @@ Lab report
           Sample received:
         </div>
         <div class="col-xs-7 col-md-9">
-          {% if object.blood_date %}{{ object.blood_date }}{% endif %}
+         {{ object.blood_date | none_as_empty }}
         </div>
       </div>
     </div>
@@ -104,7 +129,7 @@ Lab report
           Blood number:
         </div>
         <div class="col-xs-7 col-md-9">
-          {{ object.blood_number }}
+          {{ object.blood_number | none_as_empty}}
         </div>
       </div>
     </div>
@@ -114,7 +139,7 @@ Lab report
           Method:
         </div>
         <div class="col-xs-7 col-md-9">
-          {{ object.method }}
+          {{ object.method | none_as_empty }}
         </div>
       </div>
     </div>
@@ -126,7 +151,7 @@ Lab report
           Report date:
         </div>
         <div class="col-xs-7 col-md-9">
-          {% if object.report_dt %}{{ object.report_dt }}{% endif %}
+          {{ object.report_dt | none_as_empty }}
         </div>
       </div>
     </div>
@@ -136,7 +161,7 @@ Lab report
           Authorised by:
         </div>
         <div class="col-xs-7 col-md-9">
-          {% if object.authorised_by %}{{ object.authorised_by }}{% endif %}
+          {{ object.authorised_by | none_as_empty }}
         </div>
       </div>
     </div>

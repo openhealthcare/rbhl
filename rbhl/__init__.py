@@ -40,8 +40,11 @@ class Application(application.OpalApplication):
         'js/rbhl/directives.js',
         'js/rbhl/controllers/peak_flow_ctrl.js',
         'js/rbhl/controllers/diagnosis_display.js',
+        'js/rbhl/controllers/demographics_search.js',
         'js/rbhl/services/peak_flow_graph_data_loader.js',
+        'js/rbhl/services/demographics_search_lookup.js',
         'js/rbhl/controllers/peak_flow_step.js',
+
     ]
     styles = [
         'css/rbhl.css'
