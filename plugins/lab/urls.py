@@ -21,9 +21,9 @@ urlpatterns = [
         name="lab-report"
     ),
     url(
-        r'^six-month-stats/$',
+        r'^lab-overview/$',
         views.LabOverview.as_view(),
-        name="six-month-stats"
+        name="lab-overview"
     ),
     url(
         r'^lab-month-activity/(?P<year>\d+)/(?P<month>\d+)$',

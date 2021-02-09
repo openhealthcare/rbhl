@@ -5,11 +5,11 @@ from opal.core.test import OpalTestCase
 from plugins.lab import views
 
 
-class LabMonthReviewTestCase(OpalTestCase):
+class LabMonthActivityTestCase(OpalTestCase):
     def setUp(self):
-        self.view = views.LabMonthReview()
+        self.view = views.LabMonthActivity()
         self.url = reverse(
-            "lab-month-review",
+            "lab-month-activity",
             kwargs={
                 "year": "2121",
                 "month": "1"
@@ -64,6 +64,33 @@ class LabMonthReviewTestCase(OpalTestCase):
         self.assertEqual(
             self.view.get_multi_mode([1, 2, 2]), [2]
         )
+
+    def test_get(self):
+        patient, _ = self.new_patient_and_episode_please()
+        bloods = Bloods.objects.create(
+            patient=patient,
+            blood_date=datetime.date(2021, 1, 10),
+            report_st=datetime.date(2021, 1, 11),
+            blood_number="111"
+        )
+        bloods.exposure = "grass"
+        bloods.save()
+        result = bloods.bloodresult_set.create()
+        result.allergen = "Timothy"
+        result.save()
+        # initialise the user property
+        self.user
+        self.client.login(
+            username=self.USERNAME, password=self.PASSWORD
+        )
+        result = self.client.get(self.url)
+        self.assertEqual(result.status_code, 200)
+
+
+class LabOverviewTestCase(OpalTestCase):
+    def setUp(self):
+        self.view = views.LabMonthActivity()
+        self.url = reverse("lab-overview")
 
     def test_get(self):
         patient, _ = self.new_patient_and_episode_please()
