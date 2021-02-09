@@ -75,7 +75,13 @@ class Application(application.OpalApplication):
                             display=('Unresulted samples'),
                             icon="fa-table"
                         ),
-
+                        menus.MenuItem(
+                            activepattern=reverse('lab-overview'),
+                            href=reverse('lab-overview'),
+                            display=('Lab stats'),
+                            icon="fa-bar-chart",
+                            index=799
+                        )
                     ]
                 else:
                     items = [NewReferral.as_menuitem(index=1)]
@@ -93,16 +99,6 @@ class Application(application.OpalApplication):
                     items.append(seen_by_me_menu_item)
                 if your_recently_resulted.for_user(user):
                     items.append(your_recently_resulted)
-
-                if lab_user:
-                    items.append(
-                        menus.MenuItem(
-                            activepattern=reverse('six-month-stats'),
-                            href=reverse('six-month-stats'),
-                            display=('Lab stats'),
-                            icon="fa-bar-chart"
-                        )
-                    )
 
                 if user.is_staff:
                     items.append(
