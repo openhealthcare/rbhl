@@ -562,8 +562,22 @@ input[type="date"]::-webkit-input-placeholder{
     }
 }
 
+.demographcis-search-split{
+    padding-right: 8.333%;
+    border-right: 1px solid #ddd;
+    padding-bottom: 40px;
+}
+
+.content-offset-100{
+    margin-top: 100px;
+}
+
 .content-offset-below-100{
     margin-bottom: 100px
+}
+
+.content-offset-below-40{
+    margin-bottom: 40px
 }
 
 .content-offset-below-0{
