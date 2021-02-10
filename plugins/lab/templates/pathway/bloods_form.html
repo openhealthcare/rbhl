@@ -160,12 +160,15 @@
     <!-- Restuls -->
     <div class="col-md-12">
       <div class="row">
-      <h2>Results <small><i class="fa pointer fa-plus-circle" ng-click="addResult()"></i></small></h2>
+      <h2 class="content-offset-below-0">Results</h2>
+      <a class="pointer" ng-click="addResult()" href="">Add a result</a>
       </div>
     </div>
     <div class="row" ng-show="!editing.bloods.bloodresult.length">
       <div class="col-md-12 text-center">
-        <h1 class="text-muted">No results recorded</h1>
+        <h1 class="text-muted">
+          No results recorded <br>
+        </h1>
       </div>
     </div>
     <script type="text/ng-template" id="phadiaTestCodeTemplate.html">
@@ -177,7 +180,8 @@
       <div class="row">
         <div class="col-md-2">
           <div class="col-md-12">
-            <h2>[[ $index + 1 ]] <small><i class="fa pointer fa-trash-o" ng-click="removeResult($index)"></i></small></h2>
+            <h2 class="content-offset-below-0">[[ $index + 1 ]] </h2>
+            <a class="pointer" ng-click="removeResult($index)" href="">Remove</a>
           </div>
         </div>
         <div class="col-md-10">

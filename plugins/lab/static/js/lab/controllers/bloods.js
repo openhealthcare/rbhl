@@ -101,7 +101,23 @@ angular.module('opal.controllers').controller(
   }
 
   scope.removeResult = function(idx){
-    scope.bloodTest.bloods.bloodresult.splice(idx, 1);
+    var deleteModal =  $modal.open({
+      templateUrl: '/templates/pathway/delete_bloods_result_modal.html',
+      controller: ['$scope', '$modalInstance', function ($scope, $modalInstance, item) {
+        $scope.item = scope.bloodTest.bloods.bloodresult[idx];
+        $scope.destroy = function() {
+            $modalInstance.close('deleted');
+        };
+        $scope.cancel = function() {
+          $modalInstance.close('cancel');
+        };
+      }],
+    });
+    deleteModal.result.then(function(result){
+      if(result === 'deleted'){
+        scope.bloodTest.bloods.bloodresult.splice(idx, 1);
+      }
+    });
   }
 
   scope.selectAllergen = function($item, result){
