@@ -20,6 +20,8 @@
   hosts: webserver
   roles:
     - setup_rbhl
+  vars:
+    DEV: 0
 
 - name: Set up AWS
   user: ubuntu

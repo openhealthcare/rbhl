@@ -81,6 +81,12 @@ class Application(application.OpalApplication):
                             display=('Lab stats'),
                             icon="fa-bar-chart",
                             index=799
+                        ),
+                        menus.MenuItem(
+                            activepattern=reverse('recently-recieved-samples-list'),
+                            href=reverse('recently-recieved-samples-list'),
+                            display=('Recent samples'),
+                            icon="fa-table"
                         )
                     ]
                 else:
