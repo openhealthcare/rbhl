@@ -78,7 +78,7 @@ class Application(application.OpalApplication):
                         menus.MenuItem(
                             activepattern=reverse('lab-overview'),
                             href=reverse('lab-overview'),
-                            display=('Lab stats'),
+                            display=('Lab activity'),
                             icon="fa-bar-chart",
                             index=799
                         ),
