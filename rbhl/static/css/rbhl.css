@@ -273,6 +273,10 @@ a {
   border: 1px solid #ccc;
 }
 
+.checkbox label {
+  font-weight: bold;
+}
+
 .panel.login {
   border: 1px solid #ccc;
   padding: 12px;
