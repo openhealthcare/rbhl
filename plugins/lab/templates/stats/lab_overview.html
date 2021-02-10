@@ -7,7 +7,7 @@ Lab overview
   {% include 'partials/lab_stats_menu.html' %}
   <div class="row content-offset">
     <div style="padding-right: 90px;" class="col-md-12">
-      <div id="six-month-line-graph">
+      <div id="overview-line-graph">
       </div>
     </div>
   </div>
@@ -53,7 +53,7 @@ Lab overview
 </div>
 <script>
 c3.generate({
-  bindto: '#six-month-line-graph',
+  bindto: '#overview-line-graph',
   data: {
     x: 'x',
     columns: {{ graph_data | safe }},

@@ -11,8 +11,8 @@
             </h4>
           </a>
           {% endfor %}
-          {% url 'lab-overview' as six_month_stats %}
-          <a href="{{ six_month_stats }}" class="btn {% if request.path == six_month_stats %}btn-info{% else %}btn-default{% endif %}">
+          {% url 'lab-overview' as lab_overview %}
+          <a href="{{ lab_overview }}" class="btn {% if request.path == lab_overview %}btn-info{% else %}btn-default{% endif %}">
             <h4>Overview</h4>
           </a>
         </div>
