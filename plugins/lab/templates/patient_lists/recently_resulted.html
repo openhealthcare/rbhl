@@ -1,0 +1,32 @@
+{% extends 'static_base.html' %}
+
+{% block title %}
+Your recently resulted samples
+{% endblock %}
+{% block page_content %}
+<p class="lead">
+  A list of samples that have recently processed for patients seen by you ({{ view.initials }})
+</p>
+<table class="table table-striped table-hover table-sortable">
+  <tr>
+    {% include "partials/table_header.html" with display_name="Name" slug="name" %}
+    {% include "partials/table_header.html" with display_name="Sample received" slug="blood_date" %}
+    {% include "partials/table_header.html" with display_name="Exposure" slug="exposure" %}
+    {% include "partials/table_header.html" with display_name="Room" slug="room" %}
+    {% include "partials/table_header.html" with display_name="Freezer" slug="freezer" %}
+    {% include "partials/table_header.html" with display_name="Tray" slug="tray" %}
+    {% include "partials/table_header.html" with display_name="Vials" slug="vials" %}
+  </tr>
+  {% for bloods in object_list %}
+    <tr onclick=window.location="/#/patient/{{ bloods.patient_id }}/investigations" class="pointer">
+      <td>{{ bloods.patient.demographics_set.all.0.name }}</td>
+      <td>{{ bloods.blood_date }}</td>
+      <td>{{ bloods.exposure }}</td>
+      <td>{{ bloods.room }}</td>
+      <td>{{ bloods.freezer }}</td>
+      <td>{{ bloods.tray }}</td>
+      <td>{{ bloods.vials }}</td>
+    </tr>
+  {% endfor %}
+</table>
+{% endblock %}

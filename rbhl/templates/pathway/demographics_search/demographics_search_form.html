@@ -1,0 +1,16 @@
+{% load forms %}
+
+<div class="row">
+  <div class="col-md-10 col-md-push-1">
+    <div class="row" ng-if="state == 'initial'">
+      {% include "pathway/demographics_search/demographics_search_box.html" %}
+    </div>
+    <div class="row" ng-if="state == 'editing_demographics'">
+      {% include "pathway/demographics_search/unable_to_find_patient.html" %}
+    </div>
+    <div class="row" ng-if="state === 'patient_list'">
+        {% include "pathway/demographics_search/patient_list.html" %}
+    </div>
+  </div>
+</div>
+

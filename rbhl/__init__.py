@@ -8,7 +8,7 @@ from rbhl.episode_categories import OccupationalLungDiseaseEpisode
 from rbhl import constants
 
 
-class SeenByMeMenuItem(menus.MenuItem):
+class DoctorMenuItem(menus.MenuItem):
     def for_user(self, user):
         from opal.models import UserProfile
         return UserProfile.objects.filter(
@@ -17,10 +17,17 @@ class SeenByMeMenuItem(menus.MenuItem):
         ).exists()
 
 
-seen_by_me_menu_item = SeenByMeMenuItem(
+seen_by_me_menu_item = DoctorMenuItem(
     activepattern=reverse_lazy('seen-by-me-list'),
     href=reverse_lazy('seen-by-me-list'),
     display='Seen by me',
+    icon="fa-table"
+)
+
+your_recently_resulted = DoctorMenuItem(
+    activepattern=reverse_lazy('your-recently-resulted-list'),
+    href=reverse_lazy('your-recently-resulted-list'),
+    display='Your Resulted',
     icon="fa-table"
 )
 
@@ -33,8 +40,11 @@ class Application(application.OpalApplication):
         'js/rbhl/directives.js',
         'js/rbhl/controllers/peak_flow_ctrl.js',
         'js/rbhl/controllers/diagnosis_display.js',
+        'js/rbhl/controllers/demographics_search.js',
         'js/rbhl/services/peak_flow_graph_data_loader.js',
+        'js/rbhl/services/demographics_search_lookup.js',
         'js/rbhl/controllers/peak_flow_step.js',
+
     ]
     styles = [
         'css/rbhl.css'
@@ -45,21 +55,57 @@ class Application(application.OpalApplication):
     @classmethod
     def get_menu_items(klass, user=None):
         # we import here as settings must be set before this is imported
-        from rbhl.pathways import NewReferral
+        from rbhl.pathways import NewReferral, LabReferral
 
-        items = [
-            NewReferral.as_menuitem(index=1),
-            menus.MenuItem(
-                activepattern=reverse('active-list'),
-                href=reverse('active-list'),
-                display=('Active patients'),
-                icon="fa-table"
-            )
-        ]
         if user:
             if user.is_authenticated:
+                lab_user = user.profile.roles.filter(
+                    name=constants.LAB_USER
+                ).exists()
+
+                if lab_user:
+                    items = [
+                        LabReferral.as_menuitem(
+                            index=1,
+                            display="New referral"
+                        ),
+                        menus.MenuItem(
+                            activepattern=reverse('unresulted-list'),
+                            href=reverse('unresulted-list'),
+                            display=('Unresulted samples'),
+                            icon="fa-table"
+                        ),
+                        menus.MenuItem(
+                            activepattern=reverse('lab-overview'),
+                            href=reverse('lab-overview'),
+                            display=('Lab stats'),
+                            icon="fa-bar-chart",
+                            index=799
+                        ),
+                        menus.MenuItem(
+                            activepattern=reverse('recently-recieved-samples-list'),
+                            href=reverse('recently-recieved-samples-list'),
+                            display=('Recent samples'),
+                            icon="fa-table"
+                        )
+                    ]
+                else:
+                    items = [NewReferral.as_menuitem(index=1)]
+
+                items.append(
+                    menus.MenuItem(
+                        activepattern=reverse('active-list'),
+                        href=reverse('active-list'),
+                        display=('Active patients'),
+                        icon="fa-table"
+                    )
+                )
+
                 if seen_by_me_menu_item.for_user(user):
                     items.append(seen_by_me_menu_item)
+                if your_recently_resulted.for_user(user):
+                    items.append(your_recently_resulted)
+
                 if user.is_staff:
                     items.append(
                         menus.MenuItem(
@@ -76,5 +122,4 @@ class Application(application.OpalApplication):
                             index=1999
                         )
                     )
-
         return items

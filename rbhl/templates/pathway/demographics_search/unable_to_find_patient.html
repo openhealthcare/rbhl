@@ -1,0 +1,46 @@
+{% load forms %}
+<div class="row">
+    <div class="col-md-12 text-center">
+        <p class="lead">
+          <span ng-show="!patientList">
+            We can't find any patient with similar details, so we will create a new patient.
+          </span>
+        </p>
+        <p class="lead">
+          Add the patient's details:
+        </p>
+    </div>
+</div>
+<form class="form-horizontal">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="horizontal-form">
+      {% input label="Hospital number" field="Demographics.hospital_number" style="vertical" %}
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="horizontal-form">
+      {% input field="Demographics.first_name" style="vertical" %}
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="horizontal-form">
+      {% input field="Demographics.surname" style="vertical" %}
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="horizontal-form">
+      {% datepicker field="Demographics.date_of_birth" style="vertical" label="Date of birth" %}
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="horizontal-form">
+      {% select field="Demographics.sex" style="vertical" %}
+      </div>
+    </div>
+  </div>
+</form>
