@@ -76,6 +76,13 @@ class Application(application.OpalApplication):
                             icon="fa-table"
                         ),
                         menus.MenuItem(
+                            activepattern=reverse('lab-overview'),
+                            href=reverse('lab-overview'),
+                            display=('Lab stats'),
+                            icon="fa-bar-chart",
+                            index=799
+                        ),
+                        menus.MenuItem(
                             activepattern=reverse('recently-recieved-samples-list'),
                             href=reverse('recently-recieved-samples-list'),
                             display=('Recent samples'),
@@ -98,6 +105,7 @@ class Application(application.OpalApplication):
                     items.append(seen_by_me_menu_item)
                 if your_recently_resulted.for_user(user):
                     items.append(your_recently_resulted)
+
                 if user.is_staff:
                     items.append(
                         menus.MenuItem(
@@ -114,5 +122,4 @@ class Application(application.OpalApplication):
                             index=1999
                         )
                     )
-
         return items
