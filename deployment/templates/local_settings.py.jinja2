@@ -19,6 +19,12 @@ ALLOWED_HOSTS = [
 {% endfor %}
 ]
 
+{% if DEV %}
+OPAL_ANALYTICS_ID = "UA-35112560-18"
+{% else %}
+OPAL_ANALYTICS_ID = "UA-35112560-17"
+{% endif %}
+
 SECRET_KEY = '{{ SECRET_KEY }}'
 DEBUG = False
 DEFAULT_FROM_EMAIL = 'support@openhealthcare.org.uk'
