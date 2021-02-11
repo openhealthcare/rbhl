@@ -20,8 +20,6 @@
   hosts: webserver
   roles:
     - setup_rbhl
-  vars:
-    DEV: 0
 
 - name: Set up AWS
   user: ubuntu
@@ -34,6 +32,8 @@
   hosts: webserver
   roles:
     - deploy_rbhl
+  vars:
+    DEV: 0
 
 - name: Set up backups
   user: ubuntu
