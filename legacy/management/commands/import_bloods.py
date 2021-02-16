@@ -179,9 +179,12 @@ class Command(BaseCommand):
         if not any([i for i in our_args.values()]):
             return
 
-        our_args["patient"] = patient
+        bloods = Bloods.objects.create(patient=patient)
+        for k, v in our_args.items():
+            setattr(bloods, k, v)
+        bloods.save()
         self.bb_count += 1
-        return Bloods.objects.create(**our_args)
+        return bloods
 
     def create_blood_results_for_row(self, row, bloods):
         """
