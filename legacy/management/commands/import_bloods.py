@@ -67,10 +67,18 @@ class Command(BaseCommand):
         file_name = options["file_name"]
         print('Opening {} to read'.format(file_name))
         with open(file_name) as f:
-            rows = list(csv.DictReader(f))
+            un_filtered_rows = list(csv.DictReader(f))
+
+        rows = []
+        for row in un_filtered_rows:
+            blood_date = str_to_date(row["BLOODDAT"])
+            if not blood_date or blood_date.year < 2015:
+                continue
+            rows.append(row)
 
         no_results = 0
         row_count = len(rows)
+        no_identifiers = 0
         patient_created = 0
         patient_matched = 0
         double_patients = 0
@@ -80,26 +88,22 @@ class Command(BaseCommand):
         self.employment_assigned = 0
         self.referral_created = 0
         self.referral_assigned = 0
-        self.pre_2015 = 0
-
         rows_to_create = []
 
         for row in rows:
-            # if a row has no surname or any results skip it.
-            if not row["SURNAME"].strip():
-                patient_created += 1
-                continue
-
-            blood_date = str_to_date(row["BLOODDAT"])
-            if not blood_date or blood_date.year < 2015:
-                self.pre_2015 += 1
-                continue
-
             hospital_number = row["Hosp_no"].strip()
             first_name = row["FIRSTNAME"].strip()
             surname = row["SURNAME"].strip()
             date_of_birth = str_to_date(row["BIRTH"].strip())
             demographics = None
+            blood_number = row["BLOODNO"].strip()
+
+            # if we don't have firstname/surname/dob or hospital number
+            # then we skip it
+            if not first_name and not surname and not date_of_birth:
+                if not hospital_number:
+                    no_identifiers += 1
+                    continue
 
             if first_name and surname and date_of_birth:
                 demographics = Demographics.objects.filter(
@@ -111,6 +115,18 @@ class Command(BaseCommand):
             if not demographics and hospital_number:
                 demographics = Demographics.objects.filter(
                     hospital_number=hospital_number
+                )
+
+            if not demographics and not hospital_number and blood_number:
+                demographics_lookup = {}
+                for k in ["first_name", "surname", "date_of_birth"]:
+                    demographics_lookup[k] = locals()[k]
+                demographics = Demographics.objects.filter(**demographics_lookup)
+                patients = Patient.objects.filter(
+                    bloods__blood_number=blood_number
+                )
+                demographics = demographics.filter(
+                    patient_id__in=[i.id for i in patients]
                 )
 
             if demographics and demographics.count() > 1:
@@ -143,11 +159,16 @@ class Command(BaseCommand):
             writer.writeheader()
             writer.writerows(rows_to_create)
 
+        self.stdout.write("Only looking at post 2015 rows {}/{}".format(
+            len(rows), len(un_filtered_rows)
+        ))
+
+        self.stdout.write("Skipped {}/{} rows because no identifiers were found".format(
+            no_identifiers, row_count
+        ))
+
         self.stdout.write("Skipped {}/{} rows because duplicate patients found".format(
             double_patients, row_count
-        ))
-        self.stdout.write("Skipped {}/{} rows because they're pre 2015".format(
-            self.pre_2015, row_count
         ))
         self.stdout.write("{}/{} skipped due to no results".format(
             no_results, row_count
