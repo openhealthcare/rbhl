@@ -88,7 +88,6 @@ class Command(BaseCommand):
         self.employment_assigned = 0
         self.referral_created = 0
         self.referral_assigned = 0
-        rows_to_create = []
 
         for row in rows:
             hospital_number = row["Hosp_no"].strip()
@@ -151,13 +150,7 @@ class Command(BaseCommand):
             if bloods is None:
                 no_results += 1
                 continue
-            rows_to_create.append(row)
             self.create_blood_results_for_row(row, bloods)
-
-        with open("processed_rows.csv", "w") as pr:
-            writer = csv.DictWriter(pr, fieldnames=list(row.keys()))
-            writer.writeheader()
-            writer.writerows(rows_to_create)
 
         self.stdout.write("Only looking at post 2015 rows {}/{}".format(
             len(rows), len(un_filtered_rows)
