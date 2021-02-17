@@ -110,16 +110,25 @@ class Command(BaseCommand):
                     surname__iexact=surname,
                     date_of_birth=date_of_birth
                 )
-
-            if not demographics and hospital_number:
-                demographics = Demographics.objects.filter(
-                    hospital_number=hospital_number
-                )
+            if hospital_number:
+                if demographics:
+                    if demographics.exclude(hospital_number='').count() > 1:
+                        demographics = demographics.filter(
+                            hospital_number=hospital_number
+                        )
+                else:
+                    demographics = Demographics.objects.filter(
+                        hospital_number=hospital_number
+                    )
 
             if not demographics and not hospital_number and blood_number:
                 demographics_lookup = {}
-                for k in ["first_name", "surname", "date_of_birth"]:
-                    demographics_lookup[k] = locals()[k]
+                if first_name:
+                    demographics_lookup["first_name__icontains"] = first_name
+                if surname:
+                    demographics_lookup["surname__icontains"] = surname
+                if date_of_birth:
+                    demographics_lookup["date_of_birth"] = date_of_birth
                 demographics = Demographics.objects.filter(**demographics_lookup)
                 patients = Patient.objects.filter(
                     bloods__blood_number=blood_number
