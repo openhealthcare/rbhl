@@ -301,10 +301,10 @@ class Command(BaseCommand):
         )
 
     def get_or_create_employment_if_necessary(self, patient, employer, oh_provider):
-        if employer or employer.upper() == MARK_AS_NONE:
+        if employer and employer.upper() in MARK_AS_NONE:
             employer = None
 
-        if oh_provider or not oh_provider.upper() == MARK_AS_NONE:
+        if oh_provider and oh_provider.upper() in MARK_AS_NONE:
             oh_provider = None
 
         if not employer and not oh_provider:
@@ -312,9 +312,9 @@ class Command(BaseCommand):
 
         qs = Employment.objects.filter(episode__patient=patient)
         if employer :
-            qs = qs.filter(employer__iexact=employer)
+            qs = qs.filter(employer=employer)
         if oh_provider:
-            qs = qs.filter(oh_provider__iexact=oh_provider)
+            qs = qs.filter(oh_provider=oh_provider)
         current_employment = qs.first()
         if current_employment:
             self.employment_assigned += 1
