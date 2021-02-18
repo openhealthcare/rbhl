@@ -143,7 +143,7 @@ class Command(BaseCommand):
 
             if not demographics:
                 patient = Patient.objects.create()
-                patient.demographics_set.create(
+                patient.demographics_set.update(
                     first_name=first_name,
                     surname=surname,
                     date_of_birth=date_of_birth,
@@ -259,16 +259,24 @@ class Command(BaseCommand):
             patient, row["Employer"], row["OH Provider"]
         )
         bloods.referral = self.get_or_create_referral_if_necessary(
-            patient, row["Referrername"]
+            patient, row["Referrername"], str_to_date(row["BLOODDAT"])
         )
         bloods.save()
 
         self.bb_count += 1
         return bloods
 
-    def get_or_create_referral_if_necessary(self, patient, referrer):
+    def get_or_create_referral_if_necessary(self, patient, referrer, blood_date):
         if not referrer:
             return
+
+        # if the referrer is OCCLD it is not an external referral
+        # and we expect there to be a referrer with a different
+        # name already existing. Otherwise just return None
+        if referrer == "OCCLD":
+            existing_referral = Referral.objects.filter(episode__patient=patient)
+            if existing_referral:
+                return existing_referral.first()
         qs = Referral.objects.filter(
             episode__patient=patient,
             referrer_name=referrer
@@ -282,7 +290,9 @@ class Command(BaseCommand):
         return Referral.objects.create(
             created=timezone.now(),
             episode=episode,
-            referrer_name=referrer
+            referrer_name=referrer,
+            date_of_referral=blood_date,
+            ocld=False
         )
 
     def get_or_create_employment_if_necessary(self, patient, employer, oh_provider):
