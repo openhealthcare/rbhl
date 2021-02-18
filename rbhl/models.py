@@ -214,6 +214,7 @@ class Referral(RBHLSubrecord, models.EpisodeSubrecord):
         blank=True, null=True, max_length=256, choices=DISEASE
     )
     geographical_area = models.ForeignKeyOrFreeText(GeographicalArea)
+    ocld = fields.BooleanField(default=True, verbose_name="OCLD")
 
 
 class Employer(lookuplists.LookupList):
