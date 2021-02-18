@@ -202,7 +202,13 @@ class LabOverview(AbstractLabStatsPage):
     @cached_property
     def date_ranges(self):
         ranges = []
-        start_date = datetime.date.today()
+        year = self.kwargs.get("year")
+        if year:
+            year = int(year)
+            month = int(self.kwargs.get("month"))
+            start_date = datetime.date(year, month+1, 1) - datetime.timedelta(1)
+        else:
+            start_date = datetime.date.today()
         month_start = datetime.date(
             start_date.year, start_date.month, 1
         )
