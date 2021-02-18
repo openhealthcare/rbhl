@@ -12,6 +12,11 @@ from plugins.lab.models import Bloods
 from rbhl.models import Demographics, Employment, Referral
 from opal.models import Patient
 
+MARK_AS_NONE = set([
+    "NOT APPLICABLE",
+    "NOT KNOWN"
+])
+
 
 def timing(f):
     @wraps(f)
@@ -267,7 +272,7 @@ class Command(BaseCommand):
         return bloods
 
     def get_or_create_referral_if_necessary(self, patient, referrer, blood_date):
-        if not referrer:
+        if not referrer or referrer.upper() in MARK_AS_NONE:
             return
 
         # if the referrer is OCCLD it is not an external referral
@@ -296,10 +301,10 @@ class Command(BaseCommand):
         )
 
     def get_or_create_employment_if_necessary(self, patient, employer, oh_provider):
-        if employer and employer.lower() == "not applicable":
+        if employer and employer.upper() in MARK_AS_NONE:
             employer = None
 
-        if oh_provider and not oh_provider.lower() == "not applicable":
+        if oh_provider and oh_provider.upper() in MARK_AS_NONE:
             oh_provider = None
 
         if not employer and not oh_provider:
