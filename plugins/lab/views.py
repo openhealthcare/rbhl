@@ -385,8 +385,11 @@ class LabMonthActivity(AbstractLabStatsPage):
 
             referral = blood.referral
             referral_source = "No referral source"
-            if referral and referral.referral_source:
-                referral_source = referral.referral_source
+            if referral:
+                if referral.referral_source:
+                    referral_source = referral.referral_source
+                if referral.ocld:
+                    referral_source = f"{referral_source} (OCLD)"
 
             row = {
                 "Link": f"/pathway/#/bloods/{patient_id}/{episode_id}?id={blood.id}",
