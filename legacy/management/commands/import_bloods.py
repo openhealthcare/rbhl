@@ -297,9 +297,9 @@ class Command(BaseCommand):
 
         qs = Employment.objects.filter(episode__patient=patient)
         if employer :
-            qs = qs.filter(employer=employer)
+            qs = qs.filter(employer__iexact=employer)
         if oh_provider:
-            qs = qs.filter(oh_provider=oh_provider)
+            qs = qs.filter(oh_provider__iexact=oh_provider)
         current_employment = qs.first()
         if current_employment:
             self.employment_assigned += 1
