@@ -311,6 +311,9 @@ class LabOverview(AbstractLabStatsPage):
                     employer_referrer = employment.employer or employment.oh_provider
                 if not employer_referrer:
                     employer_referrer = "No employer"
+
+                if blood.referral and blood.referral.ocld:
+                    employer_referrer = f"{employer_referrer} (OCLD)"
                 by_provider[employer_referrer] += 1
                 oh_providers.add(employer_referrer)
             by_month[my] = by_provider
