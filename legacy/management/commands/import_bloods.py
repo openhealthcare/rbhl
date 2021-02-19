@@ -12,6 +12,11 @@ from plugins.lab.models import Bloods
 from rbhl.models import Demographics, Employment, Referral
 from opal.models import Patient
 
+MARK_AS_NONE = set([
+    "NOT APPLICABLE",
+    "NOT KNOWN"
+])
+
 
 def timing(f):
     @wraps(f)
@@ -143,7 +148,7 @@ class Command(BaseCommand):
 
             if not demographics:
                 patient = Patient.objects.create()
-                patient.demographics_set.create(
+                patient.demographics_set.update(
                     first_name=first_name,
                     surname=surname,
                     date_of_birth=date_of_birth,
@@ -259,16 +264,24 @@ class Command(BaseCommand):
             patient, row["Employer"], row["OH Provider"]
         )
         bloods.referral = self.get_or_create_referral_if_necessary(
-            patient, row["Referrername"]
+            patient, row["Referrername"], str_to_date(row["BLOODDAT"])
         )
         bloods.save()
 
         self.bb_count += 1
         return bloods
 
-    def get_or_create_referral_if_necessary(self, patient, referrer):
-        if not referrer:
+    def get_or_create_referral_if_necessary(self, patient, referrer, blood_date):
+        if not referrer or referrer.upper() in MARK_AS_NONE:
             return
+
+        # if the referrer is OCCLD it is not an external referral
+        # and we expect there to be a referrer with a different
+        # name already existing. Otherwise just return None
+        if referrer == "OCCLD":
+            existing_referral = Referral.objects.filter(episode__patient=patient)
+            if existing_referral:
+                return existing_referral.first()
         qs = Referral.objects.filter(
             episode__patient=patient,
             referrer_name=referrer
@@ -282,14 +295,16 @@ class Command(BaseCommand):
         return Referral.objects.create(
             created=timezone.now(),
             episode=episode,
-            referrer_name=referrer
+            referrer_name=referrer,
+            date_of_referral=blood_date,
+            ocld=False
         )
 
     def get_or_create_employment_if_necessary(self, patient, employer, oh_provider):
-        if employer and employer.lower() == "not applicable":
+        if employer and employer.upper() in MARK_AS_NONE:
             employer = None
 
-        if oh_provider and not oh_provider.lower() == "not applicable":
+        if oh_provider and oh_provider.upper() in MARK_AS_NONE:
             oh_provider = None
 
         if not employer and not oh_provider:
