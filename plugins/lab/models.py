@@ -125,6 +125,9 @@ class Exposure(lookuplists.LookupList):
 
 
 class Bloods(RbhlSubrecord, models.PatientSubrecord):
+    class Meta:
+        verbose_name_plural = "Bloods"
+
     ANTIGEN_TYPE = enum("STANDARD", "BESPOKE")
     METHODS = enum(
         "ImmunoCAP",
