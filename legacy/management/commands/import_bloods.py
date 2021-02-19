@@ -58,6 +58,7 @@ def get_precipitin(some_field):
 
 
 class Command(BaseCommand):
+
     def add_arguments(self, parser):
         parser.add_argument("file_name", help="Specify import file")
 
@@ -97,10 +98,13 @@ class Command(BaseCommand):
             demographics = None
             blood_number = row["BLOODNO"].strip()
 
-            # if we don't have firstname/surname/dob or hospital number
-            # then we skip it
-            if not first_name and not surname and not date_of_birth:
-                if not hospital_number:
+            # we need a minimum of first name, surname, dob
+            # or surname, dob, ref num
+            if not hospital_number:
+                if not first_name and not surname and not date_of_birth:
+                    no_identifiers += 1
+                    continue
+                if not surname and not date_of_birth and not blood_number:
                     no_identifiers += 1
                     continue
 
@@ -124,9 +128,9 @@ class Command(BaseCommand):
             if not demographics and not hospital_number and blood_number:
                 demographics_lookup = {}
                 if first_name:
-                    demographics_lookup["first_name__icontains"] = first_name
+                    demographics_lookup["first_name__iexact"] = first_name
                 if surname:
-                    demographics_lookup["surname__icontains"] = surname
+                    demographics_lookup["surname__iexact"] = surname
                 if date_of_birth:
                     demographics_lookup["date_of_birth"] = date_of_birth
                 demographics = Demographics.objects.filter(**demographics_lookup)
