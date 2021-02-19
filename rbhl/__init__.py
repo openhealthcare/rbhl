@@ -27,7 +27,7 @@ seen_by_me_menu_item = DoctorMenuItem(
 your_recently_resulted = DoctorMenuItem(
     activepattern=reverse_lazy('your-recently-resulted-list'),
     href=reverse_lazy('your-recently-resulted-list'),
-    display='Your Resulted',
+    display='Your resulted',
     icon="fa-table"
 )
 
