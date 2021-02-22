@@ -282,10 +282,15 @@ class Command(BaseCommand):
         # if the referrer is OCCLD it is not an external referral
         # and we expect there to be a referrer with a different
         # name already existing. Otherwise just return None
+        # if we are making a new referral and the referral is not
+        # OCLD then mark the source as occ health
         if referrer == "OCCLD":
             existing_referral = Referral.objects.filter(episode__patient=patient)
             if existing_referral:
                 return existing_referral.first()
+            referral_source = ""
+        else:
+            referral_source = "Occupational health doctor or nurse"
         qs = Referral.objects.filter(
             episode__patient=patient,
             referrer_name=referrer
@@ -294,12 +299,14 @@ class Command(BaseCommand):
         if current_referral:
             self.referral_assigned += 1
             return current_referral
+
         episode = patient.episode_set.last()
         self.referral_created += 1
         return Referral.objects.create(
             created=timezone.now(),
             episode=episode,
             referrer_name=referrer,
+            referral_source=referral_source,
             date_of_referral=blood_date,
             ocld=False
         )

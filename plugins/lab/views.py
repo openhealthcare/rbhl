@@ -387,25 +387,28 @@ class LabMonthActivity(AbstractLabStatsPage):
                 oh_provider = employment.oh_provider
 
             referral = blood.referral
-            referral_source = "No referral source"
+            referrer_name = "No referral name"
             if referral:
-                if referral.referral_source:
-                    referral_source = referral.referral_source
+                if referral.referrer_name:
+                    referrer_name = referral.referrer_name
                 if referral.ocld:
-                    referral_source = f"{referral_source} (OCLD)"
+                    referrer_name = f"{referrer_name} (OCLD)"
 
+            allergens = []
+            for blood_result in blood.bloodresult_set.all():
+                if blood_result.allergen:
+                    allergens.append(self.allergen_display(blood_result))
+            allergens = sorted(allergens)
             row = {
                 "Link": f"/pathway/#/bloods/{patient_id}/{episode_id}?id={blood.id}",
                 "Sample received": blood.blood_date,
-                "Referral source": referral_source,
+                "Referral name": referrer_name,
                 "Hospital number": blood.patient.demographics().hospital_number,
                 "OH Provider": oh_provider,
                 "Blood num": blood.blood_number,
                 "Employer": employer,
                 "Exposure": blood.exposure or "No exposure",
-                "Allergens": sorted(
-                    list(i.allergen for i in blood.bloodresult_set.all() if i.allergen)
-                ),
+                "Allergens": allergens,
                 "Report submitted": blood.report_st,
                 "Num tests": blood.bloodresult_set.count(),
             }
@@ -416,6 +419,11 @@ class LabMonthActivity(AbstractLabStatsPage):
                 row["Days"] = ""
             result.append(row)
         return result
+
+    def allergen_display(self, result):
+        if result.phadia_test_code:
+            return f"{result.allergen} ({result.phadia_test_code})"
+        return result.allergen
 
     def get_day_count(self, start_dt, report_date):
         """
