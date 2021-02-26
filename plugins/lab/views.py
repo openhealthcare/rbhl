@@ -260,7 +260,7 @@ class LabOverview(AbstractLabStatsPage):
         exposures = set()
 
         for month_start, month_end in date_ranges:
-            my = f"{month_start.month}/{month_start.year}"
+            my = month_start.strftime('%b/%y')
             by_exposure = defaultdict(int)
             bloods = Bloods.objects.filter(
                 blood_date__gte=month_start,
