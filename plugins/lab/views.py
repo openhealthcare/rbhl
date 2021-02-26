@@ -181,6 +181,13 @@ class LabReport(DetailView):
     model = Bloods
     template_name = "lab_report.html"
 
+    def get_context_data(self, *args, **kwargs):
+        ctx = super().get_context_data(*args, **kwargs)
+        results = self.object.bloodresult_set.all()
+        ctx["has_kul"] = any(i for i in results if i.kul)
+        ctx["has_rast"] = any(i for i in results if i.rast)
+        return ctx
+
 
 class AbstractLabStatsPage(TemplateView):
     def menu_dates(self):
