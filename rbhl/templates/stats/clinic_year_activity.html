@@ -1,0 +1,45 @@
+{% extends 'static_base.html' %}
+{% block title %}
+Clinic activity
+{% endblock %}
+{% block page_content %}
+<div class="container-fluid">
+  {% if not rows %}
+  <div class="row headed-content-offset">
+    <div class="col-md-12 text-center">
+      <h1 class="text-muted">
+        No data available
+      </h1>
+    </div>
+  </div>
+  {% endif %}
+  {% if rows %}
+  <div class="row">
+    <div class="col-md-12">
+      <table class="table table-striped table-hover content-offset">
+        <table class="table table-striped table-hover content-offset">
+          <tr>
+            {% for header in rows.0.keys %}
+            {% if header in view.PAGE_FIELDS %}
+            <th>{{ header }}</th>
+            {% endif %}
+            {% endfor %}
+          </tr>
+          {% for row in rows %}
+          <tr onclick=window.location="{{ row.Link }}" class="pointer">
+            {% for header, value in row.items %}
+            {% if header in view.PAGE_FIELDS %}
+            <td >
+              {{ value }}
+            </td>
+            {% endif %}
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </table>
+      </table>
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
