@@ -21,8 +21,10 @@ Lab report
   Lab patient
   {% endif %}
   </a>
-  {% if object.blood_number %}
+  {% if object.blood_number and object.patient.demographics.name.strip %}
   -
+  {% endif %}
+  {% if object.blood_number %}
   <a href="/pathway/#/bloods/{{ object.patient_id }}/{{ object.patient.episode_set.last.id }}?id={{ object.id }}">
     {{ object.blood_number }}
   </a>
