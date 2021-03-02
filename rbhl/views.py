@@ -16,7 +16,7 @@ from opal import models as opal_models
 from plugins.trade import match
 from plugins.trade.forms import ImportDataForm
 from plugins.lab.models import SkinPrickTest
-from rbhl.models import SetUpTwoFactor, Referral
+from rbhl.models import SetUpTwoFactor, Referral, EmploymentCategory, GeographicalArea
 
 
 class StaffRequiredMixin(object):
@@ -173,9 +173,10 @@ class ClinicQuarterActivity(TemplateView):
     # The fields that appear on the in the table
     PAGE_FIELDS = [
         "Name",
-        "Date of referral",
-        "Date of first appointment",
-        "Date of diagnosis",
+        "Referral",
+        "First appointment",
+        "Referral",
+        # "Diagnosis date",
         "Diagnosis",
         "Seen by",
         "Peak flow",
@@ -184,41 +185,54 @@ class ClinicQuarterActivity(TemplateView):
         "Specific occupational skin testing"
     ]
 
-    @property
-    def min_month(self):
-        return (int(self.kwargs["quarter"])-1) * 3
-
-    @property
-    def max_month(self):
-        return int(self.kwargs["quarter"]) * 3
-
     @cached_property
     def referral_id_to_episode_id(self):
         referrals = Referral.objects.filter(
-            ocld=True,
+            # ocld=True,
             date_of_referral__year=int(self.kwargs["year"]),
-            date_of_referral__month__gt=self.min_month,
-            date_of_referral__month__lte=self.max_month
         ).values_list("id", "episode_id")
         return dict(referrals)
+
+    @cached_property
+    def gender(self):
+        return dict(
+            opal_models.Gender.objects.values_list('id', 'name')
+        )
+
+    @cached_property
+    def employment_category(self):
+        return dict(
+            EmploymentCategory.objects.values_list('id', 'name')
+        )
+
+    @cached_property
+    def geographics_area(self):
+        return dict(
+            GeographicalArea.objects.values_list('id', 'name')
+        )
 
     def get_queryset(self):
         return opal_models.Episode.objects.filter(
             id__in=self.referral_id_to_episode_id.values()
         ).prefetch_related(
             "cliniclog_set",
+            "referral_set",
             "diagnosis_set",
             "employment_set",
             "asthmadetails_set",
             "rhinitisdetails_set",
-            "peakflowday_set"
+            "peakflowday_set",
+            "patient__demographics_set",
+            "patient__skinpricktest_set",
+            "patient__bloods_set__bloodresult_set"
         )
 
     def get_display_name(self, demographics, date_of_referral):
         name = demographics.name
+        gender = self.gender.get(demographics.sex_fk_id, demographics.sex_ft)
         sex = ""
-        if demographics.sex:
-            sex = demographics.sex[0]
+        if gender:
+            sex = gender[0]
         age = demographics.get_age(date_of_referral) or ""
         if age or sex:
             return f"{name} ({sex}{age})"
@@ -265,8 +279,13 @@ class ClinicQuarterActivity(TemplateView):
             result = "Received"
         return result
 
-    def get_bloods(self, referral):
-        bloods = referral.bloods_set.all()
+    def get_bloods(self, episode, referral):
+        bloods = []
+
+        # pick up the prefetch related bloods set from the episode qs
+        for blood in episode.patient.bloods_set.all():
+            if blood.referral_id == referral.id:
+                bloods.append(blood)
         test_types = []
         stored = False
         for blood in bloods:
@@ -289,15 +308,14 @@ class ClinicQuarterActivity(TemplateView):
                     test_types.append("RAST or RAST Score")
                 elif blood_result.precipitin:
                     test_types.append("Precipitin")
+        test_types = sorted(list(set([i for i in test_types if i])))
         return {
-            "Bloods": sorted(list(set(test_types))),
+            "Bloods": test_types,
             "Bloods stored": stored
         }
 
     def get_skin_prick_tests(self, episode):
-        spts = SkinPrickTest.objects.filter(
-            patient_id=episode.patient_id
-        )
+        spts = episode.patient.skinpricktest_set.all()
         substances = [i.substance for i in spts]
         routines = []
         nonroutines = []
@@ -322,6 +340,11 @@ class ClinicQuarterActivity(TemplateView):
         clinic_log = episode.cliniclog_set.all()[0]
         diagnosis = episode.diagnosis_set.all()
         days_to_appointment = None
+        gender = self.gender.get(demographics.sex_fk_id, demographics.sex_ft)
+        geographical_area = self.geographics_area.get(
+            referral.geographical_area_fk_id, referral.geographical_area_ft
+        )
+
         if referral.date_of_referral and clinic_log.clinic_date:
             days_to_appointment = clinic_log.clinic_date - referral.date_of_referral
             days_to_appointment = days_to_appointment.days
@@ -338,20 +361,22 @@ class ClinicQuarterActivity(TemplateView):
         employment_category = ""
         if employments:
             # this needs work
-            employment_category = employments[-1].employment_category
-
+            employment_category = self.employment_category.get(
+                employments[-1].employment_category_fk_id,
+                employments[-1].employment_category_ft
+            )
         row = {
             "Name": self.get_display_name(demographics, date_of_referral),
             "First name": demographics.first_name,
             "Surname": demographics.surname,
             "Age at referral": demographics.get_age(date_of_referral),
-            "Sex": demographics.sex,
-            "Date of referral": referral.date_of_referral,
-            "Date of first appointment": clinic_log.clinic_date,
-            "Date of diagnosis": diagnosis_date,
+            "Sex": gender,
+            "Referral": referral.date_of_referral,
+            "First appointment": clinic_log.clinic_date,
+            "Diagnosis date": diagnosis_date,
             "Referral time to first appointment": days_to_appointment,
             "Referral time to diagnosis": days_to_diagnosis,
-            "Geographic area": referral.geographical_area,
+            "Geographic area": geographical_area,
             "Employment category": employment_category,
             "Seen by": clinic_log.seen_by,
             "Source of referral": referral.referral_source,
@@ -360,7 +385,7 @@ class ClinicQuarterActivity(TemplateView):
             "Diagnosis outcome": clinic_log.diagnosis_outcome,
             "Link": episode.get_absolute_url()
         }
-        row.update(self.get_bloods(referral))
+        row.update(self.get_bloods(episode, referral))
         row.update(self.get_skin_prick_tests(episode))
         return row
 
@@ -371,7 +396,7 @@ class ClinicQuarterActivity(TemplateView):
             for referral in episode.referral_set.all():
                 if referral.id in self.referral_id_to_episode_id:
                     rows.append(self.get_row(episode, referral))
-        rows = sorted(rows, key=lambda x: x["Date of referral"])
+        rows = sorted(rows, key=lambda x: x["Referral"])
         ctx = super().get_context_data(*args, **kwargs)
         ctx["rows"] = rows
         return ctx
