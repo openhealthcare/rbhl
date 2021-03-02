@@ -1,4 +1,5 @@
 {% extends 'static_base.html' %}
+{% load stats %}
 {% block title %}
 Clinic activity
 {% endblock %}
@@ -30,7 +31,7 @@ Clinic activity
             {% for header, value in row.items %}
             {% if header in view.PAGE_FIELDS %}
             <td >
-              {{ value }}
+              {% value_display value %}
             </td>
             {% endif %}
             {% endfor %}
