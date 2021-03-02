@@ -196,6 +196,7 @@ class LabReport(DetailView):
         data["Employer"] = employment.employer
         data["OH Provider"] = employment.oh_provider
         data["Referrer"] = referral.referrer_name
+        data["Ref num"] = referral.reference_number
         data["Sample received"] = obj.blood_date
         data["Blood number"] = obj.blood_number
         data["Method"] = obj.method
