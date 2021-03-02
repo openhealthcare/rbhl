@@ -106,7 +106,7 @@ angular.module('opal.controllers').controller(
 
   scope.selectAllergen = function($item, result){
     if($item){
-      result.antigenno = $item.code
+      result.phadia_test_code = $item.code
     }
   }
 
