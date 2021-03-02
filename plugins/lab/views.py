@@ -202,6 +202,9 @@ class LabReport(DetailView):
         data["Report date"] = obj.report_dt
         data["Authorised by"] = obj.authorised_by
         ctx["data"] = {k: v for k, v in data.items() if v}
+        results = self.object.bloodresult_set.all()
+        ctx["has_kul"] = any(i for i in results if i.kul)
+        ctx["has_rast"] = any(i for i in results if i.rast)
         return ctx
 
 
@@ -283,7 +286,7 @@ class LabOverview(AbstractLabStatsPage):
         exposures = set()
 
         for month_start, month_end in date_ranges:
-            my = f"{month_start.month}/{month_start.year}"
+            my = month_start.strftime('%b/%y')
             by_exposure = defaultdict(int)
             bloods = Bloods.objects.filter(
                 blood_date__gte=month_start,

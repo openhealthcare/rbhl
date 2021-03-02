@@ -112,6 +112,16 @@ Lab report
           </tr>
           {% endif %}
           {% endfor %}
+          {% if has_kul or has_rast %}
+          <tr>
+            <td></td>
+            <td class="text-muted">
+              Significant: &nbsp;
+              {% if has_kul %}KU/L >= 0.35 &nbsp;{% endif %}
+              {% if has_rast %}%B >= 2{% endif %}
+            </td>
+          </tr>
+          {% endif %}
         </tbody>
       </table>
     </div>
