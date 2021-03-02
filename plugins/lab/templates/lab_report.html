@@ -85,8 +85,8 @@ Lab report
           <tr>
             <td>
               {{ result.allergen }}
-              {% if result.antigenno %}
-              ({{ result.antigenno }})
+              {% if result.phadia_test_code %}
+              ({{ result.phadia_test_code }})
               {% endif %}
               {% if result.comment %}
               - {{ result.comment }}
