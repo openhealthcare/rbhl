@@ -181,6 +181,29 @@ class LabReport(DetailView):
     model = Bloods
     template_name = "lab_report.html"
 
+    def get_context_data(self, *args, **kwargs):
+        ctx = super().get_context_data(*args, **kwargs)
+        data = {}
+        obj = ctx["object"]
+        demographics = obj.patient.demographics()
+        referral = obj.referral
+        employment = obj.employment
+
+        data["Name"] = demographics.name.strip()
+        data["Hospital num"] = demographics.hospital_number
+        data["Date of birth"] = demographics.date_of_birth
+        data["Exposure"] = obj.exposure
+        data["Employer"] = employment.employer
+        data["OH Provider"] = employment.oh_provider
+        data["Referrer"] = referral.referrer_name
+        data["Sample received"] = obj.blood_date
+        data["Blood number"] = obj.blood_number
+        data["Method"] = obj.method
+        data["Report date"] = obj.report_dt
+        data["Authorised by"] = obj.authorised_by
+        ctx["data"] = {k: v for k, v in data.items() if v}
+        return ctx
+
 
 class AbstractLabStatsPage(TemplateView):
     def menu_dates(self):
