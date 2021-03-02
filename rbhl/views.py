@@ -181,8 +181,8 @@ class ClinicQuarterActivity(TemplateView):
         "Seen by",
         "Peak flow",
         "Bloods",
-        "General atopy screen",
-        "Specific occupational skin testing"
+        "General SPT",
+        "Specific SPT"
     ]
 
     @cached_property
@@ -330,8 +330,8 @@ class ClinicQuarterActivity(TemplateView):
             routine = True
 
         return {
-            "General atopy screen": routine,
-            "Specific occupational skin testing": sorted(list(nonroutines))
+            "General SPT": routine,
+            "Specific SPT": sorted(list(nonroutines))
         }
 
     def get_row(self, episode, referral):
