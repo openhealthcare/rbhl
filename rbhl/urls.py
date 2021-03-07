@@ -27,9 +27,14 @@ urlpatterns = [
     url(r'^formsearch/', views.FormSearchRedirectView.as_view(),
         name='form-search'),
     url(
-        r'clinic-quarter-activity/(?P<year>\d+)/(?P<quarter>\d+)$',
-        views.ClinicQuarterActivity.as_view(),
-        name="clinic-overview"
+        r'clinic-activity/(?P<year>\d+)/patients/$',
+        views.ClinicActivityPatients.as_view(),
+        name="clinic-activity-patients"
+    ),
+    url(
+        r'clinic-activity/(?P<year>\d+)/overview/$',
+        views.ClinicActivityOverview.as_view(),
+        name="clinic-activity-overview"
     ),
     url(r'^account/login/', views.TwoFactorRequired.as_view(), name="login"),
     url(

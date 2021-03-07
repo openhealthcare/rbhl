@@ -1,0 +1,43 @@
+{% extends 'static_base.html' %}
+{% load stats %}
+{% block title %}
+Clinic activity {{ view.date_range.0 }} - {{ view.date_range.1 }}
+{% endblock %}
+{% block page_content %}
+<div class="container-fluid">
+  {% include 'partials/clinic_activity_menu.html' %}
+  <div class="row content-offset">
+    {% for category, num in aggregates.head_lines.items %}
+    <div class="col-md-4">
+      <div class="page-header">
+        <h1>{{ num }}
+        <small>{{ category }}</small>
+        </h1>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <h1>Patient flow</h1>
+      <div id="referral_to_diagnosis">
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  c3.generate({
+    bindto: '#referral_to_diagnosis',
+    data: {
+      columns: {{ aggregates.flow.referral_to_diagnosis.vals | safe }},
+      type: 'bar'
+    },
+    axis: {
+      x: {
+        type: 'category',
+        categories: {{ aggregates.flow.referral_to_diagnosis.x | safe }}
+      }
+    }
+  });
+</script>
+{% endblock %}

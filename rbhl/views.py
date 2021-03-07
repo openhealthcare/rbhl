@@ -2,6 +2,8 @@
 Custom views for Lungs@Work
 """
 import json
+import datetime
+import statistics
 from django.urls import reverse
 from django.utils.functional import cached_property
 from django.views.generic import FormView, TemplateView, RedirectView, ListView
@@ -167,9 +169,7 @@ class TwoFactorSetupView(two_factor_core_views.SetupView):
         return super().dispatch(request, *args, **kwargs)
 
 
-class ClinicQuarterActivity(TemplateView):
-    template_name = "stats/clinic_year_activity.html"
-
+class AbstractClinicActivity(TemplateView):
     # The fields that appear on the in the table
     PAGE_FIELDS = [
         "Name",
@@ -185,11 +185,46 @@ class ClinicQuarterActivity(TemplateView):
         "Specific SPT"
     ]
 
+    def menu_dates(self):
+        current_year = datetime.date.today().year
+        today = datetime.date.today()
+        if today.month < 10:
+            start_year = 1
+        else:
+            start_year = 0
+        result = []
+        for i in range(start_year, 5 + start_year):
+            year = current_year - i
+            result.append(self.get_date_range(year))
+        result.reverse()
+        return result
+
+    def get_date_range(self, start_year):
+        """
+        Returns a date range of what we are covering
+        from october of the start year to end of september
+        the next year or the current date depending what's greater
+        """
+        start_date = datetime.date(start_year, 10, 1)
+        end_date = datetime.date(start_year + 1, 9, 30)
+        end_date = min(datetime.date.today(), end_date)
+        return start_date, end_date
+
+    @cached_property
+    def date_range(self):
+        """
+        The date range we are covering.
+        returns [start_date, end_date] inclusive
+        """
+        year = int(self.kwargs["year"])
+        return self.get_date_range(year)
+
     @cached_property
     def referral_id_to_episode_id(self):
         referrals = Referral.objects.filter(
-            # ocld=True,
-            date_of_referral__year=int(self.kwargs["year"]),
+            ocld=True,
+            date_of_referral__gte=self.date_range[0],
+            date_of_referral__lte=self.date_range[1],
         ).values_list("id", "episode_id")
         return dict(referrals)
 
@@ -345,12 +380,15 @@ class ClinicQuarterActivity(TemplateView):
             referral.geographical_area_fk_id, referral.geographical_area_ft
         )
 
-        if referral.date_of_referral and clinic_log.clinic_date:
-            days_to_appointment = clinic_log.clinic_date - referral.date_of_referral
-            days_to_appointment = days_to_appointment.days
+        if clinic_log.clinic_date:
+            if clinic_log.clinic_date >= referral.date_of_referral:
+                days_to_appointment = clinic_log.clinic_date - referral.date_of_referral
+                days_to_appointment = days_to_appointment.days
 
         days_to_diagnosis = None
-        diagnosis_dates = sorted([i.date for i in diagnosis if i.date])
+        diagnosis_dates = sorted([
+            i.date for i in diagnosis if i.date and i.date >= referral.date_of_referral
+        ])
         diagnosis_date = None
         if diagnosis_dates:
             diagnosis_date = diagnosis_dates[0]
@@ -372,6 +410,7 @@ class ClinicQuarterActivity(TemplateView):
             "Age at referral": demographics.get_age(date_of_referral),
             "Sex": gender,
             "Referral": referral.date_of_referral,
+            "OCLD": referral.ocld,
             "First appointment": clinic_log.clinic_date,
             "Diagnosis date": diagnosis_date,
             "Referral time to first appointment": days_to_appointment,
@@ -389,7 +428,7 @@ class ClinicQuarterActivity(TemplateView):
         row.update(self.get_skin_prick_tests(episode))
         return row
 
-    def get_context_data(self, *args, **kwargs):
+    def get_rows(self, *args, **kwargs):
         rows = []
         qs = self.get_queryset()
         for episode in qs:
@@ -397,6 +436,74 @@ class ClinicQuarterActivity(TemplateView):
                 if referral.id in self.referral_id_to_episode_id:
                     rows.append(self.get_row(episode, referral))
         rows = sorted(rows, key=lambda x: x["Referral"])
+        return rows
+
+
+class ClinicActivityOverview(AbstractClinicActivity):
+    template_name = "stats/clinic_activity_overview.html"
+
+    def get_head_lines(self, rows):
+        total = len(rows)
+        k = "Diagnosis outcome"
+        diagnosed = len(
+            [i for i in rows if i[k] and i[k] == "Known"]
+        )
+        ref_time = "Referral time to diagnosis"
+        mean_days_to_diangosis = statistics.mean(
+            [i[ref_time] for i in rows if i[ref_time] is not None]
+        )
+        return {
+            "Referrals": total,
+            "% diagnosed": "{:.1f}".format((diagnosed/total) * 100),
+            "Mean days to diagnosis": "{:.1f}".format(mean_days_to_diangosis)
+        }
+
+    def get_flow(self, rows):
+        day_ranges = [i for i in range(0, 200, 20)]
+        to_appointment_date = [0 for i in day_ranges]
+        to_diagnosis_date = [0 for i in day_ranges]
+        for row in rows:
+            to_appointment = row["Referral time to first appointment"]
+            if to_appointment is not None:
+                idx = min(int(to_appointment/20), len(day_ranges)-1)
+                to_appointment_date[idx] += 1
+            to_diagnosis = row["Referral time to diagnosis"]
+            if to_diagnosis is not None:
+                idx = min(int(to_diagnosis/20), len(day_ranges)-1)
+                to_diagnosis_date[idx] += 1
+        x_axis = []
+        for idx, i in enumerate(day_ranges):
+            if idx + 1 == len(day_ranges):
+                x_axis.append(f"{i} +")
+            else:
+                x_axis.append(f"{i} - {day_ranges[idx + 1]}")
+        return {
+            "referral_to_diagnosis": {
+                "x": json.dumps(x_axis),
+                "vals": json.dumps([
+                    ["Days to first appointment offered"] + to_appointment_date,
+                    ["Days to diagnosis"] + to_diagnosis_date
+                ])
+            }
+        }
+
+    def get_aggregates(self):
+        rows = self.get_rows()
+        result = {}
+        result["head_lines"] = self.get_head_lines(rows)
+        result["flow"] = self.get_flow(rows)
+        return result
+
+    def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
-        ctx["rows"] = rows
+        ctx["aggregates"] = self.get_aggregates()
+        return ctx
+
+
+class ClinicActivityPatients(AbstractClinicActivity):
+    template_name = "stats/clinic_activity_patients.html"
+
+    def get_context_data(self, *args, **kwargs):
+        ctx = super().get_context_data(*args, **kwargs)
+        ctx["rows"] = self.get_rows(*args, **kwargs)
         return ctx

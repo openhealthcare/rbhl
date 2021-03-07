@@ -1,7 +1,7 @@
 {% extends 'static_base.html' %}
 {% load stats %}
 {% block title %}
-Clinic activity
+Clinic activity {{ view.date_range.0 }} - {{ view.date_range.1 }}
 {% endblock %}
 {% block page_content %}
 <div class="container-fluid">
