@@ -478,20 +478,18 @@ class ClinicActivityOverview(AbstractClinicActivity):
             else:
                 x_axis.append(f"{i} - {day_ranges[idx + 1]}")
         return {
-            "referral_to_diagnosis": {
-                "x": json.dumps(x_axis),
-                "vals": json.dumps([
-                    ["Days to first appointment offered"] + to_appointment_date,
-                    ["Days to diagnosis"] + to_diagnosis_date
-                ])
-            }
+            "x": x_axis,
+            "vals": [
+                ["Days to first appointment offered"] + to_appointment_date,
+                ["Days to diagnosis"] + to_diagnosis_date
+            ]
         }
 
     def get_aggregates(self):
         rows = self.get_rows()
         result = {}
         result["head_lines"] = self.get_head_lines(rows)
-        result["flow"] = self.get_flow(rows)
+        result["patient_flow"] = self.get_flow(rows)
         return result
 
     def get_context_data(self, *args, **kwargs):

@@ -17,27 +17,6 @@ Clinic activity {{ view.date_range.0 }} - {{ view.date_range.1 }}
     </div>
     {% endfor %}
   </div>
-  <div class="row">
-    <div class="col-md-12">
-      <h1>Patient flow</h1>
-      <div id="referral_to_diagnosis">
-      </div>
-    </div>
-  </div>
+  {% category_bar_chart 'Patient flow' aggregates.patient_flow.x aggregates.patient_flow.vals %}
 </div>
-<script>
-  c3.generate({
-    bindto: '#referral_to_diagnosis',
-    data: {
-      columns: {{ aggregates.flow.referral_to_diagnosis.vals | safe }},
-      type: 'bar'
-    },
-    axis: {
-      x: {
-        type: 'category',
-        categories: {{ aggregates.flow.referral_to_diagnosis.x | safe }}
-      }
-    }
-  });
-</script>
 {% endblock %}

@@ -1,0 +1,46 @@
+{% load stats %}
+<div class="row">
+  <div class="col-md-12 ">
+    <h1>{{ title }}</h1>
+  </div>
+</div>
+<div class="content-offset-20" id="{{ html_id }}">
+</div>
+<div class="row content-offset-20">
+<div class="col-md-12">
+<table class="table table-striped">
+  <tr>
+    <th></th>
+    {% for x_value in table.x_axis %}
+    <th>{{ x_value }}</th>
+    {% endfor %}
+  </tr>
+  {% for k in table.field_vals %}
+    <tr>
+    {% for v in k %}
+    <td {% if forloop.first %}style="color: {{ forloop.parentloop.counter0 | color }}"{% endif %}>{% value_display v %}</td>
+    {% endfor %}
+    </tr>
+  {% endfor %}
+</table>
+</div>
+</div>
+<script>
+  c3.generate({
+    bindto: '#{{ html_id }}',
+    data: {
+      columns: {{ graph.field_vals | safe }},
+      type: 'bar',
+      colors: {{ graph.colors | safe }},
+    },
+    legend: {
+        show: false
+    },  
+    axis: {
+      x: {
+        type: 'category',
+        categories: {{ graph.x_axis | safe }}
+      }
+    }
+  });
+</script>

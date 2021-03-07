@@ -186,6 +186,7 @@ INSTALLED_APPS = (
     'two_factor',
     'plugins.add_patient_step',
     'plugins.lab',
+    'plugins.stats',
     'rbhl',
 )
 
