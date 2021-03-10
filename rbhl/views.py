@@ -567,14 +567,14 @@ class ClinicActivityOverview(AbstractClinicActivity):
             geographic_area.pop(t)
         geographic_area["Other (< 10)"] = other
         return {
-            "Source of referral": sorted(
-                list(source_of_referral.items()), key=lambda x: -x[1]
+            "Source of referral": dict(
+                sorted(source_of_referral.items(), key=lambda x: -x[1])
             ),
-            "Geographic area": sorted(
-                list(geographic_area.items()), key=lambda x: -x[1]
+            "Geographic area": dict(
+                sorted(geographic_area.items(), key=lambda x: -x[1])
             ),
-            "Attended first appoinment": sorted(
-                list(attended_first_appointment.items()), key=lambda x: -x[1]
+            "Attended first appoinment": dict(
+                sorted(attended_first_appointment.items(), key=lambda x: -x[1])
             ),
         }
 

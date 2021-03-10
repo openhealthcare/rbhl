@@ -82,6 +82,27 @@ def category_bar_chart(
 
 
 @register.inclusion_tag(
+    "templatetags/stats/table_with_percent.html"
+)
+def table_with_percent(title, result_dict):
+    """
+    Takes in the title, but also a dictionary
+    of key to integer.
+    """
+    ctx = {"title": title, "table": {}}
+    if not result_dict:
+        return ctx
+
+    total = sum(result_dict.values())
+    for k, v in result_dict.items():
+        ctx["table"][k] = {
+            "val": v,
+            "percent": round(v/total * 100)
+        }
+    return ctx
+
+
+@register.inclusion_tag(
     "templatetags/stats/pie_chart.html"
 )
 def pie_chart(

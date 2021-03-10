@@ -27,7 +27,7 @@ Clinic activity {{ view.date_range.0 }} - {{ view.date_range.1 }}
   <div class="row">
     {% for k, v in aggregates.referral.items %}
     <div class="col-md-4">
-      {% pie_chart k v %}
+      {% table_with_percent k v %}
     </div>
     {% endfor %}
   </div>
