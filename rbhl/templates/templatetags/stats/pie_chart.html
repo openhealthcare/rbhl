@@ -1,11 +1,7 @@
 {% load stats %}
 <div class="row">
   <div class="col-md-12 ">
-    {% if subtitle %}
     <h3>{{ title }}</h3>
-    {% else %}
-    <h1>{{ title }}</h1>
-    {% endif %}
   </div>
 </div>
 <div class="content-offset-20" id="{{ html_id }}">
@@ -13,19 +9,14 @@
 <div class="row content-offset-20">
   <div class="col-md-12">
     <table class="table table-striped">
-      <tr>
-        <th></th>
-        {% for x_value in table.x_axis %}
-        <th>{{ x_value }}</th>
-        {% endfor %}
-      </tr>
-      {% for k in table.field_vals %}
+      {% for k, v in table.field_vals.items %}
         <tr>
-        {% for v in k %}
-        <td style="color: {{ forloop.parentloop.counter0 | color }}">
+        <td style="color: {{ forloop.counter0 | color }}">
+        {{ k }}
+        </td>
+        <td style="color: {{ forloop.counter0 | color }}">
         {% value_display v %}
         </td>
-        {% endfor %}
         </tr>
       {% endfor %}
     </table>
@@ -36,17 +27,11 @@
     bindto: '#{{ html_id }}',
     data: {
       columns: {{ graph.field_vals | safe }},
-      type: 'bar',
+      type: 'pie',
       colors: {{ graph.colors | safe }},
     },
     legend: {
         show: false
     },  
-    axis: {
-      x: {
-        type: 'category',
-        categories: {{ graph.x_axis | safe }}
-      }
-    }
   });
 </script>

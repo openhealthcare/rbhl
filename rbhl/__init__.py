@@ -1,6 +1,7 @@
 """
 rbhl - Our Opal Application
 """
+import datetime
 from opal.core import application, menus
 from django.urls import reverse, reverse_lazy
 
@@ -98,6 +99,19 @@ class Application(application.OpalApplication):
                         href=reverse('active-list'),
                         display=('Active patients'),
                         icon="fa-table"
+                    )
+                )
+                today = datetime.date.today()
+                year = today.year
+                if today.month < 10:
+                    year = year - 1
+                items.append(
+                    menus.MenuItem(
+                        activepattern=reverse('clinic-activity-overview', kwargs={"year": year}),
+                        href=reverse('clinic-activity-overview', kwargs={"year": year}),
+                        display=('Clinic activity'),
+                        index=800,
+                        icon="fa-bar-chart"
                     )
                 )
 

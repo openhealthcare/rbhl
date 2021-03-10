@@ -5,6 +5,7 @@ Clinic activity {{ view.date_range.0 }} - {{ view.date_range.1 }}
 {% endblock %}
 {% block page_content %}
 <div class="container-fluid">
+  {% include 'partials/clinic_activity_menu.html' %}
   {% if not rows %}
   <div class="row headed-content-offset">
     <div class="col-md-12 text-center">
@@ -13,8 +14,7 @@ Clinic activity {{ view.date_range.0 }} - {{ view.date_range.1 }}
       </h1>
     </div>
   </div>
-  {% endif %}
-  {% if rows %}
+  {% else %}
   <div class="row">
     <div class="col-md-12">
       <table class="table table-striped table-hover content-offset">
@@ -41,6 +41,7 @@ Clinic activity {{ view.date_range.0 }} - {{ view.date_range.1 }}
       </table>
     </div>
   </div>
+  {% include 'partials/download_button.html' %}
   {% endif %}
 </div>
 {% endblock %}
