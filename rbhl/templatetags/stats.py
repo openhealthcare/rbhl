@@ -1,8 +1,9 @@
 import json
 import more_itertools
 import random
-color = "%06x" % random.randint(0, 0xFFFFFF)
 from django import template
+
+color = "%06x" % random.randint(0, 0xFFFFFF)
 
 register = template.Library()
 
@@ -87,7 +88,7 @@ def pie_chart(
     title, field_vals
 ):
     """
-    Takes in a title then a list of lists 
+    Takes in a title then a list of lists
     where the first item is the name of the pie
     chart like the c3 api.
     """

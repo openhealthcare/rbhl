@@ -312,7 +312,6 @@ class AbstractClinicActivity(TemplateView):
             "Diagnosis category": diagnosis_category
         }
 
-
     def get_peak_flow(self, episode, clinic_log):
         peak_flow_days = episode.peakflowday_set.all()
         result = "Not requested"
@@ -503,12 +502,11 @@ class ClinicActivityOverview(AbstractClinicActivity):
                 x_axis.append(f"{i} +")
             else:
                 x_axis.append(f"{i} - {day_ranges[idx + 1]}")
+        v1 = ["Days from referral to first appointment offered"] + to_appointment_date
+        v2 = ["Days from referral to diagnosis"] + to_diagnosis_date
         return {
             "x": x_axis,
-            "vals": [
-                ["Days from referral to first appointment offered"] + to_appointment_date,
-                ["Days from referral to diagnosis"] + to_diagnosis_date
-            ]
+            "vals": [v1, v2]
         }
 
     def get_demographics(self, rows):
@@ -569,13 +567,18 @@ class ClinicActivityOverview(AbstractClinicActivity):
             geographic_area.pop(t)
         geographic_area["Other (< 10)"] = other
         return {
-            "Source of referral": sorted(list(source_of_referral.items()), key=lambda x: x[0]),
-            "Geographic area": sorted(list(geographic_area.items()), key=lambda x: x[0]),
-            "Attended first appoinment": sorted(list(attended_first_appointment.items()), key=lambda x: x[0]),
+            "Source of referral": sorted(
+                list(source_of_referral.items()), key=lambda x: -x[1]
+            ),
+            "Geographic area": sorted(
+                list(geographic_area.items()), key=lambda x: -x[1]
+            ),
+            "Attended first appoinment": sorted(
+                list(attended_first_appointment.items()), key=lambda x: -x[1]
+            ),
         }
 
     def get_clinician(self, rows):
-        result = {}
         seen_by = defaultdict(int)
         peak_flows_requested = defaultdict(int)
         diagnosis_result = defaultdict(int)
@@ -586,24 +589,28 @@ class ClinicActivityOverview(AbstractClinicActivity):
                 seen_by_name = seen_by_name.upper()
             else:
                 seen_by_name = "Unknown"
-            
+
             seen_by[seen_by_name] += 1
             if not row["Peak flow"] == "Not requested":
                 peak_flows_requested[seen_by_name] += 1
             if row["Diagnosis outcome"] == "Known":
                 diagnosis_result[seen_by_name] += 1
-        
+
         return {
             "Seen by": sorted(list(seen_by.items()), key=lambda x: x[0]),
-            "Peak flows requested": sorted(list(peak_flows_requested.items()), key=lambda x: x[0]),
-            "Diagnosis known": sorted(list(diagnosis_result.items()), key=lambda x: x[0]),
+            "Peak flows requested": sorted(
+                list(peak_flows_requested.items()), key=lambda x: x[0]
+            ),
+            "Diagnosis known": sorted(
+                list(diagnosis_result.items()), key=lambda x: x[0]
+            ),
         }
-    
+
     def get_occupational_categories(self, rows):
         """
         Returns a dict of category to count, ordered by
         largest to smallest (then with no category at the end)
-        """        
+        """
         by_category = defaultdict(int)
         no_category = 0
         for row in rows:
@@ -634,28 +641,31 @@ class ClinicActivityOverview(AbstractClinicActivity):
             skin_prick_tests[spt] += 1
 
             peak_flow_response[row["Peak flow"]] += 1
-            
+
             if row["Bloods"]:
                 bloods["Bloods tested"] += 1
             else:
                 bloods["No bloods"] += 1
-        
+
         return {
-            "Peak flow responses": sorted(list(peak_flow_response.items()), key=lambda x: x[0]),
-            "Skin prick tests": sorted(list(skin_prick_tests.items()), key=lambda x: x[0]), 
-            "Bloods": sorted(list(bloods.items()), key=lambda x: x[0]),
+            "Peak flow responses": sorted(
+                list(peak_flow_response.items()), key=lambda x: -x[1]
+            ),
+            "Skin prick tests": sorted(
+                list(skin_prick_tests.items()), key=lambda x: -x[1]
+            ),
+            "Bloods": sorted(list(bloods.items()), key=lambda x: -x[1]),
         }
-            
+
     def get_specific_skin_prick_tests(self, rows):
         result = defaultdict(int)
         for row in rows:
             if row["Specific SPT"]:
                 for specific in row["Specific SPT"]:
                     result[specific.title()] += 1
-        
+
         return dict(sorted(result.items(), key=lambda x: -x[1]))
-        
-    
+
     def get_oem_investigations(self, rows):
         result = defaultdict(int)
         stored = 0
@@ -678,7 +688,7 @@ class ClinicActivityOverview(AbstractClinicActivity):
     def get_diagnosis_summary(self, rows):
         num_diagnosis_of_patient = defaultdict(int)
         diagnosis_category = defaultdict(int)
-        diagnosis_outcome = defaultdict(int) 
+        diagnosis_outcome = defaultdict(int)
         for row in rows:
             diagnosis_outcome[row["Diagnosis outcome"]] += 1
             num_diagnosis_of_patient[str(len(row["Diagnosis"]))] += 1
@@ -686,9 +696,15 @@ class ClinicActivityOverview(AbstractClinicActivity):
                 diagnosis_category[category] += 1
 
         return {
-            "Diagnosis outcome": sorted(diagnosis_outcome.items(), key=lambda x: x[0]),
-            "Diagnosis category": sorted(diagnosis_category.items(), key=lambda x: x[0]),
-            "Number of diagnosis per patient": sorted(num_diagnosis_of_patient.items(), key=lambda x: x[0]),
+            "Diagnosis outcome": sorted(
+                diagnosis_outcome.items(), key=lambda x: -x[1]
+            ),
+            "Diagnosis category": sorted(
+                diagnosis_category.items(), key=lambda x: -x[1]
+            ),
+            "Number of diagnosis per patient": sorted(
+                num_diagnosis_of_patient.items(), key=lambda x: -x[1]
+            ),
         }
 
     def get_diagnosis_breakdown(self, rows):
