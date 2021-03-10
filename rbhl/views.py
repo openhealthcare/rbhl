@@ -422,8 +422,8 @@ class AbstractClinicActivity(TemplateView):
             "First appointment": clinic_log.clinic_date,
             "Attended first appointment": referral.attendance,
             "Diagnosis date": diagnosis_date,
-            "Referral time to first appointment": days_to_appointment,
-            "Referral time to diagnosis": days_to_diagnosis,
+            "Days from referral to first appointment offered": days_to_appointment,
+            "Days from referral to diagnosis": days_to_diagnosis,
             "Geographic area": geographical_area,
             "Employment category": employment_category,
             "Seen by": clinic_log.seen_by,
@@ -472,7 +472,7 @@ class ClinicActivityOverview(AbstractClinicActivity):
         diagnosed = len(
             [i for i in rows if i[k] and i[k] == "Known"]
         )
-        ref_time = "Referral time to diagnosis"
+        ref_time = "Days from referral to diagnosis"
         ref_times = [i[ref_time] for i in rows if i[ref_time] is not None]
         mean = ""
         if ref_times:
@@ -489,11 +489,11 @@ class ClinicActivityOverview(AbstractClinicActivity):
         to_appointment_date = [0 for i in day_ranges]
         to_diagnosis_date = [0 for i in day_ranges]
         for row in rows:
-            to_appointment = row["Referral time to first appointment"]
+            to_appointment = row["Days from referral to first appointment offered"]
             if to_appointment is not None:
                 idx = min(int(to_appointment/20), len(day_ranges)-1)
                 to_appointment_date[idx] += 1
-            to_diagnosis = row["Referral time to diagnosis"]
+            to_diagnosis = row["Days from referral to diagnosis"]
             if to_diagnosis is not None:
                 idx = min(int(to_diagnosis/20), len(day_ranges)-1)
                 to_diagnosis_date[idx] += 1
@@ -618,7 +618,6 @@ class ClinicActivityOverview(AbstractClinicActivity):
         result["No category"] = no_category
         return result
 
-    
     def get_investigations_summary(self, rows):
         skin_prick_tests = defaultdict(int)
         peak_flow_response = defaultdict(int)

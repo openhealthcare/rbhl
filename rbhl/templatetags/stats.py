@@ -74,7 +74,7 @@ def category_bar_chart(
             "colors": json.dumps(colors)
         },
         "title": title,
-        "html_id": title.lower().replace(" ", "_"),
+        "html_id": title.lower().replace(" ", "_").replace("/", ""),
         "subtitle": subtitle
     }
     return ctx
