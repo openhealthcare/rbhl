@@ -3,11 +3,13 @@ Generates the clinic activity facts
 """
 from collections import defaultdict
 from django.core.management.base import BaseCommand
+from django.db import transaction
 from rbhl.models import ClinicLog, Diagnosis, Fact
 from rbhl.views import ClinicActivityOverview
 
 
 class Command(BaseCommand):
+    @transaction.atomic
     def handle(self, *args, **options):
         five_year_referrals = ClinicActivityOverview.get_five_year_referrals()
         episode_id_to_referrals = defaultdict(list)
