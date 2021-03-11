@@ -67,9 +67,6 @@ class Command(BaseCommand):
                     count_with_diagnosis += 1
 
         mean_diagnosis_time = round(total_days/count_with_diagnosis)
-        print(count_with_diagnosis)
-        print(total_days)
-        print(mean_diagnosis_time)
         Fact.objects.filter(label=Fact.FIVE_YEAR_MEAN_REFERRAL_TO_DIAGNOSIS).delete()
         Fact.objects.create(
             label=Fact.FIVE_YEAR_MEAN_REFERRAL_TO_DIAGNOSIS,
