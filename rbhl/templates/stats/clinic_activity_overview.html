@@ -8,11 +8,16 @@ Clinic activity {{ view.date_range.0 }} - {{ view.date_range.1 }}
   {% include 'partials/clinic_activity_menu.html' %}
   {% if aggregates %}
   <div class="row content-offset">
-    {% for category, num in aggregates.head_lines.items %}
+    {% for category, num, five_year_mean in aggregates.head_lines %}
     <div class="col-md-4 text-center">
       <div class="page-header stats-headline">
         <h1>{{ num }}</h1>
-        <h3>{{ category }}</h3>
+        <h3>
+          {{ category }}
+        </h3>
+        <h4 class="text-muted">
+          5 year mean: {{ five_year_mean }}
+        </h4>
       </div>
     </div>
     {% endfor %}

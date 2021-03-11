@@ -476,6 +476,21 @@ class AbstractClinicActivity(TemplateView):
 class ClinicActivityOverview(AbstractClinicActivity):
     template_name = "stats/clinic_activity_overview.html"
 
+    @classmethod
+    def get_five_year_period(cls):
+        today = datetime.date.today()
+        if today.month > 9:
+            five_year_range = (
+                datetime.date(today.year-5, 10, 1),
+                datetime.date(today.year, 10, 1),
+            )
+        else:
+            five_year_range = (
+                datetime.date(today.year-6, 10, 1),
+                datetime.date(today.year-1, 10, 1)
+            )
+        return five_year_range
+
     def get_head_lines(self, rows):
         total = len(rows)
         k = "Diagnosis outcome"
@@ -488,11 +503,23 @@ class ClinicActivityOverview(AbstractClinicActivity):
         if ref_times:
             mean = "{:.1f}".format(statistics.mean(ref_times))
 
-        return {
-            "Referrals": total,
-            "Diagnosed": "{:.1f}%".format((diagnosed/total) * 100),
-            "Mean days to diagnosis": mean
-        }
+        five_year_range = self.__class__.get_five_year_period()
+
+        referral_total = Referral.objects.filter(
+            ocld=True
+        ).filter(
+            date_of_referral__gte=five_year_range[0]
+        ).filter(
+            date_of_referral__lt=five_year_range[1]
+        ).count()
+
+        referral_mean = round(referral_total/5)
+
+        return (
+            ("Referrals", total, referral_mean),
+            ("Diagnosed", "{:.1f}%".format((diagnosed/total) * 100), 100),
+            ("Mean days to diagnosis", mean, 100)
+        )
 
     def get_flow(self, rows):
         day_ranges = [i for i in range(0, 200, 20)]
