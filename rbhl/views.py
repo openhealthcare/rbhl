@@ -281,14 +281,20 @@ class AbstractClinicActivity(TemplateView):
         diagnoses = episode.diagnosis_set.all()
         rhinitis_details = episode.rhinitisdetails_set.all()
         asthma_details = episode.asthmadetails_set.all()
+        occupational = 0
+        total = 0
 
         for diagnosis in diagnoses:
+            total += 1
             diagnosis_category.append(diagnosis.category)
             if diagnosis.condition == diagnosis.ASTHMA:
                 asthma_details = [i for i in asthma_details if i.date == diagnosis.date]
                 if asthma_details and asthma_details[0].trigger:
+                    trigger = asthma_details[0].trigger
+                    if not trigger == asthma_details[0].NON_OCCUPATIONAL:
+                        occupational += 1
                     specific_diagnosis.append(
-                        f"{diagnosis.condition} ({asthma_details[0].trigger})"
+                        f"{diagnosis.condition} ({trigger})"
                     )
                 else:
                     specific_diagnosis.append(diagnosis.condition)
@@ -297,19 +303,24 @@ class AbstractClinicActivity(TemplateView):
                     i for i in rhinitis_details if i.date == diagnosis.date
                 ]
                 if rhinitis_details and rhinitis_details[0].trigger:
+                    trigger = rhinitis_details[0].trigger
+                    if not trigger == rhinitis_details[0].NON_OCCUPATIONAL:
+                        occupational += 1
                     specific_diagnosis.append(
-                        f"{diagnosis.condition} ({rhinitis_details[0].trigger})"
+                        f"{diagnosis.condition} ({trigger})"
                     )
                 else:
                     specific_diagnosis.append(diagnosis.condition)
             else:
                 if diagnosis.occupational:
+                    occupational += 1
                     specific_diagnosis.append(f"{diagnosis.condition} (occupational)")
                 else:
                     specific_diagnosis.append(diagnosis.condition or diagnosis.category)
         return {
             "Diagnosis": specific_diagnosis,
-            "Diagnosis category": diagnosis_category
+            "Diagnosis category": diagnosis_category,
+            "Occupational diagnosis": f"{occupational}/{total}"
         }
 
     def get_peak_flow(self, episode, clinic_log):
@@ -695,12 +706,16 @@ class ClinicActivityOverview(AbstractClinicActivity):
         }
 
     def get_diagnosis_summary(self, rows):
-        num_diagnosis_of_patient = defaultdict(int)
+        occupational_ratio = defaultdict(int)
         diagnosis_category = defaultdict(int)
         diagnosis_outcome = defaultdict(int)
         for row in rows:
+            occupational, total = row["Occupational diagnosis"].split("/")
+            occupational = int(occupational)
+            total = int(total)
+            occupational_ratio["Occupational"] += occupational
+            occupational_ratio["Non occupational"] += total - occupational
             diagnosis_outcome[row["Diagnosis outcome"]] += 1
-            num_diagnosis_of_patient[str(len(row["Diagnosis"]))] += 1
             for category in row["Diagnosis category"]:
                 diagnosis_category[category] += 1
 
@@ -711,8 +726,8 @@ class ClinicActivityOverview(AbstractClinicActivity):
             "Diagnosis category": dict(sorted(
                 diagnosis_category.items(), key=lambda x: -x[1]
             )),
-            "Number of diagnosis per patient": dict(sorted(
-                num_diagnosis_of_patient.items(), key=lambda x: -x[1]
+            "Occupational diagnosis": dict(sorted(
+                occupational_ratio.items(), key=lambda x: -x[1]
             )),
         }
 
