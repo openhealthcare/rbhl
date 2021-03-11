@@ -804,6 +804,8 @@ class Fact(fields.Model):
     """
     A model to store various performance monitoring data
     """
+    FIVE_YEAR_MEAN_REFERRAL_TO_DIAGNOSIS = "Five year mean referral to diagnosis"
+    FIVE_YEAR_MEAN_KNOWN_DIAGNOSIS = "Five year mean known diagnosis"
 
     when        = fields.DateTimeField(default=timezone.now)
     label       = fields.CharField(max_length=100, db_index=True)

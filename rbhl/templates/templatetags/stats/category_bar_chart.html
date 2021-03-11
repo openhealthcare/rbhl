@@ -16,13 +16,13 @@
       <tr>
         <th></th>
         {% for x_value in table.x_axis %}
-        <th>{{ x_value }}</th>
+        <th class="text-center">{{ x_value }}</th>
         {% endfor %}
       </tr>
       {% for k in table.field_vals %}
         <tr>
         {% for v in k %}
-        <td style="color: {{ forloop.parentloop.counter0 | color }}">
+        <td {% if not forloop.first %}class="text-center" {% endif %}style="color: {{ forloop.parentloop.counter0 | color }}">
         {% value_display v %}
         </td>
         {% endfor %}

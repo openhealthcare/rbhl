@@ -20,7 +20,9 @@ from plugins.trade import match
 from plugins.trade.forms import ImportDataForm
 from plugins.lab.models import SkinPrickTest
 from plugins.lab.views import zip_file_to_response, ZipCsvWriter
-from rbhl.models import SetUpTwoFactor, Referral, EmploymentCategory, GeographicalArea
+from rbhl.models import (
+    SetUpTwoFactor, Referral, EmploymentCategory, GeographicalArea, Fact
+)
 
 
 class StaffRequiredMixin(object):
@@ -477,7 +479,7 @@ class ClinicActivityOverview(AbstractClinicActivity):
     template_name = "stats/clinic_activity_overview.html"
 
     @classmethod
-    def get_five_year_period(cls):
+    def get_five_year_referrals(cls):
         today = datetime.date.today()
         if today.month > 9:
             five_year_range = (
@@ -489,7 +491,13 @@ class ClinicActivityOverview(AbstractClinicActivity):
                 datetime.date(today.year-6, 10, 1),
                 datetime.date(today.year-1, 10, 1)
             )
-        return five_year_range
+        return Referral.objects.filter(
+            ocld=True
+        ).filter(
+            date_of_referral__gte=five_year_range[0]
+        ).filter(
+            date_of_referral__lt=five_year_range[1]
+        )
 
     def get_head_lines(self, rows):
         total = len(rows)
@@ -503,22 +511,26 @@ class ClinicActivityOverview(AbstractClinicActivity):
         if ref_times:
             mean = "{:.1f}".format(statistics.mean(ref_times))
 
-        five_year_range = self.__class__.get_five_year_period()
-
-        referral_total = Referral.objects.filter(
-            ocld=True
-        ).filter(
-            date_of_referral__gte=five_year_range[0]
-        ).filter(
-            date_of_referral__lt=five_year_range[1]
-        ).count()
-
+        referral_total = self.__class__.get_five_year_referrals().count()
         referral_mean = round(referral_total/5)
+        mean_known_diagnosis = Fact.objects.filter(
+            label=Fact.FIVE_YEAR_MEAN_KNOWN_DIAGNOSIS
+        ).order_by("-when").first()
+
+        if mean_known_diagnosis:
+            mean_known_diagnosis = mean_known_diagnosis.val()
+
+        mean_days_to_diagnosis = Fact.objects.filter(
+            label=Fact.FIVE_YEAR_MEAN_REFERRAL_TO_DIAGNOSIS
+        ).order_by("-when").first()
+
+        if mean_days_to_diagnosis:
+            mean_days_to_diagnosis = mean_days_to_diagnosis.val()
 
         return (
             ("Referrals", total, referral_mean),
-            ("Diagnosed", "{:.1f}%".format((diagnosed/total) * 100), 100),
-            ("Mean days to diagnosis", mean, 100)
+            ("Diagnosed", round((diagnosed/total) * 100), mean_known_diagnosis),
+            ("Mean days to diagnosis", mean, mean_days_to_diagnosis)
         )
 
     def get_flow(self, rows):
