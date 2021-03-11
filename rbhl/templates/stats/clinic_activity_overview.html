@@ -16,7 +16,11 @@ Clinic activity {{ view.date_range.0 }} - {{ view.date_range.1 }}
           {{ category }}
         </h3>
         <h4 class="text-muted">
+          {% if five_year_mean is not None %}
           5 year mean: {{ five_year_mean }}
+          {% else %}
+          &nbsp;
+          {% endif %}
         </h4>
       </div>
     </div>
