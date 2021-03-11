@@ -702,6 +702,14 @@ input[type="date"]::-webkit-input-placeholder {
   margin-top: 0;
 }
 
+.progress {
+  border-radius: 0;
+}
+
+.progress .progress-bar {
+  background-color: #4676c5;
+}
+
 h1.static-title {
   margin-top: 4px;
   margin-left: 25px;

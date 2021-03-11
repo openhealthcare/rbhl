@@ -742,6 +742,13 @@ input[type="date"]::-webkit-input-placeholder{
     }
 }
 
+.progress{
+    border-radius: 0;
+    .progress-bar{
+        background-color: $blue;
+    }
+}
+
 h1.static-title{
     margin-top: 4px;
     margin-left: 25px;
