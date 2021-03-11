@@ -9,11 +9,10 @@ Clinic activity {{ view.date_range.0 }} - {{ view.date_range.1 }}
   {% if aggregates %}
   <div class="row content-offset">
     {% for category, num in aggregates.head_lines.items %}
-    <div class="col-md-4">
-      <div class="page-header">
-        <h1>{{ num }}
-        <small>{{ category }}</small>
-        </h1>
+    <div class="col-md-4 text-center">
+      <div class="page-header stats-headline">
+        <h1>{{ num }}</h1>
+        <h3>{{ category }}</h3>
       </div>
     </div>
     {% endfor %}
@@ -67,7 +66,7 @@ Clinic activity {{ view.date_range.0 }} - {{ view.date_range.1 }}
   <div class="row">
     {% for k, v in aggregates.by_clinician.items %}
     <div class="col-md-4">
-      {% pie_chart k v %}
+      {% table_with_percent k v %}
     </div>
     {% endfor %}
   </div>
@@ -119,7 +118,7 @@ Clinic activity {{ view.date_range.0 }} - {{ view.date_range.1 }}
   <div class="row">
     {% for k, v in aggregates.diagnosis_summary.items %}
     <div class="col-md-4">
-      {% pie_chart k v %}
+      {% table_with_percent k v %}
     </div>
     {% endfor %}
   </div>

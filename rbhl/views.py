@@ -479,7 +479,7 @@ class ClinicActivityOverview(AbstractClinicActivity):
 
         return {
             "Referrals": total,
-            "% diagnosed": "{:.1f}".format((diagnosed/total) * 100),
+            "Diagnosed": "{:.1f}%".format((diagnosed/total) * 100),
             "Mean days to diagnosis": mean
         }
 
@@ -597,13 +597,13 @@ class ClinicActivityOverview(AbstractClinicActivity):
                 diagnosis_result[seen_by_name] += 1
 
         return {
-            "Seen by": sorted(list(seen_by.items()), key=lambda x: x[0]),
-            "Peak flows requested": sorted(
-                list(peak_flows_requested.items()), key=lambda x: x[0]
-            ),
-            "Diagnosis known": sorted(
-                list(diagnosis_result.items()), key=lambda x: x[0]
-            ),
+            "Seen by": dict(sorted(seen_by.items(), key=lambda x: x[0])),
+            "Peak flows requested": dict(sorted(
+                peak_flows_requested.items(), key=lambda x: x[0]
+            )),
+            "Diagnosis known": dict(sorted(
+                diagnosis_result.items(), key=lambda x: x[0]
+            )),
         }
 
     def get_occupational_categories(self, rows):
@@ -651,20 +651,29 @@ class ClinicActivityOverview(AbstractClinicActivity):
             "Peak flow responses": sorted(
                 list(peak_flow_response.items()), key=lambda x: -x[1]
             ),
-            "Skin prick tests": sorted(
+            "Patients who had skin prick tests": sorted(
                 list(skin_prick_tests.items()), key=lambda x: -x[1]
             ),
-            "Bloods": sorted(list(bloods.items()), key=lambda x: -x[1]),
+            "Patients who had Bloods": sorted(
+                list(bloods.items()), key=lambda x: -x[1]
+            ),
         }
 
     def get_specific_skin_prick_tests(self, rows):
-        result = defaultdict(int)
+        by_spt = defaultdict(int)
+        less_than_2 = 0
         for row in rows:
             if row["Specific SPT"]:
                 for specific in row["Specific SPT"]:
-                    result[specific.title()] += 1
+                    by_spt[specific.title()] += 1
 
-        return dict(sorted(result.items(), key=lambda x: -x[1]))
+        for spt, amount in list(by_spt.items()):
+            if amount < 2:
+                less_than_2 += 1
+                by_spt.pop(spt)
+        result = dict(sorted(by_spt.items(), key=lambda x: -x[1]))
+        result["Other (<2)"] = less_than_2
+        return result
 
     def get_oem_investigations(self, rows):
         result = defaultdict(int)
@@ -696,23 +705,32 @@ class ClinicActivityOverview(AbstractClinicActivity):
                 diagnosis_category[category] += 1
 
         return {
-            "Diagnosis outcome": sorted(
+            "Diagnosis outcome": dict(sorted(
                 diagnosis_outcome.items(), key=lambda x: -x[1]
-            ),
-            "Diagnosis category": sorted(
+            )),
+            "Diagnosis category": dict(sorted(
                 diagnosis_category.items(), key=lambda x: -x[1]
-            ),
-            "Number of diagnosis per patient": sorted(
+            )),
+            "Number of diagnosis per patient": dict(sorted(
                 num_diagnosis_of_patient.items(), key=lambda x: -x[1]
-            ),
+            )),
         }
 
     def get_diagnosis_breakdown(self, rows):
-        result = defaultdict(int)
+        by_diagnosis = defaultdict(int)
+        other_less_than_3 = 0
         for row in rows:
             for diagnosis in row["Diagnosis"]:
-                result[diagnosis] += 1
-        return dict(sorted(result.items(), key=lambda x: -x[1]))
+                by_diagnosis[diagnosis] += 1
+
+        for diagnosis, amount in list(by_diagnosis.items()):
+            if amount < 3:
+                other_less_than_3 += amount
+                by_diagnosis.pop(diagnosis)
+
+        result = dict(sorted(by_diagnosis.items(), key=lambda x: -x[1]))
+        result["Other (<3)"] = other_less_than_3
+        return result
 
     def get_aggregates(self):
         rows = self.get_rows()
