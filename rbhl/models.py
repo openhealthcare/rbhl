@@ -260,8 +260,10 @@ class ClinicLog(RBHLSubrecord, models.EpisodeSubrecord):
     class Meta:
         verbose_name = "Clinic details"
 
+    KNOWN = 'Known'
+
     OUTCOMES = enum(
-        'Known',
+        KNOWN,
         'Investigations continuing',
         'Not established lost to follow-up',
         'Not reached despite investigation',
@@ -796,3 +798,24 @@ class SetUpTwoFactor(fields.Model):
     def allowed(cls, user):
         if cls.time_left(user):
             return True
+
+
+class Fact(fields.Model):
+    """
+    A model to store various performance monitoring data
+    """
+
+    when        = fields.DateTimeField(default=timezone.now)
+    label       = fields.CharField(max_length=100, db_index=True)
+    value_int   = fields.IntegerField(blank=True, null=True)
+    value_float = fields.FloatField(blank=True, null=True)
+    value_str   = fields.CharField(max_length=255, blank=True, null=True)
+
+    def val(self):
+        if self.value_int is not None:
+            return self.value_int
+        if self.value_float is not None:
+            return self.value_float
+        if self.value_str is not None:
+            return self.value_str
+        raise ValueError('No value set')
