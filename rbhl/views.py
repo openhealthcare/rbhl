@@ -224,15 +224,6 @@ class AbstractClinicActivity(TemplateView):
         return self.get_date_range(year)
 
     @cached_property
-    def referral_id_to_episode_id(self):
-        referrals = Referral.objects.filter(
-            ocld=True,
-            date_of_referral__gte=self.date_range[0],
-            date_of_referral__lte=self.date_range[1],
-        ).values_list("id", "episode_id")
-        return dict(referrals)
-
-    @cached_property
     def gender(self):
         return dict(
             opal_models.Gender.objects.values_list('id', 'name')
@@ -252,7 +243,9 @@ class AbstractClinicActivity(TemplateView):
 
     def get_queryset(self):
         return opal_models.Episode.objects.filter(
-            id__in=self.referral_id_to_episode_id.values()
+            referral__ocld=True,
+            cliniclog__clinic_date__gte=self.date_range[0],
+            cliniclog__clinic_date__lte=self.date_range[1]
         ).prefetch_related(
             "cliniclog_set",
             "referral_set",
@@ -277,7 +270,7 @@ class AbstractClinicActivity(TemplateView):
             return f"{name} ({sex}{age})"
         return name
 
-    def get_diagnosis(self, episode):
+    def get_diagnosis(self, episode, clinic_log):
         specific_diagnosis = []
         diagnosis_category = []
         diagnoses = episode.diagnosis_set.all()
@@ -287,6 +280,8 @@ class AbstractClinicActivity(TemplateView):
         total = 0
 
         for diagnosis in diagnoses:
+            if diagnosis.date and diagnosis.date < clinic_log.clinic_date:
+                continue
             total += 1
             diagnosis_category.append(diagnosis.category)
             if diagnosis.condition == diagnosis.ASTHMA:
@@ -339,7 +334,7 @@ class AbstractClinicActivity(TemplateView):
 
         # pick up the prefetch related bloods set from the episode qs
         for blood in episode.patient.bloods_set.all():
-            if blood.referral_id == referral.id:
+            if referral and blood.referral_id == referral.id:
                 bloods.append(blood)
         test_types = []
         stored = False
@@ -389,32 +384,85 @@ class AbstractClinicActivity(TemplateView):
             "Specific SPT": sorted(list(nonroutines))
         }
 
-    def get_row(self, episode, referral):
-        demographics = episode.patient.demographics_set.all()[0]
-        date_of_referral = referral.date_of_referral
-        clinic_log = episode.cliniclog_set.all()[0]
-        diagnosis = episode.diagnosis_set.all()
-        days_to_appointment = None
-        gender = self.gender.get(demographics.sex_fk_id, demographics.sex_ft)
-        geographical_area = self.geographics_area.get(
-            referral.geographical_area_fk_id, referral.geographical_area_ft
-        )
+    def get_referral_date(self, referral):
+        if referral.date_of_referral:
+            return referral.date_of_referral
+        return referral.date_referral_received
 
-        if clinic_log.clinic_date:
-            if clinic_log.clinic_date >= referral.date_of_referral:
-                days_to_appointment = clinic_log.clinic_date - referral.date_of_referral
+    def get_referral_instance(self, episode, clinic_log):
+        """
+        We want the most recent referral before the clinic date.
+
+        As referral used to be a singletone a lot of people
+        did not add a date to the referral, however as
+        most patients only have 1 referral in this instance just use
+        the latest
+        """
+        referrals = []
+        referrals_with_no_dates = []
+        for referral in episode.referral_set.all():
+            referral_date = self.get_referral_date(referral)
+            if referral_date and referral_date <= clinic_log.clinic_date:
+                referrals.append(referral)
+            if not referral_date:
+                referrals_with_no_dates.append(referral)
+
+        referrals = sorted(
+            referrals, key=lambda x: self.get_referral_date(x), reverse=True
+        )
+        if not referrals:
+            referrals = sorted(
+                referrals_with_no_dates, key=lambda x: x.pk, reverse=True
+            )
+        if referrals:
+            return referrals[0]
+
+    def get_diagnosis_date(self, episode, clinic_log):
+        """
+        A patient can have multiple diagnosis get the diagnosis
+        that is closest in date to the episode
+        """
+        diagnoses = []
+        for diagnosis in episode.diagnosis_set.all():
+            if diagnosis.date and diagnosis.date >= clinic_log.clinic_date:
+                diagnoses.append(diagnosis)
+
+        if diagnoses:
+            return sorted(diagnoses, key=lambda x: x.date)[0].date
+
+    def get_row(self, episode):
+        demographics = episode.patient.demographics_set.all()[0]
+        clinic_log = episode.cliniclog_set.all()[0]
+        clinic_date = clinic_log.clinic_date
+        gender = self.gender.get(demographics.sex_fk_id, demographics.sex_ft)
+        referral = self.get_referral_instance(episode, clinic_log)
+        geographical_area = ""
+        date_of_referral = None
+        days_to_appointment = None
+        days_to_diagnosis = None
+        diagnosis_date = None
+        referral_ocld = ""
+        referral_source = ""
+        attended = False
+        if referral:
+            referral_ocld = referral.ocld
+            referral_source = referral.referral_source
+            attended = referral.attendance
+
+            geographical_area = self.geographics_area.get(
+                referral.geographical_area_fk_id, referral.geographical_area_ft
+            )
+            date_of_referral = self.get_referral_date(referral)
+            if date_of_referral:
+                days_to_appointment = clinic_date - date_of_referral
                 days_to_appointment = days_to_appointment.days
 
-        days_to_diagnosis = None
-        diagnosis_dates = sorted([
-            i.date for i in diagnosis if i.date and i.date >= referral.date_of_referral
-        ])
-        diagnosis_date = None
-        if diagnosis_dates:
-            diagnosis_date = diagnosis_dates[0]
-        if referral.date_of_referral and diagnosis_date:
-            days_to_diagnosis = diagnosis_date - referral.date_of_referral
-            days_to_diagnosis = days_to_diagnosis.days
+                days_to_diagnosis = None
+                diagnosis_date = self.get_diagnosis_date(episode, clinic_log)
+
+                if diagnosis_date:
+                    days_to_diagnosis = diagnosis_date - date_of_referral
+                    days_to_diagnosis = days_to_diagnosis.days
         employments = list(episode.employment_set.all())
         employment_category = ""
         if employments:
@@ -427,36 +475,34 @@ class AbstractClinicActivity(TemplateView):
             "Name": self.get_display_name(demographics, date_of_referral),
             "First name": demographics.first_name,
             "Surname": demographics.surname,
-            "Age at referral": demographics.get_age(date_of_referral),
+            "Age at clinic": demographics.get_age(clinic_date),
             "Sex": gender,
-            "Referral": referral.date_of_referral,
-            "OCLD": referral.ocld,
+            "Referral": date_of_referral,
+            "OCLD": referral_ocld,
             "First appointment": clinic_log.clinic_date,
-            "Attended first appointment": referral.attendance,
+            "Attended first appointment": attended,
             "Diagnosis date": diagnosis_date,
             "Days from referral to first appointment offered": days_to_appointment,
             "Days from referral to diagnosis": days_to_diagnosis,
             "Geographic area": geographical_area,
             "Employment category": employment_category,
             "Seen by": clinic_log.seen_by,
-            "Source of referral": referral.referral_source,
+            "Source of referral": referral_source,
             "Peak flow": self.get_peak_flow(episode, clinic_log),
             "Diagnosis outcome": clinic_log.diagnosis_outcome or "No outcome",
             "Link": episode.get_absolute_url()
         }
         row.update(self.get_bloods(episode, referral))
         row.update(self.get_skin_prick_tests(episode))
-        row.update(self.get_diagnosis(episode))
+        row.update(self.get_diagnosis(episode, clinic_log))
         return row
 
     def get_rows(self, *args, **kwargs):
         rows = []
         qs = self.get_queryset()
         for episode in qs:
-            for referral in episode.referral_set.all():
-                if referral.id in self.referral_id_to_episode_id:
-                    rows.append(self.get_row(episode, referral))
-        rows = sorted(rows, key=lambda x: x["Referral"])
+            rows.append(self.get_row(episode))
+        rows = sorted(rows, key=lambda x: x["First appointment"])
         return rows
 
     def post(self, *args, **kwargs):
@@ -478,8 +524,7 @@ class AbstractClinicActivity(TemplateView):
 class ClinicActivityOverview(AbstractClinicActivity):
     template_name = "stats/clinic_activity_overview.html"
 
-    @classmethod
-    def get_five_year_referrals(cls):
+    def get_five_year_episodes(self):
         today = datetime.date.today()
         if today.month > 9:
             five_year_range = (
@@ -491,12 +536,12 @@ class ClinicActivityOverview(AbstractClinicActivity):
                 datetime.date(today.year-6, 10, 1),
                 datetime.date(today.year-1, 10, 1)
             )
-        return Referral.objects.filter(
-            ocld=True
+        return Episode.objects.filter(
+            referral__ocld=True
         ).filter(
-            date_of_referral__gte=five_year_range[0]
+            cliniclog__clinic_date__gte=five_year_range[0]
         ).filter(
-            date_of_referral__lt=five_year_range[1]
+            cliniclog__clinic_date__lt=five_year_range[1]
         )
 
     def get_head_lines(self, rows):
@@ -511,8 +556,8 @@ class ClinicActivityOverview(AbstractClinicActivity):
         if ref_times:
             mean = "{:.1f}".format(statistics.mean(ref_times))
 
-        referral_total = self.__class__.get_five_year_referrals().count()
-        referral_mean = round(referral_total/5)
+        episodes_total = self.__class__.get_five_year_episodes().count()
+        episodes_mean = round(episodes_total/5)
         mean_known_diagnosis = Fact.objects.filter(
             label=Fact.FIVE_YEAR_MEAN_KNOWN_DIAGNOSIS
         ).order_by("-when").first()
@@ -528,7 +573,7 @@ class ClinicActivityOverview(AbstractClinicActivity):
             mean_days_to_diagnosis = mean_days_to_diagnosis.val()
 
         return (
-            ("Referrals", total, referral_mean),
+            ("Referrals", total, episodes_mean),
             ("Diagnosed", round((diagnosed/total) * 100), mean_known_diagnosis),
             ("Mean days to diagnosis", mean, mean_days_to_diagnosis)
         )
@@ -566,7 +611,7 @@ class ClinicActivityOverview(AbstractClinicActivity):
         male_count = 0
         female_count = 0
         for row in rows:
-            age = row["Age at referral"]
+            age = row["Age at clinic"]
             if age is None:
                 continue
             idx = min(int(age/10), len(age_ranges)-1)

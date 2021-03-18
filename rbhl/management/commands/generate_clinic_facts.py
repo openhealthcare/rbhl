@@ -11,9 +11,9 @@ from rbhl.views import ClinicActivityOverview
 class Command(BaseCommand):
     @transaction.atomic
     def handle(self, *args, **options):
-        five_year_referrals = ClinicActivityOverview.get_five_year_referrals()
+        five_year_episodes = ClinicActivityOverview.get_five_year_episodes()
         episode_id_to_referrals = defaultdict(list)
-        for i in five_year_referrals:
+        for i in five_year_episodes:
             episode_id_to_referrals[i.episode_id].append(i)
 
         clinic_log = ClinicLog.objects.filter(
@@ -24,6 +24,7 @@ class Command(BaseCommand):
         episode_id_to_clinic_log = defaultdict(list)
         for i in clinic_log:
             episode_id_to_clinic_log[i.episode_id].append(i)
+            episode_id_to_referrals =
 
         diagnosis = Diagnosis.objects.filter(
             episode_id__in=episode_id_to_referrals.keys()
