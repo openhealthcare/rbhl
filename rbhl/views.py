@@ -615,7 +615,7 @@ class ClinicActivityOverview(AbstractClinicActivity):
                 other += v
         for t in to_remove:
             geographic_area.pop(t)
-        geographic_area["Other (< 10)"] = other
+        geographic_area["Other (< 10 patients)"] = other
         return {
             "Source of referral": dict(
                 sorted(source_of_referral.items(), key=lambda x: -x[1])
@@ -704,7 +704,7 @@ class ClinicActivityOverview(AbstractClinicActivity):
             "Patients who had skin prick tests": sorted(
                 list(skin_prick_tests.items()), key=lambda x: -x[1]
             ),
-            "Patients who had Bloods": sorted(
+            "Patients who had bloods": sorted(
                 list(bloods.items()), key=lambda x: -x[1]
             ),
         }
