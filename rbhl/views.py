@@ -486,8 +486,8 @@ class ClinicActivityOverview(AbstractClinicActivity):
         if ref_times:
             mean = "{:.1f}".format(statistics.mean(ref_times))
 
-        referral_mean = Fact.objects.filter(
-            label=Fact.AVERAGE_REFERRALS_PER_YEAR
+        mean_patients_per_year = Fact.objects.filter(
+            label=Fact.MEAN_CLINIC_PATIENTS_PER_YEAR
         ).order_by("-when").first().val()
 
         mean_known_diagnosis = Fact.objects.filter(
@@ -505,7 +505,7 @@ class ClinicActivityOverview(AbstractClinicActivity):
             mean_days_to_diagnosis = mean_days_to_diagnosis.val()
 
         return (
-            ("Referrals", total, referral_mean),
+            ("Patients", total, mean_patients_per_year),
             ("Diagnosed", round((diagnosed/total) * 100), mean_known_diagnosis),
             ("Mean days to diagnosis", mean, mean_days_to_diagnosis)
         )

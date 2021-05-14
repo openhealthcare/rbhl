@@ -41,7 +41,7 @@ class Command(BaseCommand):
 
         referral_mean = round(episode_count/5)
         Fact.objects.create(
-            label=Fact.AVERAGE_REFERRALS_PER_YEAR,
+            label=Fact.MEAN_CLINIC_PATIENTS_PER_YEAR,
             value_int=referral_mean
         )
         episode_ids = set(five_year_episodes.values_list('id', flat=True))

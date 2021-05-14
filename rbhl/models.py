@@ -828,8 +828,7 @@ class Fact(fields.Model):
     FIVE_YEAR_MEAN_REFERRAL_TO_DIAGNOSIS = "Five year mean referral to diagnosis"
     FIVE_YEAR_MEAN_KNOWN_DIAGNOSIS = "Five year mean known diagnosis"
 
-    # average number of referrals per year looking at the last five years
-    AVERAGE_REFERRALS_PER_YEAR = "Average number of referrals per year"
+    MEAN_CLINIC_PATIENTS_PER_YEAR = "Mean number of clinic patients per year"
 
     when        = fields.DateTimeField(default=timezone.now)
     label       = fields.CharField(max_length=100, db_index=True)
