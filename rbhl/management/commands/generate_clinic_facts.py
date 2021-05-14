@@ -5,11 +5,12 @@ import datetime
 from collections import defaultdict
 from django.core.management.base import BaseCommand
 from django.db import transaction
+from opal.models import Episode
 from rbhl.models import ClinicLog, Diagnosis, Fact, Referral
 
 
 class Command(BaseCommand):
-    def get_five_year_referrals(cls):
+    def get_five_year_episodes(cls):
         today = datetime.date.today()
         if today.month > 9:
             five_year_range = (
@@ -21,58 +22,47 @@ class Command(BaseCommand):
                 datetime.date(today.year-6, 10, 1),
                 datetime.date(today.year-1, 10, 1)
             )
-        return Referral.objects.filter(
-            ocld=True
+        return Episode.objects.filter(
+            referral__ocld=True
         ).filter(
-            date_of_referral__gte=five_year_range[0]
+            cliniclog__clinic_date__gte=five_year_range[0]
         ).filter(
-            date_of_referral__lt=five_year_range[1]
+            cliniclog__clinic_date__lt=five_year_range[1]
+        ).distinct().prefetch_related(
+            "cliniclog_set",
+            "referral_set",
+            "diagnosis_set"
         )
 
     @transaction.atomic
     def handle(self, *args, **options):
-        five_year_referrals = self.get_five_year_referrals()
+        five_year_episodes = self.get_five_year_episodes()
+        episode_count = five_year_episodes.count()
 
-        referral_mean = round(five_year_referrals.count()/5)
+        referral_mean = round(episode_count/5)
         Fact.objects.create(
             label=Fact.AVERAGE_REFERRALS_PER_YEAR,
             value_int=referral_mean
         )
-
-        episode_id_to_referrals = defaultdict(list)
-        for i in five_year_referrals:
-            episode_id_to_referrals[i.episode_id].append(i)
-
-        clinic_log = ClinicLog.objects.filter(
-            episode_id__in=episode_id_to_referrals.keys()
-        ).filter(
-            diagnosis_outcome=ClinicLog.KNOWN
-        )
-        episode_id_to_clinic_log = defaultdict(list)
-        for i in clinic_log:
-            episode_id_to_clinic_log[i.episode_id].append(i)
-
+        episode_ids = set(five_year_episodes.values_list('id', flat=True))
         diagnosis = Diagnosis.objects.filter(
-            episode_id__in=episode_id_to_referrals.keys()
+            episode_id__in=episode_ids
         ).exclude(
             date=None
         ).order_by("date")
         episode_id_to_diagnosis = defaultdict(list)
         for i in diagnosis:
             episode_id_to_diagnosis[i.episode_id].append(i)
-
-        total_referrals = five_year_referrals.count()
         diagnosed_count = 0
 
         # Diagnosis % is calclated by the number of clinic log with diagnosis
         # Known
-        for episode_id, referrals in episode_id_to_referrals.items():
-            for _ in referrals:
-                clinic_log = episode_id_to_clinic_log[episode_id]
-                if clinic_log:
-                    diagnosed_count += 1
+        for episode in five_year_episodes:
+            clinic_log = episode.cliniclog_set.all()[0]
+            if clinic_log.diagnosis_outcome == ClinicLog.KNOWN:
+                diagnosed_count += 1
 
-        mean_diagnosis_percent = round(diagnosed_count/total_referrals * 100)
+        mean_diagnosis_percent = round(diagnosed_count/episode_count * 100)
         Fact.objects.filter(label=Fact.FIVE_YEAR_MEAN_KNOWN_DIAGNOSIS).delete()
         Fact.objects.create(
             label=Fact.FIVE_YEAR_MEAN_KNOWN_DIAGNOSIS,
@@ -83,9 +73,11 @@ class Command(BaseCommand):
         # after the referral date
         total_days = 0
         count_with_diagnosis = 0
-        for episode_id, referrals in episode_id_to_referrals.items():
-            for referral in referrals:
-                diagnoses = episode_id_to_diagnosis[episode_id]
+        for episode in five_year_episodes:
+            referral = Referral.get_recent_ocld_referral_for_episode(episode)
+            if referral and referral.date_of_referral:
+                diagnoses = episode.diagnosis_set.all()
+                diagnoses = [i for i in diagnoses if i.date]
                 diagnosis_after_referral = [
                     i for i in diagnoses if i.date > referral.date_of_referral
                 ]

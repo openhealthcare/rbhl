@@ -216,6 +216,27 @@ class Referral(RBHLSubrecord, models.EpisodeSubrecord):
     geographical_area = models.ForeignKeyOrFreeText(GeographicalArea)
     ocld = fields.BooleanField(default=True, verbose_name="OCLD")
 
+    @classmethod
+    def get_recent_ocld_referral_for_episode(cls, episode):
+        """
+        """
+        clinic_log = episode.cliniclog_set.all()[0]
+        clinc_log_date = clinic_log.clinic_date
+        if not clinc_log_date:
+            return
+        referrals = episode.referral_set.all()
+        recent_referral = None
+        max_referral_date = None
+
+        for referral in referrals:
+            referral_date = referral.date_of_referral
+            ocld = referral.ocld
+            if ocld and referral_date and referral_date <= clinc_log_date:
+                if not max_referral_date or max_referral_date < referral_date:
+                    max_referral_date = referral_date
+                    recent_referral = referral
+        return recent_referral
+
 
 class Employer(lookuplists.LookupList):
     pass

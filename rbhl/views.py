@@ -224,15 +224,6 @@ class AbstractClinicActivity(TemplateView):
         return self.get_date_range(year)
 
     @cached_property
-    def referral_id_to_episode_id(self):
-        referrals = Referral.objects.filter(
-            ocld=True,
-            date_of_referral__gte=self.date_range[0],
-            date_of_referral__lte=self.date_range[1],
-        ).values_list("id", "episode_id")
-        return dict(referrals)
-
-    @cached_property
     def gender(self):
         return dict(
             opal_models.Gender.objects.values_list('id', 'name')
@@ -252,8 +243,10 @@ class AbstractClinicActivity(TemplateView):
 
     def get_queryset(self):
         return opal_models.Episode.objects.filter(
-            id__in=self.referral_id_to_episode_id.values()
-        ).prefetch_related(
+            cliniclog__clinic_date__gte=self.date_range[0],
+            cliniclog__clinic_date__lte=self.date_range[1],
+            referral__ocld=True
+        ).distinct().prefetch_related(
             "cliniclog_set",
             "referral_set",
             "diagnosis_set",
@@ -452,10 +445,13 @@ class AbstractClinicActivity(TemplateView):
     def get_rows(self, *args, **kwargs):
         rows = []
         qs = self.get_queryset()
+        seen = set()
         for episode in qs:
-            for referral in episode.referral_set.all():
-                if referral.id in self.referral_id_to_episode_id:
-                    rows.append(self.get_row(episode, referral))
+            if episode.id in seen:
+                continue
+            referral = Referral.get_recent_ocld_referral_for_episode(episode)
+            if referral:
+                rows.append(self.get_row(episode, referral))
         rows = sorted(rows, key=lambda x: x["Referral"])
         return rows
 
