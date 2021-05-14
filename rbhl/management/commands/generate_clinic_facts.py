@@ -1,17 +1,44 @@
 """
 Generates the clinic activity facts
 """
+import datetime
 from collections import defaultdict
 from django.core.management.base import BaseCommand
 from django.db import transaction
-from rbhl.models import ClinicLog, Diagnosis, Fact
-from rbhl.views import ClinicActivityOverview
+from rbhl.models import ClinicLog, Diagnosis, Fact, Referral
 
 
 class Command(BaseCommand):
+    def get_five_year_referrals(cls):
+        today = datetime.date.today()
+        if today.month > 9:
+            five_year_range = (
+                datetime.date(today.year-5, 10, 1),
+                datetime.date(today.year, 10, 1),
+            )
+        else:
+            five_year_range = (
+                datetime.date(today.year-6, 10, 1),
+                datetime.date(today.year-1, 10, 1)
+            )
+        return Referral.objects.filter(
+            ocld=True
+        ).filter(
+            date_of_referral__gte=five_year_range[0]
+        ).filter(
+            date_of_referral__lt=five_year_range[1]
+        )
+
     @transaction.atomic
     def handle(self, *args, **options):
-        five_year_referrals = ClinicActivityOverview.get_five_year_referrals()
+        five_year_referrals = self.get_five_year_referrals()
+
+        referral_mean = round(five_year_referrals.count()/5)
+        Fact.objects.create(
+            label=Fact.AVERAGE_REFERRALS_PER_YEAR,
+            value_int=referral_mean
+        )
+
         episode_id_to_referrals = defaultdict(list)
         for i in five_year_referrals:
             episode_id_to_referrals[i.episode_id].append(i)

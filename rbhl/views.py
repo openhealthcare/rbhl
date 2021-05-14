@@ -478,27 +478,6 @@ class AbstractClinicActivity(TemplateView):
 class ClinicActivityOverview(AbstractClinicActivity):
     template_name = "stats/clinic_activity_overview.html"
 
-    @classmethod
-    def get_five_year_referrals(cls):
-        today = datetime.date.today()
-        if today.month > 9:
-            five_year_range = (
-                datetime.date(today.year-5, 10, 1),
-                datetime.date(today.year, 10, 1),
-            )
-        else:
-            five_year_range = (
-                datetime.date(today.year-6, 10, 1),
-                datetime.date(today.year-1, 10, 1)
-            )
-        return Referral.objects.filter(
-            ocld=True
-        ).filter(
-            date_of_referral__gte=five_year_range[0]
-        ).filter(
-            date_of_referral__lt=five_year_range[1]
-        )
-
     def get_head_lines(self, rows):
         total = len(rows)
         k = "Diagnosis outcome"
@@ -511,8 +490,10 @@ class ClinicActivityOverview(AbstractClinicActivity):
         if ref_times:
             mean = "{:.1f}".format(statistics.mean(ref_times))
 
-        referral_total = self.__class__.get_five_year_referrals().count()
-        referral_mean = round(referral_total/5)
+        referral_mean = Fact.objects.filter(
+            label=Fact.AVERAGE_REFERRALS_PER_YEAR
+        ).order_by("-when").first().val()
+
         mean_known_diagnosis = Fact.objects.filter(
             label=Fact.FIVE_YEAR_MEAN_KNOWN_DIAGNOSIS
         ).order_by("-when").first()
