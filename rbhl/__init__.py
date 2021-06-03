@@ -84,7 +84,9 @@ class Application(application.OpalApplication):
                             index=799
                         ),
                         menus.MenuItem(
-                            activepattern=reverse('recently-recieved-samples-list'),
+                            activepattern=reverse(
+                                'recently-recieved-samples-list'
+                            ),
                             href=reverse('recently-recieved-samples-list'),
                             display=('Recent samples'),
                             icon="fa-table"
@@ -107,7 +109,10 @@ class Application(application.OpalApplication):
                     year = year - 1
                 items.append(
                     menus.MenuItem(
-                        activepattern=reverse('clinic-activity-overview', kwargs={"year": year}),
+                        activepattern=reverse(
+                            'clinic-activity-overview',
+                            kwargs={"year": year}
+                        ),
                         href=reverse('clinic-activity-overview', kwargs={"year": year}),
                         display=('Clinic activity'),
                         index=800,
