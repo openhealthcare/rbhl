@@ -164,7 +164,7 @@ Lab report
       </div>
     </div>
   </div>
-  {% if comments %}
+  {% if object.comment %}
   <div class="row content-offset-10">
     <div class="col-xs-6">
       <div class="row">
@@ -196,6 +196,9 @@ Lab report
               {{ result.allergen }}
               {% if result.phadia_test_code %}
               ({{ result.phadia_test_code }})
+              {% endif %}
+              {% if result.comment %}
+              - {{ result.comment }}
               {% endif %}
             </td>
             <td>
