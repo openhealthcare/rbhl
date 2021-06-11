@@ -379,7 +379,11 @@ class LabMonthActivity(AbstractLabStatsPage):
     def get_rows(self, month, year):
         bloods = Bloods.objects.filter(blood_date__month=month).filter(
             blood_date__year=year
-        ).select_related("employment", "referral").order_by("blood_date")
+        ).select_related(
+            "employment", "referral"
+        ).prefetch_related(
+            'patient__demographics_set'
+        ).order_by("blood_date")
         result = []
         for blood in bloods:
             patient_id = blood.patient_id
@@ -400,12 +404,13 @@ class LabMonthActivity(AbstractLabStatsPage):
                     referral_source = referral.referral_source
                 if referral.ocld:
                     referral_source = f"{referral_source} (OCLD)"
-
+            demographics = blood.patient.demographics_set.all()[0]
             row = {
                 "Link": f"/pathway/#/bloods/{patient_id}/{episode_id}?id={blood.id}",
                 "Sample received": blood.blood_date,
                 "Referral source": referral_source,
-                "Hospital number": blood.patient.demographics().hospital_number,
+                "Hospital number": demographics.hospital_number,
+                "Surname": demographics.surname,
                 "OH Provider": oh_provider,
                 "Blood num": blood.blood_number,
                 "Employer": employer,
