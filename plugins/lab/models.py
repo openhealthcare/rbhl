@@ -234,14 +234,18 @@ class BloodResult(fields.Model):
         null=True,
         verbose_name="IgE Class",
     )
-    rast        = fields.FloatField(blank=True, null=True)
+    rast        = fields.FloatField(
+        blank=True, null=True, verbose_name="RAST"
+    )
     rast_score  = fields.FloatField(
         blank=True, null=True, verbose_name="RAST score"
     )
     precipitin  = fields.CharField(
         blank=True, null=True, max_length=200, choices=PRECIPITIN_CHOICES
     )
-    igg         = fields.FloatField(blank=True, null=True)
+    igg         = fields.FloatField(
+        blank=True, null=True, verbose_name="IgG"
+    )
     iggclass    = fields.IntegerField(
         blank=True, null=True, verbose_name="IgG Class"
     )
@@ -255,6 +259,22 @@ class BloodResult(fields.Model):
         blood_result_fields_to_dict.remove("bloods")
         blood_result_fields_to_dict.append("allergen")
         return blood_result_fields_to_dict
+
+    def test_type(self):
+        test_types = []
+        fields = [
+            "kul", "rast", "rast_score", "precipitin", "igg",
+        ]
+        for field in fields:
+            val = getattr(self, field)
+            if val is not None:
+                if field == 'kul':
+                    test_types.append("IgE")
+                else:
+                    test_types.append(
+                        self.__class__._meta.get_field(field).verbose_name
+                    )
+        return test_types
 
     def is_significant(self):
         # we are waiting for the exact details from the user

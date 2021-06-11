@@ -184,6 +184,7 @@ Lab report
         <thead>
           <tr>
             <th>Allergen</th>
+            <th>Test type</th>
             <th>Result</th>
           </tr>
         </thead>
@@ -197,10 +198,8 @@ Lab report
               {% if result.phadia_test_code %}
               ({{ result.phadia_test_code }})
               {% endif %}
-              {% if result.comment %}
-              - {{ result.comment }}
-              {% endif %}
             </td>
+            <td>{{ result.test_type|join:", " }}</td>
             <td>
               {% if result.kul %}
                 {{ result.kul }} KU/L
@@ -223,6 +222,7 @@ Lab report
           {% endfor %}
           {% if has_kul or has_rast %}
           <tr>
+            <td></td>
             <td></td>
             <td class="text-muted">
               Significant: &nbsp;
