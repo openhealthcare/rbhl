@@ -216,6 +216,27 @@ class Referral(RBHLSubrecord, models.EpisodeSubrecord):
     geographical_area = models.ForeignKeyOrFreeText(GeographicalArea)
     ocld = fields.BooleanField(default=True, verbose_name="OCLD")
 
+    @classmethod
+    def get_recent_ocld_referral_for_episode(cls, episode):
+        """
+        """
+        clinic_log = episode.cliniclog_set.all()[0]
+        clinc_log_date = clinic_log.clinic_date
+        if not clinc_log_date:
+            return
+        referrals = episode.referral_set.all()
+        recent_referral = None
+        max_referral_date = None
+
+        for referral in referrals:
+            referral_date = referral.date_of_referral
+            ocld = referral.ocld
+            if ocld and referral_date and referral_date <= clinc_log_date:
+                if not max_referral_date or max_referral_date < referral_date:
+                    max_referral_date = referral_date
+                    recent_referral = referral
+        return recent_referral
+
 
 class Employer(lookuplists.LookupList):
     pass
@@ -260,8 +281,10 @@ class ClinicLog(RBHLSubrecord, models.EpisodeSubrecord):
     class Meta:
         verbose_name = "Clinic details"
 
+    KNOWN = 'Known'
+
     OUTCOMES = enum(
-        'Known',
+        KNOWN,
         'Investigations continuing',
         'Not established lost to follow-up',
         'Not reached despite investigation',
@@ -796,3 +819,28 @@ class SetUpTwoFactor(fields.Model):
     def allowed(cls, user):
         if cls.time_left(user):
             return True
+
+
+class Fact(fields.Model):
+    """
+    A model to store various performance monitoring data
+    """
+    FIVE_YEAR_MEAN_REFERRAL_TO_DIAGNOSIS = "Five year mean referral to diagnosis"
+    FIVE_YEAR_MEAN_KNOWN_DIAGNOSIS = "Five year mean known diagnosis"
+
+    MEAN_CLINIC_PATIENTS_PER_YEAR = "Mean number of clinic patients per year"
+
+    when        = fields.DateTimeField(default=timezone.now)
+    label       = fields.CharField(max_length=100, db_index=True)
+    value_int   = fields.IntegerField(blank=True, null=True)
+    value_float = fields.FloatField(blank=True, null=True)
+    value_str   = fields.CharField(max_length=255, blank=True, null=True)
+
+    def val(self):
+        if self.value_int is not None:
+            return self.value_int
+        if self.value_float is not None:
+            return self.value_float
+        if self.value_str is not None:
+            return self.value_str
+        raise ValueError('No value set')

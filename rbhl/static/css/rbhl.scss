@@ -733,6 +733,22 @@ input[type="date"]::-webkit-input-placeholder{
     font-size: 15px;
 }
 
+.stats-headline{
+    h1{
+        font-size: 68px;
+    }
+    h3{
+        margin-top: 0;
+    }
+}
+
+.progress{
+    border-radius: 0;
+    .progress-bar{
+        background-color: $blue;
+    }
+}
+
 h1.static-title{
     margin-top: 4px;
     margin-left: 25px;
