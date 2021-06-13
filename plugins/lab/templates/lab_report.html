@@ -21,14 +21,12 @@ Lab report
   Lab patient
   {% endif %}
   </a>
+  {% if object.blood_number and object.patient.demographics.name.strip %}-{% endif %}
   {% if object.blood_number %}
-  -
   <a href="/pathway/#/bloods/{{ object.patient_id }}/{{ object.patient.episode_set.last.id }}?id={{ object.id }}">
     {{ object.blood_number }}
   </a>
   {% endif %}
-
-
 )
 {% endblock %}
 
@@ -166,7 +164,7 @@ Lab report
       </div>
     </div>
   </div>
-  {% if comments %}
+  {% if object.comment %}
   <div class="row content-offset-10">
     <div class="col-xs-6">
       <div class="row">
@@ -186,6 +184,7 @@ Lab report
         <thead>
           <tr>
             <th>Allergen</th>
+            <th>Test type</th>
             <th>Result</th>
           </tr>
         </thead>
@@ -196,13 +195,11 @@ Lab report
           <tr>
             <td>
               {{ result.allergen }}
-              {% if result.antigenno %}
-              ({{ result.antigenno }})
-              {% endif %}
-              {% if result.comment %}
-              - {{ result.comment }}
+              {% if result.phadia_test_code %}
+              ({{ result.phadia_test_code }})
               {% endif %}
             </td>
+            <td>{{ result.test_type|join:", " }}</td>
             <td>
               {% if result.kul %}
                 {{ result.kul }} KU/L
@@ -225,6 +222,7 @@ Lab report
           {% endfor %}
           {% if has_kul or has_rast %}
           <tr>
+            <td></td>
             <td></td>
             <td class="text-muted">
               Significant: &nbsp;
