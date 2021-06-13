@@ -238,7 +238,7 @@ class LabOverview(AbstractLabStatsPage):
         number_of_exposures = {"name": "Exposure tests on samples"}
         number_of_tests_assayed = {"name": "Tests assayed"}
         for month_start, month_end in date_ranges:
-            my = f"{month_start.month}/{month_start.year}"
+            my = month_start.strftime('%b/%y')
 
             bloods = Bloods.objects.filter(
                 blood_date__gte=month_start,
@@ -298,7 +298,7 @@ class LabOverview(AbstractLabStatsPage):
         oh_providers = set()
         for month_start, month_end in self.date_ranges:
             blood_nums_seen = set()
-            my = f"{month_start.month}/{month_start.year}"
+            my = month_start.strftime('%b/%y')
             by_provider = defaultdict(int)
             bloods = Bloods.objects.filter(
                 blood_date__gte=month_start,
