@@ -25,9 +25,11 @@ def dump_database(db_name, db_user, backups_dir):
         raise Exception(
             "Database dump not saved for: {}".format(backup_name)
         )
+    # create a gzipped version of the backup
     with open(backup_name, 'rb') as backup:
         with gzip.open(gzip_name, 'wb') as gzipped_backup:
             shutil.copyfileobj(backup, gzipped_backup)
+    # delete the non gzipped version
     os.remove(backup_name)
     return gzip_name
 
