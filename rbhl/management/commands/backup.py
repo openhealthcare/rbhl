@@ -1,29 +1,41 @@
 import os
 import subprocess
-import sys
 from datetime import datetime
 import base64
 import boto3
 import gzip
 import shutil
+from django.core.management import BaseCommand
+from django.core.mail import send_mail
+from django.conf import settings
+
+
+def raise_alarm():
+    BN = settings.OPAL_BRAND_NAME
+    send_mail(
+        f'{BN} failed to backup',
+        f'We have been unable to do the nightly back up for {BN}',
+        settings.ADMINS[0][1],
+        [i[1] for i in settings.ADMINS],
+        fail_silently=False,
+    )
 
 
 def dump_database(db_name, db_user, backups_dir):
     now = datetime.now().strftime("%Y-%m-%d-%H-%M")
-    backup_name = "{}-{}.sql".format(now, db_name)
+    bn = settings.OPAL_BRAND_NAME.lower().replace(" ", "-")
+    backup_name = f"{bn}-{now}-{db_name}.sql"
     backup_name = os.path.join(backups_dir, backup_name)
     gzip_name = f"{backup_name}.gz"
-    print("Dumping db_name: {}".format(db_name))
-    command = "pg_dump {} -U {}".format(
-        db_name, db_user
-    )
-    print("Running: {}".format(command))
+    print(f"Dumping db_name: {db_name}")
+    command = f"pg_dump {db_name} -U {db_user}"
+    print(f"Running: {command}")
     with open(backup_name, "wb") as out:
         subprocess.check_call(command, stdout=out, shell=True)
 
     if not os.path.exists(backup_name):
         raise Exception(
-            "Database dump not saved for: {}".format(backup_name)
+            f"Database dump not saved for: {backup_name}"
         )
     # create a gzipped version of the backup
     with open(backup_name, 'rb') as backup:
@@ -60,9 +72,19 @@ def main(db_name, db_user, backups_dir, bucket_name, secret_file):
     os.remove(gzip_name)
 
 
-if __name__ == "__main__":
-    try:
-        _, db_name, db_user, backups_dir, bucket_name, secret = sys.argv
-        main(db_name, db_user, backups_dir, bucket_name, secret)
-    except Exception as e:
-        print("errored with {}".format(e))
+class Command(BaseCommand):
+    def add_arguments(self , parser):
+        parser.add_argument('backups_dir')
+        parser.add_argument('bucket_name')
+        parser.add_argument('secret')
+
+    def handle(self, *args, **kwargs):
+        db_name = settings.DATABASES["default"]["NAME"]
+        db_user = settings.DATABASES["default"]["USER"]
+        backups_dir = kwargs["backups_dir"]
+        bucket_name = kwargs["bucket_name"]
+        secret = kwargs["secret"]
+        try:
+            main(db_name, db_user, backups_dir, bucket_name, secret)
+        except Exception:
+            raise_alarm()
