@@ -731,6 +731,19 @@ h1.static-title i {
   font-size: 36px;
 }
 
+.lab-report {
+  height: 100%;
+}
+
+.lab-report footer {
+  display: none;
+  position: fixed;
+  bottom: 10px;
+  width: 100%;
+  left: 0;
+  text-align: center;
+}
+
 @media print {
   @page {
     margin-top: 1cm;
