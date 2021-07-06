@@ -245,7 +245,7 @@ class AbstractClinicActivity(TemplateView):
         return opal_models.Episode.objects.filter(
             cliniclog__clinic_date__gte=self.date_range[0],
             cliniclog__clinic_date__lte=self.date_range[1],
-            referral__ocld=True
+            referral__occld=True
         ).distinct().prefetch_related(
             "cliniclog_set",
             "referral_set",
@@ -423,7 +423,7 @@ class AbstractClinicActivity(TemplateView):
             "Age at referral": demographics.get_age(date_of_referral),
             "Sex": gender,
             "Referral": referral.date_of_referral,
-            "OCLD": referral.ocld,
+            "OCCLD": referral.occld,
             "First appointment": clinic_log.clinic_date,
             "Attended first appointment": referral.attendance,
             "Diagnosis date": diagnosis_date,
@@ -449,7 +449,7 @@ class AbstractClinicActivity(TemplateView):
         for episode in qs:
             if episode.id in seen:
                 continue
-            referral = Referral.get_recent_ocld_referral_for_episode(episode)
+            referral = Referral.get_recent_occld_referral_for_episode(episode)
             if referral:
                 rows.append(self.get_row(episode, referral))
         rows = sorted(rows, key=lambda x: x["Referral"])
