@@ -54,7 +54,8 @@ def upload(bucket_name, backup_with_path, secret_file):
     s3 = boto3.client('s3')
     with open(secret_file, "rb") as sf:
         secret = base64.b64decode(sf.read())
-    with open(backup_with_path) as f:
+    print(f'putting {os.path.basename(backup_with_path)}')
+    with open(backup_with_path, "rb") as f:
         s3.put_object(
             Bucket=bucket_name,
             Key=os.path.basename(backup_with_path),
