@@ -295,6 +295,14 @@ class ClinicLog(RBHLSubrecord, models.EpisodeSubrecord):
     seen_by           = fields.CharField(
         null=True, blank=True, default="", max_length=100
     )
+    cns               = fields.CharField(
+        null=True,
+        blank=True,
+        default="",
+        max_length=100,
+        verbose_name="CNS",
+        help_text="Clinical nurse specialist"
+    )
     clinic_date        = fields.DateField(blank=True, null=True)
     clinic_site        = fields.CharField(
         blank=True, null=True, max_length=256, default="OCLD"
