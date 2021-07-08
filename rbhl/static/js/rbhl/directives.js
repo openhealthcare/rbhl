@@ -280,7 +280,7 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
 					* can become a bit constricted, shink all text
 					* used on the graph or axis for small graphs
 					*/
-					let change = 20;
+					let change = 24;
 					if(xAxisLength > change){
 						return
 					}
