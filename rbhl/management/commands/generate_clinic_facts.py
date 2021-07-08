@@ -23,7 +23,7 @@ class Command(BaseCommand):
                 datetime.date(today.year-1, 10, 1)
             )
         return Episode.objects.filter(
-            referral__ocld=True
+            referral__occld=True
         ).filter(
             cliniclog__clinic_date__gte=five_year_range[0]
         ).filter(
