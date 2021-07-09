@@ -214,10 +214,10 @@ class Referral(RBHLSubrecord, models.EpisodeSubrecord):
         blank=True, null=True, max_length=256, choices=DISEASE
     )
     geographical_area = models.ForeignKeyOrFreeText(GeographicalArea)
-    ocld = fields.BooleanField(default=True, verbose_name="OCLD")
+    occld = fields.BooleanField(default=True, verbose_name="OCCLD")
 
     @classmethod
-    def get_recent_ocld_referral_for_episode(cls, episode):
+    def get_recent_occld_referral_for_episode(cls, episode):
         """
         """
         clinic_log = episode.cliniclog_set.all()[0]
@@ -230,8 +230,8 @@ class Referral(RBHLSubrecord, models.EpisodeSubrecord):
 
         for referral in referrals:
             referral_date = referral.date_of_referral
-            ocld = referral.ocld
-            if ocld and referral_date and referral_date <= clinc_log_date:
+            occld = referral.occld
+            if occld and referral_date and referral_date <= clinc_log_date:
                 if not max_referral_date or max_referral_date < referral_date:
                     max_referral_date = referral_date
                     recent_referral = referral

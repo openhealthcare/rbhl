@@ -301,7 +301,7 @@ class Command(BaseCommand):
             episode=episode,
             referrer_name=referrer,
             date_of_referral=blood_date,
-            ocld=False
+            occld=False
         )
 
     def get_or_create_employment_if_necessary(self, patient, employer, oh_provider):
