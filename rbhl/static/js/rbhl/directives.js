@@ -260,7 +260,7 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
               let text = g.append("text");
               // text.attr("width", col.width).attr("height","15");
               text.attr("text-anchor", "middle").attr('alignment-baseline', 'middle');
-              text.attr("x", col.width/2).attr("dy", "0.89em").attr("dx", "0").classed("variance", true);
+              text.attr("x", col.width/2).attr("dy", "1.2em").attr("dx", "0").classed("variance", true);
               text.classed("variability variability-number", true);
               text.text(variability);
               if(variability >= UPPER_BOUND){
@@ -273,30 +273,6 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
           // // workdays on the projector
           d3.select(element).selectAll(".c3-region.workingday rect").style("fill-opacity", "0.3");
         };
-
-				let setFontSize = function(xAxisLength){
-					/*
-					* When we have small graphs the graph numbers
-					* can become a bit constricted, shink all text
-					* used on the graph or axis for small graphs
-					*/
-					let change = 24;
-					if(xAxisLength > change){
-						return
-					}
-
-					setTimeout(function(){
-						let multiplier = xAxisLength/change;
-
-						let fontSize = 15 * multiplier;
-						$(".tick").css("font-size", fontSize);
-						$(".variability").css("font-size", fontSize);
-						$(".treatment").css("font-size", fontSize);
-						var normalDY = 0.89 * change/xAxisLength;
-						// smaller text means we have to shift down the variability number a bit
-						$(".variability-number").attr("dy", "" + normalDY + "em");
-					}, 1);
-				}
 
         let calculateGraphAxisAndHeight = function(columns){
           /*
@@ -493,8 +469,6 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
             }
           }
         });
-
-				setFontSize(columns[0].length);
       }
       $timeout(render_chart, 500);
     }
