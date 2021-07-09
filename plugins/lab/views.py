@@ -319,8 +319,8 @@ class LabOverview(AbstractLabStatsPage):
                 if not employer_referrer:
                     employer_referrer = "No employer"
 
-                if blood.referral and blood.referral.ocld:
-                    employer_referrer = f"{employer_referrer} (OCLD)"
+                if blood.referral and blood.referral.occld:
+                    employer_referrer = f"{employer_referrer} (OCCLD)"
                 by_provider[employer_referrer] += 1
                 oh_providers.add(employer_referrer)
             by_month[my] = by_provider
@@ -402,8 +402,8 @@ class LabMonthActivity(AbstractLabStatsPage):
             if referral:
                 if referral.referral_source:
                     referral_source = referral.referral_source
-                if referral.ocld:
-                    referral_source = f"{referral_source} (OCLD)"
+                if referral.occld:
+                    referral_source = f"{referral_source} (OCCLD)"
             demographics = blood.patient.demographics_set.all()[0]
             row = {
                 "Link": f"/pathway/#/bloods/{patient_id}/{episode_id}?id={blood.id}",

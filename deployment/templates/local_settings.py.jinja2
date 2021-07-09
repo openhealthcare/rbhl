@@ -19,8 +19,17 @@ ALLOWED_HOSTS = [
 {% endfor %}
 ]
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_HOST = 'email-smtp.eu-west-2.amazonaws.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = '{{ SES_USERNAME }}'
+EMAIL_HOST_PASSWORD = '{{ SES_PASSWORD }}'
+EMAIL_USE_TLS = True
+
 {% if DEV %}
 OPAL_ANALYTICS_ID = "UA-35112560-18"
+OPAL_BRAND_NAME = "Indigo test"
 {% else %}
 OPAL_ANALYTICS_ID = "UA-35112560-17"
 {% endif %}

@@ -60,7 +60,7 @@ Clinic activity {{ view.date_range.0 }} - {{ view.date_range.1 }}
               {{ count }}
             </span>
             </div>
-          </td> 
+          </td>
         </tr>
        {% endfor %}
        </table>
@@ -111,7 +111,7 @@ Clinic activity {{ view.date_range.0 }} - {{ view.date_range.1 }}
               {{ count }}
             </span>
             </div>
-          </td> 
+          </td>
         </tr>
        {% endfor %}
        </table>
@@ -137,26 +137,20 @@ Clinic activity {{ view.date_range.0 }} - {{ view.date_range.1 }}
     </div>
   </div>
   <div class="row content-offset-20">
-    {% for chunked in aggregates.diagnosis_breakdown.items|chunked:4 %}
-    <div class="col-md-3">
-       <table class="table table-striped">
-       {% for diagnosis, count in chunked %}
+    <div class="col-md-4">
+      <table class="table table-striped">
+      {% for diagnosis, count in aggregates.diagnosis_breakdown.items %}
         <tr>
           <td>
-            <div>
-            <span>
-              {{ diagnosis }}
-            </span>
-            <span class="pull-right">
-              {{ count }}
-            </span>
-            </div>
-          </td> 
+            {{ diagnosis }}
+          </td>
+          <td class="col-md-4 text-right">
+            {{ count }}
+          </td>
         </tr>
-       {% endfor %}
-       </table>
+      {% endfor %}
+      </table>
     </div>
-    {% endfor %}
   </div>
   {% include 'partials/download_button.html' with title="Download the patient data" %}
   {% else %}

@@ -1,9 +1,9 @@
 """
-Episode Category for OCLD
+Episode Category for OCCLD
 """
 from opal.core import episodes
 
 
 class OccupationalLungDiseaseEpisode(episodes.EpisodeCategory):
-    display_name    = 'OCLD'
-    detail_template = 'detail/ocld.html'
+    display_name    = 'OCCLD'
+    detail_template = 'detail/occld.html'
