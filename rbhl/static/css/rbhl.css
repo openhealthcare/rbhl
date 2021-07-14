@@ -412,8 +412,8 @@ a {
   fill: #d01c17;
 }
 
-.peak-flow-graph .variability {
-  font-size: 17px;
+.peak-flow-graph .tick, .peak-flow-graph .variability, .peak-flow-graph .treatment {
+  font-size: 12px;
 }
 
 .bottom-menu {

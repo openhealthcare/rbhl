@@ -223,7 +223,7 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
           let topLayer = addTopLayer();
           Object.keys(data.treatments).forEach((treatmentName, treatmentIdx) => {
 
-            let cls = "treatment-" + treatmentIdx % 3;
+            let cls = "treatment treatment-" + treatmentIdx % 3;
             let treatmentSection = addRow(topLayer, treatmentIdx, treatmentName, cls);
 
             data.treatments[treatmentName].forEach(treatmentObj => {
@@ -248,7 +248,7 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
             });
           });
 
-          let variabilityRow = addRow(topLayer, Object.keys(data.treatments).length, "% Variability", "");
+          let variabilityRow = addRow(topLayer, Object.keys(data.treatments).length, "% Variability", "variability");
 
           // add variance
           cols.forEach((col, idx) =>{
@@ -260,8 +260,8 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
               let text = g.append("text");
               // text.attr("width", col.width).attr("height","15");
               text.attr("text-anchor", "middle").attr('alignment-baseline', 'middle');
-              text.attr("x", col.width/2).attr("dy", ".82em").attr("dx", "0").classed("variance", true);
-              text.classed("variability", true);
+              text.attr("x", col.width/2).attr("dy", "1.2em").attr("dx", "0").classed("variance", true);
+              text.classed("variability variability-number", true);
               text.text(variability);
               if(variability >= UPPER_BOUND){
                 text.classed("upper-variability", true);

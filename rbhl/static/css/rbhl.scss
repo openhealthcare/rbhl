@@ -441,10 +441,9 @@ a {
     .upper-variability{
         fill: $red;
     }
-
-    .variability{
-        font-size: 17px;
-    }
+	.tick, .variability, .treatment{
+		font-size: 12px;
+	}
 }
 
 .bottom-menu{
