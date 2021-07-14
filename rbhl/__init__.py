@@ -77,13 +77,6 @@ class Application(application.OpalApplication):
                             icon="fa-table"
                         ),
                         menus.MenuItem(
-                            activepattern=reverse('lab-overview'),
-                            href=reverse('lab-overview'),
-                            display=('Lab activity'),
-                            icon="fa-bar-chart",
-                            index=799
-                        ),
-                        menus.MenuItem(
                             activepattern=reverse(
                                 'recently-recieved-samples-list'
                             ),
@@ -94,6 +87,16 @@ class Application(application.OpalApplication):
                     ]
                 else:
                     items = [NewReferral.as_menuitem(index=1)]
+
+                items.append(
+                    menus.MenuItem(
+                        activepattern=reverse('lab-overview'),
+                        href=reverse('lab-overview'),
+                        display=('Lab activity'),
+                        icon="fa-bar-chart",
+                        index=799
+                    )
+                )
 
                 items.append(
                     menus.MenuItem(
