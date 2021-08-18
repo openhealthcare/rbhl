@@ -399,16 +399,19 @@ class LabMonthActivity(AbstractLabStatsPage):
 
             referral = blood.referral
             referral_source = "No referral source"
+            reference_number = "No reference number"
             if referral:
                 if referral.referral_source:
                     referral_source = referral.referral_source
                 if referral.occld:
                     referral_source = f"{referral_source} (OCCLD)"
+                reference_number = referral.reference_number
             demographics = blood.patient.demographics_set.all()[0]
             row = {
                 "Link": f"/pathway/#/bloods/{patient_id}/{episode_id}?id={blood.id}",
                 "Sample received": blood.blood_date,
                 "Referral source": referral_source,
+                "Reference number": reference_number,
                 "Hospital number": demographics.hospital_number,
                 "Surname": demographics.surname,
                 "OH Provider": oh_provider,

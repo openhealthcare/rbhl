@@ -50,7 +50,7 @@
       <table class="table table-striped table-hover content-offset">
         <tr>
           {% for header in rows.0.keys %}
-          {% if not header == "Link" and not header == "Surname" %}
+          {% if not header == "Link" and not header == "Surname" and not header == "Reference number" %}
           <th>{{ header }}</th>
           {% endif %}
           {% endfor %}
