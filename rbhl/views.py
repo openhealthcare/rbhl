@@ -16,6 +16,7 @@ from two_factor.views import core as two_factor_core_views
 from opal.core import serialization
 from opal.models import Episode
 from opal import models as opal_models
+from opal.models import UserProfile
 from plugins.trade import match
 from plugins.trade.forms import ImportDataForm
 from plugins.lab.models import SkinPrickTest
@@ -23,6 +24,7 @@ from plugins.lab.views import zip_file_to_response, ZipCsvWriter
 from rbhl.models import (
     SetUpTwoFactor, Referral, EmploymentCategory, GeographicalArea, Fact
 )
+from rbhl import constants
 
 
 class StaffRequiredMixin(object):
@@ -129,9 +131,16 @@ class SeenByMeList(BasePatientList):
     def get_queryset(self, *args, **kwargs):
         qs = super().get_queryset(*args, **kwargs)
         initials = self.initials()
-        if initials:
-            return qs.filter(cliniclog__seen_by__icontains=self.initials())
-        return qs.none()
+        if not initials:
+            return qs.none()
+        user = self.request.user
+        if UserProfile.objects.filter(
+            user=user,
+            roles__name=constants.DOCTOR_ROLE
+        ).exists():
+            return qs.filter(cliniclog__seen_by__icontains=initials)
+        else:
+            return qs.filter(cliniclog__cns__icontains=initials)
 
     def get_context_data(self, *args, **kwargs):
         ctx = super().get_context_data(*args, **kwargs)
