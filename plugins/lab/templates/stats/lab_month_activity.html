@@ -58,7 +58,7 @@
         {% for row in rows %}
         <tr onclick=window.location="{{ row.Link }}" class="pointer">
           {% for key, value in row.items %}
-          {% if not key == "Link" and not key == "Surname" %}
+          {% if not key == "Link" and not key == "Surname" and not key == "Reference number" %}
           <td {% if key == "Num tests" or key == "Days" %}class="text-center"{% endif %}>
             {% if key == "Allergens" %}
             {% for allergen in value %}{{ allergen }}<br />{% endfor %}
