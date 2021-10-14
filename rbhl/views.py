@@ -708,7 +708,8 @@ class ClinicActivityOverview(AbstractClinicActivity):
                 less_than_2 += 1
                 by_spt.pop(spt)
         result = dict(sorted(by_spt.items(), key=lambda x: -x[1]))
-        result["Other (<2)"] = less_than_2
+        if less_than_2:
+            result["Other (<2)"] = less_than_2
         return result
 
     def get_oem_investigations(self, rows):
@@ -769,7 +770,8 @@ class ClinicActivityOverview(AbstractClinicActivity):
                 by_diagnosis.pop(diagnosis)
 
         result = dict(sorted(by_diagnosis.items(), key=lambda x: -x[1]))
-        result["Other (<3)"] = other_less_than_3
+        if other_less_than_3:
+            result["Other (<3)"] = other_less_than_3
         return result
 
     def get_aggregates(self):
