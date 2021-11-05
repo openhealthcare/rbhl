@@ -78,9 +78,25 @@ class Command(BaseCommand):
         rows = []
         for row in un_filtered_rows:
             blood_date = str_to_date(row["BLOODDAT"])
-            if not blood_date or blood_date.year < 2015:
+            if not blood_date or blood_date.year > 2014:
                 continue
-            rows.append(row)
+            populated = False
+            keys = [
+                'ALLERGEN',
+                'ANTIGENNO',
+                'KUL',
+                'CLASS',
+                'RAST',
+                'precipitin',
+                'igg',
+                'iggclass'
+            ]
+            for i in range(1, 11):
+                for key in keys:
+                    if row.get(f"{key}{i}", "").strip():
+                        populated = True
+            if populated:
+                rows.append(row)
 
         no_results = 0
         row_count = len(rows)
@@ -170,7 +186,7 @@ class Command(BaseCommand):
                 continue
             self.create_blood_results_for_row(row, bloods)
 
-        self.stdout.write("Only looking at post 2015 rows {}/{}".format(
+        self.stdout.write("Only looking at rows that have result {}/{}".format(
             len(rows), len(un_filtered_rows)
         ))
 
@@ -196,7 +212,7 @@ class Command(BaseCommand):
         self.stdout.write("{} existing employments assigned".format(
             self.employment_assigned
         ))
-        self.stdout.write("{} existing referrals created".format(
+        self.stdout.write("{} referrals created".format(
             self.referral_created
         ))
         self.stdout.write("{} referrals assigned".format(
@@ -315,7 +331,7 @@ class Command(BaseCommand):
             return
 
         qs = Employment.objects.filter(episode__patient=patient)
-        if employer :
+        if employer:
             qs = qs.filter(employer__iexact=employer)
         if oh_provider:
             qs = qs.filter(oh_provider__iexact=oh_provider)
@@ -337,7 +353,6 @@ class Command(BaseCommand):
         Creates blood results, a maximum of 11 per row of the csv.
         """
         mapping = {
-            'RESULT': "result",
             'ALLERGEN': "allergen",
             'ANTIGENNO': "phadia_test_code",
             'KUL': "kul",
