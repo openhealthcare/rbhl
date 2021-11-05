@@ -7,7 +7,7 @@
   </div>
 </div>
 <div ng-class="{'text-muted': !result.significant}" ng-repeat="result in item.bloodresult track by $index">
-  <div ng-hide="result.result" class="row">
+  <div class="row">
     <div class="col-md-6">
       [[ result.allergen ]]
       <span ng-show="result.antigenno"> ([[result.antigenno]])</span>

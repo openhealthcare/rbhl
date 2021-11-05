@@ -221,7 +221,6 @@ class BloodResult(fields.Model):
     NEGATIVE = "-ve"
     PRECIPITIN_CHOICES = enum(NEGATIVE, "+ve", "Weak +ve", '++ve')
     bloods = fields.ForeignKey(Bloods, on_delete=fields.CASCADE)
-    result = fields.CharField(blank=True, null=True, max_length=200)
     allergen = models.ForeignKeyOrFreeText(Allergen)
     phadia_test_code  = fields.CharField(
         blank=True, null=True, max_length=200, verbose_name="Antigen number"
