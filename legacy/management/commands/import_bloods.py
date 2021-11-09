@@ -284,14 +284,19 @@ class Command(BaseCommand):
             patient, row["Employer"], row["OH Provider"]
         )
         bloods.referral = self.get_or_create_referral_if_necessary(
-            patient, row["Referrername"], str_to_date(row["BLOODDAT"])
+            patient,
+            row["Referrername"],
+            translate_ref_num(row["REFERENCE NO"]),
+            str_to_date(row["BLOODDAT"])
         )
         bloods.save()
 
         self.bb_count += 1
         return bloods
 
-    def get_or_create_referral_if_necessary(self, patient, referrer, blood_date):
+    def get_or_create_referral_if_necessary(
+        self, patient, referrer, ref_num, blood_date
+    ):
         if not referrer or referrer.upper() in MARK_AS_NONE:
             return
 
@@ -309,6 +314,9 @@ class Command(BaseCommand):
         current_referral = qs.first()
         if current_referral:
             self.referral_assigned += 1
+            if ref_num and not current_referral.reference_number:
+                current_referral.reference_number = ref_num
+                current_referral.save()
             return current_referral
         episode = patient.episode_set.last()
         self.referral_created += 1
@@ -317,6 +325,7 @@ class Command(BaseCommand):
             episode=episode,
             referrer_name=referrer,
             date_of_referral=blood_date,
+            reference_number=ref_num,
             occld=False
         )
 
