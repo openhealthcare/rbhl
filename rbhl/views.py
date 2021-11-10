@@ -441,6 +441,7 @@ class AbstractClinicActivity(TemplateView):
             "Employment category": employment_category,
             "Seen by": clinic_log.seen_by,
             "Source of referral": referral.referral_source,
+            "Referral disease": referral.referral_disease,
             "Peak flow": self.get_peak_flow(episode, clinic_log),
             "Diagnosis outcome": clinic_log.diagnosis_outcome or "No outcome",
             "Link": episode.get_absolute_url()
@@ -580,21 +581,40 @@ class ClinicActivityOverview(AbstractClinicActivity):
     def get_referral(self, rows):
         source_of_referral = defaultdict(int)
         geographic_area = defaultdict(int)
+        referral_disease = defaultdict(int)
         for row in rows:
             source = row["Source of referral"] or "No source"
             geographic = row["Geographic area"] or "No area recorded"
+            disease = row["Referral disease"] or "No referral disease recorded"
+            if disease.islower():
+                disease = disease.title()
+            # Trim this down because its too long for the row
+            if disease == "Pulmonary fibrosis(e.g.: Asbestos related disease)":
+                disease = "Pulmonary fibrosis"
             source_of_referral[source] += 1
             geographic_area[geographic] += 1
+            referral_disease[disease] += 1
 
-        other = 0
-        to_remove = []
+        other_area = 0
+        area_to_remove = []
         for k, v in geographic_area.items():
-            if v < 10 and not k == "No source":
-                to_remove.append(k)
-                other += v
-        for t in to_remove:
+            if v < 10 and not k == "No area recorded":
+                area_to_remove.append(k)
+                other_area += v
+        for t in area_to_remove:
             geographic_area.pop(t)
-        geographic_area["Other (< 10 patients)"] = other
+        geographic_area["Other (< 10 patients)"] = other_area
+
+        other_disease = 0
+        disease_to_remove = []
+        for k, v in referral_disease.items():
+            if v < 5 and not k == "No referral disease recorded":
+                disease_to_remove.append(k)
+                other_disease += v
+        for t in disease_to_remove:
+            referral_disease.pop(t)
+        referral_disease["Other (< 5 patients)"] = other_disease
+
         return {
             "Source of referral": dict(
                 sorted(source_of_referral.items(), key=lambda x: -x[1])
@@ -602,6 +622,9 @@ class ClinicActivityOverview(AbstractClinicActivity):
             "Geographic area": dict(
                 sorted(geographic_area.items(), key=lambda x: -x[1])
             ),
+            "Referral disease": dict(
+                sorted(referral_disease.items(), key=lambda x: -x[1])
+            )
         }
 
     def get_clinician(self, rows):
