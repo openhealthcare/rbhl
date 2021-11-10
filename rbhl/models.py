@@ -200,7 +200,6 @@ class Referral(RBHLSubrecord, models.EpisodeSubrecord):
     # Used by admin staff
     comments               = fields.TextField(blank=True, null=True)
 
-    attendance = fields.NullBooleanField()
     date_first_appointment = fields.DateField(
         blank=True, null=True, verbose_name="Date of first appointment offered"
     )

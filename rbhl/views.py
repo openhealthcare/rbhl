@@ -434,7 +434,6 @@ class AbstractClinicActivity(TemplateView):
             "Referral": referral.date_of_referral,
             "OCCLD": referral.occld,
             "First appointment": clinic_log.clinic_date,
-            "Attended first appointment": referral.attendance,
             "Diagnosis date": diagnosis_date,
             "Days from referral to first appointment offered": days_to_appointment,
             "Days from referral to diagnosis": days_to_diagnosis,
@@ -581,17 +580,11 @@ class ClinicActivityOverview(AbstractClinicActivity):
     def get_referral(self, rows):
         source_of_referral = defaultdict(int)
         geographic_area = defaultdict(int)
-        attended_first_appointment = defaultdict(int)
         for row in rows:
             source = row["Source of referral"] or "No source"
             geographic = row["Geographic area"] or "No area recorded"
-            if row["Attended first appointment"]:
-                attended = "Attended"
-            else:
-                attended = "Failed to attend"
             source_of_referral[source] += 1
             geographic_area[geographic] += 1
-            attended_first_appointment[attended] += 1
 
         other = 0
         to_remove = []
@@ -608,9 +601,6 @@ class ClinicActivityOverview(AbstractClinicActivity):
             ),
             "Geographic area": dict(
                 sorted(geographic_area.items(), key=lambda x: -x[1])
-            ),
-            "Attended first appoinment": dict(
-                sorted(attended_first_appointment.items(), key=lambda x: -x[1])
             ),
         }
 
