@@ -224,7 +224,7 @@ class Referral(RBHLSubrecord, models.EpisodeSubrecord):
         clinc_log_date = clinic_log.clinic_date
         if not clinc_log_date:
             return
-        referrals = episode.referral_set.all()
+        referrals = list(episode.referral_set.all())
         recent_referral = None
         max_referral_date = None
 
@@ -235,6 +235,8 @@ class Referral(RBHLSubrecord, models.EpisodeSubrecord):
                 if not max_referral_date or max_referral_date < referral_date:
                     max_referral_date = referral_date
                     recent_referral = referral
+        if not recent_referral:
+            recent_referral = referrals[-1]
         return recent_referral
 
 

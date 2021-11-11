@@ -402,7 +402,7 @@ class AbstractClinicActivity(TemplateView):
             referral.geographical_area_fk_id, referral.geographical_area_ft
         )
 
-        if clinic_log.clinic_date:
+        if clinic_log.clinic_date and referral.date_of_referral:
             if clinic_log.clinic_date >= referral.date_of_referral:
                 days_to_appointment = clinic_log.clinic_date - referral.date_of_referral
                 days_to_appointment = days_to_appointment.days
@@ -432,6 +432,7 @@ class AbstractClinicActivity(TemplateView):
             "Age at referral": demographics.get_age(date_of_referral),
             "Sex": gender,
             "Referral": referral.date_of_referral,
+            "Clinic date": clinic_log.clinic_date,
             "OCCLD": referral.occld,
             "First appointment": clinic_log.clinic_date,
             "Attended first appointment": referral.attendance,
@@ -461,7 +462,7 @@ class AbstractClinicActivity(TemplateView):
             referral = Referral.get_recent_occld_referral_for_episode(episode)
             if referral:
                 rows.append(self.get_row(episode, referral))
-        rows = sorted(rows, key=lambda x: x["Referral"])
+        rows = sorted(rows, key=lambda x: x["Clinic date"])
         return rows
 
     def post(self, *args, **kwargs):
