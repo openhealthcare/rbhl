@@ -13,6 +13,7 @@ ADMINS = (
 )
 
 MANAGERS = ADMINS
+SERVER_EMAIL = 'support@openhealthcare.org.uk'
 
 try:
     import dj_database_url
