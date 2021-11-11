@@ -234,6 +234,11 @@ LOGGING = {
             'handlers': ['mail_admins', 'console'],
             'level': 'ERROR',
             'propagate': True,
+        },
+        'commands': {
+            'handlers': ['mail_admins', 'console'],
+            'level': 'ERROR',
+            'propagate': True,
         }
     }
 }

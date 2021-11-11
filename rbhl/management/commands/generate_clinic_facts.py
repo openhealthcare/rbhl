@@ -7,6 +7,8 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 from opal.models import Episode
 from rbhl.models import ClinicLog, Diagnosis, Fact, Referral
+import logging
+logger = logging.getLogger('commands')
 
 
 class Command(BaseCommand):
@@ -34,8 +36,15 @@ class Command(BaseCommand):
             "diagnosis_set"
         )
 
+    def handle(self, *args, **kwargs):
+        try:
+            self.process(*args, **kwargs)
+        except Exception:
+            logger.error(f"Unable to generate clinic facts on {datetime.date.today()}")
+            raise
+
     @transaction.atomic
-    def handle(self, *args, **options):
+    def process(self, *args, **options):
         five_year_episodes = self.get_five_year_episodes()
         episode_count = five_year_episodes.count()
 
@@ -55,7 +64,8 @@ class Command(BaseCommand):
             episode_id_to_diagnosis[i.episode_id].append(i)
         diagnosed_count = 0
 
-        # Diagnosis % is calclated by the number of clinic log with diagnosis
+        # Diagnosis % is calclated by the
+        # number of clinic log with diagnosis
         # Known
         for episode in five_year_episodes:
             clinic_log = episode.cliniclog_set.all()[0]
@@ -74,7 +84,7 @@ class Command(BaseCommand):
         total_days = 0
         count_with_diagnosis = 0
         for episode in five_year_episodes:
-            referral = Referral.get_recent_ocld_referral_for_episode(episode)
+            referral = Referral.get_recent_occld_referral_for_episode(episode)
             if referral and referral.date_of_referral:
                 diagnoses = episode.diagnosis_set.all()
                 diagnoses = [i for i in diagnoses if i.date]
