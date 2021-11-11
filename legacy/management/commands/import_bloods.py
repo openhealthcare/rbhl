@@ -75,10 +75,15 @@ class Command(BaseCommand):
         with open(file_name) as f:
             un_filtered_rows = list(csv.DictReader(f))
 
+        # These are the new rows that we are importing
         rows = []
+
+        # This is backfilling the reference number
+        # in the data for more recent
+        rows_to_backfill = []
         for row in un_filtered_rows:
             blood_date = str_to_date(row["BLOODDAT"])
-            if not blood_date or blood_date.year > 2014:
+            if not blood_date:
                 continue
             populated = False
             keys = [
@@ -96,7 +101,10 @@ class Command(BaseCommand):
                     if row.get(f"{key}{i}", "").strip():
                         populated = True
             if populated:
-                rows.append(row)
+                if blood_date.year < 2015:
+                    rows.append(row)
+                else:
+                    rows_to_backfill.append(row)
 
         no_results = 0
         row_count = len(rows)
@@ -110,6 +118,7 @@ class Command(BaseCommand):
         self.employment_assigned = 0
         self.referral_created = 0
         self.referral_assigned = 0
+        self.backfill_reference_numbers(rows_to_backfill)
 
         for row in rows:
             hospital_number = row["Hosp_no"].strip()
@@ -386,3 +395,38 @@ class Command(BaseCommand):
             if any(result_data.values()):
                 bloods.bloodresult_set.create(**result_data)
                 self.result_count += 1
+
+    def backfill_reference_numbers(self, rows):
+        """
+        On our first load we did not fill in the patients
+        external reference numbers, so lets back fill
+        the ref nums for recent patients.
+
+        The lookup is easier than the main import as all rows
+        have blood numbers so we can grab the blood number
+        find the referral and update if it has a match.
+
+        In a few occasions the blood numbers are duplicated. On
+        those occasions we can differentiate based on the patients
+        surname.
+        """
+        for row in rows:
+            ref_num = translate_ref_num(row["REFERENCE NO"])
+            blood_no = row["BLOODNO"].strip()
+            surname = row["SURNAME"].strip()
+            if not ref_num:
+                continue
+            patients = Patient.objects.filter(
+                bloods__blood_number=blood_no
+            )
+            if surname:
+                patients = patients.filter(
+                    demographics__surname__iexact=surname
+                )
+            patient = patients.distinct().get()
+            self.get_or_create_referral_if_necessary(
+                patient,
+                row["Referrername"],
+                ref_num,
+                str_to_date(row["BLOODDAT"])
+            )
