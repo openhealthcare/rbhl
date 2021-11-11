@@ -75,12 +75,33 @@ class Command(BaseCommand):
         with open(file_name) as f:
             un_filtered_rows = list(csv.DictReader(f))
 
+        # These are the new rows that we are importing
         rows = []
+
+        # This is backfilling the reference number
+        # in the data for data loaded in the
+        # initial blood book load
+        rows_to_backfill = []
         for row in un_filtered_rows:
             blood_date = str_to_date(row["BLOODDAT"])
-            if not blood_date or blood_date.year < 2015:
+            if not blood_date:
                 continue
-            rows.append(row)
+            populated = False
+
+            # Ignore rows that have a REQUEST value
+            # this is free text and only used in
+            # the system prior to the last system
+            # its been agreed with the users that
+            # we can ignore these.
+            for i in range(1, 11):
+                if row.get(f"RESULT{i}", "").strip():
+                    populated = True
+            if populated:
+                continue
+            if blood_date.year < 2015:
+                rows.append(row)
+            else:
+                rows_to_backfill.append(row)
 
         no_results = 0
         row_count = len(rows)
@@ -94,6 +115,7 @@ class Command(BaseCommand):
         self.employment_assigned = 0
         self.referral_created = 0
         self.referral_assigned = 0
+        self.backfill_reference_numbers(rows_to_backfill)
 
         for row in rows:
             hospital_number = row["Hosp_no"].strip()
@@ -170,7 +192,7 @@ class Command(BaseCommand):
                 continue
             self.create_blood_results_for_row(row, bloods)
 
-        self.stdout.write("Only looking at post 2015 rows {}/{}".format(
+        self.stdout.write("Only looking at rows that have result {}/{}".format(
             len(rows), len(un_filtered_rows)
         ))
 
@@ -196,7 +218,7 @@ class Command(BaseCommand):
         self.stdout.write("{} existing employments assigned".format(
             self.employment_assigned
         ))
-        self.stdout.write("{} existing referrals created".format(
+        self.stdout.write("{} referrals created".format(
             self.referral_created
         ))
         self.stdout.write("{} referrals assigned".format(
@@ -268,14 +290,19 @@ class Command(BaseCommand):
             patient, row["Employer"], row["OH Provider"]
         )
         bloods.referral = self.get_or_create_referral_if_necessary(
-            patient, row["Referrername"], str_to_date(row["BLOODDAT"])
+            patient,
+            row["Referrername"],
+            translate_ref_num(row["REFERENCE NO"]),
+            str_to_date(row["BLOODDAT"])
         )
         bloods.save()
 
         self.bb_count += 1
         return bloods
 
-    def get_or_create_referral_if_necessary(self, patient, referrer, blood_date):
+    def get_or_create_referral_if_necessary(
+        self, patient, referrer, ref_num, blood_date
+    ):
         if not referrer or referrer.upper() in MARK_AS_NONE:
             return
 
@@ -293,6 +320,9 @@ class Command(BaseCommand):
         current_referral = qs.first()
         if current_referral:
             self.referral_assigned += 1
+            if ref_num and not current_referral.reference_number:
+                current_referral.reference_number = ref_num
+                current_referral.save()
             return current_referral
         episode = patient.episode_set.last()
         self.referral_created += 1
@@ -301,6 +331,7 @@ class Command(BaseCommand):
             episode=episode,
             referrer_name=referrer,
             date_of_referral=blood_date,
+            reference_number=ref_num,
             occld=False
         )
 
@@ -315,7 +346,7 @@ class Command(BaseCommand):
             return
 
         qs = Employment.objects.filter(episode__patient=patient)
-        if employer :
+        if employer:
             qs = qs.filter(employer__iexact=employer)
         if oh_provider:
             qs = qs.filter(oh_provider__iexact=oh_provider)
@@ -337,7 +368,6 @@ class Command(BaseCommand):
         Creates blood results, a maximum of 11 per row of the csv.
         """
         mapping = {
-            'RESULT': "result",
             'ALLERGEN': "allergen",
             'ANTIGENNO': "phadia_test_code",
             'KUL': "kul",
@@ -362,3 +392,38 @@ class Command(BaseCommand):
             if any(result_data.values()):
                 bloods.bloodresult_set.create(**result_data)
                 self.result_count += 1
+
+    def backfill_reference_numbers(self, rows):
+        """
+        On our first load we did not fill in the patients
+        external reference numbers, so lets back fill
+        the ref nums for recent patients.
+
+        The lookup is easier than the main import as all rows
+        have blood numbers so we can grab the blood number
+        find the referral and update if it has a match.
+
+        In a few occasions the blood numbers are duplicated. On
+        those occasions we can differentiate based on the patients
+        surname.
+        """
+        for row in rows:
+            ref_num = translate_ref_num(row["REFERENCE NO"])
+            blood_no = row["BLOODNO"].strip()
+            surname = row["SURNAME"].strip()
+            if not ref_num:
+                continue
+            patients = Patient.objects.filter(
+                bloods__blood_number=blood_no
+            )
+            if surname:
+                patients = patients.filter(
+                    demographics__surname__iexact=surname
+                )
+            patient = patients.distinct().get()
+            self.get_or_create_referral_if_necessary(
+                patient,
+                row["Referrername"],
+                ref_num,
+                str_to_date(row["BLOODDAT"])
+            )
