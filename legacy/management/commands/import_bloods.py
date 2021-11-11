@@ -79,32 +79,29 @@ class Command(BaseCommand):
         rows = []
 
         # This is backfilling the reference number
-        # in the data for more recent
+        # in the data for data loaded in the
+        # initial blood book load
         rows_to_backfill = []
         for row in un_filtered_rows:
             blood_date = str_to_date(row["BLOODDAT"])
             if not blood_date:
                 continue
             populated = False
-            keys = [
-                'ALLERGEN',
-                'ANTIGENNO',
-                'KUL',
-                'CLASS',
-                'RAST',
-                'precipitin',
-                'igg',
-                'iggclass'
-            ]
+
+            # Ignore rows that have a REQUEST value
+            # this is free text and only used in
+            # the system prior to the last system
+            # its been agreed with the users that
+            # we can ignore these.
             for i in range(1, 11):
-                for key in keys:
-                    if row.get(f"{key}{i}", "").strip():
-                        populated = True
+                if row.get(f"RESULT{i}", "").strip():
+                    populated = True
             if populated:
-                if blood_date.year < 2015:
-                    rows.append(row)
-                else:
-                    rows_to_backfill.append(row)
+                continue
+            if blood_date.year < 2015:
+                rows.append(row)
+            else:
+                rows_to_backfill.append(row)
 
         no_results = 0
         row_count = len(rows)
