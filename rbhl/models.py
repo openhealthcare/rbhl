@@ -638,13 +638,18 @@ class Diagnosis(RBHLSubrecord, models.EpisodeSubrecord):
     MALIGNANCY = "Malignancy"
     BENIGN_PLEURAL_DISEASE = "Benign pleural disease"
     DIFFUSE_LUNG_DISEASE = "Diffuse lung disease"
+    BREATHING_PATTERN_DYSFUNCTION = "Breathing pattern dysfunction"
+    IRRITANT_SYMPTOMS_ONLY = "Irritant symptoms only"
+    UPPER_AIRWAY_DYSFUNCTION = "Upper airway dysfunction"
+
     NAD = "NAD"  # no abnormality detected
     OTHER = "Other"
 
     CONDITON_CATEGORIES = enum(
         ASTHMA, RHINITIS, CHRONIC_AIR_FLOW_LIMITATION,
         MALIGNANCY, BENIGN_PLEURAL_DISEASE, DIFFUSE_LUNG_DISEASE,
-        OTHER
+        BREATHING_PATTERN_DYSFUNCTION, IRRITANT_SYMPTOMS_ONLY,
+        UPPER_AIRWAY_DYSFUNCTION, OTHER
     )
 
     CONDITION_OPTIONS = {

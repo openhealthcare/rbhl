@@ -78,6 +78,33 @@
         </div>
         <div class="col-md-4">
           <a
+          ng-click="diagnosisDisplay.newItem('{{ models.Diagnosis.get_api_name }}', '/templates/modals/breathing_pattern_dysfunction.html')"
+          class="btn btn-default btn-xs diagnosis-btn"
+        >
+          <i class="fa fa-plus-circle pointer"></i>
+          {{ models.Diagnosis.BREATHING_PATTERN_DYSFUNCTION}}
+        </a>
+        </div>
+        <div class="col-md-4">
+          <a
+          ng-click="diagnosisDisplay.newItem('{{ models.Diagnosis.get_api_name }}', '/templates/modals/irritant_symptoms_only.html')"
+          class="btn btn-default btn-xs diagnosis-btn"
+        >
+          <i class="fa fa-plus-circle pointer"></i>
+          {{ models.Diagnosis.IRRITANT_SYMPTOMS_ONLY}}
+        </a>
+        </div>
+        <div class="col-md-4">
+          <a
+          ng-click="diagnosisDisplay.newItem('{{ models.Diagnosis.get_api_name }}', '/templates/modals/upper_airway_dysfunction.html')"
+          class="btn btn-default btn-xs diagnosis-btn"
+        >
+          <i class="fa fa-plus-circle pointer"></i>
+          {{ models.Diagnosis.UPPER_AIRWAY_DYSFUNCTION}}
+        </a>
+        </div>
+        <div class="col-md-4">
+          <a
           ng-click="diagnosisDisplay.newItem('{{ models.Diagnosis.get_api_name }}', '/templates/modals/nad.html')"
           class="btn btn-default btn-xs diagnosis-btn"
         >
@@ -138,6 +165,9 @@
           <i ng-show="item.category==='{{ models.Diagnosis.MALIGNANCY }}'" ng-click="diagnosisDisplay.editItem('diagnosis', item, '/templates/modals/malignancy.html')" class="fa fa-pencil edit pull-right pointer" ></i>
           <i ng-show="item.category==='{{ models.Diagnosis.BENIGN_PLEURAL_DISEASE }}'" ng-click="diagnosisDisplay.editItem('diagnosis', item, '/templates/modals/benign_pleural_disease.html')" class="fa fa-pencil edit pull-right pointer" ></i>
           <i ng-show="item.category==='{{ models.Diagnosis.DIFFUSE_LUNG_DISEASE }}'" ng-click="diagnosisDisplay.editItem('diagnosis', item, '/templates/modals/diffuse_lung_disease.html')" class="fa fa-pencil edit pull-right pointer" ></i>
+          <i ng-show="item.category==='{{ models.Diagnosis.BREATHING_PATTERN_DYSFUNCTION }}'" ng-click="diagnosisDisplay.editItem('diagnosis', item, '/templates/modals/breathing_pattern_dysfunction.html')" class="fa fa-pencil edit pull-right pointer" ></i>
+          <i ng-show="item.category==='{{ models.Diagnosis.IRRITANT_SYMPTOMS_ONLY }}'" ng-click="diagnosisDisplay.editItem('diagnosis', item, '/templates/modals/irritant_symptoms_only.html')" class="fa fa-pencil edit pull-right pointer" ></i>
+          <i ng-show="item.category==='{{ models.Diagnosis.UPPER_AIRWAY_DYSFUNCTION }}'" ng-click="diagnosisDisplay.editItem('diagnosis', item, '/templates/modals/upper_airway_dysfunction.html')" class="fa fa-pencil edit pull-right pointer" ></i>
           <i ng-show="item.category==='{{ models.Diagnosis.OTHER }}'" ng-click="diagnosisDisplay.editItem('diagnosis', item, '/templates/modals/other_diagnosis.html')" class="fa fa-pencil edit pull-right pointer" ></i>
         </div>
       </div>
