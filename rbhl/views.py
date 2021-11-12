@@ -265,7 +265,8 @@ class AbstractClinicActivity(TemplateView):
             "peakflowday_set",
             "patient__demographics_set",
             "patient__skinpricktest_set",
-            "patient__bloods_set__bloodresult_set"
+            "patient__bloods_set__bloodresult_set",
+            "patient__spirometry_set"
         )
 
     def get_display_name(self, demographics, date_of_referral):
@@ -391,6 +392,18 @@ class AbstractClinicActivity(TemplateView):
             "Specific SPT": sorted(list(nonroutines))
         }
 
+    def get_spirometry(self, episode):
+        spirometry = episode.patient.spirometry_set.all()
+        external_spirometry = episode.cliniclog_set.all()[0].external_spirometry_done
+
+        if spirometry and external_spirometry:
+            return "External and RBHL"
+        elif spirometry:
+            return "RBHL"
+        elif external_spirometry:
+            return "External"
+        return "Not done"
+
     def get_row(self, episode, referral):
         demographics = episode.patient.demographics_set.all()[0]
         date_of_referral = referral.date_of_referral
@@ -443,6 +456,7 @@ class AbstractClinicActivity(TemplateView):
             "Source of referral": referral.referral_source,
             "Referral disease": referral.referral_disease,
             "Peak flow": self.get_peak_flow(episode, clinic_log),
+            "Spirometry": self.get_spirometry(episode),
             "Diagnosis outcome": clinic_log.diagnosis_outcome or "No outcome",
             "Link": episode.get_absolute_url()
         }
@@ -678,6 +692,7 @@ class ClinicActivityOverview(AbstractClinicActivity):
         skin_prick_tests = defaultdict(int)
         peak_flow_response = defaultdict(int)
         bloods = defaultdict(int)
+        by_spirometry_origin = defaultdict(int)
 
         for row in rows:
             spt = "No skin prick tests"
@@ -690,6 +705,7 @@ class ClinicActivityOverview(AbstractClinicActivity):
             skin_prick_tests[spt] += 1
 
             peak_flow_response[row["Peak flow"]] += 1
+            by_spirometry_origin[row["Spirometry"]] += 1
 
             if row["Bloods"]:
                 bloods["Bloods tested"] += 1
@@ -705,6 +721,9 @@ class ClinicActivityOverview(AbstractClinicActivity):
             ),
             "Patients who had bloods": sorted(
                 list(bloods.items()), key=lambda x: -x[1]
+            ),
+            "Spirometry origin": sorted(
+                list(by_spirometry_origin.items()), key=lambda x: -x[1]
             ),
         }
 
