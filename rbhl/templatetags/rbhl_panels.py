@@ -1,6 +1,7 @@
 from opal.core import fields
 from django.db import models
 from opal.core.subrecords import get_subrecord_from_model_name
+from opal.templatetags.forms import extract_common_args
 from django import template
 
 register = template.Library()
@@ -106,6 +107,18 @@ def add_to_text_button(
         "text": text
     }
 
+    return ctx
+
+
+@register.inclusion_tag(
+    'templatetags/rbhl_panels/select_other.html',
+)
+def select_or_other(**kwargs):
+    ctx = extract_common_args(kwargs)
+    # for the moment require a lookup list to be passed in
+    # we could get this from the field but we have no usecase
+    # for that at the moment
+    ctx["lookuplist"] = kwargs["lookuplist"]
     return ctx
 
 

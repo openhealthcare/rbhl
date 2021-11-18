@@ -529,3 +529,56 @@ directives.directive('convertToNumber', function() {
     }
   }
 });
+
+
+directives.directive('selectOrOther', function($parse){
+	/*
+	* Provides select or other functionality
+	* Takes in a field and a lookup list,
+	* adds in scope variables localModel.select and localModel.text
+	* if field not in the lookup list,
+	* 	localModel.select is set to 'Other' and localModel.text set to the value of field
+	* else
+	*   localModel.select is set to the value of field
+	*
+	* when either of these models change, the field original field is updated.
+	*
+	* example calling code
+	* <div select-or-other='editing.something.somefield' lookuplist='[1, 2, 3]'>
+	*   <select ng-model='localModel.select>
+	*    <option ng-repeat="i in options track by $index">[[ i ]]</option>
+	*    <option>Other</option>
+	*   </select>
+	* <input ng-show='localModel.select !== 'Other' ng-model='localModel.text' />
+	*/
+	return {
+		restrict: 'A',
+    scope: true,
+		link: function($scope, element, attrs) {
+			var getter = $parse(attrs.selectOrOther);
+			var setter = getter.assign;
+			$scope.options = $parse(attrs.lookuplist)($scope);
+			selectOrOther = getter($scope);
+			$scope.localModel = {
+				text: null,
+				select: null
+			};
+			if(_.contains($scope.options, selectOrOther)){
+				$scope.localModel.select = selectOrOther;
+			}
+			else{
+				$scope.localModel.text = selectOrOther;
+				$scope.localModel.select = 'Other';
+			}
+			$scope.updateSelect = function(){
+				setter($scope, $scope.localModel.select);
+				if($scope.localModel.select !== 'Other'){
+					$scope.localModel.text = null;
+				}
+			};
+			$scope.updateText = function(){
+				setter($scope, $scope.localModel.text);
+			}
+		}
+	}
+})
