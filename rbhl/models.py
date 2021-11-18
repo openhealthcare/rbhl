@@ -671,6 +671,7 @@ class Diagnosis(RBHLSubrecord, models.EpisodeSubrecord):
         "diffuse_lung_disease": [
             "Asbestosis",
             "Hypersensitivity pneumonitis",
+            "Chemical pneumonitis",
             "ILD Other",
             "Berylliosis",
             "Ideopathic Pulmonary Fibrosis",
@@ -681,7 +682,6 @@ class Diagnosis(RBHLSubrecord, models.EpisodeSubrecord):
             "Humidifier fever",
             "Polymer fume fever",
             "Infection",
-            "Chemical pneumonitis",
             "Building related symptoms",
             "Breathing pattern disorder ",
             "Induced laryngeal obstruction",
