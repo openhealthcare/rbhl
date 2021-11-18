@@ -744,6 +744,12 @@ h1.static-title i {
   text-align: center;
 }
 
+.input-group .btn {
+  border-radius: 4px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
 @media print {
   @page {
     margin-top: 1cm;

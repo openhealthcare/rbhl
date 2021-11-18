@@ -32,6 +32,9 @@ def forwards(apps, schema_editor):
                 category=new_category,
                 condition=""
             )
+    qs.filter(condition__iexact="Chemical pneumonitis").update(
+        category="Diffuse lung disease"
+    )
 
 def backwards(apps, schema_editor):
     Diagnosis = apps.get_model(
@@ -42,6 +45,9 @@ def backwards(apps, schema_editor):
         Diagnosis.filter(category=category).update(
             category="Other", condition=category
         )
+    qs.filter(condition__iexact="Chemical pneumonitis").update(
+        category="Other"
+    )
 
 
 class Migration(migrations.Migration):
