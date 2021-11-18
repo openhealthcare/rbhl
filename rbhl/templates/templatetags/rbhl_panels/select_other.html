@@ -1,0 +1,22 @@
+{% load forms %}
+<div select-or-other="{{ model }}" lookuplist="{{ lookuplist }}" >
+  <div class="form-group">
+      {% if label %}
+      <label class="control-label">
+        {{ label }}
+      </label>
+      {% endif %}
+      <div>
+        <select name="[[ {{ element_name }} ]]" class="form-control" ng-change='updateSelect()' ng-model="localModel.select">
+          {% if default_null %}
+          <option value="" selected>---------</option>
+          {% endif %}
+          <option ng-repeat="i in options track by $index">[[ i ]]</option>
+          <option>Other</option>
+        </select>
+      </div>
+  </div>
+  <div class="content-offset-10" ng-show="localModel.select == 'Other'">
+    {% input label="Please name it" style="vertical" model='localModel.text' change='updateText()' %}
+  </div>
+</div>

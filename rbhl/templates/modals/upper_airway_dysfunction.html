@@ -1,0 +1,17 @@
+{% extends 'modals/diagnosis_base.html' %}
+{% load forms %}
+{% block title %}
+<i class="fa fa-stethoscope"></i>
+{{ models.Diagnosis.UPPER_AIRWAY_DYSFUNCTION }} {{ block.super }}
+{% endblock title %}
+{% block diagnosis_form %}
+<div ng-init="editing.diagnosis.category = '{{ models.Diagnosis.UPPER_AIRWAY_DYSFUNCTION }}'">
+  <div class="row">
+    <div class="col-md-4 col-md-offset-4">
+      <div class="horizontal-form">
+        {% datepicker field="Diagnosis.date" style="vertical" label="" %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
