@@ -558,12 +558,15 @@ directives.directive('selectOrOther', function($parse){
 			var getter = $parse(attrs.selectOrOther);
 			var setter = getter.assign;
 			$scope.options = $parse(attrs.lookuplist)($scope);
-			selectOrOther = getter($scope);
+			selectOrOther = getter($scope) || "";
 			$scope.localModel = {
 				text: null,
 				select: null
 			};
-			if(_.contains($scope.options, selectOrOther)){
+			if(!selectOrOther.length){
+				$scope.localModel.text = "";
+			}
+			else if(_.contains($scope.options, selectOrOther)){
 				$scope.localModel.select = selectOrOther;
 			}
 			else{
