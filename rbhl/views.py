@@ -3,7 +3,6 @@ Custom views for Lungs@Work
 """
 import json
 import datetime
-import statistics
 from collections import defaultdict
 from django.urls import reverse
 from django.utils.functional import cached_property
@@ -489,11 +488,6 @@ class ClinicActivityOverview(AbstractClinicActivity):
         diagnosed = len(
             [i for i in rows if i[k] and i[k] == "Known"]
         )
-        ref_time = "Days from referral to diagnosis"
-        ref_times = [i[ref_time] for i in rows if i[ref_time] is not None]
-        mean = ""
-        if ref_times:
-            mean = "{:.1f}".format(statistics.mean(ref_times))
 
         mean_patients_per_year = Fact.objects.filter(
             label=Fact.MEAN_CLINIC_PATIENTS_PER_YEAR
@@ -506,17 +500,9 @@ class ClinicActivityOverview(AbstractClinicActivity):
         if mean_known_diagnosis:
             mean_known_diagnosis = mean_known_diagnosis.val()
 
-        mean_days_to_diagnosis = Fact.objects.filter(
-            label=Fact.FIVE_YEAR_MEAN_REFERRAL_TO_DIAGNOSIS
-        ).order_by("-when").first()
-
-        if mean_days_to_diagnosis:
-            mean_days_to_diagnosis = mean_days_to_diagnosis.val()
-
         return (
             ("Patients", total, mean_patients_per_year),
             ("Diagnosed", round((diagnosed/total) * 100), mean_known_diagnosis),
-            ("Mean days to diagnosis", mean, mean_days_to_diagnosis)
         )
 
     def get_flow(self, rows):
