@@ -8,23 +8,34 @@ Clinic activity {{ view.date_range.0 }} - {{ view.date_range.1 }}
   {% include 'partials/clinic_activity_menu.html' %}
   {% if aggregates %}
   <div class="row content-offset">
-    {% for category, num, five_year_mean in aggregates.head_lines %}
-    <div class="col-md-4 text-center">
-      <div class="page-header stats-headline">
-        <h1>{{ num }}</h1>
-        <h3>
-          {{ category }}
-        </h3>
-        <h4 class="text-muted">
-          {% if five_year_mean is not None %}
-          5 year mean: {{ five_year_mean }}
-          {% else %}
-          &nbsp;
-          {% endif %}
-        </h4>
+    <div class="col-md-10 col-md-push-1">
+      <div class="row">
+        {% for category, num, five_year_mean in aggregates.head_lines %}
+        <div class="col-sm-5 {% if forloop.counter > 1 %} col-sm-push-1 {% endif %} text-center">
+          <div class="page-header stats-headline">
+            <div class="row">
+              <div class="col-xs-7">
+                <h1>{{ num }}</h1>
+              </div>
+              <div class="col-xs-5">
+                <h3>
+                {{ category }}
+                </h3>
+                <h4 class="text-muted">
+                {% if five_year_mean is not None %}
+                5 year mean:
+                {{ five_year_mean }}
+                {% else %}
+                &nbsp;
+                {% endif %}
+                </h4>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
       </div>
     </div>
-    {% endfor %}
   </div>
   {% category_bar_chart 'Days to first appointment/diagnosis' aggregates.patient_flow.x aggregates.patient_flow.vals %}
   <div class="row content-offset">
