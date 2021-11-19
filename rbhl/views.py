@@ -498,11 +498,12 @@ class ClinicActivityOverview(AbstractClinicActivity):
         ).order_by("-when").first()
 
         if mean_known_diagnosis:
-            mean_known_diagnosis = mean_known_diagnosis.val()
+            mean_known_diagnosis = f"{mean_known_diagnosis.val()}%"
 
+        diagnosis_percent = f"{round((diagnosed/total) * 100)}%"
         return (
             ("Patients", total, mean_patients_per_year),
-            ("Diagnosed", round((diagnosed/total) * 100), mean_known_diagnosis),
+            ("Diagnosed", diagnosis_percent, mean_known_diagnosis),
         )
 
     def get_flow(self, rows):
