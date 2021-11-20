@@ -220,7 +220,6 @@ class AbstractClinicActivity(TemplateView):
         """
         start_date = datetime.date(start_year, 10, 1)
         end_date = datetime.date(start_year + 1, 9, 30)
-        end_date = min(datetime.date.today(), end_date)
         return start_date, end_date
 
     @cached_property
