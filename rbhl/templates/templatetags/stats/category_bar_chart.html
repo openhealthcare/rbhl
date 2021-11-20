@@ -28,6 +28,15 @@
         {% endfor %}
         </tr>
       {% endfor %}
+      {% for additional_table_row in table.additional_table_rows %}
+        <tr>
+          {% for v in additional_table_row %}
+            <td {% if not forloop.first %}class="text-center" {% endif %}>
+              {% value_display v %}
+            </td>
+          {% endfor %}
+        </tr>
+      {% endfor %}
     </table>
   </div>
 </div>
@@ -41,7 +50,7 @@
     },
     legend: {
         show: false
-    },  
+    },
     axis: {
       x: {
         type: 'category',
