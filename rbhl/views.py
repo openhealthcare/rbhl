@@ -340,9 +340,10 @@ class AbstractClinicActivity(TemplateView):
         bloods = []
 
         # pick up the prefetch related bloods set from the episode qs
-        for blood in episode.patient.bloods_set.all():
-            if blood.referral_id == referral.id:
-                bloods.append(blood)
+        if referral:
+            for blood in episode.patient.bloods_set.all():
+                if blood.referral_id == referral.id:
+                    bloods.append(blood)
         test_types = []
         stored = False
         for blood in bloods:
@@ -392,6 +393,12 @@ class AbstractClinicActivity(TemplateView):
         }
 
     def get_row(self, episode, referral):
+        date_of_referral = None
+        if referral:
+            date_of_referral = referral.date_of_referral
+            referral_source = referral.referral_source
+            referral_disease = referral.referral_disease
+
         demographics = episode.patient.demographics_set.all()[0]
         date_of_referral = referral.date_of_referral
         clinic_log = episode.cliniclog_set.all()[0]
@@ -402,7 +409,7 @@ class AbstractClinicActivity(TemplateView):
             referral.geographical_area_fk_id, referral.geographical_area_ft
         )
 
-        if clinic_log.clinic_date:
+        if clinic_log.clinic_date and referral.date_of_referral:
             if clinic_log.clinic_date >= referral.date_of_referral:
                 days_to_appointment = clinic_log.clinic_date - referral.date_of_referral
                 days_to_appointment = days_to_appointment.days
@@ -412,11 +419,15 @@ class AbstractClinicActivity(TemplateView):
             i.date for i in diagnosis if i.date and i.date >= referral.date_of_referral
         ])
         diagnosis_date = None
-        if diagnosis_dates:
-            diagnosis_date = diagnosis_dates[0]
-        if referral.date_of_referral and diagnosis_date:
-            days_to_diagnosis = diagnosis_date - referral.date_of_referral
-            days_to_diagnosis = days_to_diagnosis.days
+        if date_of_referral:
+            diagnosis_dates = sorted([
+                i.date for i in diagnosis if i.date and i.date >= date_of_referral
+            ])
+            if diagnosis_dates:
+                diagnosis_date = diagnosis_dates[0]
+            if date_of_referral and diagnosis_date:
+                days_to_diagnosis = diagnosis_date - referral.date_of_referral
+                days_to_diagnosis = days_to_diagnosis.days
         employments = list(episode.employment_set.all())
         employment_category = ""
         if employments:
@@ -431,8 +442,7 @@ class AbstractClinicActivity(TemplateView):
             "Surname": demographics.surname,
             "Age at referral": demographics.get_age(date_of_referral),
             "Sex": gender,
-            "Referral": referral.date_of_referral,
-            "OCCLD": referral.occld,
+            "Referral": date_of_referral,
             "First appointment": clinic_log.clinic_date,
             "Diagnosis date": diagnosis_date,
             "Days from referral to first appointment offered": days_to_appointment,
@@ -440,8 +450,8 @@ class AbstractClinicActivity(TemplateView):
             "Geographic area": geographical_area,
             "Employment category": employment_category,
             "Seen by": clinic_log.seen_by,
-            "Source of referral": referral.referral_source,
-            "Referral disease": referral.referral_disease,
+            "Source of referral": referral_source,
+            "Referral disease": referral_disease,
             "Peak flow": self.get_peak_flow(episode, clinic_log),
             "Diagnosis outcome": clinic_log.diagnosis_outcome or "No outcome",
             "Link": episode.get_absolute_url()
@@ -459,8 +469,8 @@ class AbstractClinicActivity(TemplateView):
             if episode.id in seen:
                 continue
             referral = Referral.get_recent_occld_referral_for_episode(episode)
-            if referral:
-                rows.append(self.get_row(episode, referral))
+            rows.append(self.get_row(episode, referral))
+        rows = sorted(rows, key=lambda x: x["First appointment"])
         rows = sorted(rows, key=lambda x: x["Referral"])
         return rows
 
