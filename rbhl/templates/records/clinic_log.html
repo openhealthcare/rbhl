@@ -25,10 +25,15 @@
 <div class="row">
   <div class="col-md-6">
     {% field_display "ClinicLog.peak_flow" %}
-    {% field_display "ClinicLog.immunology_oem" %}
+    {% field_display "ClinicLog.external_spirometry_done" %}
   </div>
   <div class="col-md-6">
+    {% field_display "ClinicLog.immunology_oem" %}
     {% field_display "ClinicLog.other_rbh_bloods" %}
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-6">
     {% field_display "ClinicLog.outstanding_tests_required" %}
   </div>
 </div>

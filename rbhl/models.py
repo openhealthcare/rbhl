@@ -319,6 +319,9 @@ class ClinicLog(RBHLSubrecord, models.EpisodeSubrecord):
     histamine_date      = fields.DateField(blank=True, null=True)
     histamine_attendance = fields.NullBooleanField()
 
+    external_spirometry_done = fields.BooleanField(
+        default=False
+    )
     peak_flow           = fields.NullBooleanField()
 
     other_rbh_bloods    = fields.NullBooleanField(

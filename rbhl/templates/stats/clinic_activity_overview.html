@@ -85,38 +85,42 @@ Clinic activity {{ view.date_range.0 }} - {{ view.date_range.1 }}
     </div>
   </div>
   <div class="row">
-    {% for k, v in aggregates.investigations_summary.items %}
+    <div class="col-md-8">
+      <div class="row">
+        {% for k, v in aggregates.investigations_summary.items %}
+        <div class="col-md-6">
+          {% pie_chart k v %}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
     <div class="col-md-4">
-      {% pie_chart k v %}
+      <div class="row">
+        <div class="col-md-12">
+          <h3>Specific occupational skin tests</h3>
+        </div>
+      </div>
+      <div class="row content-offset-20">
+        <div class="col-md-12">
+          <table class="table table-striped">
+            {% for specific_spt, count in aggregates.specific_skin_prick_tests.items %}
+            <tr>
+              <td>
+                <div>
+                <span>
+                  {{ specific_spt }}
+                </span>
+                <span class="pull-right">
+                  {{ count }}
+                </span>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+          </table>
+        </div>
+      </div>
     </div>
-    {% endfor %}
-  </div>
-  <div class="row content-offset">
-    <div class="col-md-12">
-      <h3>Specific occupational skin tests</h3>
-    </div>
-  </div>
-  <div class="row content-offset-20">
-    {% for chunked in aggregates.specific_skin_prick_tests.items|chunked:4 %}
-    <div class="col-md-3">
-       <table class="table table-striped">
-       {% for specific_spt, count in chunked %}
-        <tr>
-          <td>
-            <div>
-            <span>
-              {{ specific_spt }}
-            </span>
-            <span class="pull-right">
-              {{ count }}
-            </span>
-            </div>
-          </td>
-        </tr>
-       {% endfor %}
-       </table>
-    </div>
-    {% endfor %}
   </div>
   {% category_bar_chart 'OEM investigations' aggregates.oem_investigations.x aggregates.oem_investigations.vals subtitle=True %}
   <div class="row content-offset">
