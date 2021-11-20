@@ -52,7 +52,11 @@ def value_display(value):
     'templatetags/stats/category_bar_chart.html'
 )
 def category_bar_chart(
-    title, x_axis, field_vals, subtitle=False
+    title,
+    x_axis,
+    field_vals,
+    subtitle=False,
+    additional_table_rows=None
 ):
     """
     Takes in a title, the x_axis, then a list of the
@@ -60,14 +64,27 @@ def category_bar_chart(
     of the name of the row.
 
     Essentially the same as the c3 api.
+
+    You can also add additional rows to the table
+    that is the same form of as field vals, ie
+    each row is a list of [row_title, r1, r2 etc]
     """
     colors = {}
     for idx, field_val in enumerate(field_vals):
         colors[field_val[0]] = COLORS[idx]
+    table_vals = list(field_vals)
+    if additional_table_rows is None:
+        additional_table_rows = []
+    else:
+        # Make sure the additional row is expanded to the length
+        # of the bar chart.
+        for row in additional_table_rows:
+            row.extend([""] * (len(table_vals[0]) - len(row)))
     ctx = {
         "table": {
             "x_axis": x_axis,
-            "field_vals": field_vals,
+            "field_vals": table_vals,
+            "additional_table_rows": additional_table_rows
         },
         "graph": {
             "x_axis": json.dumps(x_axis),
