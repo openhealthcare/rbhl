@@ -26,7 +26,7 @@ Clinic activity {{ view.date_range.0 }} - {{ view.date_range.1 }}
     </div>
     {% endfor %}
   </div>
-  {% category_bar_chart 'Days to first appointment/diagnosis' aggregates.patient_flow.x aggregates.patient_flow.vals %}
+  {% category_bar_chart 'Days to first appointment/diagnosis' aggregates.patient_flow.x aggregates.patient_flow.vals additional_table_rows=aggregates.patient_flow.additional_table_rows %}
   <div class="row content-offset">
     <div class="col-md-12">
       <h1>Referral</h1>

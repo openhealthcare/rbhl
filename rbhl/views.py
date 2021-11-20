@@ -400,7 +400,6 @@ class AbstractClinicActivity(TemplateView):
             referral_disease = referral.referral_disease
 
         demographics = episode.patient.demographics_set.all()[0]
-        date_of_referral = referral.date_of_referral
         clinic_log = episode.cliniclog_set.all()[0]
         diagnosis = episode.diagnosis_set.all()
         days_to_appointment = None
@@ -409,15 +408,12 @@ class AbstractClinicActivity(TemplateView):
             referral.geographical_area_fk_id, referral.geographical_area_ft
         )
 
-        if clinic_log.clinic_date and referral.date_of_referral:
-            if clinic_log.clinic_date >= referral.date_of_referral:
-                days_to_appointment = clinic_log.clinic_date - referral.date_of_referral
+        if clinic_log.clinic_date and date_of_referral:
+            if clinic_log.clinic_date >= date_of_referral:
+                days_to_appointment = clinic_log.clinic_date - date_of_referral
                 days_to_appointment = days_to_appointment.days
 
         days_to_diagnosis = None
-        diagnosis_dates = sorted([
-            i.date for i in diagnosis if i.date and i.date >= referral.date_of_referral
-        ])
         diagnosis_date = None
         if date_of_referral:
             diagnosis_dates = sorted([
@@ -426,7 +422,7 @@ class AbstractClinicActivity(TemplateView):
             if diagnosis_dates:
                 diagnosis_date = diagnosis_dates[0]
             if date_of_referral and diagnosis_date:
-                days_to_diagnosis = diagnosis_date - referral.date_of_referral
+                days_to_diagnosis = diagnosis_date - date_of_referral
                 days_to_diagnosis = days_to_diagnosis.days
         employments = list(episode.employment_set.all())
         employment_category = ""
@@ -468,10 +464,9 @@ class AbstractClinicActivity(TemplateView):
         for episode in qs:
             if episode.id in seen:
                 continue
-            referral = Referral.get_recent_occld_referral_for_episode(episode)
+            referral = Referral.get_recent_referral_for_episode(episode)
             rows.append(self.get_row(episode, referral))
         rows = sorted(rows, key=lambda x: x["First appointment"])
-        rows = sorted(rows, key=lambda x: x["Referral"])
         return rows
 
     def post(self, *args, **kwargs):
@@ -550,9 +545,11 @@ class ClinicActivityOverview(AbstractClinicActivity):
                 x_axis.append(f"{i} - {day_ranges[idx + 1]}")
         v1 = ["Days from referral to first appointment offered"] + to_appointment_date
         v2 = ["Days from referral to diagnosis"] + to_diagnosis_date
+        no_referral = len([i for i in rows if not i["Referral"]])
         return {
             "x": x_axis,
-            "vals": [v1, v2]
+            "vals": [v1, v2],
+            "additional_table_rows": [['No referral date', no_referral]]
         }
 
     def get_demographics(self, rows):
