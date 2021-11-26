@@ -14,6 +14,23 @@
         </div>
       </div>
     </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="horizontal-form">
+          <label class="control-label">
+            Episode
+          </label>
+          <select name="bloods_episodes" class="form-control" ng-model="editing.bloods.episode_id" convert-to-number>
+            <option value="">---------</option>
+            <option value="[[ i.id ]]" ng-if="episode_display(i)" ng-repeat="i in episode_select">
+              [[ episode_display(i) ]]
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+
     <div class="row">
       <div class="col-md-6">
         <div class="horizontal-form">

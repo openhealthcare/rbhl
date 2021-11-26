@@ -4,7 +4,7 @@ angular.module('opal.controllers').controller('MenuHelper', function($scope, $mo
 	this.addEpisode = function(){
 		$modal.open({
 			controller: "ConfirmAddNewEpisode",
-			templateUrl: 'templates/new_episode_confirmation.html',
+			templateUrl: 'templates/new_episode.html',
 			resolve: {
 				refresh: function(){ return $scope.refresh; },
 				patient: function(){ return $scope.patient; }

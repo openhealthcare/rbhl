@@ -2,8 +2,8 @@
 Plugin definition for the lab Opal plugin
 """
 from opal.core import plugins
-
 from plugins.lab.urls import urlpatterns
+from plugins.lab import api
 
 
 class LabPlugin(plugins.OpalPlugin):
@@ -34,3 +34,7 @@ class LabPlugin(plugins.OpalPlugin):
         by our plugin.
         """
         return {}
+
+    apis = [
+        (api.PatientEpisodes.basename, api.PatientEpisodes,),
+    ]

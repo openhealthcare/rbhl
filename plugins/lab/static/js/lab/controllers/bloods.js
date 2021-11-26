@@ -1,5 +1,5 @@
 angular.module('opal.controllers').controller(
-  'BloodsStep', function(scope, step, episode, $window, $location, $modal, displayDateFilter) {
+  'BloodsStep', function(scope, step, episode, $window, $location, $modal, $http, displayDateFilter) {
   "use strict"
   /*
   * The bloods step works on a single bloods instance.
@@ -20,7 +20,16 @@ angular.module('opal.controllers').controller(
       }
     }
     scope.bloodTest = {bloods: bloodTest};
+		scope.episode_select = [];
+		var patient_id = scope.episode.demographics[0].patient_id;
+		$http.get('/api/v0.1/patient_episodes/' + patient_id + '/').then(function(response){
+			scope.episode_select = response.data;
+		});
   }
+
+	scope.episode_display = function(patientEpisode){
+		return 'hello';
+	}
 
   scope.employment_display = function(employment){
     /*
