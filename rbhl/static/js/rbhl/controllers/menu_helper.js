@@ -22,7 +22,7 @@ angular.module('opal.controllers').controller('MenuHelper', function($scope, $mo
 		*/
 		var result = _.sortBy(episodes, function(episode){
 			var sigDate = null;
-			if(episode.referral[0].occld){
+			if(episode.referral.length && episode.referral[0].occld){
 				sigDate = episode.clinic_log[0].clinic_date;
 			}
 			else{
