@@ -4,21 +4,40 @@ from django.db import migrations
 
 
 def forwards(apps, schema_editor):
-	pass
-
-
-def backwards(apps, schema_editor):
-	pass
+    Bloods = apps.get_model('lab', 'Bloods')
+    bloods = Bloods.objects.all()
+    for blood in bloods:
+        patient = blood.patient
+        episode = patient.episode_set.first()
+        if episode.referral_set.count() > 1:
+            referral = episode.referral_set.filter(
+                bloods=blood
+            ).first()
+            if not referral:
+                continue
+            new_episode = patient.episode_set.create()
+            referral.episode_id = new_episode.id
+            referral.save()
+            if blood.employment:
+                employment = blood.employment
+                employment.id = None
+                employment.episode = new_episode
+                employment.save()
+            blood.episode = new_episode
+            blood.save()
+        else:
+            blood.episode = episode
+            blood.save()
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('lab', '0014_remove_bloodresult_result'),
+        ('lab', '0015_bloods_episode'),
     ]
 
     operations = [
         migrations.RunPython(
-            forwards, backwards
+            forwards
         )
     ]
