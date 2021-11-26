@@ -3,11 +3,16 @@
   <div class="view-switcher">
     <div class="row">
       <div class="col-md-12">
-        <div class="btn-group" role="group">
-          <a ng-repeat='e in patient.episodes' ng-class="{'btn-info': !view, 'btn-default': view}" href="[[ '/#' + e.link ]]" class="btn">
-            <h4>Clinic: [[ e.clinic_log[0].clinic_date | displayDate ]]</h4>
+        <div ng-controller="MenuHelper as menuHelper" class="btn-group" role="group">
+          <a ng-repeat='e in menuHelper.orderEpisodes(patient.episodes)' ng-class="{'btn-info': !view && e.id === episode.id, 'btn-default': view || e.id !== episode.id}" href="[[ '/#' + e.link ]]" class="btn">
+            <h4 ng-show="e.referral[0].occld">
+              OCCLD<span ng-show="e.clinic_log[0].clinic_date">: [[ e.clinic_log[0].clinic_date | displayDate ]]</span>
+            </h4>
+            <h4 ng-hide="e.referral[0].occld">
+              Non-OCCLD<span ng-if="menuHelper.findBloodDate(patient, e)">: [[ menuHelper.findBloodDate(patient, e) | displayDate ]]</span>
+            </h4>
           </a>
-          <a class="btn-default btn" href="#">
+          <a  ng-click="menuHelper.addEpisode()" class="btn-default btn pointer">
             <h4>New Episode <i class="fa fa-plus"></i></h4>
           </a>
           <a ng-class="{'btn-info': view, 'btn-default': !view}" href="/#/patient/[[ patient.id ]]/investigations" class="btn">

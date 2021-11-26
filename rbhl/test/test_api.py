@@ -412,3 +412,57 @@ class PeakFlowGraphDataTestCase(OpalTestCase):
         response = self.client.get(self.url).json()
         self.assertEqual(response[0]["trial_num"], 2)
         self.assertEqual(response[1]["trial_num"], 1)
+
+
+class NewEpisodeAPITestCase(OpalTestCase):
+    def setUp(self):
+        self.patient, self.old_episode = self.new_patient_and_episode_please()
+        request = self.rf.get("/")
+        self.url = reverse(
+            'new_episode-list',
+            request=request
+        )
+        self.assertTrue(
+            self.client.login(
+                username=self.user.username, password=self.PASSWORD
+            )
+        )
+
+    def test_create_episode_occld(self):
+        data = {
+            "patient_id": self.patient.id,
+            "occld": True,
+            "date_of_referral": '12/10/2021'
+        }
+        self.client.post(self.url, data)
+        new_episode = self.patient.episode_set.last()
+        self.assertNotEqual(
+            new_episode.id, self.old_episode.id
+        )
+        referral = new_episode.referral_set.get()
+        self.assertEqual(
+            referral.date_of_referral, datetime.date(2021, 10, 12)
+        )
+        self.assertTrue(referral.occld)
+
+    def test_create_episode_not_occld(self):
+        data = {
+            "patient_id": self.patient.id,
+            "occld": False,
+            "referrer_name": 'someone',
+            "employer": "someone else"
+        }
+        self.client.post(self.url, data)
+        new_episode = self.patient.episode_set.last()
+        self.assertNotEqual(
+            new_episode.id, self.old_episode.id
+        )
+        referral = new_episode.referral_set.get()
+        self.assertEqual(
+            referral.referrer_name, 'someone'
+        )
+        self.assertFalse(referral.occld)
+        employment = new_episode.employment_set.get()
+        self.assertEqual(
+            employment.employer, 'someone else'
+        )

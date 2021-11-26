@@ -1,0 +1,51 @@
+{% load forms %}
+<div class="modal-header">
+  <button type="button" class="close" ng-click="close()">×</button>
+  <h3>
+    Create A New Episode
+    <span ng-show="patient.demographics[0].first_name || patient.demographics[0].surname" class="ng-binding">
+      For [[ patient.demographics[0].first_name ]] [[ patient.demographics[0].surname ]]
+    </span>
+  </h3>
+</div>
+<div class="modal-body">
+  <div class="text-center">
+    <div class="form-group form-horizontal" >
+      <label class="control-label radio-label">OCCLD</label>
+      <div class="rbhl-radio">
+        <label class="radio-inline">
+          <input class="work-day" type="radio" ng-model="editing.occld" ng-value="true">
+          <div class="label-text">Yes</div>
+        </label>
+        <label class="radio-inline">
+          <input class="work-day" type="radio" ng-model="editing.occld" ng-value="false">
+          <div class="label-text">No</div>
+        </label>
+      </div>
+    </div>
+    <div ng-show="editing.occld === true" class="horizontal-form">
+      <div class="col-md-6">
+        {% datepicker field="Referral.date_of_referral" model='editing.date_of_referral' style="vertical" %}
+      </div>
+      <div class="col-md-6">
+        {% datepicker field="ClinicLog.clinic_date" model='editing.clinic_date' style="vertical" %}
+      </div>
+    </div>
+    <div ng-show="editing.occld === false" class="horizontal-form">
+      <div class="col-md-6">
+        {% input field="Referral.referrer_name" model='editing.referrer_name' lookuplist="rbhreferrer_list" style="vertical" %}
+      </div>
+      <div class="col-md-6">
+        {% input field="Employment.employer" model='editing.employer'  lookuplist="employer_list" style="vertical" %}
+      </div>
+    </div>
+
+    <button ng-show="editing.occld === true || editing.occld === false" class="btn btn-primary" one-click-only ng-click="save()">
+      Add new episode
+    </button>
+    <div class="clearfix"></div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button class="btn" ng-click="close()">Cancel</button>
+</div>

@@ -4,7 +4,10 @@ API endpoints for RBHL
 from collections import defaultdict
 import itertools
 from decimal import Decimal
+from rest_framework import status
+from opal.models import Episode
 from opal.core.views import json_response
+from opal.core import serialization
 from opal.core.api import LoginRequiredViewset, episode_from_pk
 from rbhl import models
 from opal.core.api import OPALRouter
@@ -148,5 +151,44 @@ class PeakFlowGraphData(LoginRequiredViewset):
         return json_response(trial_data)
 
 
+class NewEpisodeAPI(LoginRequiredViewset):
+    basename = "new_episode"
+
+    def create(self, request):
+        patient_id = request.data["patient_id"]
+        occld = request.data.get('occld')
+        referrer_name = request.data.get('referrer_name')
+        employer = request.data.get('employer')
+
+        clinic_date = request.data.get('clinic_date')
+        if clinic_date:
+            clinic_date = serialization.deserialize_date(clinic_date)
+
+        date_of_referral = request.data.get('date_of_referral')
+        if date_of_referral:
+            date_of_referral = serialization.deserialize_date(date_of_referral)
+
+        episode = Episode.objects.create(
+            patient_id=patient_id
+        )
+        episode.referral_set.create(
+            date_of_referral=date_of_referral,
+            referrer_name=referrer_name,
+            occld=occld
+        )
+        episode.cliniclog_set.update(
+            clinic_date=clinic_date
+        )
+        if employer:
+            episode.employment_set.create(employer=employer)
+        episode.cliniclog_set.update(
+            clinic_date=clinic_date
+        )
+        return json_response(
+            {}, status_code=status.HTTP_201_CREATED
+        )
+
+
 indigo_router = OPALRouter()
+indigo_router.register(NewEpisodeAPI.basename, NewEpisodeAPI)
 indigo_router.register(PeakFlowGraphData.basename, PeakFlowGraphData)
