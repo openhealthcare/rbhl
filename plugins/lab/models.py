@@ -125,6 +125,9 @@ class Exposure(lookuplists.LookupList):
 
 
 class Bloods(RbhlSubrecord, models.PatientSubrecord):
+    episode            = fields.ForeignKey(
+        models.Episode, on_delete=fields.SET_NULL, blank=True, null=True
+    )
     ANTIGEN_TYPE = enum("STANDARD", "BESPOKE")
     METHODS = enum(
         "ImmunoCAP",
