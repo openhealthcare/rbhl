@@ -188,6 +188,17 @@ class Bloods(RbhlSubrecord, models.PatientSubrecord):
     vials              = fields.TextField(blank=True, null=True)
 
     @classmethod
+    def build_field_schema(cls):
+        """
+        OPAL explicitly excludes id, episode_id and patient_id
+        from the field schema, in this case we need
+        to add episode id back in.
+        """
+        field_schema = super().build_field_schema()
+        field_schema.append(cls.build_schema_for_field_name('episode_id'))
+        return field_schema
+
+    @classmethod
     def _get_fieldnames_to_serialize(cls):
         result = super()._get_fieldnames_to_serialize()
         result.append("bloodresult")

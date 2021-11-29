@@ -28,39 +28,19 @@ angular.module('opal.controllers').controller(
   }
 
 	scope.episode_display = function(patientEpisode){
-		return 'hello';
+		var result = [];
+		_.each(patientEpisode.referral, function(referral){
+			var referralStr = displayDateFilter(referral.date_of_referral) + " " + referral.referrer_name
+			referralStr = referralStr.trim();
+			if(referral.occld){
+				referralStr += " (OCCLD)";
+			}
+			if(referralStr.length){
+				result.push(referralStr);
+			}
+		});
+		return result.join(", ")
 	}
-
-  scope.employment_display = function(employment){
-    /*
-    * Options do not allow if statements so we format the display
-    * name of the employment in here.
-    */
-    var result;
-    if(employment.employer && employment.oh_provider){
-      result = employment.employer + "/" + employment.oh_provider;
-    }
-    else{
-      result = employment.employer || employment.oh_provider;
-    }
-    if(employment.job_title){
-      result += " (" + employment.job_title + ")";
-    }
-    return result;
-  }
-
-  scope.referral_display = function(referral){
-    /*
-    * Options do not allow if statements so we format the display
-    * name of the employment in here.
-    */
-    var result = displayDateFilter(referral.date_of_referral) || "";
-    result = result + " " + referral.referrer_name;
-    if(result && referral.reference_number){
-      result += " (" + referral.reference_number + ")";
-    }
-    return result;
-  }
 
   scope.addSubrecord = function(subrecordName){
     /*
