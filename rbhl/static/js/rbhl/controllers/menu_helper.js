@@ -7,6 +7,9 @@ angular.module('opal.controllers').controller('MenuHelper', function($scope, $mo
 		* an episode because only an episode is
 		* available when this is used in the
 		* bloods pathway.
+		*
+		* We bind the refresh command to scope to
+		* stop 'this' issues
 		*/
 		refresh = _.bind(refresh, $scope);
 		return $modal.open({
@@ -44,16 +47,23 @@ angular.module('opal.controllers').controller('MenuHelper', function($scope, $mo
 	}
 
 
-	this.findBloodDate = function(patient, episode){
+	this.findBloodDate = function(episode){
 		/*
-		* Finds the earliest blood date for an episode
-		* TLDR Make this work
+		* Finds the earliest blood date for an episode.
+		* because patient subrecords get copied onto the
+		* episode, we look via the patient subrecord bloods
+		* for subrecords with the episode id.
 		*/
-		var result = _.find(patient.bloods, function(x){
-			return x.blood_date;
+		var bloods = _.where(episode.bloods, {episode_id: episode.id});
+		var bloodDates = _.map(bloods, function(blood){
+			if(blood.blood_date){
+				return blood.blood_date.toDate()
+			}
 		});
-		if(result){
-			return result.blood_date;
+		// remove nulls
+		bloodDates = _.compact(bloodDates)
+		if(bloodDates.length){
+			return _.min(bloodDates);
 		}
 	}
 });

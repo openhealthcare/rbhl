@@ -9,7 +9,7 @@
               OCCLD<span ng-show="e.clinic_log[0].clinic_date">: [[ e.clinic_log[0].clinic_date | displayDate ]]</span>
             </h4>
             <h4 ng-hide="e.referral[0].occld">
-              Non-OCCLD<span ng-if="menuHelper.findBloodDate(patient, e)">: [[ menuHelper.findBloodDate(patient, e) | displayDate ]]</span>
+              Non-OCCLD<span ng-if="menuHelper.findBloodDate(e)">: [[ menuHelper.findBloodDate(e) | displayDate ]]</span>
             </h4>
           </a>
           <a  ng-click="menuHelper.addEpisode(episode, refresh)" class="btn-default btn pointer">
