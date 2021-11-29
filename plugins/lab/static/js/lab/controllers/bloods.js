@@ -21,16 +21,28 @@ angular.module('opal.controllers').controller(
     }
     scope.bloodTest = {bloods: bloodTest};
 		scope.episode_select = [];
-		var patient_id = scope.episode.demographics[0].patient_id;
-		$http.get('/api/v0.1/patient_episodes/' + patient_id + '/').then(function(response){
+		scope.episode = episode;
+		scope.patient_id = scope.episode.demographics[0].patient_id;
+		scope.refreshEpisodes();
+  }
+
+	scope.refreshEpisodes = function(){
+		$http.get('/api/v0.1/patient_episodes/' + scope.patient_id + '/').then(function(response){
 			scope.episode_select = response.data;
 		});
-  }
+	}
 
 	scope.episode_display = function(patientEpisode){
 		var result = [];
 		_.each(patientEpisode.referral, function(referral){
-			var referralStr = displayDateFilter(referral.date_of_referral) + " " + referral.referrer_name
+			var referralStr = "";
+			var referralDateStr = displayDateFilter(referral.date_of_referral)
+			if(referralDateStr){
+				referralStr += referralStr + referralDateStr;
+			}
+			if(referral.referrer_name){
+				referralStr += referralStr + referral.referrer_name;
+			}
 			referralStr = referralStr.trim();
 			if(referral.occld){
 				referralStr += " (OCCLD)";

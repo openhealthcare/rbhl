@@ -1,13 +1,20 @@
 angular.module('opal.controllers').controller('MenuHelper', function($scope, $modal) {
 	"use strict";
 	var self = this;
-	this.addEpisode = function(){
-		$modal.open({
-			controller: "ConfirmAddNewEpisode",
-			templateUrl: 'templates/new_episode.html',
+	this.addEpisode = function(episode, refresh){
+		/*
+		* Opens the add new episode modal. It takes
+		* an episode because only an episode is
+		* available when this is used in the
+		* bloods pathway.
+		*/
+		refresh = _.bind(refresh, $scope);
+		return $modal.open({
+			controller: "newRBHEpisode",
+			templateUrl: '/templates/new_episode.html',
 			resolve: {
-				refresh: function(){ return $scope.refresh; },
-				patient: function(){ return $scope.patient; }
+				refresh: function(){ return refresh; },
+				episode: function(){ return episode; }
 			}
 		})
 	}

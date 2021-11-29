@@ -1,4 +1,4 @@
-angular.module('opal.controllers').controller('ConfirmAddNewEpisode', function($modalInstance, toMomentFilter, $scope, $http, patient, refresh) {
+angular.module('opal.controllers').controller('newRBHEpisode', function($modalInstance, toMomentFilter, $scope, $http, episode, refresh) {
 	"use strict";
 
 	var fields = [
@@ -9,7 +9,7 @@ angular.module('opal.controllers').controller('ConfirmAddNewEpisode', function($
 		"employer"
 	]
 
-	$scope.patient = patient;
+	$scope.episode = episode;
 	$scope.editing = {}
 
 	$scope.clean = function(){
@@ -25,7 +25,7 @@ angular.module('opal.controllers').controller('ConfirmAddNewEpisode', function($
 	}
 
 	$scope.save = function(){
-		var data = {patient_id: patient.id}
+		var data = {patient_id: $scope.episode.demographics[0].patient_id}
 		_.each(fields, function(field){
 			if(_.isDate($scope.editing[field])){
 				var fieldResult = toMomentFilter($scope.editing[field])
@@ -38,9 +38,8 @@ angular.module('opal.controllers').controller('ConfirmAddNewEpisode', function($
 			}
 		})
 		$http.post('/indigo/v0.1/new_episode/', data).then(function(){
-			refresh().then(function(){
-				$scope.close();
-			});
+			refresh();
+			$modalInstance.close();
 		});
 	}
 });

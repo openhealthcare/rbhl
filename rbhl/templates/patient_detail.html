@@ -12,7 +12,7 @@
               Non-OCCLD<span ng-if="menuHelper.findBloodDate(patient, e)">: [[ menuHelper.findBloodDate(patient, e) | displayDate ]]</span>
             </h4>
           </a>
-          <a  ng-click="menuHelper.addEpisode()" class="btn-default btn pointer">
+          <a  ng-click="menuHelper.addEpisode(episode, refresh)" class="btn-default btn pointer">
             <h4>New Episode <i class="fa fa-plus"></i></h4>
           </a>
           <a ng-class="{'btn-info': view, 'btn-default': !view}" href="/#/patient/[[ patient.id ]]/investigations" class="btn">
