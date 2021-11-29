@@ -609,6 +609,15 @@ input[type="date"]::-webkit-input-placeholder {
   margin-bottom: 6px;
 }
 
+.view-switcher .uib-dropdown-menu li:hover {
+  background-color: #f5f5f5;
+}
+
+.view-switcher .uib-dropdown-menu h4 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
 .add-button {
   font-size: 18px;
   display: inline-block;
