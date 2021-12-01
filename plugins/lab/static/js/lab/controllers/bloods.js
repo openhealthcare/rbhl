@@ -33,15 +33,20 @@ angular.module('opal.controllers').controller(
 	}
 
 	scope.episode_display = function(patientEpisode){
+		/*
+		* Creates the display value for the episode in the template.
+		* This cannot be done in the template because we can't use ng-show/ng-if spans
+		* in <options /> tags.
+		*/
 		var result = [];
 		_.each(patientEpisode.referral, function(referral){
 			var referralStr = "";
 			var referralDateStr = displayDateFilter(referral.date_of_referral)
 			if(referralDateStr){
-				referralStr += referralStr + referralDateStr;
+				referralStr += referralDateStr;
 			}
 			if(referral.referrer_name){
-				referralStr += referralStr + referral.referrer_name;
+				referralStr += referral.referrer_name;
 			}
 			referralStr = referralStr.trim();
 			if(referral.occld){
