@@ -1,11 +1,8 @@
-{# A full width panel which is ordered by the most recent referral first #}
+{# Referrals used to not be singletons, this has changed but a few episodes have multiple referrals so show these #}
 <div class="panel panel-default record-panel">
   <div class="panel-heading">
     <h3>
       <i class="{{ models.Referral.get_icon }}"></i> {{ models.Referral.get_display_name }}
-      <span >
-        <i class="fa fa-plus-circle edit pull-right pointer" ng-click="episode.recordEditor.newItem('{{ models.Referral.get_api_name }}')"></i>
-      </span>
     </h3>
   </div>
   <ul class="list-group">

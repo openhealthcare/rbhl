@@ -1,16 +1,9 @@
-angular.module('opal.controllers').controller('newRBHEpisode', function($modalInstance, toMomentFilter, $scope, $http, episode, refresh) {
+angular.module('opal.controllers').controller('newRBHEpisode', function($modalInstance, FieldTranslator, toMomentFilter, $scope, $http, episode, referencedata, refresh) {
 	"use strict";
-
-	var fields = [
-		"occld",
-		"date_of_referral",
-		"clinic_date",
-		"referrer_name",
-		"employer"
-	]
 
 	$scope.episode = episode;
 	$scope.editing = {}
+	_.extend($scope, referencedata.toLookuplists());
 
 	$scope.clean = function(){
 		_.each(fields, function(field){
@@ -25,18 +18,10 @@ angular.module('opal.controllers').controller('newRBHEpisode', function($modalIn
 	}
 
 	$scope.save = function(){
-		var data = {patient_id: $scope.episode.demographics[0].patient_id}
-		_.each(fields, function(field){
-			if(_.isDate($scope.editing[field])){
-				var fieldResult = toMomentFilter($scope.editing[field])
-				if(fieldResult){
-					data[field] = fieldResult.format('DD/MM/YYYY')
-				}
-			}
-			else{
-				data[field] = $scope.editing[field];
-			}
-		})
+		var data = {
+			referral: FieldTranslator.jsToSubrecord($scope.editing.referral, 'referral'),
+			patient_id: $scope.episode.demographics[0].patient_id
+		}
 		$http.post('/indigo/v0.1/new_episode/', data).then(function(){
 			refresh();
 			$modalInstance.close();

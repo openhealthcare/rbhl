@@ -17,7 +17,9 @@ angular.module('opal.controllers').controller('MenuHelper', function($scope, $mo
 			templateUrl: '/templates/new_episode.html',
 			resolve: {
 				refresh: function(){ return refresh; },
-				episode: function(){ return episode; }
+				episode: function(){ return episode; },
+				metadata: function(Metadata){ return Metadata.load(); },
+				referencedata: function(Referencedata){ return Referencedata.load(); }
 			}
 		})
 	}

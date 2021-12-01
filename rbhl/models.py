@@ -150,6 +150,7 @@ class GeographicalArea(lookuplists.LookupList):
 
 class Referral(RBHLSubrecord, models.EpisodeSubrecord):
     _icon         = 'fa fa-level-up'
+    _is_singleton = True
 
     REASONS = enum(
         "Environmental",
