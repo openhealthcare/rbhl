@@ -24,26 +24,35 @@ angular.module('opal.controllers').controller('MenuHelper', function($scope, $mo
 		})
 	}
 
+	this.getSignificantDate = function(episode){
+		/*
+		* If there is a clinic date, use this
+		* Else if there is a referral date, use this
+		* Else use the sample date if they have bloods
+		*/
+
+		if(episode.clinic_log[0].clinic_date){
+			return episode.clinic_log[0].clinic_date
+		}
+		if(episode.referral[0].date_of_referral){
+			return episode.referral[0].date_of_referral
+		}
+		var bloodDate = self.findBloodDate(episode);
+		if(bloodDate){
+			return bloodDate;
+		}
+	}
+
 	this.orderEpisodes = function(episodes){
 		/*
 		* Order episodes by -significant date.
-		* For clinic episodes the significant date is the
-		* clinic date, for blood episodes the significant date
-		* is the blood date.
-		* if there is no date, return the future
 		*/
 		var result = _.sortBy(episodes, function(episode){
-			var sigDate = null;
-			if(episode.referral.length && episode.referral[0].occld){
-				sigDate = episode.clinic_log[0].clinic_date;
+			var sigDate = self.getSignificantDate(episode);
+			if(sigDate){
+				return sigDate
 			}
-			else{
-				sigDate = self.findBloodDate(episode)
-			}
-			if(!sigDate){
-				sigDate = moment(new Date(3000, 1, 1))
-			}
-			return sigDate;
+			return moment(new Date(3000, 1, 1))
 		});
 		return result.reverse();
 	}
