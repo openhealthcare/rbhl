@@ -1,4 +1,4 @@
-angular.module('opal.controllers').controller('newRBHEpisode', function($modalInstance, FieldTranslator, toMomentFilter, $scope, $http, episode, referencedata, refresh) {
+angular.module('opal.controllers').controller('newRBHEpisode', function($modalInstance, FieldTranslator, $q, $scope, $http, episode, referencedata, refresh) {
 	"use strict";
 
 	$scope.episode = episode;
@@ -22,9 +22,10 @@ angular.module('opal.controllers').controller('newRBHEpisode', function($modalIn
 			referral: FieldTranslator.jsToSubrecord($scope.editing.referral, 'referral'),
 			patient_id: $scope.episode.demographics[0].patient_id
 		}
-		$http.post('/indigo/v0.1/new_episode/', data).then(function(){
-			refresh();
-			$modalInstance.close();
+		$http.post('/indigo/v0.1/new_episode/', data).then(function(response){
+			$q.when(refresh(response.data)).then(function(){
+				$modalInstance.close();
+			});
 		});
 	}
 });

@@ -1,7 +1,7 @@
 angular.module('opal.controllers').controller('MenuHelper', function($scope, $modal) {
 	"use strict";
 	var self = this;
-	this.addEpisode = function(episode, refresh){
+	this.addEpisode = function(episode){
 		/*
 		* Opens the add new episode modal. It takes
 		* an episode because only an episode is
@@ -11,17 +11,25 @@ angular.module('opal.controllers').controller('MenuHelper', function($scope, $mo
 		* We bind the refresh command to scope to
 		* stop 'this' issues
 		*/
-		refresh = _.bind(refresh, $scope);
 		return $modal.open({
 			controller: "newRBHEpisode",
 			templateUrl: '/templates/new_episode.html',
 			resolve: {
-				refresh: function(){ return refresh; },
+				refresh: function(){
+					return function(responseData){ self.refreshEpisode(responseData.id) };
+				},
 				episode: function(){ return episode; },
 				metadata: function(Metadata){ return Metadata.load(); },
 				referencedata: function(Referencedata){ return Referencedata.load(); }
 			}
 		})
+	}
+
+	this.refreshEpisode = function(episodeId){
+		$scope.refresh().then(function(){
+			var idx = _.findIndex($scope.patient.episodes, {id: episodeId});
+			$scope.switch_to_episode(idx);
+		});
 	}
 
 	this.getSignificantDate = function(episode){

@@ -26,9 +26,30 @@ angular.module('opal.controllers').controller(
 		scope.refreshEpisodes();
   }
 
-	scope.refreshEpisodes = function(){
+	scope.addEpisode = function(episode){
+		return $modal.open({
+			controller: "newRBHEpisode",
+			templateUrl: '/templates/new_episode.html',
+			resolve: {
+				refresh: function(){
+					return function(responseData){ scope.refreshEpisodes(responseData.id) };
+				},
+				episode: function(){ return episode; },
+				metadata: function(Metadata){ return Metadata.load(); },
+				referencedata: function(Referencedata){ return Referencedata.load(); }
+			}
+		})
+	}
+
+	scope.refreshEpisodes = function(newEpisodeId){
+		/*
+		* Refresh the episodes and set the selected episode id to
+		* the new episode.
+		*/
 		$http.get('/api/v0.1/patient_episodes/' + scope.patient_id + '/').then(function(response){
 			scope.episode_select = response.data;
+		}).then(function(){
+			scope.bloodTest.bloods.episode_id = newEpisodeId;
 		});
 	}
 

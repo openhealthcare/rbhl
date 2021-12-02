@@ -168,7 +168,7 @@ class NewEpisodeAPI(LoginRequiredViewset):
             referral = episode.referral_set.get()
             referral.update_from_dict(referral_data, request.user)
         return json_response(
-            {}, status_code=status.HTTP_201_CREATED
+            {"id": episode.id}, status_code=status.HTTP_201_CREATED
         )
 
 
