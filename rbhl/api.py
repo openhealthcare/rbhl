@@ -157,12 +157,16 @@ class NewEpisodeAPI(LoginRequiredViewset):
     @transaction.atomic
     def create(self, request):
         patient_id = request.data["patient_id"]
-        referral_data = request.data['referral']
+        referral_data = request.data.get('referral')
         episode = Episode.objects.create(
             patient_id=patient_id
         )
-        referral = episode.referral_set.get()
-        referral.update_from_dict(referral_data, request.user)
+        # If they haven't touched the referral form there
+        # won't be any data in the referral field but we
+        # expect usually there will be
+        if referral_data:
+            referral = episode.referral_set.get()
+            referral.update_from_dict(referral_data, request.user)
         return json_response(
             {}, status_code=status.HTTP_201_CREATED
         )
