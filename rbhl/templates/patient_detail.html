@@ -9,7 +9,7 @@
             <h4>
               <span ng-show="e.referral[0].occld">OCCLD</span>
               <span ng-hide="e.referral[0].occld">Non-OCCLD</span>
-              <span ng-if="menuHelper.getSignificantDate(e)">: [[ menuHelper.getSignificantDate(e) | displayDate ]]</span>
+              <span ng-if="e.start">: [[ e.start | displayDate ]]</span>
             </h4>
           </a>
 
@@ -36,7 +36,7 @@
                   <h4>
                     <span ng-show="e.referral[0].occld">OCCLD</span>
                     <span ng-hide="e.referral[0].occld">Non-OCCLD</span>
-                    <span ng-if="menuHelper.getSignificantDate(e)">: [[ menuHelper.getSignificantDate(e) | displayDate ]]</span>
+                    <span ng-if="e.start">: [[ e.start | displayDate ]]</span>
                   </h4>
                 </a>
               </li>
