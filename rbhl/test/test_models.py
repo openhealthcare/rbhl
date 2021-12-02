@@ -470,3 +470,29 @@ class PeakFlowDayTestCase(OpalTestCase):
         pfd = self.episode.peakflowday_set.create()
         aggregate_data = pfd.get_aggregate_data()
         self.assertIsNone(aggregate_data)
+
+
+class ReferralSaveTestCase(OpalTestCase):
+    def test_post_save(self):
+        _, episode = self.new_patient_and_episode_please()
+        today = datetime.date.today()
+        referral = episode.referral_set.get()
+        referral.date_of_referral = today
+        referral.save()
+        episode.refresh_from_db()
+        self.assertEqual(
+            episode.start, today
+        )
+
+
+class ClinicLogSaveTestCase(OpalTestCase):
+    def test_post_save(self):
+        _, episode = self.new_patient_and_episode_please()
+        today = datetime.date.today()
+        clinic_log = episode.cliniclog_set.get()
+        clinic_log.clinic_date = today
+        clinic_log.save()
+        episode.refresh_from_db()
+        self.assertEqual(
+            episode.start, today
+        )

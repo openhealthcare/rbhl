@@ -189,3 +189,17 @@ class BloodResultTestCase(OpalTestCase):
 
         self.blood_result.kul = "flawed"
         self.assertFalse(self.blood_result.is_significant())
+
+
+class BloodsPostSaveTestCase(OpalTestCase):
+    def test_post_save(self):
+        patient, episode = self.new_patient_and_episode_please()
+        today = datetime.date.today()
+        patient.bloods_set.create(
+            episode=episode,
+            blood_date=today
+        )
+        episode.refresh_from_db()
+        self.assertEqual(
+            episode.start, today
+        )

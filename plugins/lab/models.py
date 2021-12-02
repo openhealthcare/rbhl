@@ -2,6 +2,9 @@
 Models for lab
 """
 from rbhl.models import RBHLSubrecord as RbhlSubrecord
+from rbhl.models import set_episode_start_date
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.db import models as fields
 from opal import models
 from opal.core.fields import enum
@@ -226,6 +229,9 @@ class Bloods(RbhlSubrecord, models.PatientSubrecord):
             else:
                 result = BloodResult(bloods=self)
             result.update_from_dict(result_dict)
+
+
+receiver(post_save, sender=Bloods)(set_episode_start_date)
 
 
 class BloodResult(fields.Model):

@@ -522,6 +522,56 @@ class AsthmaDetails(RBHLSubrecord, models.EpisodeSubrecord):
         verbose_name = "Asthma"
 
 
+def set_episode_start_date(
+    sender, instance, **kwargs
+):
+    """
+    We need to set the episode.start date.
+
+    This is used, for example by the patient detail
+    controller. It means when we go to
+    /#/patient/{{ patient_id }} we go to the most
+    recent episode first.
+
+    The episode start date is derrived from the
+    first available of clinic date, referral date
+    or blood date.
+    """
+    episode = instance.episode
+    if not episode:
+        return
+    start = episode.start
+    clinic_log = episode.cliniclog_set.first()
+    if clinic_log and clinic_log.clinic_date:
+        if not start == clinic_log.clinic_date:
+            episode.start = clinic_log.clinic_date
+            episode.save()
+        return
+    referral = episode.referral_set.exclude(
+        date_of_referral=None
+    ).order_by(
+        'date_of_referral'
+    ).first()
+    if referral and referral.date_of_referral:
+        if not start == referral.date_of_referral:
+            episode.start = referral.date_of_referral
+            episode.save()
+        return
+    bloods = episode.bloods_set.exclude(
+        blood_date=None
+    ).order_by(
+        'blood_date'
+    ).first()
+    if bloods and bloods.blood_date:
+        if not start == bloods.blood_date:
+            episode.start = bloods.blood_date
+            episode.save()
+
+
+receiver(post_save, sender=Referral)(set_episode_start_date)
+receiver(post_save, sender=ClinicLog)(set_episode_start_date)
+
+
 @receiver(post_delete, sender=AsthmaDetails)
 def delete_related_asthma_diagnosis(
     sender, instance, **kwargs
