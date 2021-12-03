@@ -67,11 +67,14 @@ angular.module('opal.controllers').controller(
 				referralStr += referralDateStr;
 			}
 			if(referral.referrer_name){
-				referralStr += referral.referrer_name;
+				referralStr += " " + referral.referrer_name;
 			}
 			referralStr = referralStr.trim();
 			if(referral.occld){
-				referralStr += " (OCCLD)";
+				referralStr += " OCCLD";
+			}
+			else{
+				referralStr += " Non-OCCLD";
 			}
 			if(referralStr.length){
 				result.push(referralStr);
