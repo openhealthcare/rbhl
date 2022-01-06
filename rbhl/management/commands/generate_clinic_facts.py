@@ -84,7 +84,7 @@ class Command(BaseCommand):
         total_days = 0
         count_with_diagnosis = 0
         for episode in five_year_episodes:
-            referral = Referral.get_recent_occld_referral_for_episode(episode)
+            referral = Referral.get_recent_referral_for_episode(episode)
             if referral and referral.date_of_referral:
                 diagnoses = episode.diagnosis_set.all()
                 diagnoses = [i for i in diagnoses if i.date]
