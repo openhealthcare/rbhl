@@ -1,0 +1,39 @@
+<div class="modal-header">
+  <button type="button" class="close" ng-click="cancel()">×</button>
+  <h3>
+    <i class="fa fa-trash-o"></i>
+    Delete [[ patient.demographics[0].first_name ]] [[ patient.demographics[0].surname ]]<span ng-show="patient.demographics[0].date_of_birth">([[ patient.demographics[0].date_of_birth|displayDate ]])</span>
+  </h3>
+</div>
+<div class="modal-body">
+  <p class="lead text-center">
+    Do you want to delete [[ patient.demographics[0].first_name ]] [[ patient.demographics[0].surname ]]<span ng-show="patient.demographics[0].date_of_birth">([[ patient.demographics[0].date_of_birth|displayDate ]])</span>?
+  </p>
+  <p class="lead text-center">
+    To confirm please answer, what is [[ mathCheck.int1 ]] + [[ mathCheck.int2 ]]?
+  </p>
+  <div class="row">
+    <div class="col-md-4 col-md-push-4">
+      <input type="text" autofocus
+             name="result"
+             placeholder="[[ mathCheck.int1 ]] + [[ mathCheck.int2 ]]"
+             ng-model="mathCheck.result"
+             class="form-control"
+             autocomplete="off"
+             />
+    </div>
+</div>
+
+  <p class="lead text-center content-offset-20">
+    Note: this cannot be undone
+  </p>
+  <center>
+    <button ng-disabled="!answered()" ng-click="deletePatient()" class="btn btn-primary">
+      <i class="fa fa-trash-o"></i>
+      Delete
+    </button>
+  </center>
+</div>
+<div class="modal-footer">
+  <button class="btn" ng-click="cancel()">Cancel</button>
+</div>

@@ -38,7 +38,7 @@ class Application(application.OpalApplication):
         'js/rbhl/services/peak_flow_graph_data_loader.js',
         'js/rbhl/services/demographics_search_lookup.js',
         'js/rbhl/controllers/peak_flow_step.js',
-
+        'js/rbhl/controllers/delete_patient.js',
     ]
     styles = [
         'css/rbhl.css'
