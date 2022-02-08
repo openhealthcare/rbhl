@@ -1,0 +1,77 @@
+{% extends 'static_base.html' %}
+{% block title %}
+Lab activity overview
+{% endblock %}
+{% block page_content %}
+<div class="container-fluid">
+  {% include 'partials/lab_stats_menu.html' %}
+  <div class="row content-offset">
+    <div style="padding-right: 90px;" class="col-md-12">
+      <div id="overview-line-graph">
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <table class="table table-striped content-offset">
+        <tr>
+          <th></th>
+          {% for start_date, _ in view.date_ranges %}
+          <th>{{ start_date.month }}/{{ start_date.year }}</th>
+          {% endfor %}
+        </tr>
+
+        {% for section_name, row_set in table_data.items %}
+          {% if not section_name == "Overview" %}
+          <tr>
+            <th>
+              {{ section_name }}
+            </th>
+            {% for start_date, _ in view.date_ranges %}<th></th>{% endfor %}
+          </tr>
+          {% endif %}
+          {% for rows in row_set %}
+          <tr>
+            {% for row in rows.values %}
+            <td {% if not row %}class="text-muted"{% endif %}>{{ row }}</td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+          {% if not forloop.last %}
+          <tr>
+            <td>&nbsp</td>
+            {% for _ in view.date_ranges %}
+            <td>&nbsp</td>
+            {% endfor %}
+          </tr>
+          {% endif %}
+        {% endfor %}
+      </table>
+    </div>
+  </div>
+  {% include "partials/download_button.html" %}
+</div>
+<script>
+c3.generate({
+  bindto: '#overview-line-graph',
+  data: {
+    x: 'x',
+    columns: {{ graph_data | safe }},
+    type: 'bar',
+  },
+  axis: {
+      x: {
+          type: 'timeseries',
+          tick: {
+              format: '%b/%y'
+          }
+      }
+  },
+  bar: {
+    width: {
+      ratio: 0.6 // this makes bar width 50% of length between ticks
+    }
+  }
+});
+</script>
+{% endblock %}

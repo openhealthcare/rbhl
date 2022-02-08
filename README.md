@@ -11,7 +11,7 @@ To get started, run the following commands:
     # constructs lookup lists from values from the above
     python manage.py construct_lookup_lists
     python manage.py import_peak_flow # currently needs work
-    python manage.py import_blood_book # currently needs work
+    python manage.py import_bloods # currently needs work
 
     # import extra data files
     python manage.py other_details <file name>

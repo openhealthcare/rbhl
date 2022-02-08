@@ -9,10 +9,11 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
+    ('Support', 'support@openhealthcare.org.uk',),
 )
 
 MANAGERS = ADMINS
+SERVER_EMAIL = 'support@openhealthcare.org.uk'
 
 try:
     import dj_database_url
@@ -239,6 +240,11 @@ LOGGING = {
             'handlers': ['mail_admins', 'console'],
             'level': 'ERROR',
             'propagate': True,
+        },
+        'commands': {
+            'handlers': ['mail_admins', 'console'],
+            'level': 'ERROR',
+            'propagate': True,
         }
     }
 }
@@ -304,7 +310,7 @@ DEFAULT_DOMAIN = 'http://rbhl.com/'
 
 AUTOCOMPLETE_SEARCH = True
 OPAL_BRAND_NAME = 'Indigo'
-VERSION_NUMBER  = '1.15'
+VERSION_NUMBER  = '1.27'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (

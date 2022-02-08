@@ -1,4 +1,18 @@
 {% load forms %}
+
+<div class="row form-row">
+  <div class="col-md-6">
+      <div class="horizontal-form">
+        {% datepicker field="ClinicLog.clinic_date" style="vertical" %}
+      </div>
+  </div>
+  <div class="col-md-6">
+      <div class="horizontal-form">
+        {% input field="ClinicLog.clinic_site" style="vertical" %}
+      </div>
+  </div>
+</div>
+
 <div class="row form-row">
   <div class="col-md-6">
       <div class="horizontal-form">
@@ -7,33 +21,27 @@
   </div>
   <div class="col-md-6">
       <div class="horizontal-form">
-          {% datepicker field="ClinicLog.clinic_date" style="vertical" %}
+          {% input field="ClinicLog.cns" style="vertical" %}
       </div>
   </div>
 </div>
 <div class="row form-row">
   <div class="col-md-6">
     <div class="horizontal-form">
-      {% input field="ClinicLog.clinic_site" style="vertical" %}
-    </div>
-  </div>
-  <div class="col-md-6">
-    <div class="horizontal-form">
-      {% input field="ClinicLog.referred_to" style="vertical" %}
+      {% checkbox field="ClinicLog.active" style="vertical" %}
     </div>
   </div>
 </div>
 <div class="row"></div>
 <hr>
-
 <div class="row">
   <div class="col-md-6">
     <div class="horizontal-form">
-      {% select field="ClinicLog.diagnosis_outcome" style="vertical" %}
+      {% input field="ClinicLog.referred_to" style="vertical" %}
     </div>
   </div>
   <div class="col-md-6">
-    {% checkbox field="ClinicLog.active" style="vertical" %}
+      {% select field="ClinicLog.diagnosis_outcome" style="vertical" %}
   </div>
 </div>
 <div class="row"></div>
@@ -48,11 +56,14 @@
 </div>
 <div class="row">
   <div class="col-md-6">
+    {% checkbox field="ClinicLog.external_spirometry_done" style="vertical" %}
+  </div>
+  <div class="col-md-6">
     {% checkbox field="ClinicLog.other_rbh_bloods" style="vertical" %}
   </div>
+</div>
+<div class="row">
   <div class="col-md-6">
     {% checkbox field="ClinicLog.outstanding_tests_required" style="vertical" %}
   </div>
 </div>
-
-

@@ -1,6 +1,20 @@
 {% load forms %}
 {% load rbhl_panels %}
-{% field_display "Employment.employer" %}
+{% comment %}
+The display is lined up to use full width columns with non singletons.
+Use of a normal record panel would shift this panel's columns out of line so
+instead we put in an edit button with padding.
+{% endcomment %}
+<div class="row">
+  <div class="col-md-5">
+      <b>Employer:</b>
+  </div>
+  <div class="col-md-7 edit-item-padding">
+    [[ item.employer ]]
+    <i class="fa fa-pencil edit pointer edit-item" ng-click="parent.recordEditor.editItem('employment', item)"></i>
+  </div>
+</div>
+
 {% field_display "Employment.oh_provider" %}
 {% field_display "Employment.job_title" %}
 {% field_display "Employment.employment_category" %}

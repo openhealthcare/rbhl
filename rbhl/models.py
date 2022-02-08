@@ -127,7 +127,7 @@ class SocialHistory(RBHLSubrecord, models.EpisodeSubrecord):
     smoker = fields.CharField(
         blank=True, null=True, max_length=256, choices=SMOKING_CHOICES
     )
-    cigerettes_per_day = fields.IntegerField(null=True, blank=True)
+    cigarettes_per_day = fields.IntegerField(null=True, blank=True)
 
 
 class ContactDetails(RBHLSubrecord, models.PatientSubrecord):
@@ -150,7 +150,6 @@ class GeographicalArea(lookuplists.LookupList):
 
 class Referral(RBHLSubrecord, models.EpisodeSubrecord):
     _icon         = 'fa fa-level-up'
-    _is_singleton = True
 
     REASONS = enum(
         "Environmental",
@@ -183,6 +182,9 @@ class Referral(RBHLSubrecord, models.EpisodeSubrecord):
     referrer_name = fields.CharField(
         blank=True, null=True, max_length=100, verbose_name="Referrer name"
     )
+    reference_number = fields.CharField(
+        blank=True, null=True, max_length=200, verbose_name="Their reference number"
+    )
     date_of_referral       = fields.DateField(
         blank=True, null=True
     )
@@ -198,7 +200,6 @@ class Referral(RBHLSubrecord, models.EpisodeSubrecord):
     # Used by admin staff
     comments               = fields.TextField(blank=True, null=True)
 
-    attendance = fields.NullBooleanField()
     date_first_appointment = fields.DateField(
         blank=True, null=True, verbose_name="Date of first appointment offered"
     )
@@ -212,6 +213,29 @@ class Referral(RBHLSubrecord, models.EpisodeSubrecord):
         blank=True, null=True, max_length=256, choices=DISEASE
     )
     geographical_area = models.ForeignKeyOrFreeText(GeographicalArea)
+    occld = fields.BooleanField(default=True, verbose_name="OCCLD")
+
+    @classmethod
+    def get_recent_referral_for_episode(cls, episode):
+        clinic_log = episode.cliniclog_set.all()[0]
+        clinc_log_date = clinic_log.clinic_date
+        if not clinc_log_date:
+            return
+
+        referrals = list(episode.referral_set.all())
+        recent_referral = None
+        max_referral_date = None
+
+        for referral in referrals:
+            referral_date = referral.date_of_referral
+            occld = referral.occld
+            if occld and referral_date and referral_date <= clinc_log_date:
+                if not max_referral_date or max_referral_date < referral_date:
+                    max_referral_date = referral_date
+                    recent_referral = referral
+        if not recent_referral and referrals:
+            recent_referral = referrals[-1]
+        return recent_referral
 
 
 class Employer(lookuplists.LookupList):
@@ -232,7 +256,6 @@ class JobTitle(lookuplists.LookupList):
 
 class Employment(RBHLSubrecord, models.EpisodeSubrecord):
     _icon         = 'fa fa-building-o'
-    _is_singleton = True
 
     employer = fields.CharField(blank=True, null=True, max_length=100)
     job_title = models.ForeignKeyOrFreeText(JobTitle)
@@ -258,8 +281,10 @@ class ClinicLog(RBHLSubrecord, models.EpisodeSubrecord):
     class Meta:
         verbose_name = "Clinic details"
 
+    KNOWN = 'Known'
+
     OUTCOMES = enum(
-        'Known',
+        KNOWN,
         'Investigations continuing',
         'Not established lost to follow-up',
         'Not reached despite investigation',
@@ -269,6 +294,14 @@ class ClinicLog(RBHLSubrecord, models.EpisodeSubrecord):
 
     seen_by           = fields.CharField(
         null=True, blank=True, default="", max_length=100
+    )
+    cns               = fields.CharField(
+        null=True,
+        blank=True,
+        default="",
+        max_length=100,
+        verbose_name="CNS",
+        help_text="Clinical nurse specialist"
     )
     clinic_date        = fields.DateField(blank=True, null=True)
     clinic_site        = fields.CharField(
@@ -287,6 +320,9 @@ class ClinicLog(RBHLSubrecord, models.EpisodeSubrecord):
     histamine_date      = fields.DateField(blank=True, null=True)
     histamine_attendance = fields.NullBooleanField()
 
+    external_spirometry_done = fields.BooleanField(
+        default=False
+    )
     peak_flow           = fields.NullBooleanField()
 
     other_rbh_bloods    = fields.NullBooleanField(
@@ -606,13 +642,18 @@ class Diagnosis(RBHLSubrecord, models.EpisodeSubrecord):
     MALIGNANCY = "Malignancy"
     BENIGN_PLEURAL_DISEASE = "Benign pleural disease"
     DIFFUSE_LUNG_DISEASE = "Diffuse lung disease"
+    BREATHING_PATTERN_DYSFUNCTION = "Breathing pattern dysfunction"
+    IRRITANT_SYMPTOMS_ONLY = "Irritant symptoms only"
+    UPPER_AIRWAY_DYSFUNCTION = "Upper airway dysfunction"
+
     NAD = "NAD"  # no abnormality detected
     OTHER = "Other"
 
     CONDITON_CATEGORIES = enum(
         ASTHMA, RHINITIS, CHRONIC_AIR_FLOW_LIMITATION,
         MALIGNANCY, BENIGN_PLEURAL_DISEASE, DIFFUSE_LUNG_DISEASE,
-        OTHER
+        BREATHING_PATTERN_DYSFUNCTION, IRRITANT_SYMPTOMS_ONLY,
+        UPPER_AIRWAY_DYSFUNCTION, OTHER
     )
 
     CONDITION_OPTIONS = {
@@ -634,6 +675,7 @@ class Diagnosis(RBHLSubrecord, models.EpisodeSubrecord):
         "diffuse_lung_disease": [
             "Asbestosis",
             "Hypersensitivity pneumonitis",
+            "Chemical pneumonitis",
             "ILD Other",
             "Berylliosis",
             "Ideopathic Pulmonary Fibrosis",
@@ -644,7 +686,6 @@ class Diagnosis(RBHLSubrecord, models.EpisodeSubrecord):
             "Humidifier fever",
             "Polymer fume fever",
             "Infection",
-            "Chemical pneumonitis",
             "Building related symptoms",
             "Breathing pattern disorder ",
             "Induced laryngeal obstruction",
@@ -794,3 +835,28 @@ class SetUpTwoFactor(fields.Model):
     def allowed(cls, user):
         if cls.time_left(user):
             return True
+
+
+class Fact(fields.Model):
+    """
+    A model to store various performance monitoring data
+    """
+    FIVE_YEAR_MEAN_REFERRAL_TO_DIAGNOSIS = "Five year mean referral to diagnosis"
+    FIVE_YEAR_MEAN_KNOWN_DIAGNOSIS = "Five year mean known diagnosis"
+
+    MEAN_CLINIC_PATIENTS_PER_YEAR = "Mean number of clinic patients per year"
+
+    when        = fields.DateTimeField(default=timezone.now)
+    label       = fields.CharField(max_length=100, db_index=True)
+    value_int   = fields.IntegerField(blank=True, null=True)
+    value_float = fields.FloatField(blank=True, null=True)
+    value_str   = fields.CharField(max_length=255, blank=True, null=True)
+
+    def val(self):
+        if self.value_int is not None:
+            return self.value_int
+        if self.value_float is not None:
+            return self.value_float
+        if self.value_str is not None:
+            return self.value_str
+        raise ValueError('No value set')

@@ -19,7 +19,7 @@
   </div>
   <div class="col-md-6">
     <div class="horizontal-form">
-      {% input field="Referral.referral_reason" style="vertical" %}
+      {% input field="Referral.reference_number" style="vertical" %}
     </div>
   </div>
 </div>
@@ -37,14 +37,19 @@
     </div>
   </div>
 </div>
+<hr>
 <div class="row">
+  <div class="col-md-6">
+    <div class="horizontal-form">
+      {% input field="Referral.referral_reason" style="vertical" %}
+    </div>
+  </div>
   <div class="col-md-6">
     <div class="horizontal-form">
       {% input field="Referral.referral_disease" style="vertical" %}
     </div>
   </div>
 </div>
-<hr>
 <div class="row">
   <div class="col-md-6">
     <div class="horizontal-form">
@@ -59,7 +64,7 @@
 <div class="row">
   <div class="col-md-6">
     <div class="horizontal-form">
-      {% checkbox field="Referral.attendance" style="vertical" %}
+      {% checkbox field="Referral.occld" style="vertical" %}
     </div>
   </div>
 </div>
