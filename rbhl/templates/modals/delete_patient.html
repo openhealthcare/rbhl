@@ -2,12 +2,14 @@
   <button type="button" class="close" ng-click="cancel()">×</button>
   <h3>
     <i class="fa fa-trash-o"></i>
-    Delete [[ patient.demographics[0].first_name ]] [[ patient.demographics[0].surname ]]<span ng-show="patient.demographics[0].date_of_birth">([[ patient.demographics[0].date_of_birth|displayDate ]])</span>
+    Delete [[ patient.demographics[0].first_name ]] [[ patient.demographics[0].surname ]]
+    <span ng-show="patient.demographics[0].date_of_birth">([[ patient.demographics[0].date_of_birth|displayDate ]])</span>
   </h3>
 </div>
 <div class="modal-body">
   <p class="lead text-center">
-    Do you want to delete [[ patient.demographics[0].first_name ]] [[ patient.demographics[0].surname ]]<span ng-show="patient.demographics[0].date_of_birth">([[ patient.demographics[0].date_of_birth|displayDate ]])</span>?
+    Do you want to delete [[ patient.demographics[0].first_name ]] [[ patient.demographics[0].surname ]]
+    <span ng-show="patient.demographics[0].date_of_birth">([[ patient.demographics[0].date_of_birth|displayDate ]])</span>?
   </p>
   <p class="lead text-center">
     To confirm please answer, what is [[ mathCheck.int1 ]] + [[ mathCheck.int2 ]]?
