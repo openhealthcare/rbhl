@@ -1,0 +1,43 @@
+{
+  "exposure": [
+       {
+            "name": "Large animals"
+       },
+       {
+            "name": "Chemicals"
+       },
+       {
+            "name": "Foods"
+       },
+       {
+            "name": "Grain"
+       },
+       {
+            "name": "Gen animals"
+       },
+       {
+            "name": "Moulds"
+       },
+       {
+            "name": "Misc"
+       },
+       {
+            "name": "Enzymes"
+       },
+       {
+            "name": "Isocyanates"
+       },
+       {
+            "name": "Latex"
+       },
+       {
+            "name": "Store"
+       },
+       {
+            "name": "Lab animals"
+       },
+       {
+            "name": "Flour"
+       }
+  ]
+}

@@ -223,7 +223,7 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
           let topLayer = addTopLayer();
           Object.keys(data.treatments).forEach((treatmentName, treatmentIdx) => {
 
-            let cls = "treatment-" + treatmentIdx % 3;
+            let cls = "treatment treatment-" + treatmentIdx % 3;
             let treatmentSection = addRow(topLayer, treatmentIdx, treatmentName, cls);
 
             data.treatments[treatmentName].forEach(treatmentObj => {
@@ -248,7 +248,7 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
             });
           });
 
-          let variabilityRow = addRow(topLayer, Object.keys(data.treatments).length, "% Variability", "");
+          let variabilityRow = addRow(topLayer, Object.keys(data.treatments).length, "% Variability", "variability");
 
           // add variance
           cols.forEach((col, idx) =>{
@@ -260,8 +260,8 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
               let text = g.append("text");
               // text.attr("width", col.width).attr("height","15");
               text.attr("text-anchor", "middle").attr('alignment-baseline', 'middle');
-              text.attr("x", col.width/2).attr("dy", ".82em").attr("dx", "0").classed("variance", true);
-              text.classed("variability", true);
+              text.attr("x", col.width/2).attr("dy", "1.2em").attr("dx", "0").classed("variance", true);
+              text.classed("variability variability-number", true);
               text.text(variability);
               if(variability >= UPPER_BOUND){
                 text.classed("upper-variability", true);
@@ -321,7 +321,12 @@ directives.directive("peakFlowGraph", function($timeout, displayDateFilter) {
           let range = _.range(min, max+50, 50);
 
           if(window.matchMedia('print')){
-            height = (max - min) * 1.5
+            var printPageSize = 700;
+            var titleHeight = $("#page-title").height();
+            var notesHeight = $("#notes").height();
+            var pageHeight = printPageSize - titleHeight - notesHeight;
+            var otherHeight = (max - min) * 1.5;
+            height = Math.min(otherHeight, pageHeight);
           }
           else{
             height = (max - min) * 2
@@ -495,3 +500,88 @@ directives.directive("reemit", function($parse, $timeout) {
     }
   };
 });
+
+
+directives.directive('convertToNumber', function() {
+  /*
+  * Select ng-models are always strings.
+  * This converts an ngmodel that was a string into an int so that it can match
+  * options with int values.
+  *
+  * This is taken from the angularjs docs
+  * https://code.angularjs.org/1.4.6/docs/api/ng/directive/select#binding-select-to-a-non-string-value-via-ngmodel-parsing-formatting
+  *
+  * Its been editted to allow for nulls
+  */
+  return {
+    require: 'ngModel',
+    link: function(scope, element, attrs, ngModel) {
+      ngModel.$parsers.push(function(val) {
+        if(val){
+          return parseInt(val, 10);
+        }
+      });
+      ngModel.$formatters.push(function(val) {
+        if(val){
+          return '' + val;
+        }
+      });
+    }
+  }
+});
+
+
+directives.directive('selectOrOther', function($parse){
+	/*
+	* Provides select or other functionality
+	* Takes in a field and a lookup list,
+	* adds in scope variables localModel.select and localModel.text
+	* if field not in the lookup list,
+	* 	localModel.select is set to 'Other' and localModel.text set to the value of field
+	* else
+	*   localModel.select is set to the value of field
+	*
+	* when either of these models change, the field original field is updated.
+	*
+	* example calling code
+	* <div select-or-other='editing.something.somefield' lookuplist='[1, 2, 3]'>
+	*   <select ng-model='localModel.select>
+	*    <option ng-repeat="i in options track by $index">[[ i ]]</option>
+	*    <option>Other</option>
+	*   </select>
+	* <input ng-show='localModel.select !== 'Other' ng-model='localModel.text' />
+	*/
+	return {
+		restrict: 'A',
+    scope: true,
+		link: function($scope, element, attrs) {
+			var getter = $parse(attrs.selectOrOther);
+			var setter = getter.assign;
+			$scope.options = $parse(attrs.lookuplist)($scope);
+			selectOrOther = getter($scope) || "";
+			$scope.localModel = {
+				text: null,
+				select: null
+			};
+			if(!selectOrOther.length){
+				$scope.localModel.text = "";
+			}
+			else if(_.contains($scope.options, selectOrOther)){
+				$scope.localModel.select = selectOrOther;
+			}
+			else{
+				$scope.localModel.text = selectOrOther;
+				$scope.localModel.select = 'Other';
+			}
+			$scope.updateSelect = function(){
+				setter($scope, $scope.localModel.select);
+				if($scope.localModel.select !== 'Other'){
+					$scope.localModel.text = null;
+				}
+			};
+			$scope.updateText = function(){
+				setter($scope, $scope.localModel.text);
+			}
+		}
+	}
+})

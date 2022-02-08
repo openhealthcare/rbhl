@@ -46,6 +46,12 @@
     chdir: "{{ PROJECT_PATH}}"
   command: "{{ VIRTUALENV_PATH }}/bin/python manage.py load_lookup_lists"
 
+- name: Clinic activity facts cron
+  cron:
+    name: "Generate clinic activities facts"
+    hour: 1
+    job: "{{ VIRTUALENV_PATH }}/bin/python {{ PROJECT_PATH}}/manage.py generate_clinic_facts"
+
 - name: Remove old nginx default
   become: true
   file:

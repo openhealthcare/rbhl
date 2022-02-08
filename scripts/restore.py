@@ -1,3 +1,4 @@
+import gzip
 import os
 import subprocess
 import sys
@@ -15,9 +16,11 @@ def get_backup(bucket_name, key, file_name, secret_file):
         SSECustomerKey=secret,
         SSECustomerAlgorithm='AES256'
     )
+    with gzip.GzipFile(fileobj=response["Body"]) as gzipfile:
+        content = gzipfile.read()
+
     with open(file_name, "wb") as f:
-        x = response["Body"].read()
-        f.write(x)
+        f.write(content)
 
 
 def load_file(db_name, db_user, file_name):

@@ -1,0 +1,277 @@
+{% load forms %}
+<div pathway-step="{{ step.get_api_name }}">
+  <div ng-repeat="editing in [bloodTest]">
+    <!-- Blood information -->
+    <div class="row">
+      <div class="col-md-6">
+        <div class="horizontal-form">
+          {% input field="Bloods.blood_number" style="vertical" %}
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="horizontal-form">
+          {% datepicker field="Bloods.blood_taken" style="vertical" %}
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="horizontal-form">
+          <label class="control-label">
+            Employment
+          </label>
+          <select name="bloods_employment" class="form-control" ng-model="editing.bloods.employment_id" convert-to-number>
+            <option value="">---------</option>
+            <option value="[[ i.id ]]" ng-if="employment_display(i)" ng-repeat="i in episode.employment">
+              [[ employment_display(i) ]]
+            </option>
+          </select>
+          <span class="help-block">
+            Or <a class="pointer" ng-click="addSubrecord('employment')">add a new employment</a>
+          </span>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="horizontal-form">
+          <label class="control-label">
+            Referral
+          </label>
+          <select name="bloods_referral" class="form-control" ng-model="editing.bloods.referral_id" convert-to-number>
+            <option value="">---------</option>
+            <option value="[[ i.id ]]" ng-if="referral_display(i).length" ng-repeat="i in episode.referral">
+              [[ referral_display(i) ]]
+            </option>
+          </select>
+          <span class="help-block">
+            Or <a class="pointer" ng-click="addSubrecord('referral')">add a new referral</a>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="horizontal-form">
+          {% datepicker field="Bloods.blood_date" style="vertical" %}
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="horizontal-form">
+          {% checkbox field="Bloods.store" style="vertical" %}
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="horizontal-form">
+          {% textarea field="Bloods.comment" style="vertical" %}
+        </div>
+      </div>
+    </div>
+    <hr>
+    <!-- Blood location -->
+    <div class="row">
+      <div class="col-md-4">
+        <div class="horizontal-form">
+        {% input field="Bloods.room" style="vertical" %}
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="horizontal-form">
+        {% input field="Bloods.freezer" style="vertical" %}
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="horizontal-form">
+        {% input field="Bloods.shelf" style="vertical" %}
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="horizontal-form">
+        {% input field="Bloods.tray" style="vertical" %}
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="horizontal-form">
+        {% input field="Bloods.vials" style="vertical" %}
+        </div>
+      </div>
+    </div>
+    <hr>
+    <!-- Assay information -->
+    <div class="row">
+      <div class="col-md-6">
+        <div class="horizontal-form">
+          {% input field="Bloods.assayno" style="vertical" %}
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="horizontal-form">
+          {% datepicker field="Bloods.assay_date" style="vertical" %}
+        </div>
+      </div>
+    </div>
+    <hr>
+
+    <!-- Report information -->
+    <div class="row">
+      <div class="col-md-6">
+        <div class="horizontal-form">
+          {% datepicker field="Bloods.report_dt" style="vertical" %}
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="horizontal-form">
+          {% datepicker field="Bloods.report_st" style="vertical" %}
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="horizontal-form">
+          {% input field="Bloods.authorised_by" style="vertical" %}
+        </div>
+      </div>
+    </div>
+    <hr>
+    <!-- Test information -->
+    <div class="row">
+      <div class="col-md-6">
+        <div class="horizontal-form">
+          {% input field="Bloods.exposure" style="vertical" %}
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="horizontal-form">
+          {% select field="Bloods.method" style="vertical" %}
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="horizontal-form">
+          {% select field="Bloods.antigen_type" style="vertical" %}
+        </div>
+      </div>
+    </div>
+    <hr>
+
+    <!-- Restuls -->
+    <div class="col-md-12">
+      <div class="row">
+      <h2>Results <small><i class="fa pointer fa-plus-circle" ng-click="addResult()"></i></small></h2>
+      </div>
+    </div>
+    <div class="row" ng-show="!editing.bloods.bloodresult.length">
+      <div class="col-md-12 text-center">
+        <h1 class="text-muted">No results recorded</h1>
+      </div>
+    </div>
+    <script type="text/ng-template" id="phadiaTestCodeTemplate.html">
+      <a>
+          [[ match.model.name ]] ([[ match.model.code ]])
+      </a>
+    </script>
+    <div ng-repeat="result in editing.bloods.bloodresult">
+      <div class="row">
+        <div class="col-md-2">
+          <div class="col-md-12">
+            <h2>[[ $index + 1 ]] <small><i class="fa pointer fa-trash-o" ng-click="removeResult($index)"></i></small></h2>
+          </div>
+        </div>
+        <div class="col-md-10">
+          <div class="row">
+            <div class="col-md-6">
+            <label for="[[ 'phadia_test_code' + $index ]]">Allergen</label>
+            <div ng-class="form.$submitted && form['allergen' + $index].$error.required">
+              {# A lookup list when you select an option in allergen.metadata it will update result.phadia_test_code with the appropriate allergen.code #}
+              <input id="[[ 'phadia_test_code' + $index ]]"
+                     name="[[ 'phadia_test_code' + $index ]]"
+                     ng-required="result.kul || result.klass || result.rast || result.rast_score"
+                     class="form-control"
+                     autocomplete="off"
+                     ng-model="result.allergen"
+                     typeahead-on-select="selectAllergen($item, result)"
+                     uib-typeahead="phadia_test_code.name as phadia_test_code for phadia_test_code in metadata.phadia_test_code | filter:{name:$viewValue} | limitTo:8"
+                     typeahead-template-url="phadiaTestCodeTemplate.html"
+              />
+            </div>
+            <span class="help-block" ng-show="(form['phadia_test_code' + $index].$dirty || form.$submitted) && form['phadia_test_code' + $index].$error.required">
+              Allergen is required when we have a result
+            </span>
+            </div>
+            <div class="col-md-6">
+              {% input label="Antigen number" model="result.phadia_test_code" style="vertical" %}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3">
+              <div class="form-group">
+                <label>
+                  KU/L
+                </label>
+                <div ng-class="{'errored-state': form.$submitted && form['result_kul' + $index].$invalid}">
+                  <input class="form-control" type="text" ng-model="result.kul" autocomplete="off" ng-pattern="/^[<>]?\s?\d+(\.\d+)?$/" name="[[ 'result_kul' + $index  ]]">
+                </div>
+                <span class="help-block" ng-show="form.$submitted && form['result_kul' + $index].$invalid">
+                  KU/L must be a number or less than/greater than a number. <br />e.g. 1.2 or < 0.35
+                </span>
+              </div>
+            </div>
+            <div class="col-md-3">
+              {% input label="Class" model="result.klass" element_type="number" style="vertical" %}
+            </div>
+            <div class="col-md-3">
+              {% input label="RAST %B" model="result.rast" style="vertical" element_type="number" %}
+            </div>
+            <div class="col-md-3">
+              {% input label="RAST score" model="result.rast_score" style="vertical" element_type="number" %}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3">
+              {% select label="Precipitin" model="result.precipitin" lookuplist="['-ve', '+ve', 'Weak +ve', '++ve']" style="vertical" %}
+            </div>
+            <div class="col-md-3">
+              {% input label="IgG mg/L" element_type="number" model="result.igg" style="vertical" %}
+            </div>
+            <div class="col-md-3">
+              {% input label="IgG class" model="result.iggclass" element_type="number" style="vertical" %}
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr ng-show="!$last">
+    </div>
+  </div>
+  <div class="row content-offset content-offset-below-50">
+    <div class="col-md-12">
+      <hr>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="text-center" ng-show="form.$submitted && form.$invalid">
+        <strong class="help-block">Please fix errors</strong>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <button ng-show="bloodTest.bloods.id" class="btn btn-lg btn-secondary btn-delete"
+      ng-click="delete()"
+      >
+        <i class="fa fa-trash-o"></i>
+        Delete
+      </button>
+    </div>
+    <div class="col-md-6 text-right">
+      <button class="btn btn-lg btn-primary btn-save"
+      ng-click="form.$valid && pathway.finish(editing)"
+      >
+        <i class="[[ pathway.finish_button_icon ]]"></i>
+        [[ pathway.finish_button_text ]]
+      </button>
+  </div>
+</div>

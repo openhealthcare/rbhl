@@ -28,10 +28,13 @@ $twocolwidth: 16.6666666667%;
 // doing this means the page does not
 // jump when there is a scroll bar.
 // Forcing a scroll bar looks good.
-html {
+html, body{
     overflow-y: scroll;
+    height: 100%;
+    @media print{
+        overflow: visible;
+    }
 }
-
 
 /* Layout */
 #center-col {
@@ -129,6 +132,11 @@ a {
   // add a 20px gutter before we start displaying data
   left: calc(#{$twocolwidth} + 20px);
   width: calc(100% - #{$twocolwidth} - 20px);
+
+  @media print{
+    left: 0%;
+    width: 100%;
+  }
 }
 /**** Colours ****/
 
@@ -146,9 +154,14 @@ h1 small {
 }
 #center-col {
     background: white;
+    margin-left: $twocolwidth;
+    min-height: 100%;
 
     @media print{
         margin-left: 0 !important;
+        // stops the peak flow graph from printing
+        // a subsequent empty page
+        border: 1px solid white;
     }
 }
 #left-col h1 small {
@@ -283,6 +296,9 @@ a {
     border: 1px solid $lightgrey;
 }
 
+.checkbox label {
+    font-weight: bold;
+}
 
 .panel.login{
     border: 1px solid #ccc;
@@ -425,10 +441,9 @@ a {
     .upper-variability{
         fill: $red;
     }
-
-    .variability{
-        font-size: 17px;
-    }
+	.tick, .variability, .treatment{
+		font-size: 12px;
+	}
 }
 
 .bottom-menu{
@@ -549,12 +564,36 @@ input[type="date"]::-webkit-input-placeholder{
     }
 }
 
+.demographcis-search-split{
+    padding-right: 8.333%;
+    border-right: 1px solid #ddd;
+    padding-bottom: 40px;
+}
+
+.content-offset-100{
+    margin-top: 100px;
+}
+
 .content-offset-below-100{
     margin-bottom: 100px
 }
 
+.content-offset-below-40{
+    margin-bottom: 40px
+}
+
 .content-offset-below-0{
     margin-bottom: 0;
+}
+
+.edit-item-padding{
+    padding-right: 34px;
+}
+
+.edit-item{
+    position: absolute;
+    right: 10px;
+    top: 0
 }
 
 .table-sortable{
@@ -586,6 +625,7 @@ input[type="date"]::-webkit-input-placeholder{
     position: absolute;
     top: 53px;
     right: 28px;
+    z-index: 10;
 
     .btn{
         padding: 0px 20px; margin-top: 4px;
@@ -692,9 +732,75 @@ input[type="date"]::-webkit-input-placeholder{
     font-size: 15px;
 }
 
+.stats-headline{
+    h1{
+		text-align: right;
+		font-size: 102px;
+    }
+    h3{
+        margin-top: 33px;
+		font-size: 36px;
+		text-align: left;
+    }
+	h4{
+		text-align: left;
+	}
+}
+
+.progress{
+    border-radius: 0;
+    .progress-bar{
+        background-color: $blue;
+    }
+}
+
+h1.static-title{
+    margin-top: 4px;
+    margin-left: 25px;
+    font-size: 36px;
+    color: $slate;
+    display: inline-block;
+
+    a{
+        color: $slate;
+        &:hover{
+            text-decoration: none;
+            color: $dark-blue;
+        }
+    }
+
+    i{
+        font-size: 36px;
+    }
+}
+
+.lab-report{
+	height: 100%;
+	footer{
+		display: none;
+		position: fixed;
+		bottom: 10px;
+		width: 100%;
+		left: 0;
+		text-align: center;
+	}
+}
+
+.input-group{
+	.btn{
+		border-radius: 4px;
+		padding-top: 8px;
+		padding-bottom: 8px;
+	}
+}
+
 @media print{
     @page {
         margin-top: 1cm;
         margin-bottom: 1cm;
+        svg{
+            object-fit: contain;
+            page-break-inside: avoid;
+        }
     }
 }

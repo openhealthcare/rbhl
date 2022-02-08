@@ -1,0 +1,48 @@
+<div class="row">
+  <div class="col-md-5 col-md-offset-2 demographcis-search-split">
+    <p  ng-show="count === 1" class="lead content-offset-100 content-offset-below-40">
+      Do you mean:
+    </p>
+    <span ng-show="count !== 1">
+      <p class="lead">
+        We've found [[ count ]] similar patients.
+      </p>
+      <p class="lead content-offset-below-20">
+        Did you mean:
+      </p>
+    </span>
+    <ul  class="list-group">
+      <li ng-show="$index < 6" class="list-group-item" ng-repeat="patient in patientList">
+        <h4 class="inline">
+          <a class="orange-link" href="/#/patient/[[ patient.patient_id ]]">
+            [[ patient.first_name ]] [[ patient.surname ]]
+            [[ patient.hospital_number ]]
+          </a>
+          <br>
+            <span ng-show="patient.date_of_birth">([[ patient.date_of_birth | displayDate ]])</span>
+        </h4>
+      </li>
+    </ul>
+    <p ng-show="count > 6" class="lead">
+      Or <a class="orange-link" href="/search/#/?query=[[ search.query_term ]]">
+        another [[ count -  6 ]] patient<span ng-show="count !== 7">s</span>
+      </a>
+    </p>
+  </div>
+  <div class="col-md-4 col-md-push-1 content-offset-100">
+    <div class="row">
+      <div class="col-md-12">
+        <p class="lead">
+          Or create a new patient:
+        </p>
+      </div>
+    </div>
+    <div class="row content-offset-20">
+      <div class="col-md-12">
+        <button class="btn btn-lg btn-primary ng-binding ng-isolate-scope" ng-click="new_patient()">
+          Create new patient
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,36 @@
+<div class="row">
+  <div style="top: 0" class="view-switcher">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="btn-group" role="group">
+          {% for menu_date in view.menu_dates %}
+          {% url 'clinic-activity-overview' year=menu_date.0.year as clinic_activity_url %}
+          <a href="{{ clinic_activity_url }}" class="btn {% if view.kwargs.year == menu_date.0|date:"Y" %}btn-info{% else %}btn-default{% endif %}">
+            <h4>
+              {{ menu_date.0|date:"Y" }} - {{ menu_date.1|date:"Y" }}
+            </h4>
+          </a>
+          {% endfor %}          
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 text-right">
+        <div class="btn-group" role="group">
+          {% url 'clinic-activity-overview' year=view.kwargs.year as current_overview %}
+          {% url 'clinic-activity-patients' year=view.kwargs.year as current_patient %}
+          <a href="{{ current_overview }}" class="btn {% if request.path == current_overview %}btn-info{% else %}btn-default{% endif %}">
+            <h4>
+              Overview
+            </h4>
+          </a>
+          <a href="{{ current_patient }}" class="btn {% if request.path == current_patient %}btn-info{% else %}btn-default{% endif %}">
+            <h4>
+              Patients
+            </h4>
+          </a>   
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

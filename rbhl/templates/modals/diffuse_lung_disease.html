@@ -1,5 +1,6 @@
 {% extends 'modals/diagnosis_base.html' %}
 {% load forms %}
+{% load rbhl_panels %}
 {% block title %}
 <i class="fa fa-stethoscope"></i>
 {{ models.Diagnosis.DIFFUSE_LUNG_DISEASE }} {{ block.super }}
@@ -8,19 +9,23 @@
 <div ng-init="editing.diagnosis.category = '{{ models.Diagnosis.DIFFUSE_LUNG_DISEASE }}'">
   <div class="row">
     <div class="col-md-6">
-      <div class="horizontal-form">
-        {% datepicker field="Diagnosis.date" style="vertical" %}
+      <div class="row">
+        <div class="col-md-12">
+          <div class="horizontal-form">
+            {% datepicker field="Diagnosis.date" style="vertical" user_options=True %}
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          {% checkbox field="Diagnosis.occupational" style="vertical" %}
+        </div>
       </div>
     </div>
     <div class="col-md-6">
       <div class="horizontal-form">
-        {% input field="Diagnosis.condition" lookuplist=models.Diagnosis.CONDITION_OPTIONS.diffuse_lung_disease style="vertical" %}
+        {% select_or_other field="Diagnosis.condition" lookuplist=models.Diagnosis.CONDITION_OPTIONS.diffuse_lung_disease style="vertical" %}
       </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-4 ">
-      {% checkbox field="Diagnosis.occupational" style="vertical" %}
     </div>
   </div>
 </div>

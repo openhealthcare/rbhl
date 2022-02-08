@@ -1,0 +1,259 @@
+{% extends 'static_base.html' %}
+{% load rbhl_panels %}
+
+
+{% block title %}
+<style>
+  @media print{
+    @page {
+      size: auto;
+      margin-left: 3cm;
+      margin-right: 3cm;
+    }
+
+    .lab-report footer{
+      display: block;
+    }
+  }
+</style>
+Lab report
+(
+  <a href="/#/patient/{{ object.patient_id }}">
+  {% if object.patient.demographics.name %}
+  {{ object.patient.demographics.name }}
+  {% else %}
+  Lab patient
+  {% endif %}
+  </a>
+  {% if object.blood_number and object.patient.demographics.name.strip %}-{% endif %}
+  {% if object.blood_number %}
+  <a href="/pathway/#/bloods/{{ object.patient_id }}/{{ object.patient.episode_set.last.id }}?id={{ object.id }}">
+    {{ object.blood_number }}
+  </a>
+  {% endif %}
+)
+{% endblock %}
+
+{% block page_content %}
+<div class="lab-report">
+  <div class="row content-offset-20">
+    <div class="col-xs-6">
+      <div class="row">
+        <div class="col-xs-5 col-md-3">
+          Name:
+        </div>
+        <div class="col-xs-7 col-md-9">
+          {{ object.patient.demographics.name }}
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-6">
+      <div class="row">
+        <div class="col-xs-5 col-md-3">
+          Date of birth:
+        </div>
+        <div class="col-xs-7 col-md-9">
+          {{ object.patient.demographics.date_of_birth | none_as_empty }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row content-offset-10">
+    <div class="col-xs-6">
+      <div class="row">
+        <div class="col-xs-5 col-md-3">
+          Ref num:
+        </div>
+        <div class="col-xs-7 col-md-9">
+          {{ object.referral.reference_number | none_as_empty }}
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-6">
+      <div class="row">
+        <div class="col-xs-5 col-md-3">
+          Hospital number:
+        </div>
+        <div class="col-xs-7 col-md-9">
+          {{ object.patient.demographics.hospital_number }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row content-offset-10">
+    <div class="col-xs-6">
+      <div class="row">
+        <div class="col-xs-5 col-md-3">
+          Employer:
+        </div>
+        <div class="col-xs-7 col-md-9">
+          {{ object.employment.employer }}
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-6">
+      <div class="row">
+        <div class="col-xs-5 col-md-3">
+          OH Provider:
+        </div>
+        <div class="col-xs-7 col-md-9">
+          {{ object.employment.oh_provider }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row content-offset-10">
+    <div class="col-xs-6">
+      <div class="row">
+        <div class="col-xs-5 col-md-3">
+          Referrer:
+        </div>
+        <div class="col-xs-7 col-md-9">
+          {{ referral.referrer_name  | none_as_empty }}
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-6">
+      <div class="row">
+        <div class="col-xs-5 col-md-3">
+          Exposure:
+        </div>
+        <div class="col-xs-7 col-md-9">
+          {{ object.exposure }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row content-offset-10">
+    <div class="col-xs-6">
+      <div class="row">
+        <div class="col-xs-5 col-md-3">
+          Sample received:
+        </div>
+        <div class="col-xs-7 col-md-9">
+         {{ object.blood_date | none_as_empty }}
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-6">
+      <div class="row">
+        <div class="col-xs-5 col-md-3">
+          Blood number:
+        </div>
+        <div class="col-xs-7 col-md-9">
+          {{ object.blood_number | none_as_empty}}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row content-offset-10">
+    <div class="col-xs-6">
+      <div class="row">
+        <div class="col-xs-5 col-md-3">
+          Method:
+        </div>
+        <div class="col-xs-7 col-md-9">
+          {{ object.method | none_as_empty }}
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-6">
+      <div class="row">
+        <div class="col-xs-5 col-md-3">
+          Report date:
+        </div>
+        <div class="col-xs-7 col-md-9">
+          {{ object.report_dt | none_as_empty }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row content-offset-10">
+    <div class="col-xs-6">
+      <div class="row">
+        <div class="col-xs-5 col-md-3">
+          Authorised by:
+        </div>
+        <div class="col-xs-7 col-md-9">
+          {{ object.authorised_by | none_as_empty }}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% if object.comment %}
+  <div class="row content-offset-10">
+    <div class="col-xs-6">
+      <div class="row">
+        <div class="col-xs-5 col-md-3">
+        Comments:
+        </div>
+        <div class="col-xs-7 col-md-9">
+        {{ object.comment|linebreaks }}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+  <div class="row content-offset">
+    <div class="col-md-9 col-xs-12">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Allergen</th>
+            <th>Test type</th>
+            <th>Result</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for result in object.bloodresult_set.all %}
+          {# For int/float fields make sure they show if they are 0 #}
+          {% if result.kul or result.rast is not None or result.rast_score is not None or result.precipitin or result.igg is not None %}
+          <tr>
+            <td>
+              {{ result.allergen }}
+              {% if result.phadia_test_code %}
+              ({{ result.phadia_test_code }})
+              {% endif %}
+            </td>
+            <td>{{ result.test_type|join:", " }}</td>
+            <td>
+              {% if result.kul %}
+                {{ result.kul }} KU/L
+              {% endif %}
+              {% if result.rast is not None  %}
+                {{ result.rast }} %B
+              {% endif %}
+              {% if result.rast_score is not None  %}
+                {{ result.rast_score }}
+              {% endif %}
+              {% if result.precipitin %}
+                {{ result.precipitin }}
+              {% endif %}
+              {% if result.igg is not None  %}
+                {{ result.igg }} mg/L
+              {% endif %}
+            </td>
+          </tr>
+          {% endif %}
+          {% endfor %}
+          {% if has_kul or has_rast %}
+          <tr>
+            <td></td>
+            <td></td>
+            <td class="text-muted">
+              Significant: &nbsp;
+              {% if has_kul %}KU/L >= 0.35 &nbsp;{% endif %}
+              {% if has_rast %}%B >= 2{% endif %}
+            </td>
+          </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <footer>
+    Occupational and Environmental Medicine Department
+  </footer>
+</div>
+
+{% endblock %}

@@ -57,7 +57,7 @@ class BuildLookupListTestCase(OpalTestCase):
         )
 
     def test_resave_models(self):
-        emp = self.episode.employment_set.get()
+        emp = self.episode.employment_set.create()
         emp.employment_category = "baker"
         emp.save()
         category = EmploymentCategory.objects.create(name="baker")
