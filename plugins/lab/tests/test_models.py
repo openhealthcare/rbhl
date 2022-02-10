@@ -1,6 +1,8 @@
 import datetime
 from opal.core.test import OpalTestCase
-from plugins.lab.models import Bloods, BloodResult
+from opal.models import Episode
+from rbhl.models import Employment, Referral
+from plugins.lab.models import Bloods, BloodResult, get_extract_rows
 
 
 class BloodsTestCase(OpalTestCase):
@@ -189,3 +191,57 @@ class BloodResultTestCase(OpalTestCase):
 
         self.blood_result.kul = "flawed"
         self.assertFalse(self.blood_result.is_significant())
+
+
+class GetExtractRowsTestCase(OpalTestCase):
+    def test_get_extract_rows(self):
+        patient, episode = self.new_patient_and_episode_please()
+        bloods = Bloods(patient=patient)
+        bloods.blood_date = datetime.date(2020, 9, 28)
+        bloods.assayno = "123"
+        bloods.store = False
+        employment = Employment.objects.create(
+            episode=episode,
+            employer="Muffin's bakery",
+        )
+        bloods.employment = employment
+        referral = Referral.objects.create(
+            episode=episode,
+            referrer_name="Ms Wallace",
+        )
+        bloods.referral = referral
+        bloods.save()
+        bloods_result_1 = bloods.bloodresult_set.create()
+        bloods_result_1.allergen = "flour"
+        bloods_result_1.precipitin = "+ve"
+        bloods_result_1.save()
+        bloods_result_2 = bloods.bloodresult_set.create()
+        bloods_result_2.allergen = "dust mites"
+        bloods_result_2.precipitin = "-ve"
+        bloods_result_2.save()
+        rows = get_extract_rows(Episode.objects.all())
+        self.assertEqual(len(rows), 2)
+        self.assertEqual(
+            rows[0]["Episode"], episode.id
+        )
+        self.assertEqual(
+            rows[0]["Patient"], patient.id,
+        )
+        self.assertEqual(
+            rows[0]["Employment"], "Muffin's bakery",
+        )
+        self.assertEqual(
+            rows[0]["Referral"], "Ms Wallace",
+        )
+        self.assertEqual(
+            rows[0]["Allergen"], "flour",
+        )
+        self.assertEqual(
+            rows[0]["Precipitin"], "+ve",
+        )
+        self.assertEqual(
+            rows[1]["Allergen"], "dust mites",
+        )
+        self.assertEqual(
+            rows[1]["Precipitin"], "-ve",
+        )

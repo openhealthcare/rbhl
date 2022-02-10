@@ -47,6 +47,11 @@ class Application(application.OpalApplication):
     default_episode_category = OccupationalLungDiseaseEpisode.display_name
 
     @classmethod
+    def post_extract_processing(cls, episodes, description, user, extract_directory):
+        from plugins.lab.models import extract_bloods
+        return extract_bloods(episodes, extract_directory)
+
+    @classmethod
     def get_menu_items(klass, user=None):
         # we import here as settings must be set before this is imported
         from rbhl.pathways import NewReferral, LabReferral

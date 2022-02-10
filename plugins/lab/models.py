@@ -1,6 +1,9 @@
 """
 Models for lab
 """
+import os
+import csv
+from collections import defaultdict
 from rbhl.models import RBHLSubrecord as RbhlSubrecord
 from django.db import models as fields
 from opal import models
@@ -125,6 +128,8 @@ class Exposure(lookuplists.LookupList):
 
 
 class Bloods(RbhlSubrecord, models.PatientSubrecord):
+    _exclude_from_extract = True
+
     ANTIGEN_TYPE = enum("STANDARD", "BESPOKE")
     METHODS = enum(
         "ImmunoCAP",
@@ -214,7 +219,7 @@ class Bloods(RbhlSubrecord, models.PatientSubrecord):
             result.update_from_dict(result_dict)
 
 
-class BloodResult(fields.Model):
+class BloodResult(models.SerialisableFields, fields.Model):
     _exclude_from_extract = True
     _advanced_searchable = False
 
@@ -317,3 +322,67 @@ class BloodResult(fields.Model):
         for field in fields:
             setattr(self, field, data.get(field))
         self.save()
+
+
+def get_extract_rows(episodes):
+    """
+    Extract the bloods into a csv file, put a new row per result rather
+    than per observation
+    """
+    # Allow for patients to have multiple episodes in the future
+    # so lets remove duplicates
+    patients = models.Patient.objects.filter(episode__in=episodes)
+    patient_id_to_episode_ids = defaultdict(list)
+    for episode in episodes:
+        patient_id_to_episode_ids[episode.patient_id].append(episode.id)
+    results = BloodResult.objects.filter(bloods__patient__in=patients).select_related(
+        'bloods', 'bloods__referral', 'bloods__employment'
+    )
+    blood_fields = Bloods._get_fieldnames_to_extract()
+    blood_fields.remove("consistency_token")
+    blood_fields.remove("id")
+    blood_fields.remove("bloodresult")
+    result_fields = BloodResult._get_fieldnames_to_serialize()
+    result_fields.remove("id")
+    rows = []
+    for result in results:
+        bloods = result.bloods
+        episode_ids = patient_id_to_episode_ids[bloods.patient_id]
+        for episode_id in episode_ids:
+            row = {
+                "Episode": episode_id
+            }
+            for blood_field in blood_fields:
+                if blood_field == "employment_id":
+                    if bloods.employment:
+                        row["Employment"] = bloods.employment.employer
+                    else:
+                        row["Employment"] = ""
+                elif blood_field == "referral_id":
+                    if bloods.referral:
+                        row["Referral"] = bloods.referral.referrer_name
+                    else:
+                        row["Referral"] = ""
+                else:
+                    row[Bloods._get_field_title(blood_field)] = getattr(
+                        bloods, blood_field
+                    )
+            for result_field in result_fields:
+                row[BloodResult._get_field_title(result_field)] = getattr(
+                    result, result_field
+                )
+            rows.append(row)
+    return rows
+
+
+def extract_bloods(episodes, extract_directory):
+    """
+    Extract the bloods into a csv file
+    """
+    rows = get_extract_rows(episodes)
+    if rows:
+        csv_file_name = os.path.join(extract_directory, "bloods.csv")
+        with open(csv_file_name, "w") as f:
+            writer = csv.DictWriter(f, fieldnames=rows[0].keys())
+            writer.writeheader()
+            writer.writerows(rows)
