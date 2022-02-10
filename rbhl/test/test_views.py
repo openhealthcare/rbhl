@@ -1,6 +1,8 @@
 import datetime
 from django.urls import reverse
 from opal.core.test import OpalTestCase
+from opal.models import Role
+from rbhl import constants
 
 
 class PatientListsTestCase(OpalTestCase):
@@ -122,6 +124,8 @@ class PatientListsTestCase(OpalTestCase):
         user.first_name = "Jane"
         user.last_name = "Doe"
         user.save()
+        role = Role.objects.get(name=constants.DOCTOR_ROLE)
+        user.profile.roles.add(role)
         _, episode = self.new_patient_and_episode_please()
         episode.cliniclog_set.update(active=True, seen_by="jd")
         context = self.client.get(self.seen_by_me_url).context
