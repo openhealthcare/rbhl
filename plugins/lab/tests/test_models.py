@@ -43,7 +43,6 @@ class BloodsTestCase(OpalTestCase):
                     "kul": None,
                     "precipitin": "+ve",
                     "rast": None,
-                    "result": None,
                     "rast_score": None,
                     "significant": True
                 }
@@ -75,7 +74,7 @@ class BloodsTestCase(OpalTestCase):
         update_dict = {
             "exposure": "wheat",
             "bloodresult": [{
-                "result": "result"
+                "allergen": "flour"
             }]
         }
         bloods = Bloods(patient=self.patient)
@@ -85,7 +84,7 @@ class BloodsTestCase(OpalTestCase):
             bloods_reloaded.exposure, "wheat"
         )
         self.assertEqual(
-            bloods.bloodresult_set.get().result, "result"
+            bloods.bloodresult_set.get().allergen, "flour"
         )
 
     def test_update_from_dict_empty_result(self):
@@ -104,7 +103,7 @@ class BloodsTestCase(OpalTestCase):
         bb = Bloods(patient=self.patient)
         bb.exposure = "wheat"
         bb.save()
-        bb.bloodresult_set.create(result="result")
+        bb.bloodresult_set.create(precipitin="+ve")
         bb.update_from_dict({
             "exposure": "wheat",
             "bloodresult": []
@@ -121,12 +120,12 @@ class BloodsTestCase(OpalTestCase):
         bb = Bloods(patient=self.patient)
         bb.exposure = "wheat"
         bb.save()
-        bb_result = bb.bloodresult_set.create(result="result")
+        bb_result = bb.bloodresult_set.create(precipitin="+ve")
         bb.update_from_dict({
             "exposure": "wheat",
             "bloodresult": [{
                 "id": bb_result.id,
-                "result": "other result"
+                "precipitin": "-ve"
             }]
         }, self.user)
         bb_reloaded = Bloods.objects.get()
@@ -134,15 +133,15 @@ class BloodsTestCase(OpalTestCase):
             bb_reloaded.exposure, "wheat"
         )
         self.assertEqual(
-            bb_reloaded.bloodresult_set.get().result,
-            "other result"
+            bb_reloaded.bloodresult_set.get().precipitin,
+            "-ve"
         )
 
     def test_cascade(self):
         bb = Bloods(patient=self.patient)
         bb.exposure = "wheat"
         bb.save()
-        bb.bloodresult_set.create(result="result")
+        bb.bloodresult_set.create(precipitin="+ve")
         bb.delete()
         self.assertFalse(BloodResult.objects.exists())
 
