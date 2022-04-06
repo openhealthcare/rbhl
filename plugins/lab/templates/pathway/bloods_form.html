@@ -170,7 +170,7 @@
     </div>
     <script type="text/ng-template" id="phadiaTestCodeTemplate.html">
       <a>
-          [[ match.model.name ]] ([[ match.model.code ]])
+          [[ match.model.name ]] <span ng-show="match.model.code">([[ match.model.code ]])</span>
       </a>
     </script>
     <div ng-repeat="result in editing.bloods.bloodresult">
