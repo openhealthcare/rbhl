@@ -193,6 +193,7 @@
                      autocomplete="off"
                      ng-model="result.allergen"
                      typeahead-on-select="selectAllergen($item, result)"
+                     ng-change="typedAllergen(result)"
                      uib-typeahead="phadia_test_code.name as phadia_test_code for phadia_test_code in metadata.phadia_test_code | filter:{name:$viewValue} | limitTo:8"
                      typeahead-template-url="phadiaTestCodeTemplate.html"
               />
