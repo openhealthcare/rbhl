@@ -292,6 +292,12 @@ class ClinicLog(RBHLSubrecord, models.EpisodeSubrecord):
         'Not established patient withdrew'
     )
 
+    SWORD_OPTIONS = enum(
+        "Not relevant",
+        "Needs to be reported",
+        "Reported"
+    )
+
     seen_by           = fields.CharField(
         null=True, blank=True, default="", max_length=100
     )
@@ -352,6 +358,13 @@ class ClinicLog(RBHLSubrecord, models.EpisodeSubrecord):
     )
     referred_to = fields.CharField(
         blank=True, null=True, max_length=256
+    )
+    sword = fields.CharField(
+        blank=True,
+        null=True,
+        max_length=256,
+        verbose_name="SWORD",
+        choices=SWORD_OPTIONS,
     )
 
     def days_since_first_attended(self):
