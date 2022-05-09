@@ -323,7 +323,7 @@ class ClinicLog(RBHLSubrecord, models.EpisodeSubrecord):
     external_spirometry_done = fields.BooleanField(
         default=False
     )
-    peak_flow           = fields.NullBooleanField()
+    peak_flow_requested = fields.NullBooleanField()
 
     other_rbh_bloods    = fields.NullBooleanField(
         verbose_name="Other RBH bloods"
