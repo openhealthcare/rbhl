@@ -3,7 +3,7 @@
 - name: Things you want on servers generally
   become: true
   user: ubuntu
-  hosts: webserver
+  hosts: prod_webserver
   gather_facts: no
   roles:
     - setup_server
@@ -11,38 +11,39 @@
 - name: Make the server capable of running a standard database
   become: true
   user: ubuntu
-  hosts: webserver
+  hosts: prod_webserver
   roles:
     - setup_db
 
 - name: Set up our project
   user: ubuntu
-  hosts: webserver
+  hosts: prod_webserver
   roles:
     - setup_rbhl
 
 - name: Set up AWS
   user: ubuntu
-  hosts: webserver
+  hosts: prod_webserver
   roles:
     - setup_aws
 
 - name: Deploy project
   user: ubuntu
-  hosts: webserver
+  hosts: prod_webserver
   roles:
     - deploy_rbhl
   vars:
     DEV: 0
+    DOMAIN: indigo-rbht.openhealthcare.org.uk
 
 - name: Set up backups
   user: ubuntu
-  hosts: webserver
+  hosts: prod_webserver
   roles:
     - setup_backups
 
 - name: Restart services
   user: ubuntu
-  hosts: webserver
+  hosts: prod_webserver
   roles:
     - restart

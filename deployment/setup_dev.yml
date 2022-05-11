@@ -2,7 +2,7 @@
 - name: Things you want on servers generally
   become: true
   user: ubuntu
-  hosts: webserver
+  hosts: test_webserver
   gather_facts: no
   roles:
     - setup_server
@@ -10,32 +10,33 @@
 - name: Make the server capable of running a standard database
   become: true
   user: ubuntu
-  hosts: webserver
+  hosts: test_webserver
   roles:
     - setup_db
 
 - name: Set up our project
   user: ubuntu
-  hosts: webserver
+  hosts: test_webserver
   roles:
     - setup_rbhl
 
 - name: Set up AWS
   user: ubuntu
-  hosts: webserver
+  hosts: test_webserver
   roles:
     - setup_aws
 
 - name: Deploy project
   user: ubuntu
-  hosts: webserver
+  hosts: test_webserver
   roles:
     - deploy_rbhl
   vars:
     DEV: 1
+    DOMAIN: indigo-rbht-test.openhealthcare.org.uk
 
 - name: Restart services
   user: ubuntu
-  hosts: webserver
+  hosts: test_webserver
   roles:
     - restart
