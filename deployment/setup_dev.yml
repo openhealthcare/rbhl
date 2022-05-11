@@ -35,8 +35,9 @@
     DEV: 1
     DOMAIN: indigo-rbht-test.openhealthcare.org.uk
 
-- name: Restart services
+- name: Restore
   user: ubuntu
   hosts: test_webserver
   roles:
+    - restore
     - restart

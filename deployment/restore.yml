@@ -1,6 +1,0 @@
-- name: Restore
-  user: ubuntu
-  hosts: webserver
-  roles:
-    - restore
-    - restart

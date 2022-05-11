@@ -42,8 +42,9 @@
   roles:
     - setup_backups
 
-- name: Restart services
+- name: Restore
   user: ubuntu
   hosts: prod_webserver
   roles:
+    - restore
     - restart
