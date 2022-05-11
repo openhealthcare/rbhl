@@ -18,13 +18,26 @@
   </div>
   <div class="col-md-6">
     {% field_display "ClinicLog.active" %}
+    {% field_display "ClinicLog.sword" %}
   </div>
 </div>
 
 <hr />
 <div class="row">
   <div class="col-md-6">
-    {% field_display "ClinicLog.peak_flow" %}
+    <div class="row">
+      <div class="col-md-5">
+        <b>Peak flow requested</b>
+      </div>
+      <div class="col-md-7">
+        <span ng-show='item.peak_flow_requested'>
+          {% icon "fa-check" %}
+          <span ng-show="episode.peak_flow_day.length">
+            ( received )
+          </span>
+        </span>
+      </div>
+    </div>
     {% field_display "ClinicLog.external_spirometry_done" %}
   </div>
   <div class="col-md-6">

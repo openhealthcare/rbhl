@@ -329,7 +329,7 @@ class AbstractClinicActivity(TemplateView):
     def get_peak_flow(self, episode, clinic_log):
         peak_flow_days = episode.peakflowday_set.all()
         result = "Not requested"
-        if clinic_log.peak_flow:
+        if clinic_log.peak_flow_requested:
             result = "Not returned"
         if peak_flow_days:
             result = "Returned"
