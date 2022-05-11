@@ -221,7 +221,9 @@ class BloodResult(fields.Model):
     NEGATIVE = "-ve"
     PRECIPITIN_CHOICES = enum(NEGATIVE, "+ve", "Weak +ve", '++ve')
     bloods = fields.ForeignKey(Bloods, on_delete=fields.CASCADE)
-    allergen = models.ForeignKeyOrFreeText(Allergen)
+    allergen = models.ForeignKeyOrFreeText(
+        Allergen, verbose_name='Allergen'
+    )
     phadia_test_code  = fields.CharField(
         blank=True, null=True, max_length=200, verbose_name="Antigen number"
     )
@@ -240,7 +242,11 @@ class BloodResult(fields.Model):
         blank=True, null=True, verbose_name="RAST score"
     )
     precipitin  = fields.CharField(
-        blank=True, null=True, max_length=200, choices=PRECIPITIN_CHOICES
+        blank=True,
+        null=True,
+        max_length=200,
+        choices=PRECIPITIN_CHOICES,
+        verbose_name="Precipitin"
     )
     igg         = fields.FloatField(
         blank=True, null=True, verbose_name="IgG"
