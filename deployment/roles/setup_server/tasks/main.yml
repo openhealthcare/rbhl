@@ -41,3 +41,6 @@
     - nginx
     - python3.7
     - python3-pip
+    - rabbitmq-server
+- name: restart rabbitmq
+  service: name=rabbitmq-server state=restarted
