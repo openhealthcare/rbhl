@@ -30,7 +30,9 @@ def get_blood_result_rows(episodes):
     for episode in episodes:
         patient_id_to_episodes[episode.patient_id].add(episode)
 
-    bloods_fields_to_ignore = set(["id", "bloodresult", 'consistency_token'])
+    bloods_fields_to_ignore = set([
+        "id", "patient_id", "bloodresult", 'consistency_token'
+    ])
     bloods_fields = [
         i
         for i in models.Bloods._get_fieldnames_to_extract()
@@ -41,7 +43,11 @@ def get_blood_result_rows(episodes):
         bloods = blood_result.bloods
         episodes = patient_id_to_episodes[bloods.patient_id]
         for episode in list(episodes):
-            row = {"Episode": episode.id}
+            row = {
+                "ID": blood_result.id,
+                "Patient": bloods.patient_id,
+                "Episode": episode.id,
+            }
             for bloods_field in bloods_fields:
                 bloods_field_title = bloods.__class__._get_field_title(bloods_field)
                 row[bloods_field_title] = getattr(bloods, bloods_field)
