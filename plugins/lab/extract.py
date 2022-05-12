@@ -30,7 +30,7 @@ def get_blood_result_rows(episodes):
     for episode in episodes:
         patient_id_to_episodes[episode.patient_id].add(episode)
 
-    bloods_fields_to_ignore = set(["id", "bloodresult"])
+    bloods_fields_to_ignore = set(["id", "bloodresult", 'consistency_token'])
     bloods_fields = [
         i
         for i in models.Bloods._get_fieldnames_to_extract()
