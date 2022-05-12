@@ -4,7 +4,6 @@ rbhl - Our Opal Application
 import datetime
 from opal.core import application, menus
 from django.urls import reverse, reverse_lazy
-
 from rbhl.episode_categories import OccupationalLungDiseaseEpisode
 from rbhl import constants
 
@@ -42,6 +41,9 @@ class Application(application.OpalApplication):
     ]
     styles = [
         'css/rbhl.css'
+    ]
+    modify_extract = [
+        "plugins.lab.extract.add_blood_results"
     ]
 
     default_episode_category = OccupationalLungDiseaseEpisode.display_name
