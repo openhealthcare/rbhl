@@ -73,12 +73,10 @@ def write_rows(directory, rows):
 
 def add_blood_results(episodes, directory, *args):
     """
-    Remove the bloods.csv file from the directory and add
-    in blood_results.csv which contains one row
+    Add in blood_results.csv which contains one row
     per blood result and all the fields on the blood_result
     and its parent bloods.
     """
-    os.remove(os.path.join(directory, "bloods.csv"))
     rows = get_blood_result_rows(episodes)
     if rows:
         write_rows(directory, rows)

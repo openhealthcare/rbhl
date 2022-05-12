@@ -125,6 +125,7 @@ class Exposure(lookuplists.LookupList):
 
 
 class Bloods(RbhlSubrecord, models.PatientSubrecord):
+    _exclude_from_extract = True
     ANTIGEN_TYPE = enum("STANDARD", "BESPOKE")
     METHODS = enum(
         "ImmunoCAP",
@@ -215,9 +216,6 @@ class Bloods(RbhlSubrecord, models.PatientSubrecord):
 
 
 class BloodResult(fields.Model):
-    _exclude_from_extract = True
-    _advanced_searchable = False
-
     NEGATIVE = "-ve"
     PRECIPITIN_CHOICES = enum(NEGATIVE, "+ve", "Weak +ve", '++ve')
     bloods = fields.ForeignKey(Bloods, on_delete=fields.CASCADE)
