@@ -29,6 +29,12 @@ server {
 
     access_log {{ LOG_DIR }}/nginx.log timed_combined;
 
+    # https://stackoverflow.com/questions/49420755/trying-to-prevent-direct-ip-access-nginx-ssl
+    # block direct IP access
+    if ($http_host != $server_name) {
+        return 444;
+    }
+
    location /static {
         alias {{ PROJECT_PATH }}/static;
     }

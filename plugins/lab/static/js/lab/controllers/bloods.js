@@ -22,6 +22,7 @@ angular.module('opal.controllers').controller(
     scope.bloodTest = {bloods: bloodTest};
 		scope.episode_select = [];
 		scope.episode = episode;
+		scope.bloodTest.bloods.episode_id = episode.id;
 		scope.patient_id = scope.episode.demographics[0].patient_id;
 		scope.refreshEpisodes();
   }
@@ -49,7 +50,9 @@ angular.module('opal.controllers').controller(
 		$http.get('/api/v0.1/patient_episodes/' + scope.patient_id + '/').then(function(response){
 			scope.episode_select = response.data;
 		}).then(function(){
-			scope.bloodTest.bloods.episode_id = newEpisodeId;
+			if(newEpisodeId){
+				scope.bloodTest.bloods.episode_id = newEpisodeId;
+			}
 		});
 	}
 
@@ -135,11 +138,31 @@ angular.module('opal.controllers').controller(
   }
 
   scope.selectAllergen = function($item, result){
-    if($item){
-      result.phadia_test_code = $item.code
+		/*
+		* Update the phadia test code for the allergen if a test code exists
+		* this is called from typeahead
+		*/
+    if($item && $item.code){
+      result.phadia_test_code = $item.code;
     }
+		else{
+			result.phadia_test_code = null;
+		}
   }
 
+	scope.typedAllergen = function(result){
+		/*
+		* Update the phadia test code for the allergen if a test code exists
+		* this is called if the user types in the allergen box
+		*/
+		if(!result.allergen || !!result.allergen.length){
+			result.phadia_test_code = null;
+		}
+		var phadiaCode = _.findWhere(scope.metadata.phadia_test_code, {name: result.allergen});
+		if(phadiaCode){
+			result.phadia_test_code = phadiaCode.code;
+		}
+	}
 
   scope.delete = function(){
     var item = _.findWhere(episode.bloods, {id: scope.bloodTest.bloods.id})

@@ -44,11 +44,18 @@
       {% select field="ClinicLog.diagnosis_outcome" style="vertical" %}
   </div>
 </div>
+<div class="row">
+  <div class="col-md-6">
+    <div class="horizontal-form">
+      {% radio field="ClinicLog.sword" style="vertical" %}
+    </div>
+  </div>
+</div>
 <div class="row"></div>
 <hr>
 <div class="row">
   <div class="col-md-6">
-    {% checkbox field="ClinicLog.peak_flow" style="vertical" %}
+    {% checkbox field="ClinicLog.peak_flow_requested" style="vertical" %}
   </div>
   <div class="col-md-6">
     {% checkbox field="ClinicLog.immunology_oem" style="vertical" %}

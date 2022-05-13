@@ -156,7 +156,7 @@
     </div>
     <script type="text/ng-template" id="phadiaTestCodeTemplate.html">
       <a>
-          [[ match.model.name ]] ([[ match.model.code ]])
+          [[ match.model.name ]] <span ng-show="match.model.code">([[ match.model.code ]])</span>
       </a>
     </script>
     <div ng-repeat="result in editing.bloods.bloodresult">
@@ -179,6 +179,7 @@
                      autocomplete="off"
                      ng-model="result.allergen"
                      typeahead-on-select="selectAllergen($item, result)"
+                     ng-change="typedAllergen(result)"
                      uib-typeahead="phadia_test_code.name as phadia_test_code for phadia_test_code in metadata.phadia_test_code | filter:{name:$viewValue} | limitTo:8"
                      typeahead-template-url="phadiaTestCodeTemplate.html"
               />

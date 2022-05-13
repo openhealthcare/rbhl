@@ -2,13 +2,15 @@
 API endpoints for RBHL
 """
 from collections import defaultdict
+from rest_framework import status
 import itertools
 from decimal import Decimal
 from django.db import transaction
-from rest_framework import status
 from opal.models import Episode
 from opal.core.views import json_response
-from opal.core.api import LoginRequiredViewset, episode_from_pk
+from opal.core.api import (
+    LoginRequiredViewset, episode_from_pk, patient_from_pk
+)
 from rbhl import models
 from opal.core.api import OPALRouter
 
@@ -172,6 +174,16 @@ class NewEpisodeAPI(LoginRequiredViewset):
         )
 
 
+class DeletePatientViewset(LoginRequiredViewset):
+    basename = "delete_patient"
+
+    @patient_from_pk
+    def destroy(self, request, patient):
+        patient.delete()
+        return json_response('deleted', status_code=status.HTTP_202_ACCEPTED)
+
+
 indigo_router = OPALRouter()
 indigo_router.register(NewEpisodeAPI.basename, NewEpisodeAPI)
 indigo_router.register(PeakFlowGraphData.basename, PeakFlowGraphData)
+indigo_router.register(DeletePatientViewset.basename, DeletePatientViewset)

@@ -185,10 +185,15 @@ INSTALLED_APPS = (
     'django_otp.plugins.otp_static',
     'django_otp.plugins.otp_totp',
     'two_factor',
+    'django_celery_results',
     'plugins.add_patient_step',
     'plugins.lab',
     'rbhl',
 )
+
+
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_CACHE_BACKEND = 'django-cache'
 
 
 V_FORMAT = '%(asctime)s %(process)d %(thread)d %(filename)s %(funcName)s \
@@ -305,7 +310,7 @@ DEFAULT_DOMAIN = 'http://rbhl.com/'
 
 AUTOCOMPLETE_SEARCH = True
 OPAL_BRAND_NAME = 'Indigo'
-VERSION_NUMBER  = '1.26'
+VERSION_NUMBER  = '1.30'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
