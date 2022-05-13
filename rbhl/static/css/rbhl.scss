@@ -668,6 +668,14 @@ input[type="date"]::-webkit-input-placeholder{
     margin-top: 10px
 }
 
+.btn.btn-sm{
+	padding: 0px 20px;
+	margin-top: 4px;
+	h4{
+		margin-top: 7px;
+		margin-bottom: 6px;
+	}
+}
 
 .patient-detail{
     .lab-view{

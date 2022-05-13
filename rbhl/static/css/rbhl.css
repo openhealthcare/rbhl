@@ -634,6 +634,16 @@ input[type="date"]::-webkit-input-placeholder {
   margin-top: 10px;
 }
 
+.btn.btn-sm {
+  padding: 0px 20px;
+  margin-top: 4px;
+}
+
+.btn.btn-sm h4 {
+  margin-top: 7px;
+  margin-bottom: 6px;
+}
+
 .patient-detail .lab-view {
   padding-left: 15px;
   padding-right: 15px;
