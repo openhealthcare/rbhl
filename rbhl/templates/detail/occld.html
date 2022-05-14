@@ -32,6 +32,15 @@
 
 {% include 'partials/peak_flow_table.html' %}
 
+<div class="row content-offset">
+  <div class="col-md-12 text-right">
+    <a class="btn btn-default btn-sm" ng-click="open_modal('DeletePatientCtrl', '/templates/modals/delete_patient.html', {patient: patient})" href="">
+      <h4>
+        Delete patient
+      </h4>
+    </a>
+  </div>
+</div>
 
 
 
