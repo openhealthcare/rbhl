@@ -9,6 +9,7 @@ angular.module('opal.controllers').controller(
   var init = function(){
     var bloodTest;
     scope.bloodTest = null;
+		scope.patient_id = scope.episode.demographics[0].patient_id;
     var id = $location.search().id;
     if(!id){
       bloodTest = {};
@@ -20,24 +21,6 @@ angular.module('opal.controllers').controller(
       }
     }
     scope.bloodTest = {bloods: bloodTest};
-  }
-
-  scope.employment_display = function(employment){
-    /*
-    * Options do not allow if statements so we format the display
-    * name of the employment in here.
-    */
-    var result;
-    if(employment.employer && employment.oh_provider){
-      result = employment.employer + "/" + employment.oh_provider;
-    }
-    else{
-      result = employment.employer || employment.oh_provider;
-    }
-    if(employment.job_title){
-      result += " (" + employment.job_title + ")";
-    }
-    return result;
   }
 
   scope.referral_display = function(referral){

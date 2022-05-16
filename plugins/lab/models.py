@@ -137,10 +137,8 @@ class Bloods(RbhlSubrecord, models.PatientSubrecord):
     blood_date         = fields.DateField(
         blank=True, null=True, verbose_name="Sample received"
     )
-    blood_number       = fields.CharField(blank=True, null=True,
-                                          max_length=200)
-    employment           = fields.ForeignKey(
-        "rbhl.Employment", blank=True, null=True, on_delete=fields.SET_NULL
+    blood_number       = fields.CharField(
+        blank=True, null=True, max_length=200
     )
     referral           = fields.ForeignKey(
         "rbhl.Referral", blank=True, null=True, on_delete=fields.SET_NULL
