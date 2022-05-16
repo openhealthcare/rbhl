@@ -556,6 +556,10 @@ input[type="date"]::-webkit-input-placeholder {
   margin-bottom: 40px;
 }
 
+.content-offset-below-20 {
+  margin-bottom: 20px;
+}
+
 .content-offset-below-0 {
   margin-bottom: 0;
 }
@@ -615,6 +619,13 @@ input[type="date"]::-webkit-input-placeholder {
 .view-switcher h4 {
   margin-top: 7px;
   margin-bottom: 6px;
+}
+
+.referrals-bar {
+  background: #4676c5;
+  border: none;
+  color: #FFF;
+  padding: 10px 20px 10px 20px;
 }
 
 .add-button {

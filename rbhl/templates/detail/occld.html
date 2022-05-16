@@ -1,4 +1,6 @@
 {% load panels %}
+{% load rbhl_panels %}
+
 <div class="row">
   <div class="col-md-6">
     {% record_panel models.Demographics full_width=True %}
@@ -7,31 +9,38 @@
     {% record_panel models.ContactDetails full_width=True %}
   </div>
 </div>
-<div class="row">
-  <div class="col-md-12">
-    {% include "partials/referral_panel.html" %}
+<section ng-repeat="episode in patient.episodes">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="referrals-bar">
+        <h3>
+          <i class="{{ models.Referral.get_icon }}"></i>
+          Referral<span ng-show="patient.episodes.length > 1">s </span></h3>
+        </h3>
+      </div>
+    </div>
   </div>
-</div>
-<div class="row">
-  <div class="col-md-6">
-    {% record_panel models.Employment full_width=True %}
+  {% include "panels/referral.html" %}
+  <div class="row">
+    <div class="col-md-6">
+      {% record_panel models.Employment full_width=True %}
+    </div>
+    <div class="col-md-6">
+      {% record_panel models.SocialHistory full_width=True %}
+    </div>
   </div>
-  <div class="col-md-6">
-    {% record_panel models.SocialHistory full_width=True %}
-  </div>
-</div>
 
-<div class="row">
-  <div class="col-md-12">
-    {% record_panel models.ClinicLog full_width=True %}
-    {% include 'partials/diagnosis_panel.html' %}
-    {% record_panel models.ActionLog %}
-    {% record_panel models.Letter %}
+  <div class="row">
+    <div class="col-md-12">
+      {% record_panel models.ClinicLog full_width=True %}
+      {% include 'partials/diagnosis_panel.html' %}
+      {% record_panel models.ActionLog %}
+      {% record_panel models.Letter %}
+    </div>
   </div>
-</div>
 
-{% include 'partials/peak_flow_table.html' %}
-
+  {% include 'partials/peak_flow_table.html' %}
+</section>
 <div class="row content-offset">
   <div class="col-md-12 text-right">
     <a class="btn btn-default btn-sm" ng-click="open_modal('DeletePatientCtrl', '/templates/modals/delete_patient.html', {patient: patient})" href="">
@@ -41,99 +50,3 @@
     </a>
   </div>
 </div>
-
-
-
-{% comment %}
-  <h2>Asthma Database</h2>
-
-
-  <div class="row">
-    <div class="col-md-6">
-      {% record_panel models.GP %}
-    </div>
-    <div class="col-md-6">
-      {% record_panel models.Address %}
-    </div>
-  </div>
-
-
-  <div class="row">
-    <div class="col-md-12">
-      {% record_panel models.Details %}
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-12">
-      {% record_panel models.SuspectOccupationalCategory %}
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-12">
-      {% record_panel models.DiagnosticTesting %}
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-12">
-      {% record_panel models.RoutineSPT %}
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-12">
-      {% record_panel models.LegacySkinPrickTest %}
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-12">
-      {% record_panel models.LegacyBronchialTest %}
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-12">
-      {% record_panel models.DiagnosticOutcome %}
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-12">
-      {% record_panel models.DiagnosticAsthma %}
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-12">
-      {% record_panel models.DiagnosticRhinitis %}
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-12">
-      {% record_panel models.DiagnosticOther %}
-    </div>
-  </div>
-
-
-  <div class="row">
-    <div class="col-md-12">
-      {% record_panel models.OtherFields %}
-    </div>
-  </div>
-{% endcomment %}
-
-
-
-
-{% comment %}
-<h2 class="text-center">Old Unconverted Details</h2>
-<div class="row">
-  <div class="col-md-12">
-    {% record_panel models.ActionLog %}
-  </div>
-</div>
-{% endcomment %}

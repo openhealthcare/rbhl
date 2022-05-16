@@ -590,6 +590,10 @@ input[type="date"]::-webkit-input-placeholder{
     margin-bottom: 40px
 }
 
+.content-offset-below-20{
+    margin-bottom: 20px
+}
+
 .content-offset-below-0{
     margin-bottom: 0;
 }
@@ -648,6 +652,14 @@ input[type="date"]::-webkit-input-placeholder{
         margin-top: 7px;
         margin-bottom: 6px
     }
+}
+
+.referrals-bar{
+	background: $indigo;
+    border: none;
+    color: #FFF;
+    // border-bottom: 1px solid #3a8a8a;
+	padding: 10px 20px 10px 20px;
 }
 
 .add-button{
