@@ -15,7 +15,7 @@ angular
 					})
 				},
 				function(response) {
-				$window.alert('Patient could not be deleted');
+				$window.alert('Referral could not be deleted');
 			});
 		}
 
