@@ -3,8 +3,8 @@
   <button type="button" class="close" ng-click="close()">×</button>
   <h3>
     Delete Referral
-    <span ng-show="episode.demographics[0].first_name" class="ng-binding">
-      For [[ episode.demographics[0].first_name ]]
+    <span ng-show="episode.demographics[0].first_name && episode.demographics[0].surname" class="ng-binding">
+      For [[ episode.demographics[0].first_name ]] [[ episode.demographics[0].surname ]]
     </span>
   </h3>
 </div>
