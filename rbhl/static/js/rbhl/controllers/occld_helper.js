@@ -1,8 +1,8 @@
 angular.module("opal.controllers").controller("OCCLDHelper", function(
-	$scope
+	$scope, $modal
 ) {
 	/*
-	A helper for the occld episode category screen
+	* A helper for the occld episode category screen
 	*/
 
 	var self = this;
@@ -36,10 +36,18 @@ angular.module("opal.controllers").controller("OCCLDHelper", function(
 	}
 
 	self.revealClinicData = function(episode){
+		/*
+		* Display the patient's clinic information
+		* record panel.
+		*/
 		self.episodeIdsClinicData.push(episode.id);
 	}
 
 	self.showClinicInformation = function(episode){
+		/*
+		* returns true if we should show the clinical information
+		* related to the patient
+		*/
 		if(_.indexOf(self.episodeIdsClinicData, episode.id) !== -1){
 			return true;
 		}
@@ -58,6 +66,23 @@ angular.module("opal.controllers").controller("OCCLDHelper", function(
 		if(episode.clinic_log[0].consistency_token){
 			return true;
 		}
+	}
+
+	self.deleteEpisode = function(episode){
+		/*
+		* Opens the deletion modal that requests confirmation that the
+		* user would like to delete the episode.
+		*/
+    $modal.open({
+      templateUrl: '/templates/delete_episode.html',
+      controller: 'DeleteEpisodeCtrl',
+      resolve: {
+        episode: episode,
+				callBack: function(){
+					return $scope.refresh;
+				}
+      }
+    });
 	}
 
 	init();

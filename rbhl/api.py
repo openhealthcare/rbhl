@@ -160,6 +160,16 @@ class DeletePatientViewset(LoginRequiredViewset):
         return json_response('deleted', status_code=status.HTTP_202_ACCEPTED)
 
 
+class OCCLDEpisodeViewset(LoginRequiredViewset):
+    basename = "occld_episode"
+
+    @episode_from_pk
+    def destroy(self, request, episode):
+        episode.delete()
+        return json_response('deleted', status_code=status.HTTP_202_ACCEPTED)
+
+
 indigo_router = OPALRouter()
 indigo_router.register(PeakFlowGraphData.basename, PeakFlowGraphData)
 indigo_router.register(DeletePatientViewset.basename, DeletePatientViewset)
+indigo_router.register(OCCLDEpisodeViewset.basename, OCCLDEpisodeViewset)

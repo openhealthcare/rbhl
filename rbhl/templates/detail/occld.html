@@ -15,7 +15,10 @@
         <div class="referrals-bar">
           <h3>
             <i class="{{ models.Referral.get_icon }}"></i>
-            Referral<span ng-show="patient.episodes.length > 1"> [[ $index + 1]]/[[ patient.episodes.length ]]</span></h3>
+            Referral<span ng-show="patient.episodes.length > 1"> [[ $index + 1]]/[[ patient.episodes.length ]]</span>
+            <a ng-click="occld_helper.deleteEpisode(episode)" href="">
+              <i class="pull-right fa fa-trash-o edit"></i>
+            </a>
           </h3>
         </div>
       </div>

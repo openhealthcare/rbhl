@@ -1,0 +1,27 @@
+{% load forms %}
+<div class="modal-header">
+  <button type="button" class="close" ng-click="close()">×</button>
+  <h3>
+    Delete Referral
+    <span ng-show="episode.demographics[0].first_name" class="ng-binding">
+      For [[ episode.demographics[0].first_name ]]
+    </span>
+  </h3>
+</div>
+<div class="modal-body text-center">
+  <p class="lead">
+    Deleting this referral will remove all diagnosis, notes, clinic log and peak flows
+    related to it
+  </p>
+  <p class="lead">
+    <strong>
+      This cannot be undone
+    </strong>
+  </p>
+  <button class="btn btn-primary btn-save" one-click-only ng-click="delete()">
+    <i class="fa fa-trash"></i> Delete Referral
+  </button>
+</div>
+<div class="modal-footer">
+  <button class="btn" ng-click="close()">Cancel</button>
+</div>
