@@ -1,52 +1,53 @@
 {% load panels %}
 {% load rbhl_panels %}
-
-<div class="row">
-  <div class="col-md-6">
-    {% record_panel models.Demographics full_width=True %}
-  </div>
-  <div class="col-md-6">
-    {% record_panel models.ContactDetails full_width=True %}
-  </div>
-</div>
-<section ng-repeat="episode in patient.episodes">
+<div ng-controller="OCCLDHelper as occld_helper">
   <div class="row">
-    <div class="col-md-12">
-      <div class="referrals-bar">
-        <h3>
-          <i class="{{ models.Referral.get_icon }}"></i>
-          Referral<span ng-show="patient.episodes.length > 1">s </span></h3>
-        </h3>
+    <div class="col-md-6">
+      {% record_panel models.Demographics full_width=True %}
+    </div>
+    <div class="col-md-6">
+      {% record_panel models.ContactDetails full_width=True %}
+    </div>
+  </div>
+  <section ng-repeat="episode in patient.episodes|orderBy:occld_helper.referralOrdering:true">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="referrals-bar">
+          <h3>
+            <i class="{{ models.Referral.get_icon }}"></i>
+            Referral<span ng-show="patient.episodes.length > 1"> [[ $index + 1]]/[[ patient.episodes.length ]]</span></h3>
+          </h3>
+        </div>
       </div>
     </div>
-  </div>
-  {% include "panels/referral.html" %}
-  <div class="row">
-    <div class="col-md-6">
-      {% record_panel models.Employment full_width=True %}
+    {% include "panels/referral.html" %}
+    <div class="row">
+      <div class="col-md-6">
+        {% record_panel models.Employment full_width=True %}
+      </div>
+      <div class="col-md-6">
+        {% record_panel models.SocialHistory full_width=True %}
+      </div>
     </div>
-    <div class="col-md-6">
-      {% record_panel models.SocialHistory full_width=True %}
-    </div>
-  </div>
 
-  <div class="row">
-    <div class="col-md-12">
-      {% record_panel models.ClinicLog full_width=True %}
-      {% include 'partials/diagnosis_panel.html' %}
-      {% record_panel models.ActionLog %}
-      {% record_panel models.Letter %}
+    <div class="row">
+      <div class="col-md-12">
+        {% record_panel models.ClinicLog full_width=True %}
+        {% include 'partials/diagnosis_panel.html' %}
+        {% record_panel models.ActionLog %}
+        {% record_panel models.Letter %}
+      </div>
     </div>
-  </div>
 
-  {% include 'partials/peak_flow_table.html' %}
-</section>
-<div class="row content-offset">
-  <div class="col-md-12 text-right">
-    <a class="btn btn-default btn-sm" ng-click="open_modal('DeletePatientCtrl', '/templates/modals/delete_patient.html', {patient: patient})" href="">
-      <h4>
-        Delete patient
-      </h4>
-    </a>
+    {% include 'partials/peak_flow_table.html' %}
+  </section>
+  <div class="row content-offset">
+    <div class="col-md-12 text-right">
+      <a class="btn btn-default btn-sm" ng-click="open_modal('DeletePatientCtrl', '/templates/modals/delete_patient.html', {patient: patient})" href="">
+        <h4>
+          Delete patient
+        </h4>
+      </a>
+    </div>
   </div>
 </div>
