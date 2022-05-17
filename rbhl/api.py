@@ -2,6 +2,7 @@
 API endpoints for RBHL
 """
 from collections import defaultdict
+from django.shortcuts import get_object_or_404
 from rest_framework import status
 import itertools
 from decimal import Decimal
@@ -9,8 +10,9 @@ from opal.core.views import json_response
 from opal.core.api import (
     LoginRequiredViewset, episode_from_pk, patient_from_pk
 )
-from rbhl import models
+from rbhl import models, episode_categories
 from opal.core.api import OPALRouter
+from opal import models as opal_models
 
 
 def get_ranges(numbers):
@@ -164,9 +166,17 @@ class OCCLDEpisodeViewset(LoginRequiredViewset):
     basename = "occld_episode"
 
     @episode_from_pk
-    def destroy(self, request, episode):
+    def destroy(self, _, episode):
         episode.delete()
         return json_response('deleted', status_code=status.HTTP_202_ACCEPTED)
+
+    def create(self, request, *args, **kwargs):
+        patient_id = request.data.get('patient_id')
+        patient = get_object_or_404(opal_models.Patient, id=patient_id)
+        patient.episode_set.create(
+            category_name=episode_categories.OccupationalLungDiseaseEpisode.display_name
+        )
+        return json_response("created", status_code=status.HTTP_201_CREATED)
 
 
 indigo_router = OPALRouter()

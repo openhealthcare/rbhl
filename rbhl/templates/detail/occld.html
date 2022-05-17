@@ -16,8 +16,11 @@
           <h3>
             <i class="{{ models.Referral.get_icon }}"></i>
             Referral<span ng-show="patient.episodes.length > 1"> [[ $index + 1]]/[[ patient.episodes.length ]]</span>
+            <a ng-show="$index === 0" ng-click="occld_helper.addEpisode(patient)">
+              <i class="pull-right fa fa-plus edit pointer"></i>
+            </a>
             <a ng-show="patient.episodes.length > 1" ng-click="occld_helper.deleteEpisode(episode)" href="">
-              <i class="pull-right fa fa-trash-o edit"></i>
+              <i class="pull-right fa fa-trash-o edit pointer"></i>
             </a>
           </h3>
         </div>

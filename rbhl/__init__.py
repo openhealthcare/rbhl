@@ -39,6 +39,7 @@ class Application(application.OpalApplication):
         'js/rbhl/controllers/peak_flow_step.js',
         'js/rbhl/controllers/delete_patient.js',
         'js/rbhl/controllers/delete_episode.js',
+        'js/rbhl/controllers/add_occld_episode.js',
         'js/rbhl/controllers/occld_helper.js',
     ]
     styles = [

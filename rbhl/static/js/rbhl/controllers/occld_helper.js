@@ -68,6 +68,23 @@ angular.module("opal.controllers").controller("OCCLDHelper", function(
 		}
 	}
 
+	self.addEpisode = function(patient){
+		/*
+		* Opens the add referral modal that requests confirmation that the
+		* user would like to add the episode.
+		*/
+    $modal.open({
+      templateUrl: '/templates/add_episode.html',
+      controller: 'AddOCCLDEpisodeCtrl',
+      resolve: {
+        patient: patient,
+				callBack: function(){
+					return $scope.refresh;
+				}
+      }
+		});
+	}
+
 	self.deleteEpisode = function(episode){
 		/*
 		* Opens the deletion modal that requests confirmation that the
