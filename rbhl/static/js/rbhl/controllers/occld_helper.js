@@ -7,6 +7,10 @@ angular.module("opal.controllers").controller("OCCLDHelper", function(
 
 	var self = this;
 
+	var init = function(){
+		self.episodeIdsClinicData = [];
+	}
+
 	self.referralOrdering = function(episode){
 		/*
 		* Order the referrals by clinic date if it exists
@@ -31,4 +35,30 @@ angular.module("opal.controllers").controller("OCCLDHelper", function(
 		return moment(new Date(5000, 0, 0));
 	}
 
+	self.revealClinicData = function(episode){
+		self.episodeIdsClinicData.push(episode.id);
+	}
+
+	self.showClinicInformation = function(episode){
+		if(_.indexOf(self.episodeIdsClinicData, episode.id) !== -1){
+			return true;
+		}
+		if(episode.diagnosis.length){
+			return true;
+		}
+		if(episode.action_log.length){
+			return true;
+		}
+		if(episode.letter.length){
+			return true
+		}
+		if(episode.peak_flow_day.length){
+			return ture
+		}
+		if(episode.clinic_log[0].consistency_token){
+			return true;
+		}
+	}
+
+	init();
 })

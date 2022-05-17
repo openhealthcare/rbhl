@@ -30,16 +30,28 @@
       </div>
     </div>
 
-    <div class="row">
-      <div class="col-md-12">
-        {% record_panel models.ClinicLog full_width=True %}
-        {% include 'partials/diagnosis_panel.html' %}
-        {% record_panel models.ActionLog %}
-        {% record_panel models.Letter %}
+    <div ng-hide="occld_helper.showClinicInformation(episode)">
+      <div class="row">
+        <div class="col-md-12 text-center content-offset-below">
+          <a ng-click="occld_helper.revealClinicData(episode)" href="" class="btn btn-default">
+            <h4>
+              Add Clinic Data
+            </h4>
+          </a>
+        </div>
       </div>
     </div>
-
-    {% include 'partials/peak_flow_table.html' %}
+    <div ng-show="occld_helper.showClinicInformation(episode)">
+      <div class="row">
+        <div class="col-md-12">
+          {% record_panel models.ClinicLog full_width=True %}
+          {% include 'partials/diagnosis_panel.html' %}
+          {% record_panel models.ActionLog %}
+          {% record_panel models.Letter %}
+        </div>
+      </div>
+      {% include 'partials/peak_flow_table.html' %}
+    </div>
   </section>
   <div class="row content-offset">
     <div class="col-md-12 text-right">
