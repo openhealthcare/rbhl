@@ -4,8 +4,8 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
+		('rbhl', '0063_create_multiple_episodes'),
         ('lab', '0015_auto_20220511_1354'),
     ]
 
