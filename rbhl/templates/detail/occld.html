@@ -15,7 +15,7 @@
         <div class="referrals-bar">
           <h3>
             <i class="{{ models.Referral.get_icon }}"></i>
-            Referral<span ng-show="patient.episodes.length > 1"> [[ $index + 1]]/[[ patient.episodes.length ]]</span>
+            Referral<span ng-show="patient.episodes.length > 1"> [[ patient.episodes.length - $index ]]/[[ patient.episodes.length ]]</span>
             <a ng-show="$index === 0" ng-click="occld_helper.addEpisode(patient)">
               <i class="pull-right fa fa-plus edit pointer"></i>
             </a>
