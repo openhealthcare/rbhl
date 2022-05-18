@@ -564,6 +564,10 @@ input[type="date"]::-webkit-input-placeholder {
   margin-bottom: 0;
 }
 
+.content-offset-left-100 {
+  margin-left: 100px;
+}
+
 .edit-item-padding {
   padding-right: 34px;
 }
@@ -693,6 +697,13 @@ input[type="date"]::-webkit-input-placeholder {
 
 .patient-detail .test-row {
   margin-bottom: 25px;
+}
+
+ul.lead li {
+  font-size: 21px;
+  text-align: left;
+  list-style-type: circle;
+  margin-left: 30px;
 }
 
 .skin-prick-test-pathway {

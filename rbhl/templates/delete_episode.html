@@ -8,19 +8,55 @@
     </span>
   </h3>
 </div>
-<div class="modal-body text-center">
-  <p class="lead">
-    Deleting this referral will remove all diagnosis, notes, clinic log and peak flows
-    related to it
-  </p>
-  <p class="lead">
-    <strong>
-      This cannot be undone
-    </strong>
-  </p>
-  <button class="btn btn-primary btn-save" one-click-only ng-click="delete()">
-    <i class="fa fa-trash"></i> Delete referral
-  </button>
+<div class="modal-body">
+  <div class="row">
+    <div class="col-md-6 col-md-push-3">
+      <div class="text-center" ng-show="!is_populated">
+        <p class="lead">
+          Delete this referral?
+        </p>
+      </div>
+      <div class="text-center" ng-show="is_populated">
+        <p class="lead">
+          Deleting this referral will remove:
+        </p>
+        <ul class="lead content-offset-left-100">
+          <li ng-show="episode.employment[0].consistency_token">The employment</li>
+          <li ng-show="episode.social_history[0].consistency_token">The social history</li>
+          <li ng-show="episode.clinic_log[0].consistency_token">The clinic log</li>
+          <li ng-show="episode.diagnosis.length">[[ episode.diagnosis.length ]] diagnosis</li>
+          <li ng-show="episode.notes.length">[[ episode.notes.length ]] note<span ng-show="episode.notes.length > 1">s</span></li>
+          <li ng-show="episode.letter.length">[[ episode.letter.length ]] letter<span ng-show="episode.letter.length > 1">s</span></li>
+          <li ng-show="peak_flow_day_count">[[ peak_flow_day_count ]] peak flow trial<span ng-show="peak_flow_day_count > 1">s</span></li>
+        </ul>
+
+        <p class="lead text-center">
+          To confirm please answer, what is [[ mathCheck.int1 ]] + [[ mathCheck.int2 ]]?
+        </p>
+        <div class="row  content-offset-below-20">
+          <div class="col-md-4 col-md-push-4">
+            <input type="text" autofocus
+                   name="result"
+                   placeholder="[[ mathCheck.int1 ]] + [[ mathCheck.int2 ]]"
+                   ng-model="mathCheck.result"
+                   class="form-control"
+                   autocomplete="off"
+                   />
+          </div>
+        </div>
+        <p class="lead">
+          <strong>
+            This cannot be undone
+          </strong>
+        </p>
+      </div>
+      <div class="text-center">
+        <button ng-disabled="is_populated && !answered()" class="btn btn-primary btn-save" one-click-only ng-click="delete()">
+          <i class="fa fa-trash"></i> Delete referral
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
 <div class="modal-footer">
   <button class="btn" ng-click="cancel()">Cancel</button>
