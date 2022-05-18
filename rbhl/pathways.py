@@ -7,11 +7,11 @@ from rbhl.steps import DemographicsSearchStep
 from rbhl import models
 
 
-class NewReferral(WizardPathway):
-    display_name = 'New referral'
+class NewPatient(WizardPathway):
+    display_name = 'New patient'
     icon = 'fa-plus'
-    slug = 'new_referral'
-    finish_button_text = "Create new referral"
+    slug = 'new_patient'
+    finish_button_text = "Create new patient"
     finish_button_icon = None
     template = "pathway/base/rbhl_add_patient_base.html"
     steps = [
@@ -33,11 +33,11 @@ class NewReferral(WizardPathway):
         return patient, episode
 
 
-class LabReferral(WizardPathway):
-    display_name = 'New referral'
+class NewLabPatient(WizardPathway):
+    display_name = 'New patient'
     icon = 'fa-plus'
-    slug = 'new_lab_referral'
-    finish_button_text = "Create new referral"
+    slug = 'new_lab_patient'
+    finish_button_text = "Create new patient"
     finish_button_icon = None
     template = "pathway/base/rbhl_demographics_search_base.html"
     steps = [
