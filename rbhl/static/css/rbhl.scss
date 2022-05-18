@@ -255,6 +255,7 @@ a {
     border-bottom: none;
 }
 
+
 .panel.panel-default.record-panel .panel-heading {
   background: white;
   border: none;
@@ -659,10 +660,36 @@ input[type="date"]::-webkit-input-placeholder{
     border: none;
     color: #FFF;
     // border-bottom: 1px solid #3a8a8a;
-	padding: 10px 15px 10px 20px;
+	padding: 5px 15px 5px 20px;
+
+	h3{
+		margin-top: 10px;
+		margin-bottom: 0;
+	}
 
 	i{
 		color: #FFF;
+	}
+
+	.btn-transparent{
+		margin-left: 20px;
+		margin-bottom: 3px;
+		border: none;
+
+		&:hover{
+			background-color: $dark-blue;
+		}
+
+		h5{
+			font-size: 15px;
+			color: white;
+		}
+
+		i{
+			font-size: 15px;
+			color: $black;
+			color: white;
+		}
 	}
 }
 

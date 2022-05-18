@@ -61,7 +61,7 @@ angular.module("opal.controllers").controller("OCCLDHelper", function(
 			return true
 		}
 		if(episode.peak_flow_day.length){
-			return ture
+			return true
 		}
 		if(episode.clinic_log[0].consistency_token){
 			return true;

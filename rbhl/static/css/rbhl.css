@@ -625,11 +625,37 @@ input[type="date"]::-webkit-input-placeholder {
   background: #4676c5;
   border: none;
   color: #FFF;
-  padding: 10px 15px 10px 20px;
+  padding: 5px 15px 5px 20px;
+}
+
+.referrals-bar h3 {
+  margin-top: 10px;
+  margin-bottom: 0;
 }
 
 .referrals-bar i {
   color: #FFF;
+}
+
+.referrals-bar .btn-transparent {
+  margin-left: 20px;
+  margin-bottom: 3px;
+  border: none;
+}
+
+.referrals-bar .btn-transparent:hover {
+  background-color: #345ea4;
+}
+
+.referrals-bar .btn-transparent h5 {
+  font-size: 15px;
+  color: white;
+}
+
+.referrals-bar .btn-transparent i {
+  font-size: 15px;
+  color: #2c2d30;
+  color: white;
 }
 
 .add-button {
