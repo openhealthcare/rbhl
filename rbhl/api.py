@@ -173,10 +173,13 @@ class OCCLDEpisodeViewset(LoginRequiredViewset):
     def create(self, request, *args, **kwargs):
         patient_id = request.data.get('patient_id')
         patient = get_object_or_404(opal_models.Patient, id=patient_id)
-        patient.episode_set.create(
+        created_episode = patient.episode_set.create(
             category_name=episode_categories.OccupationalLungDiseaseEpisode.display_name
         )
-        return json_response("created", status_code=status.HTTP_201_CREATED)
+        return json_response(
+            {"id": created_episode.id},
+            status_code=status.HTTP_201_CREATED
+        )
 
 
 indigo_router = OPALRouter()

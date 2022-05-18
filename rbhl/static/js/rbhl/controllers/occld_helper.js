@@ -82,6 +82,14 @@ angular.module("opal.controllers").controller("OCCLDHelper", function(
 					return $scope.refresh;
 				}
       }
+		}).result.then(function(modalResult){
+			if(modalResult){
+				var episode = _.findWhere($scope.patient.episodes, {id: modalResult});
+				episode.recordEditor.editItem(
+					'referral',
+					episode.referral[0]
+				)
+			}
 		});
 	}
 
