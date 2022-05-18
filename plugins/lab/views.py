@@ -312,8 +312,10 @@ class LabOverview(AbstractLabStatsPage):
                 if blood.blood_number in blood_nums_seen:
                     continue
                 blood_nums_seen.add(blood.blood_number)
-                employment = blood.employment
+                employment = None
                 employer_referrer = None
+                if blood.referral:
+                    employment = blood.referral.episode.employment_set.all()[0]
                 if employment and employment.employer and employment.oh_provider:
                     employer_referrer = "{}/{}".format(
                         employment.employer, employment.oh_provider
@@ -384,16 +386,18 @@ class LabMonthActivity(AbstractLabStatsPage):
         bloods = Bloods.objects.filter(blood_date__month=month).filter(
             blood_date__year=year
         ).select_related(
-            "employment", "referral"
+            "referral"
         ).prefetch_related(
-            'patient__demographics_set'
+            'patient__demographics_set',
+            'referral__episode__employment_set'
         ).order_by("blood_date")
         result = []
         for blood in bloods:
             patient_id = blood.patient_id
             episode_id = blood.patient.episode_set.last().id
-            employment = blood.employment
-            employer = "No employer"
+            employment = None
+            if blood.referral:
+                employment = blood.referral.episode.employment_set.all()[0]
             oh_provider = "No OH provider"
             if employment and employment.employer:
                 employer = employment.employer
