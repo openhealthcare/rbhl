@@ -53,7 +53,7 @@ class Application(application.OpalApplication):
     @classmethod
     def get_menu_items(klass, user=None):
         # we import here as settings must be set before this is imported
-        from rbhl.pathways import NewReferral, LabReferral
+        from rbhl.pathways import NewPatient, NewLabPatient
 
         if user:
             if user.is_authenticated:
@@ -63,9 +63,9 @@ class Application(application.OpalApplication):
 
                 if lab_user:
                     items = [
-                        LabReferral.as_menuitem(
+                        NewLabPatient.as_menuitem(
                             index=1,
-                            display="New referral"
+                            display="New patient"
                         ),
                         menus.MenuItem(
                             activepattern=reverse('unresulted-list'),
@@ -83,7 +83,7 @@ class Application(application.OpalApplication):
                         )
                     ]
                 else:
-                    items = [NewReferral.as_menuitem(index=1)]
+                    items = [NewPatient.as_menuitem(index=1)]
 
                 items.append(
                     menus.MenuItem(
