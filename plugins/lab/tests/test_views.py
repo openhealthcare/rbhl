@@ -86,6 +86,29 @@ class LabMonthActivityTestCase(OpalTestCase):
         result = self.client.get(self.url)
         self.assertEqual(result.status_code, 200)
 
+    def test_get_results_rows(self):
+        patient, _ = self.new_patient_and_episode_please()
+        bloods = Bloods.objects.create(
+            patient=patient,
+            blood_date=datetime.date(2021, 1, 10),
+            report_st=datetime.date(2021, 1, 11),
+            blood_number="111"
+        )
+        result = bloods.bloodresult_set.create()
+        result.allergen = 'flour'
+        result.kul = 3
+        result.save()
+        bloods.exposure = "grass"
+        bloods.save()
+        result = bloods.bloodresult_set.create()
+        result.allergen = "Timothy"
+        result.save()
+        rows = views.LabMonthActivity().get_results_rows(1, 2021)
+        self.assertEqual(len(rows), 2)
+        self.assertEqual(
+            rows[0]["Blood num"], "111"
+        )
+
 
 class LabOverviewTestCase(OpalTestCase):
     def setUp(self):
