@@ -380,60 +380,66 @@ class LabMonthActivity(AbstractLabStatsPage):
     def holidays(self):
         return holidays.UnitedKingdom()
 
-    def get_rows(self, month, year):
-        bloods = Bloods.objects.filter(blood_date__month=month).filter(
+    def get_row(self, blood):
+        patient_id = blood.patient_id
+        episode_id = blood.patient.episode_set.last().id
+        employment = blood.employment
+        employer = "No employer"
+        oh_provider = "No OH provider"
+        if employment and employment.employer:
+            employer = employment.employer
+
+        if employment and employment.oh_provider:
+            oh_provider = employment.oh_provider
+
+        referral = blood.referral
+        referral_source = "No referral source"
+        reference_number = "No reference number"
+        if referral:
+            if referral.referral_source:
+                referral_source = referral.referral_source
+            if referral.occld:
+                referral_source = f"{referral_source} (OCCLD)"
+            reference_number = referral.reference_number
+        demographics = blood.patient.demographics_set.all()[0]
+        row = {
+            "Link": f"/pathway/#/bloods/{patient_id}/{episode_id}?id={blood.id}",
+            "Sample received": blood.blood_date,
+            "Referral source": referral_source,
+            "Reference number": reference_number,
+            "Hospital number": demographics.hospital_number,
+            "Surname": demographics.surname,
+            "OH Provider": oh_provider,
+            "Blood num": blood.blood_number,
+            "Employer": employer,
+            "Exposure": blood.exposure or "No exposure",
+            "Allergens": sorted(
+                list(i.allergen for i in blood.bloodresult_set.all() if i.allergen)
+            ),
+            "Report submitted": blood.report_st,
+            "Num tests": blood.bloodresult_set.count(),
+        }
+        if blood.report_st and blood.blood_date:
+            # dates are usually inclusive, e.g. 2nd - 5th if 4 days not 3
+            row["Days"] = self.get_day_count(blood.blood_date, blood.report_st)
+        else:
+            row["Days"] = ""
+        return row
+
+    def get_queryset(self, month, year):
+        return Bloods.objects.filter(blood_date__month=month).filter(
             blood_date__year=year
         ).select_related(
             "employment", "referral"
         ).prefetch_related(
             'patient__demographics_set'
         ).order_by("blood_date")
+
+    def get_rows(self, month, year):
+        bloods = self.get_queryset(month, year)
         result = []
         for blood in bloods:
-            patient_id = blood.patient_id
-            episode_id = blood.patient.episode_set.last().id
-            employment = blood.employment
-            employer = "No employer"
-            oh_provider = "No OH provider"
-            if employment and employment.employer:
-                employer = employment.employer
-
-            if employment and employment.oh_provider:
-                oh_provider = employment.oh_provider
-
-            referral = blood.referral
-            referral_source = "No referral source"
-            reference_number = "No reference number"
-            if referral:
-                if referral.referral_source:
-                    referral_source = referral.referral_source
-                if referral.occld:
-                    referral_source = f"{referral_source} (OCCLD)"
-                reference_number = referral.reference_number
-            demographics = blood.patient.demographics_set.all()[0]
-            row = {
-                "Link": f"/pathway/#/bloods/{patient_id}/{episode_id}?id={blood.id}",
-                "Sample received": blood.blood_date,
-                "Referral source": referral_source,
-                "Reference number": reference_number,
-                "Hospital number": demographics.hospital_number,
-                "Surname": demographics.surname,
-                "OH Provider": oh_provider,
-                "Blood num": blood.blood_number,
-                "Employer": employer,
-                "Exposure": blood.exposure or "No exposure",
-                "Allergens": sorted(
-                    list(i.allergen for i in blood.bloodresult_set.all() if i.allergen)
-                ),
-                "Report submitted": blood.report_st,
-                "Num tests": blood.bloodresult_set.count(),
-            }
-            if blood.report_st and blood.blood_date:
-                # dates are usually inclusive, e.g. 2nd - 5th if 4 days not 3
-                row["Days"] = self.get_day_count(blood.blood_date, blood.report_st)
-            else:
-                row["Days"] = ""
-            result.append(row)
+            result.append(self.get_row(blood))
         return result
 
     def get_day_count(self, start_dt, report_date):
