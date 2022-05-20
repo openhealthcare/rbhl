@@ -3,9 +3,11 @@ Models for lab
 """
 from rbhl.models import RBHLSubrecord as RbhlSubrecord
 from django.db import models as fields
+from django.db.models import Q
 from opal import models
 from opal.core.fields import enum
 from opal.core import lookuplists
+from opal.models import Episode
 
 
 class Spirometry(RbhlSubrecord, models.PatientSubrecord):
@@ -321,3 +323,34 @@ class BloodResult(fields.Model):
         for field in fields:
             setattr(self, field, data.get(field))
         self.save()
+
+
+class BloodResultExtract(models.PatientSubrecord):
+    """
+    A workaround to make the blood results queryable
+    in the advanced search interface.
+    """
+    _exclude_from_extract = True
+
+    class Meta:
+        verbose_name = 'Blood Result'
+
+    allergen = models.ForeignKeyOrFreeText(
+        Allergen, verbose_name='Allergen'
+    )
+
+    @classmethod
+    def episodes_for_criteria(klass, criteria):
+        query_type = criteria['queryType']
+        query_value = criteria['query']
+        contains = 'criteria'
+        if query_type == 'Contains':
+            contains = '__icontains'
+        allergen_fks = Allergen.objects.filter(**{f"name{contains}": query_value})
+        ft_filter = {f"allergen_ft{contains}": query_value}
+        results = BloodResult.objects.filter(
+            Q(allergen_fk_id__in=allergen_fks) | Q(**ft_filter)
+        )
+        return Episode.objects.filter(
+            patient__bloods__bloodresult__in=results
+        ).distinct()
