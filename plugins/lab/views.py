@@ -532,6 +532,11 @@ class LabMonthActivity(AbstractLabStatsPage):
         """
         bloods = self.get_queryset(month, year)
         bloods = bloods.prefetch_related('bloodresult_set')
+        max_row_count = 0
+        if bloods:
+            max_row_count = max(
+                [len(i.bloodresult_set.all()) for i in bloods]
+            )
         rows = []
         for blood in bloods:
             referrer_name = ""
@@ -549,7 +554,6 @@ class LabMonthActivity(AbstractLabStatsPage):
                 "DOB": demographics.date_of_birth,
                 "Employer": employer
             }
-
             for idx, result in enumerate(blood.bloodresult_set.all(), 1):
                 row[f"Allergen {idx}"] = result.allergen
                 row[f"KU/L {idx}"] = result.kul
@@ -559,6 +563,16 @@ class LabMonthActivity(AbstractLabStatsPage):
                 row[f"Precipitin {idx}"] = result.precipitin
                 row[f"IgG {idx}"] = result.igg
                 row[f"IgG Class {idx}"] = result.iggclass
+            results_len = len(blood.bloodresult_set.all())
+            for idx in range(results_len + 1, max_row_count):
+                row[f"Allergen {idx}"] = ""
+                row[f"KU/L {idx}"] = ""
+                row[f"IgE Class {idx}"] = ""
+                row[f"RAST {idx}"] = ""
+                row[f"RAST score {idx}"] = ""
+                row[f"Precipitin {idx}"] = ""
+                row[f"IgG {idx}"] = ""
+                row[f"IgG Class {idx}"] = ""
             rows.append(row)
         return rows
 
