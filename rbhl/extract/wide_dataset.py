@@ -41,7 +41,7 @@ def extract_demographics(patient):
     pid = demographics.patient_id
     link = f"https://indigo-rbht.openhealthcare.org.uk/#/patient/{pid}"
     return {
-        "Indigo id": demographics.patient_id,
+        "Patient": demographics.patient_id,
         "Indigo link": link,
         "Hospital number": demographics.hospital_number,
         "Name": demographics.name,
