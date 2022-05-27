@@ -16,7 +16,7 @@ DB_PASSWORD: !vault |
 PROJECT_PATH: /usr/lib/ohc/rbhl
 BACKUPS_DIR: /usr/lib/ohc/var
 GIT_REPO: https://github.com/openhealthcare/rbhl
-GIT_BRANCH: v1.32
+GIT_BRANCH: extract-multiple-extracts-display
 LOG_DIR: /usr/lib/ohc/log
 PROJECT_NAME: rbhl
 SECRET_KEY: !vault |
@@ -75,4 +75,4 @@ SES_PASSWORD: !vault |
 
 VIRTUALENV_PATH: /home/ubuntu/.virtualenvs/rbhl
 REQUIREMENTS_FILE: requirements.txt
-DOMAIN: indigo-rbht.openhealthcare.org.uk
+DOMAIN: indigo-rbht-test.openhealthcare.org.uk
