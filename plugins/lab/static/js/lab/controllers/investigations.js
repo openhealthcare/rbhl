@@ -7,7 +7,12 @@ angular.module('opal.controllers').controller('InvestigationsView', function($sc
     */
     var allDates = []
     _.each(["spirometry", "skin_prick_test", "bronchial_test", "other_investigations"], function(key){
-      allDates = allDates.concat(_.pluck($scope.episode[key], 'date'));
+			var testList = [];
+			if($scope.episode[key]){
+				testList = $scope.episode[key];
+			}
+
+      allDates = allDates.concat(_.pluck(testList, 'date'));
     });
 
     allDates = allDates.concat(_.pluck($scope.episode.bloods, "blood_date"));
