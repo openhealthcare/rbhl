@@ -87,7 +87,7 @@ Lab report
           Employer:
         </div>
         <div class="col-xs-7 col-md-9">
-          {{ object.employment.employer }}
+          {{ object.referral.episode.employment_set.get.employer }}
         </div>
       </div>
     </div>
@@ -97,7 +97,7 @@ Lab report
           OH Provider:
         </div>
         <div class="col-xs-7 col-md-9">
-          {{ object.employment.oh_provider }}
+          {{ object.referral.episode.employment_set.get.oh_provider }}
         </div>
       </div>
     </div>

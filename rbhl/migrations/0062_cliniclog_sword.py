@@ -7,6 +7,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('rbhl', '0061_auto_20220509_1240'),
+
     ]
 
     operations = [

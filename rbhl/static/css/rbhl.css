@@ -556,8 +556,16 @@ input[type="date"]::-webkit-input-placeholder {
   margin-bottom: 40px;
 }
 
+.content-offset-below-20 {
+  margin-bottom: 20px;
+}
+
 .content-offset-below-0 {
   margin-bottom: 0;
+}
+
+.content-offset-left-100 {
+  margin-left: 100px;
 }
 
 .edit-item-padding {
@@ -617,6 +625,43 @@ input[type="date"]::-webkit-input-placeholder {
   margin-bottom: 6px;
 }
 
+.referrals-bar {
+  background: #4676c5;
+  border: none;
+  color: #FFF;
+  padding: 5px 15px 5px 20px;
+}
+
+.referrals-bar h3 {
+  margin-top: 10px;
+  margin-bottom: 0;
+}
+
+.referrals-bar i {
+  color: #FFF;
+}
+
+.referrals-bar .btn-transparent {
+  margin-left: 20px;
+  margin-bottom: 3px;
+  border: none;
+}
+
+.referrals-bar .btn-transparent:hover {
+  background-color: #345ea4;
+}
+
+.referrals-bar .btn-transparent h5 {
+  font-size: 15px;
+  color: white;
+}
+
+.referrals-bar .btn-transparent i {
+  font-size: 15px;
+  color: #2c2d30;
+  color: white;
+}
+
 .add-button {
   font-size: 18px;
   display: inline-block;
@@ -652,6 +697,13 @@ input[type="date"]::-webkit-input-placeholder {
 
 .patient-detail .test-row {
   margin-bottom: 25px;
+}
+
+ul.lead li {
+  font-size: 21px;
+  text-align: left;
+  list-style-type: circle;
+  margin-left: 30px;
 }
 
 .skin-prick-test-pathway {

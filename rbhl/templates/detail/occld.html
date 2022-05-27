@@ -1,139 +1,85 @@
 {% load panels %}
-<div class="row">
-  <div class="col-md-6">
-    {% record_panel models.Demographics full_width=True %}
-  </div>
-  <div class="col-md-6">
-    {% record_panel models.ContactDetails full_width=True %}
-  </div>
-</div>
-<div class="row">
-  <div class="col-md-12">
-    {% include "partials/referral_panel.html" %}
-  </div>
-</div>
-<div class="row">
-  <div class="col-md-6">
-    {% record_panel models.Employment full_width=True %}
-  </div>
-  <div class="col-md-6">
-    {% record_panel models.SocialHistory full_width=True %}
-  </div>
-</div>
-
-<div class="row">
-  <div class="col-md-12">
-    {% record_panel models.ClinicLog full_width=True %}
-    {% include 'partials/diagnosis_panel.html' %}
-    {% record_panel models.ActionLog %}
-    {% record_panel models.Letter %}
-  </div>
-</div>
-
-{% include 'partials/peak_flow_table.html' %}
-
-<div class="row content-offset">
-  <div class="col-md-12 text-right">
-    <a class="btn btn-default btn-sm" ng-click="open_modal('DeletePatientCtrl', '/templates/modals/delete_patient.html', {patient: patient})" href="">
-      <h4>
-        Delete patient
-      </h4>
-    </a>
-  </div>
-</div>
-
-
-
-{% comment %}
-  <h2>Asthma Database</h2>
-
-
+{% load rbhl_panels %}
+<div ng-controller="OCCLDHelper as occld_helper">
   <div class="row">
     <div class="col-md-6">
-      {% record_panel models.GP %}
+      {% record_panel models.Demographics full_width=True %}
     </div>
     <div class="col-md-6">
-      {% record_panel models.Address %}
+      {% record_panel models.ContactDetails full_width=True %}
     </div>
   </div>
+  <section ng-repeat="episode in patient.episodes|orderBy:occld_helper.referralOrdering:true">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="referrals-bar">
+          <div class="row">
+            <div class="col-md-6">
+              <h3>
+                <i class="{{ models.Referral.get_icon }}"></i>
+                Referral
+                <span ng-show="patient.episodes.length > 1"> [[ patient.episodes.length - $index ]]/[[ patient.episodes.length ]]</span>
+              </h3>
+            </div>
+            <div class="col-md-6">
+              <a class="pull-right btn btn-transparent btn-sm" ng-show="patient.episodes.length > 1" ng-click="occld_helper.deleteEpisode(episode)" href="">
+                <h5>
+                  <i class="fa fa-trash-o edit pointer"></i>
+                  Delete referral
+                </h5>
+              </a>
+              <a class="pull-right btn btn-transparent btn-sm" ng-click="occld_helper.addEpisode(patient)">
+                <h5>
+                  <i class="fa fa-plus edit pointer"></i>
+                  Add referral
+                </h5>
+              </a>
 
-
-  <div class="row">
-    <div class="col-md-12">
-      {% record_panel models.Details %}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-12">
-      {% record_panel models.SuspectOccupationalCategory %}
+    {% include "panels/referral.html" %}
+    <div class="row">
+      <div class="col-md-6">
+        {% record_panel models.Employment full_width=True %}
+      </div>
+      <div class="col-md-6">
+        {% record_panel models.SocialHistory full_width=True %}
+      </div>
     </div>
-  </div>
 
-  <div class="row">
-    <div class="col-md-12">
-      {% record_panel models.DiagnosticTesting %}
+    <div ng-hide="occld_helper.showClinicInformation(episode)">
+      <div class="row">
+        <div class="col-md-12 text-center content-offset-below">
+          <a ng-click="occld_helper.revealClinicData(episode)" href="" class="btn btn-sm btn-default">
+            <h4>
+              Add Clinic Data
+            </h4>
+          </a>
+        </div>
+      </div>
     </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-12">
-      {% record_panel models.RoutineSPT %}
+    <div ng-show="occld_helper.showClinicInformation(episode)">
+      <div class="row">
+        <div class="col-md-12">
+          {% record_panel models.ClinicLog full_width=True %}
+          {% include 'partials/diagnosis_panel.html' %}
+          {% record_panel models.ActionLog %}
+          {% record_panel models.Letter %}
+        </div>
+      </div>
+      {% include 'partials/peak_flow_table.html' %}
     </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-12">
-      {% record_panel models.LegacySkinPrickTest %}
+  </section>
+  <div class="row content-offset">
+    <div class="col-md-12 text-right">
+      <a class="btn btn-default btn-sm" ng-click="open_modal('DeletePatientCtrl', '/templates/modals/delete_patient.html', {patient: patient})" href="">
+        <h4>
+          Delete patient
+        </h4>
+      </a>
     </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-12">
-      {% record_panel models.LegacyBronchialTest %}
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-12">
-      {% record_panel models.DiagnosticOutcome %}
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-12">
-      {% record_panel models.DiagnosticAsthma %}
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-12">
-      {% record_panel models.DiagnosticRhinitis %}
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-12">
-      {% record_panel models.DiagnosticOther %}
-    </div>
-  </div>
-
-
-  <div class="row">
-    <div class="col-md-12">
-      {% record_panel models.OtherFields %}
-    </div>
-  </div>
-{% endcomment %}
-
-
-
-
-{% comment %}
-<h2 class="text-center">Old Unconverted Details</h2>
-<div class="row">
-  <div class="col-md-12">
-    {% record_panel models.ActionLog %}
   </div>
 </div>
-{% endcomment %}

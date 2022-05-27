@@ -255,6 +255,7 @@ a {
     border-bottom: none;
 }
 
+
 .panel.panel-default.record-panel .panel-heading {
   background: white;
   border: none;
@@ -590,8 +591,16 @@ input[type="date"]::-webkit-input-placeholder{
     margin-bottom: 40px
 }
 
+.content-offset-below-20{
+    margin-bottom: 20px
+}
+
 .content-offset-below-0{
     margin-bottom: 0;
+}
+
+.content-offset-left-100{
+	margin-left: 100px;
 }
 
 .edit-item-padding{
@@ -650,6 +659,44 @@ input[type="date"]::-webkit-input-placeholder{
     }
 }
 
+.referrals-bar{
+	background: $indigo;
+    border: none;
+    color: #FFF;
+    // border-bottom: 1px solid #3a8a8a;
+	padding: 5px 15px 5px 20px;
+
+	h3{
+		margin-top: 10px;
+		margin-bottom: 0;
+	}
+
+	i{
+		color: #FFF;
+	}
+
+	.btn-transparent{
+		margin-left: 20px;
+		margin-bottom: 3px;
+		border: none;
+
+		&:hover{
+			background-color: $dark-blue;
+		}
+
+		h5{
+			font-size: 15px;
+			color: white;
+		}
+
+		i{
+			font-size: 15px;
+			color: $black;
+			color: white;
+		}
+	}
+}
+
 .add-button{
     font-size: 18px;
     display: inline-block;
@@ -685,6 +732,13 @@ input[type="date"]::-webkit-input-placeholder{
     .test-row{
         margin-bottom: 25px;
     }
+}
+
+ul.lead li{
+	font-size: 21px;
+	text-align: left;
+	list-style-type: circle;
+	margin-left: 30px;
 }
 
 .skin-prick-test-pathway{
