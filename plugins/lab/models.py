@@ -143,6 +143,9 @@ class Bloods(RbhlSubrecord, models.PatientSubrecord):
     referral           = fields.ForeignKey(
         "rbhl.Referral", blank=True, null=True, on_delete=fields.SET_NULL
     )
+    employment           = fields.ForeignKey(
+        "rbhl.Employment", blank=True, null=True, on_delete=fields.SET_NULL
+    )
     method             = fields.CharField(
         blank=True, null=True, max_length=200, choices=METHODS
     )
