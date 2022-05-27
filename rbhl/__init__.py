@@ -46,7 +46,8 @@ class Application(application.OpalApplication):
         'css/rbhl.css'
     ]
     modify_extract = [
-        "plugins.lab.extract.add_blood_results"
+        "rbhl.extract.blood_results_and_key_facts.write_extract",
+        "rbhl.extract.wide_dataset.write_extract"
     ]
 
     default_episode_category = OccupationalLungDiseaseEpisode.display_name
@@ -54,7 +55,7 @@ class Application(application.OpalApplication):
     @classmethod
     def get_menu_items(klass, user=None):
         # we import here as settings must be set before this is imported
-        from rbhl.pathways import NewPatient, NewLabPatient
+        from rbhl.pathways import NewReferral, LabReferral
 
         if user:
             if user.is_authenticated:
@@ -64,9 +65,9 @@ class Application(application.OpalApplication):
 
                 if lab_user:
                     items = [
-                        NewLabPatient.as_menuitem(
+                        LabReferral.as_menuitem(
                             index=1,
-                            display="New patient"
+                            display="New referral"
                         ),
                         menus.MenuItem(
                             activepattern=reverse('unresulted-list'),
@@ -84,7 +85,7 @@ class Application(application.OpalApplication):
                         )
                     ]
                 else:
-                    items = [NewPatient.as_menuitem(index=1)]
+                    items = [NewReferral.as_menuitem(index=1)]
 
                 items.append(
                     menus.MenuItem(

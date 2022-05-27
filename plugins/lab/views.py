@@ -382,8 +382,54 @@ class LabMonthActivity(AbstractLabStatsPage):
     def holidays(self):
         return holidays.UnitedKingdom()
 
-    def get_rows(self, month, year):
-        bloods = Bloods.objects.filter(blood_date__month=month).filter(
+    def get_row(self, blood):
+        patient_id = blood.patient_id
+        episode_id = blood.patient.episode_set.last().id
+        employment = blood.employment
+        employer = "No employer"
+        oh_provider = "No OH provider"
+        if employment and employment.employer:
+            employer = employment.employer
+
+        if employment and employment.oh_provider:
+            oh_provider = employment.oh_provider
+
+        referral = blood.referral
+        referral_source = "No referral source"
+        reference_number = "No reference number"
+        if referral:
+            if referral.referral_source:
+                referral_source = referral.referral_source
+            if referral.occld:
+                referral_source = f"{referral_source} (OCCLD)"
+            reference_number = referral.reference_number
+        demographics = blood.patient.demographics_set.all()[0]
+        row = {
+            "Link": f"/pathway/#/bloods/{patient_id}/{episode_id}?id={blood.id}",
+            "Sample received": blood.blood_date,
+            "Referral source": referral_source,
+            "Reference number": reference_number,
+            "Hospital number": demographics.hospital_number,
+            "Surname": demographics.surname,
+            "OH Provider": oh_provider,
+            "Blood num": blood.blood_number,
+            "Employer": employer,
+            "Exposure": blood.exposure or "No exposure",
+            "Allergens": sorted(
+                list(i.allergen for i in blood.bloodresult_set.all() if i.allergen)
+            ),
+            "Report submitted": blood.report_st,
+            "Num tests": blood.bloodresult_set.count(),
+        }
+        if blood.report_st and blood.blood_date:
+            # dates are usually inclusive, e.g. 2nd - 5th if 4 days not 3
+            row["Days"] = self.get_day_count(blood.blood_date, blood.report_st)
+        else:
+            row["Days"] = ""
+        return row
+
+    def get_queryset(self, month, year):
+        return Bloods.objects.filter(blood_date__month=month).filter(
             blood_date__year=year
         ).select_related(
             "referral"
@@ -391,53 +437,12 @@ class LabMonthActivity(AbstractLabStatsPage):
             'patient__demographics_set',
             'referral__episode__employment_set'
         ).order_by("blood_date")
+
+    def get_rows(self, month, year):
+        bloods = self.get_queryset(month, year)
         result = []
         for blood in bloods:
-            patient_id = blood.patient_id
-            episode_id = blood.patient.episode_set.last().id
-            employment = None
-            if blood.referral:
-                employment = blood.referral.episode.employment_set.all()[0]
-            oh_provider = "No OH provider"
-            if employment and employment.employer:
-                employer = employment.employer
-
-            if employment and employment.oh_provider:
-                oh_provider = employment.oh_provider
-
-            referral = blood.referral
-            referral_source = "No referral source"
-            reference_number = "No reference number"
-            if referral:
-                if referral.referral_source:
-                    referral_source = referral.referral_source
-                if referral.occld:
-                    referral_source = f"{referral_source} (OCCLD)"
-                reference_number = referral.reference_number
-            demographics = blood.patient.demographics_set.all()[0]
-            row = {
-                "Link": f"/pathway/#/bloods/{patient_id}/{episode_id}?id={blood.id}",
-                "Sample received": blood.blood_date,
-                "Referral source": referral_source,
-                "Reference number": reference_number,
-                "Hospital number": demographics.hospital_number,
-                "Surname": demographics.surname,
-                "OH Provider": oh_provider,
-                "Blood num": blood.blood_number,
-                "Employer": employer,
-                "Exposure": blood.exposure or "No exposure",
-                "Allergens": sorted(
-                    list(i.allergen for i in blood.bloodresult_set.all() if i.allergen)
-                ),
-                "Report submitted": blood.report_st,
-                "Num tests": blood.bloodresult_set.count(),
-            }
-            if blood.report_st and blood.blood_date:
-                # dates are usually inclusive, e.g. 2nd - 5th if 4 days not 3
-                row["Days"] = self.get_day_count(blood.blood_date, blood.report_st)
-            else:
-                row["Days"] = ""
-            result.append(row)
+            result.append(self.get_row(blood))
         return result
 
     def get_day_count(self, start_dt, report_date):
@@ -523,6 +528,57 @@ class LabMonthActivity(AbstractLabStatsPage):
         ctx["exposure_pie_chart"] = json.dumps(self.get_exposure_pie_chart(ctx["rows"]))
         return ctx
 
+    def get_results_rows(self, month, year):
+        """
+        Returns the employer rows at the granularity
+        of bloods results
+        """
+        bloods = self.get_queryset(month, year)
+        bloods = bloods.prefetch_related('bloodresult_set')
+        max_row_count = 0
+        if bloods:
+            max_row_count = max(
+                [len(i.bloodresult_set.all()) for i in bloods]
+            )
+        rows = []
+        for blood in bloods:
+            referrer_name = ""
+            if blood.referral:
+                referrer_name = blood.referral.referrer_name
+            employer = ""
+            if blood.employment:
+                employer = blood.employment.employer
+            demographics = blood.patient.demographics_set.all()[0]
+            row = {
+                "Blood num": blood.blood_number,
+                "Referrer name": referrer_name,
+                "Sample received": blood.blood_date,
+                "Surname": demographics.surname,
+                "DOB": demographics.date_of_birth,
+                "Employer": employer
+            }
+            for idx, result in enumerate(blood.bloodresult_set.all(), 1):
+                row[f"Allergen {idx}"] = result.allergen
+                row[f"KU/L {idx}"] = result.kul
+                row[f"IgE Class {idx}"] = result.klass
+                row[f"RAST {idx}"] = result.rast
+                row[f"RAST score {idx}"] = result.rast_score
+                row[f"Precipitin {idx}"] = result.precipitin
+                row[f"IgG {idx}"] = result.igg
+                row[f"IgG Class {idx}"] = result.iggclass
+            results_len = len(blood.bloodresult_set.all())
+            for idx in range(results_len + 1, max_row_count):
+                row[f"Allergen {idx}"] = ""
+                row[f"KU/L {idx}"] = ""
+                row[f"IgE Class {idx}"] = ""
+                row[f"RAST {idx}"] = ""
+                row[f"RAST score {idx}"] = ""
+                row[f"Precipitin {idx}"] = ""
+                row[f"IgG {idx}"] = ""
+                row[f"IgG Class {idx}"] = ""
+            rows.append(row)
+        return rows
+
     def post(self, *args, **kwargs):
         zip_file_name = "lab_summary.zip"
         year = int(kwargs["year"])
@@ -531,6 +587,7 @@ class LabMonthActivity(AbstractLabStatsPage):
         month_name = dt.strftime("%B").lower()
         zip_file_name = f"{month_name}_review.zip"
         rows = self.get_rows(month, year)
+        result_rows = self.get_results_rows(month, year)
         for row in rows:
             scheme = self.request.scheme
             host = self.request.get_host()
@@ -538,6 +595,7 @@ class LabMonthActivity(AbstractLabStatsPage):
             row["Allergens"] = ", ".join(row["Allergens"])
         summary = self.get_summary(rows)
         employers = list({i["Employer"] for i in rows if i})
+
         with ZipCsvWriter(zip_file_name) as zf:
             zf.write_csv("rows.csv", rows)
             zf.write_csv("summary.csv", summary)
@@ -548,6 +606,13 @@ class LabMonthActivity(AbstractLabStatsPage):
                 employer_name = employer.lower().replace(" ", "_")
                 zf.write_csv(
                     f"oem_{employer_name}_{month_name}_{year}.csv", employer_rows
+                )
+                employer_results_rows = [
+                    row for row in result_rows if row["Employer"] == employer
+                ]
+                zf.write_csv(
+                    f"oem_{employer_name}_invoice_{month_name}_{year}.csv",
+                    employer_results_rows
                 )
 
         return zip_file_to_response(zf.name)
