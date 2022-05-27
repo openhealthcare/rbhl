@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 from plugins.lab import models
 import csv
 
@@ -124,6 +125,10 @@ def write_extract(episodes, directory, *args):
     if not os.path.exists(reports_dir):
         os.mkdir(reports_dir)
     file_name = os.path.join(reports_dir, "blood_results_and_key_facts.csv")
+    if not rows:
+        Path(file_name).touch()
+        return
+
     with open(file_name, "w") as f:
         writer = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
         writer.writeheader()

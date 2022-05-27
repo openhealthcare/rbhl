@@ -1,5 +1,6 @@
 import csv
 import os
+from pathlib import Path
 from django.db.models import Count
 from opal.models import Patient
 from plugins.lab.models import Spirometry, Bloods
@@ -282,18 +283,20 @@ def get_field_names(row_type, patient_id_to_row):
 
 
 def blood_sorting_function(key):
+    """
+    Sorts the blood fields so that the results come at the end
+    """
     splitted = key.split("result")
     if len(splitted) == 1:
-        return (
-            int(key.split(" ")[1]),
-            0,
-        )
-    blood_int = int(key.split(" ")[1])
-    result_int = int(splitted[1].split(" ")[1])
-    return (
-        blood_int,
-        result_int,
-    )
+        result_int = 0
+    else:
+        result_int = int(splitted[1].split(" ")[1])
+
+    if not splitted[0][-1].isnumeric():
+        blood_int = 0
+    else:
+        blood_int = int(key.split(" ")[-1])
+    return (blood_int, result_int,)
 
 
 def get_bloods_field_names(patient_id_to_row):
@@ -307,12 +310,8 @@ def get_bloods_field_names(patient_id_to_row):
     we can do this via sorting
     """
     blood_fields = set()
-    for patient_id, row in patient_id_to_row.items():
+    for row in patient_id_to_row.values():
         blood_fields = blood_fields.union(row["bloods"].keys())
-        if "Bloods 9 result 7 RAST score" in row["bloods"].keys():
-            print("=====")
-            print(patient_id)
-            print("=====")
     return sorted(list(blood_fields), key=blood_sorting_function)
 
 
@@ -371,6 +370,9 @@ def get_data(patient_qs, counts):
 def write_csv(patients, counts, directory):
     file_name = os.path.join(directory, "wide_dataset.csv")
     rows = get_data(patients, counts)
+    if not rows:
+        Path(file_name).touch()
+        return
     with open(file_name, "w") as f:
         writer = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
         writer.writeheader()
@@ -424,19 +426,30 @@ def write_extract(episodes, directory, *args):
         ),
     ]:
         qs = model.objects.filter(episode_id__patient_id__in=patient_ids)
-        counts[field] = (
-            qs.values("episode_id")
-            .annotate(cnt=Count("episode_id"))
-            .order_by("-cnt")[0]["cnt"]
-        )
+        with_counts = qs.values(
+            "episode_id"
+        ).annotate(
+            cnt=Count("episode_id")
+        ).order_by("-cnt")
+        if with_counts.exists():
+            counts[field] = with_counts[0]["cnt"]
+        else:
+            counts[field] = 0
 
-    counts["diagnosis"] = (
-        Diagnosis.objects.filter(episode_id__patient_id__in=patient_ids)
-        .filter(category__in=["Rhinitis", "Asthma"])
-        .values("episode_id")
-        .annotate(cnt=Count("episode_id"))
-        .order_by("-cnt")[0]["cnt"]
-    )
+    diagnoiss_with_counts = Diagnosis.objects.filter(
+        episode_id__patient_id__in=patient_ids
+    ).filter(
+        category__in=["Rhinitis", "Asthma"]
+    ).values(
+        "episode_id"
+    ).annotate(
+        cnt=Count("episode_id")
+    ).order_by("-cnt")
+
+    if diagnoiss_with_counts.exists():
+        counts["diagnosis"] = diagnoiss_with_counts[0]["cnt"]
+    else:
+        counts["diagnosis"] = 0
 
     for field in [
         "spirometry",
