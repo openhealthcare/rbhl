@@ -31,8 +31,6 @@ def write_extract(episodes, directory, *args):
         allergen = lab_test.allergen
         if not allergen:
             continue
-        if "mouse" not in allergen.lower():
-            continue
         demographics = patient.demographics_set.all()[0]
         employment = lab_test.bloods.employment
         employer = ""
