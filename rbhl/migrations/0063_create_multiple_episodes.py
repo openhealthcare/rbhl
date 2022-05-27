@@ -35,6 +35,14 @@ def get_episode_ids_with_duplicate_referrals(Episode):
     return result
 
 
+def referral_date(referral):
+	if referral.date_of_referral:
+		return referral.date_of_referral
+	if referral.date_first_contact:
+		return referral.date_first_contact
+	if referral.date_referral_received:
+		return referral.date_referral_received
+
 def get_closest_referral(episode):
     """
     Returns the closest referral within a year before the clinic date
@@ -44,16 +52,12 @@ def get_closest_referral(episode):
     if not clinic_log.clinic_date:
         return
     referrals_with_dates = [
-        i for i in referrals if i.date_of_referral if i.date_of_referral
+        i for i in referrals if referral_date(i) and referral_date(i) <= clinic_log.clinic_date
     ]
     closest = None
     closest_diff = None
     for referral in referrals_with_dates:
-        if not referral.date_of_referral:
-            continue
-        if referral.date_of_referral > clinic_log.clinic_date:
-            continue
-        days_diff =  (clinic_log.clinic_date - referral.date_of_referral).days
+        days_diff =  (clinic_log.clinic_date - referral_date(referral)).days
         if days_diff > 365:
             continue
         if not closest:
