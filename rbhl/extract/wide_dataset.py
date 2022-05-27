@@ -292,10 +292,10 @@ def blood_sorting_function(key):
     else:
         result_int = int(splitted[1].split(" ")[1])
 
-    if not splitted[0][-1].isnumeric():
+    if not key.split(" ")[1][0].isnumeric():
         blood_int = 0
     else:
-        blood_int = int(key.split(" ")[-1])
+        blood_int = int(key.split(" ")[1])
     return (blood_int, result_int,)
 
 
