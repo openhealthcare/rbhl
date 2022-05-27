@@ -151,9 +151,8 @@ class Bloods(RbhlSubrecord, models.PatientSubrecord):
     blood_collected    = fields.CharField(
         verbose_name='EDTA blood collected',
         blank=True, null=True,
-        max_length=200)
-    date_dna_extracted = fields.CharField(blank=True, null=True,
-                                          max_length=200)
+        max_length=200
+    )
     assayno            = fields.CharField(
         blank=True, null=True, max_length=200, verbose_name="Assay number"
     )
