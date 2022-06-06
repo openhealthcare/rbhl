@@ -284,7 +284,16 @@ def get_field_names(row_type, patient_id_to_row):
 
 def blood_sorting_function(key):
     """
-    Sorts the blood fields so that the results come at the end
+    blood fields come in the form
+    'blood {idx} field'
+    or
+    'blood {idx} result {result_idx} field'
+
+    if there is only 1 blood then there is no idx
+    ie the field looks like blood field or blood result {result_idx}
+
+    this function returns a tuple of (idx, result_idx,)
+    if there is no idx then it returns idx=0
     """
     splitted = key.split("result")
     if len(splitted) == 1:
@@ -377,7 +386,6 @@ def write_csv(patients, counts, directory):
         writer = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
         writer.writeheader()
         writer.writerows(rows)
-    print(f"written to {file_name}")
 
 
 def prefetch_related(patient_qs):
@@ -438,7 +446,7 @@ def write_extract(episodes, directory, *args):
 
     diagnoiss_with_counts = Diagnosis.objects.filter(
         episode_id__patient_id__in=patient_ids
-    ).filter(
+    ).exclude(
         category__in=["Rhinitis", "Asthma"]
     ).values(
         "episode_id"
