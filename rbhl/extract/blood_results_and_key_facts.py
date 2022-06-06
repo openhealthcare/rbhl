@@ -10,9 +10,8 @@ def false_is_empty(x):
     return 1
 
 
-def write_extract(episodes, directory, *args):
-    rows = []
-    lab_tests = (
+def get_queryset(episodes):
+    return (
         models.BloodResult.objects.filter(bloods__patient__episode__in=episodes)
         .distinct()
         .prefetch_related(
@@ -26,11 +25,14 @@ def write_extract(episodes, directory, *args):
             "bloods__employment",
         )
     )
+
+
+def write_extract(episodes, directory, *args):
+    rows = []
+    lab_tests = get_queryset(episodes)
+
     for lab_test in lab_tests:
         patient = lab_test.bloods.patient
-        allergen = lab_test.allergen
-        if not allergen:
-            continue
         demographics = patient.demographics_set.all()[0]
         employment = lab_test.bloods.employment
         employer = ""
