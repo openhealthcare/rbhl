@@ -540,8 +540,10 @@ class LabMonthActivity(AbstractLabStatsPage):
         rows = []
         for blood in bloods:
             referrer_name = ""
+            reference_number = ""
             if blood.referral:
                 referrer_name = blood.referral.referrer_name
+                reference_number = blood.referral.reference_number
             employer = ""
             if blood.employment:
                 employer = blood.employment.employer
@@ -549,6 +551,7 @@ class LabMonthActivity(AbstractLabStatsPage):
             row = {
                 "Blood num": blood.blood_number,
                 "Referrer name": referrer_name,
+                "Reference number": reference_number,
                 "Sample received": blood.blood_date,
                 "Surname": demographics.surname,
                 "DOB": demographics.date_of_birth,
