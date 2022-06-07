@@ -27,7 +27,7 @@ def get_queryset(episodes):
     )
 
 
-def write_extract(episodes, directory, *args):
+def write_extract(episodes, directory, **kwargs):
     rows = []
     lab_tests = get_queryset(episodes)
 

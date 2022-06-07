@@ -404,7 +404,7 @@ def prefetch_related(patient_qs):
     )
 
 
-def write_extract(episodes, directory, *args):
+def write_extract(episodes, directory, **kwargs):
     reports_dir = os.path.join(directory, 'reports')
     if not os.path.exists(reports_dir):
         os.mkdir(reports_dir)
