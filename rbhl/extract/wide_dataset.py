@@ -1,7 +1,7 @@
 import csv
 import os
 from pathlib import Path
-from django.db.models import Count
+from django.db.models import Count, BooleanField
 from opal.models import Patient
 from plugins.lab.models import Spirometry, Bloods
 from django.core.exceptions import FieldDoesNotExist
@@ -26,6 +26,15 @@ FIELDS_TO_IGNORE = (
 )
 
 
+def convert_boolean(x):
+    """
+    If x is truthy, return 1, else return an empty string
+    """
+    if not x:
+        return ""
+    return 1
+
+
 def get_field_title(instance, name):
     """
     Get the verbose name of a field off an instance
@@ -35,6 +44,20 @@ def get_field_title(instance, name):
         return model._meta.get_field(name).verbose_name
     except FieldDoesNotExist:
         return getattr(model, name).verbose_name
+
+
+def get_field_value(instance, field_name):
+    model = instance.__class__
+    value = getattr(instance, field_name)
+    try:
+        field = model._meta.get_field(field_name)
+        # null boolean field is a sub class of boolean field
+        # so we just need to check a boolean field
+        if isinstance(field, BooleanField):
+            return convert_boolean(value)
+    except FieldDoesNotExist:
+        pass
+    return value
 
 
 def extract_demographics(patient):
@@ -78,9 +101,9 @@ def extract_referrals(patient, counts):
         for field in fields:
             field_name = referral.__class__._get_field_title(field)
             if counts > 1:
-                result[f"{field_name} {idx}"] = getattr(referral, field)
+                result[f"{field_name} {idx}"] = get_field_value(referral, field)
             else:
-                result[f"{field_name}"] = getattr(referral, field)
+                result[f"{field_name}"] = get_field_value(referral, field)
     return result
 
 
@@ -102,9 +125,9 @@ def extract_employment(patient, counts):
         for field in fields:
             field_name = employment.__class__._get_field_title(field)
             if counts > 1:
-                result[f"{field_name} {idx}"] = getattr(employment, field)
+                result[f"{field_name} {idx}"] = get_field_value(employment, field)
             else:
-                result[f"{field_name}"] = getattr(employment, field)
+                result[f"{field_name}"] = get_field_value(employment, field)
     return result
 
 
@@ -116,11 +139,13 @@ def extract_asthma_diagnosis(patient, counts):
     for idx, asthma_detail in enumerate(asthma_details, 1):
         for field in ["date", "trigger", "sensitivities"]:
             if counts > 1:
-                result[f"Asthma diagnosis {idx} {field}"] = getattr(
+                result[f"Asthma diagnosis {idx} {field}"] = get_field_value(
                     asthma_detail, field
                 )
             else:
-                result[f"Asthma diagnosis {field}"] = getattr(asthma_detail, field)
+                result[f"Asthma diagnosis {field}"] = get_field_value(
+                    asthma_detail, field
+                )
     return result
 
 
@@ -132,11 +157,13 @@ def extract_rhinitis_diagnosis(patient, counts):
     for idx, rhinitis_detail in enumerate(rhinitis_details, 1):
         for field in ["date", "trigger", "sensitivities"]:
             if counts > 1:
-                result[f"Rhinitis diagnosis {idx} {field}"] = getattr(
+                result[f"Rhinitis diagnosis {idx} {field}"] = get_field_value(
                     rhinitis_detail, field
                 )
             else:
-                result[f"Rhinitis diagnosis {field}"] = getattr(rhinitis_detail, field)
+                result[f"Rhinitis diagnosis {field}"] = get_field_value(
+                    rhinitis_detail, field
+                )
     return result
 
 
@@ -152,11 +179,13 @@ def extract_other_diagnosis(patient, counts):
     for idx, other_diagnosis in enumerate(other_diagnoses, 1):
         for field in fields:
             if counts > 1:
-                result[f"Other diagnosis {idx} {field}"] = getattr(
+                result[f"Other diagnosis {idx} {field}"] = get_field_value(
                     other_diagnosis, field
                 )
             else:
-                result[f"Other diagnosis {field}"] = getattr(other_diagnosis, field)
+                result[f"Other diagnosis {field}"] = get_field_value(
+                    other_diagnosis, field
+                )
     return result
 
 
@@ -169,9 +198,9 @@ def extract_spirometry(patient, counts):
     for idx, spirometry in enumerate(spirometries, 1):
         for field in fields:
             if counts > 1:
-                result[f"Spirometry {idx} {field}"] = getattr(spirometry, field)
+                result[f"Spirometry {idx} {field}"] = get_field_value(spirometry, field)
             else:
-                result[f"Spirometry {field}"] = getattr(spirometry, field)
+                result[f"Spirometry {field}"] = get_field_value(spirometry, field)
     return result
 
 
@@ -195,11 +224,13 @@ def extract_clinic_log(patient):
     )
     result = {}
     for field in fields:
-        result[clinic_log.__class__._get_field_title(field)] = getattr(
+        result[clinic_log.__class__._get_field_title(field)] = get_field_value(
             clinic_log, field
         )
         if field == "peak_flow_requested":
-            result["Peak flow received"] = bool(episode.peakflowday_set.all())
+            result["Peak flow received"] = convert_boolean(
+                bool(episode.peakflowday_set.all())
+            )
     return result
 
 
@@ -213,9 +244,8 @@ def extract_blood_results(patient, counts):
 
     for idx, blood in enumerate(bloods, 1):
         for blood_field in bloods_fields:
-            result[get_csv_field_name(Bloods, blood_field, idx, counts)] = getattr(
-                blood, blood_field
-            )
+            csv_field_name = get_csv_field_name(Bloods, blood_field, idx, counts)
+            result[csv_field_name] = get_field_value(blood, blood_field)
 
         for result_idx, blood_result in enumerate(blood.bloodresult_set.all(), 1):
             blood_result_fields = blood_result.get_fields()
@@ -227,7 +257,7 @@ def extract_blood_results(patient, counts):
                     field_name = f"Bloods {idx} result {result_idx} {field_title}"
                 else:
                     field_name = f"Bloods result {result_idx} {field_title}"
-                result[field_name] = getattr(blood_result, blood_field)
+                result[field_name] = get_field_value(blood_result, blood_field)
     return result
 
 
@@ -253,7 +283,7 @@ def row_for_subrecords(subrecords, counts):
             csv_field_name = get_csv_field_name(
                 subrecord_class, field_name, idx, counts
             )
-            result[csv_field_name] = getattr(subrecord, field_name)
+            result[csv_field_name] = get_field_value(subrecord, field_name)
     return result
 
 

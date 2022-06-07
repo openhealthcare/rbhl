@@ -4,7 +4,10 @@ from plugins.lab import models
 import csv
 
 
-def false_is_empty(x):
+def convert_boolean(x):
+    """
+    If x is truthy, return 1, else return an empty string
+    """
     if not x:
         return ""
     return 1
@@ -70,43 +73,43 @@ def write_extract(episodes, directory, **kwargs):
             "First visit": first_visit,
             "Employer": employer,
             "OH provider": oh_provider,
-            "Asthma": false_is_empty(diagnosis.get("asthma")),
+            "Asthma": convert_boolean(diagnosis.get("asthma")),
             "Asthma occupational": ", ".join(list(set([i for i in asthma_trigger]))),
-            "Rhinitis": false_is_empty(diagnosis.get("rhinitis")),
+            "Rhinitis": convert_boolean(diagnosis.get("rhinitis")),
             "Rhinitis occupational": ", ".join(
                 list(set([i for i in rhinitis_trigger]))
             ),
-            "Chronic air flow limitation": false_is_empty(
+            "Chronic air flow limitation": convert_boolean(
                 diagnosis.get("chronic air flow limitation", "")
             ),
-            "Chronic air flow limitation occupational": false_is_empty(
+            "Chronic air flow limitation occupational": convert_boolean(
                 diagnosis.get("chronic air flow limitation_occupational", "")
             ),
-            "NAD": false_is_empty(diagnosis.get("nad", "")),
-            "Malignancy": false_is_empty(diagnosis.get("malignancy", "")),
-            "Malignancy occupational": false_is_empty(
+            "NAD": convert_boolean(diagnosis.get("nad", "")),
+            "Malignancy": convert_boolean(diagnosis.get("malignancy", "")),
+            "Malignancy occupational": convert_boolean(
                 diagnosis.get("malignancy_occupational", "")
             ),
-            "Benign pleural disease": false_is_empty(
+            "Benign pleural disease": convert_boolean(
                 diagnosis.get("benign pleural disease")
             ),
-            "Diffuse lung disease": false_is_empty(
+            "Diffuse lung disease": convert_boolean(
                 diagnosis.get("diffuse lung disease")
             ),
-            "Diffuse lung disease occupational": false_is_empty(
+            "Diffuse lung disease occupational": convert_boolean(
                 diagnosis.get("diffuse lung disease_occupational")
             ),
-            "Breathing pattern dysfunction": false_is_empty(
+            "Breathing pattern dysfunction": convert_boolean(
                 diagnosis.get("breathing pattern dysfunction")
             ),
-            "Upper airway dysfunction": false_is_empty(
+            "Upper airway dysfunction": convert_boolean(
                 diagnosis.get("upper airway dysfunction")
             ),
-            "Irritant symptoms only": false_is_empty(
+            "Irritant symptoms only": convert_boolean(
                 diagnosis.get("irritant symptoms only", "")
             ),
-            "Other": false_is_empty(diagnosis.get("other", "")),
-            "Other occupational": false_is_empty(
+            "Other": convert_boolean(diagnosis.get("other", "")),
+            "Other occupational": convert_boolean(
                 diagnosis.get("other_occupational", "")
             ),
             "Blood date": lab_test.bloods.blood_date,
