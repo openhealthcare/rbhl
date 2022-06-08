@@ -43,7 +43,8 @@ class Application(application.OpalApplication):
         'css/rbhl.css'
     ]
     modify_extract = [
-        "plugins.lab.extract.add_blood_results"
+        "rbhl.extract.blood_results_and_key_facts.write_extract",
+        "rbhl.extract.wide_dataset.write_extract"
     ]
 
     default_episode_category = OccupationalLungDiseaseEpisode.display_name
