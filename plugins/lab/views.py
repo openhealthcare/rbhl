@@ -532,11 +532,6 @@ class LabMonthActivity(AbstractLabStatsPage):
         """
         bloods = self.get_queryset(month, year)
         bloods = bloods.prefetch_related('bloodresult_set')
-        max_row_count = 0
-        if bloods:
-            max_row_count = max(
-                [len(i.bloodresult_set.all()) for i in bloods]
-            )
         rows = []
         for blood in bloods:
             referrer_name = ""
@@ -566,16 +561,27 @@ class LabMonthActivity(AbstractLabStatsPage):
                 row[f"Precipitin {idx}"] = result.precipitin
                 row[f"IgG {idx}"] = result.igg
                 row[f"IgG Class {idx}"] = result.iggclass
-            results_len = len(blood.bloodresult_set.all())
-            for idx in range(results_len + 1, max_row_count):
-                row[f"Allergen {idx}"] = ""
-                row[f"KU/L {idx}"] = ""
-                row[f"IgE Class {idx}"] = ""
-                row[f"RAST {idx}"] = ""
-                row[f"RAST score {idx}"] = ""
-                row[f"Precipitin {idx}"] = ""
-                row[f"IgG {idx}"] = ""
-                row[f"IgG Class {idx}"] = ""
+                rows.append(row)
+        return rows
+
+    def pad_rows(self, list_of_dicts):
+        """
+        Pads out rows so that if we have a row
+        with 10 fields and a row with 1 field
+        the row gets padded out with an additional 9 fields
+        populated with empty strings.
+        """
+        fields = list()
+        for some_dict in list_of_dicts:
+            keys = list(some_dict.keys())
+            for key in keys:
+                if key not in fields:
+                    fields.append(key)
+        rows = []
+        for some_dict in list_of_dicts:
+            row = {}
+            for field in fields:
+                row[field] = some_dict.get(field, "")
             rows.append(row)
         return rows
 
@@ -612,7 +618,7 @@ class LabMonthActivity(AbstractLabStatsPage):
                 ]
                 zf.write_csv(
                     f"oem_{employer_name}_invoice_{month_name}_{year}.csv",
-                    employer_results_rows
+                    self.pad_rows(employer_results_rows)
                 )
 
         return zip_file_to_response(zf.name)
