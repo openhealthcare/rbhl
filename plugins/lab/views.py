@@ -566,7 +566,7 @@ class LabMonthActivity(AbstractLabStatsPage):
         Pads out rows so that if we have a row
         with 10 fields and a row with 1 field
         the row gets padded out with an additional 9 fields
-        populated wit empty strings.
+        populated with empty strings.
         """
         fields = list()
         for some_dict in list_of_dicts:
