@@ -2,11 +2,10 @@
 Generates the clinic activity facts
 """
 import datetime
-from collections import defaultdict
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from opal.models import Episode
-from rbhl.models import ClinicLog, Diagnosis, Fact, Referral
+from rbhl.models import ClinicLog, Fact
 import logging
 logger = logging.getLogger('commands')
 
@@ -32,8 +31,6 @@ class Command(BaseCommand):
             cliniclog__clinic_date__lt=five_year_range[1]
         ).distinct().prefetch_related(
             "cliniclog_set",
-            "referral_set",
-            "diagnosis_set"
         )
 
     def handle(self, *args, **kwargs):
@@ -53,15 +50,6 @@ class Command(BaseCommand):
             label=Fact.MEAN_CLINIC_PATIENTS_PER_YEAR,
             value_int=referral_mean
         )
-        episode_ids = set(five_year_episodes.values_list('id', flat=True))
-        diagnosis = Diagnosis.objects.filter(
-            episode_id__in=episode_ids
-        ).exclude(
-            date=None
-        ).order_by("date")
-        episode_id_to_diagnosis = defaultdict(list)
-        for i in diagnosis:
-            episode_id_to_diagnosis[i.episode_id].append(i)
         diagnosed_count = 0
 
         # Diagnosis % is calclated by the
@@ -78,21 +66,3 @@ class Command(BaseCommand):
             label=Fact.FIVE_YEAR_MEAN_KNOWN_DIAGNOSIS,
             value_int=mean_diagnosis_percent
         )
-
-        # Diagnosis time is calculated the time from our first diagnosis
-        # after the referral date
-        total_days = 0
-        count_with_diagnosis = 0
-        for episode in five_year_episodes:
-            referral = Referral.get_recent_referral_for_episode(episode)
-            if referral and referral.date_of_referral:
-                diagnoses = episode.diagnosis_set.all()
-                diagnoses = [i for i in diagnoses if i.date]
-                diagnosis_after_referral = [
-                    i for i in diagnoses if i.date > referral.date_of_referral
-                ]
-                if diagnosis_after_referral:
-                    diagnosis = diagnosis_after_referral[0]
-                    days_to_diagnosis = diagnosis.date - referral.date_of_referral
-                    total_days += days_to_diagnosis.days
-                    count_with_diagnosis += 1
