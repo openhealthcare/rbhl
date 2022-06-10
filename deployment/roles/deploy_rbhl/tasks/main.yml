@@ -52,6 +52,12 @@
     hour: 1
     job: "{{ VIRTUALENV_PATH }}/bin/python {{ PROJECT_PATH}}/manage.py generate_clinic_facts"
 
+- name: Check management commands cron
+  cron:
+    name: "Check management commands cron"
+    hour: 8
+    job: "{{ VIRTUALENV_PATH }}/bin/python {{ PROJECT_PATH}}/manage.py mgmt_cmd_status"
+
 - name: Remove old nginx default
   become: true
   file:
