@@ -11,7 +11,7 @@ logger = logging.getLogger('commands')
 
 
 class Command(BaseCommand):
-    def get_five_year_episodes(cls):
+    def get_five_year_episodes(self):
         today = datetime.date.today()
         if today.month > 9:
             five_year_range = (
