@@ -1,0 +1,14 @@
+<html>
+<body>
+  <h1>{{ title }}</h1>
+  <table table width="580" cellpadding="0" cellspacing="0">
+    <th align="left">Command</th><th align="right">Start datetime</th>
+    {% for command, start in lines %}
+    <tr>
+      <td align="left">{{ command }}</td>
+      <td align="right">{{ start }} </td>
+    </tr>
+  </table>
+  {% endfor %}
+</body>
+</html>
