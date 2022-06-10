@@ -13,6 +13,7 @@ copy_env = true
 
 
 [watcher:celery]
+numprocesses = 1
 working_dir = {{ PROJECT_PATH }}
 cmd = {{ VIRTUALENV_PATH }}/bin/celery
 uid = ubuntu
