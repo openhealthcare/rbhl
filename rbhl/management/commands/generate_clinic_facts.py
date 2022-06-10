@@ -41,15 +41,27 @@ class Command(BaseCommand):
             raise
 
     @transaction.atomic
+    def save_facts(self, mean_clinic_patients_per_year, mean_known_diagnosis):
+        Fact.objects.filter(
+            label__in=[
+                Fact.MEAN_CLINIC_PATIENTS_PER_YEAR,
+                Fact.FIVE_YEAR_MEAN_KNOWN_DIAGNOSIS
+            ]
+        ).delete()
+        Fact.objects.create(
+            label=Fact.MEAN_CLINIC_PATIENTS_PER_YEAR,
+            value_int=mean_clinic_patients_per_year
+        )
+        Fact.objects.create(
+            label=Fact.FIVE_YEAR_MEAN_KNOWN_DIAGNOSIS,
+            value_int=mean_known_diagnosis
+        )
+
     def process(self, *args, **options):
         five_year_episodes = self.get_five_year_episodes()
         episode_count = five_year_episodes.count()
 
         referral_mean = round(episode_count/5)
-        Fact.objects.create(
-            label=Fact.MEAN_CLINIC_PATIENTS_PER_YEAR,
-            value_int=referral_mean
-        )
         diagnosed_count = 0
 
         # Diagnosis % is calclated by the
@@ -61,8 +73,4 @@ class Command(BaseCommand):
                 diagnosed_count += 1
 
         mean_diagnosis_percent = round(diagnosed_count/episode_count * 100)
-        Fact.objects.filter(label=Fact.FIVE_YEAR_MEAN_KNOWN_DIAGNOSIS).delete()
-        Fact.objects.create(
-            label=Fact.FIVE_YEAR_MEAN_KNOWN_DIAGNOSIS,
-            value_int=mean_diagnosis_percent
-        )
+        self.save_facts(referral_mean, mean_diagnosis_percent)
