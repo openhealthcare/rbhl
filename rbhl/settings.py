@@ -242,7 +242,7 @@ LOGGING = {
             'propagate': True,
         },
         'commands': {
-            'handlers': ['mail_admins', 'console'],
+            'handlers': ['mail_admins', 'console_detailed'],
             'level': 'INFO',
             'propagate': True,
         }
