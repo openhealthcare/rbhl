@@ -15,7 +15,7 @@ logger = logging.getLogger('commands')
 
 # the number of management commands that if we have more than
 # we should email
-THRESHOLD = 0
+THRESHOLD = 1
 
 
 def raise_alarm():
@@ -68,8 +68,6 @@ def get_managepy_processes():
         cmd = line.replace(some_dt, "").strip()
         if cmd == 'grep manage.py':
             continue
-        if cmd.endswith('mgmt_cmd_status'):
-            continue
         cmd_and_date.append((cmd, some_dt,))
     return cmd_and_date
 
@@ -78,7 +76,12 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         try:
             lines = get_managepy_processes()
-            logger.info(f'Found {len(lines)} running management commands')
+            logger.info(
+                " ".join([
+                    f'Found {len(lines)} running management commands',
+                    '(this includes this command)'
+                ])
+            )
             if len(lines) > THRESHOLD:
                 logger.info(
                     " ".join([
