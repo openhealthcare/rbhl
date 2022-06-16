@@ -242,8 +242,8 @@ LOGGING = {
             'propagate': True,
         },
         'commands': {
-            'handlers': ['mail_admins', 'console'],
-            'level': 'ERROR',
+            'handlers': ['mail_admins', 'console_detailed'],
+            'level': 'INFO',
             'propagate': True,
         }
     }
