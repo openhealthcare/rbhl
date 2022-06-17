@@ -1,4 +1,0 @@
-- name: Restore the server from a bucket
-  command: "{{ VIRTUALENV_PATH }}/bin/python scripts/backup.py {{ DB_NAME }} {{ DB_USER }} {{ BACKUPS_DIR }} {{ S3_BUCKET_NAME }} {{ S3_SECRET }}"
-  args:
-      chdir: "{{ PROJECT_PATH }}"
