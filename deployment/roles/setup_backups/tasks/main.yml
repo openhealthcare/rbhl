@@ -14,11 +14,6 @@
     owner: ubuntu
     mode: 0741
 
-- name: Creates backups dir
-  file:
-    path: "{{ BACKUPS_DIR }}"
-    state: directory
-
 - name: fire the backup cron
   cron:
     name: "backup"
