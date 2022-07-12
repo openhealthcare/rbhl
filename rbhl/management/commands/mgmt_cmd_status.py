@@ -15,7 +15,7 @@ logger = logging.getLogger('commands')
 
 # the number of management commands that if we have more than
 # we should email
-THRESHOLD = 1
+THRESHOLD = 0
 
 # we ignore the first one of these commands that we hit
 # as they are caused by this managment command
