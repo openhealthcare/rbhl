@@ -17,6 +17,23 @@ logger = logging.getLogger('commands')
 # we should email
 THRESHOLD = 1
 
+# we ignore the first one of these commands that we hit
+# as they are caused by this managment command
+# subsequent references we keep as these would be stale
+# hangovers of previous run of this command
+IGNORE_FIRST = (
+    " ".join([
+        "/bin/sh -c /home/ubuntu/.virtualenvs/rbhl/bin/python",
+        "/usr/lib/ohc/rbhl/manage.py mgmt_cmd_status >>",
+        "/usr/lib/ohc/log/cron.log 2>&1",
+    ]),
+    " ".join([
+        "/home/ubuntu/.virtualenvs/rbhl/bin/python",
+        "/usr/lib/ohc/rbhl/manage.py mgmt_cmd_status",
+    ]),
+    "grep manage.py"
+)
+
 
 def raise_alarm():
     """
@@ -62,13 +79,16 @@ def get_managepy_processes():
     )
     ps_lines = p2.stdout.readlines()
     cmd_and_date = []
+    ignore_first = list(IGNORE_FIRST)
     for bline in ps_lines:
         line = bline.decode("utf-8").strip()
-        some_dt = " ".join(line.strip().split(" ")[:5])
-        cmd = line.replace(some_dt, "").strip()
-        if cmd == 'grep manage.py':
+        some_dt = line[:25].strip()
+        cmd = line[25:].strip()
+        if cmd in ignore_first:
+            ignore_first.remove(cmd)
             continue
         cmd_and_date.append((cmd, some_dt,))
+
     return cmd_and_date
 
 
@@ -79,7 +99,6 @@ class Command(BaseCommand):
             logger.info(
                 " ".join([
                     f'Found {len(lines)} running management commands',
-                    '(this includes this command)'
                 ])
             )
             if len(lines) > THRESHOLD:
