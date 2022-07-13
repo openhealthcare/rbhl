@@ -37,7 +37,7 @@ def send_email(lines, memory_status):
     else:
         title = f"There are {len(lines)} running commands on {name}"
     html_message = render_to_string(
-        "emails/running_commands.html", {"title": title, "lines": lines, "memory:" memory}
+        "emails/running_commands.html", {"title": title, "lines": lines, "memory:" memory_status}
     )
     plain_message = strip_tags(html_message)
     send_mail(
