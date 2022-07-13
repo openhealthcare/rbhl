@@ -15,19 +15,14 @@ of the pem file with the stanza:
 private_key_file = ~/RBHL.pem
 ```
 
-To create an set up a dev server
+To create an set up a dev server, takes the key to the backup that should be restore
 ```
-ansible-playbook setup_dev.yml
+ansible-playbook setup_dev.yml --extra-vars "RESTORE_BACKUP_S3_KEY={{LATEST S3 KEY}}"
 ```
 
 To create an set up a prod server
 ```
-ansible-playbook setup_prod.yml
-```
-
-To restore from a back up. (Back ups run everyday at 20:00)
-```
-ansible-playbook restore.yml --extra-vars "S3_KEY={{LATEST S3 KEY}}"
+ansible-playbook setup_prod.yml --extra-vars "RESTORE_BACKUP_S3_KEY={{LATEST S3 KEY}}"
 ```
 
 ## Cheatsheat: Incantations you may not remember
