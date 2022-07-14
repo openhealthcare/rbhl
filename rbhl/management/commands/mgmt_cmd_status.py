@@ -43,7 +43,7 @@ def raise_alarm():
     logger.error(f'{BN} failed to check management command status')
 
 
-def send_email(lines):
+def send_email(lines, memory_status):
     """
     Email with the admins the details of the currently running
     management commands
@@ -54,7 +54,12 @@ def send_email(lines):
     else:
         title = f"There are {len(lines)} running commands on {name}"
     html_message = render_to_string(
-        "emails/running_commands.html", {"title": title, "lines": lines}
+        "emails/running_commands.html",
+        {
+            "title": title,
+            "lines": lines,
+            "memory": memory_status
+        }
     )
     plain_message = strip_tags(html_message)
     send_mail(
@@ -108,6 +113,10 @@ class Command(BaseCommand):
                         'Sending email'
                     ])
                 )
-                send_email(lines)
+
+                memory_proc = subprocess.Popen(['free', '-h'], stdout=subprocess.PIPE)
+                memory_status = "".join(memory_proc.stdout.readlines())
+
+                send_email(lines, memory_status)
         except Exception:
             raise_alarm()
