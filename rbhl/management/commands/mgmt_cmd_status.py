@@ -15,7 +15,24 @@ logger = logging.getLogger('commands')
 
 # the number of management commands that if we have more than
 # we should email
-THRESHOLD = 1
+THRESHOLD = 0
+
+# we ignore the first one of these commands that we hit
+# as they are caused by this managment command
+# subsequent references we keep as these would be stale
+# hangovers of previous run of this command
+IGNORE_FIRST = (
+    " ".join([
+        "/bin/sh -c /home/ubuntu/.virtualenvs/rbhl/bin/python",
+        "/usr/lib/ohc/rbhl/manage.py mgmt_cmd_status >>",
+        "/usr/lib/ohc/log/cron.log 2>&1",
+    ]),
+    " ".join([
+        "/home/ubuntu/.virtualenvs/rbhl/bin/python",
+        "/usr/lib/ohc/rbhl/manage.py mgmt_cmd_status",
+    ]),
+    "grep manage.py"
+)
 
 
 def raise_alarm():
@@ -37,7 +54,12 @@ def send_email(lines, memory_status):
     else:
         title = f"There are {len(lines)} running commands on {name}"
     html_message = render_to_string(
-        "emails/running_commands.html", {"title": title, "lines": lines, "memory:" memory_status}
+        "emails/running_commands.html",
+        {
+            "title": title,
+            "lines": lines,
+            "memory": memory_status
+        }
     )
     plain_message = strip_tags(html_message)
     send_mail(
@@ -62,37 +84,53 @@ def get_managepy_processes():
     )
     ps_lines = p2.stdout.readlines()
     cmd_and_date = []
+    ignore_first = list(IGNORE_FIRST)
     for bline in ps_lines:
         line = bline.decode("utf-8").strip()
-        some_dt = " ".join(line.strip().split(" ")[:5])
-        cmd = line.replace(some_dt, "").strip()
-        if cmd == 'grep manage.py':
+        some_dt = line[:25].strip()
+        cmd = line[25:].strip()
+        if cmd in ignore_first:
+            ignore_first.remove(cmd)
             continue
         cmd_and_date.append((cmd, some_dt,))
+
     return cmd_and_date
+
+
+def get_memory():
+    """
+    passes free into a list of lists that looks like
+    [
+        ['',    'total', 'used', 'free' ...],
+        ['Mem:'   11111, 1212312321, 12312312, ....]
+        ['swap:'  222, 3333, 444]
+    ]
+    """
+    memory_proc = subprocess.Popen(['free', '-h'], stdout=subprocess.PIPE)
+    result = []
+    for bline in memory_proc.stdout.readlines():
+        line = bline.decode("utf-8").strip()
+        result.append([i.strip() for i in line.split(" ") if i])
+    if result:
+        result[0].insert(0, '')
+    return result
 
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        try:
-            lines = get_managepy_processes()
+        lines = get_managepy_processes()
+        logger.info(
+            " ".join([
+                f'Found {len(lines)} running management commands',
+            ])
+        )
+        if len(lines) > THRESHOLD:
             logger.info(
                 " ".join([
-                    f'Found {len(lines)} running management commands',
-                    '(this includes this command)'
+                    f'Threshold {THRESHOLD} breached, with {[i[0] for i in lines]}',
+                    'Sending email'
                 ])
             )
-            if len(lines) > THRESHOLD:
-                logger.info(
-                    " ".join([
-                        f'Threshold {THRESHOLD} breached, with {[i[0] for i in lines]}',
-                        'Sending email'
-                    ])
-                )
-                
-                memory_proc = suprocess.Popen(['free', '-h' ], stdout=subprocess.PIPE)
-                memory_status = "".join(memory_proc.stdout.readlines())
-                
-                send_email(lines, memory_status)
-        except Exception:
-            raise_alarm()
+
+            memory_status = get_memory()
+            send_email(lines, memory_status)
