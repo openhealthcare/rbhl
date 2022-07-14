@@ -97,26 +97,40 @@ def get_managepy_processes():
     return cmd_and_date
 
 
+def get_memory():
+    """
+    passes free into a list of lists that looks like
+    [
+        ['',    'total', 'used', 'free' ...],
+        ['Mem:'   11111, 1212312321, 12312312, ....]
+        ['swap:'  222, 3333, 444]
+    ]
+    """
+    memory_proc = subprocess.Popen(['free', '-h'], stdout=subprocess.PIPE)
+    result = []
+    for bline in memory_proc.stdout.readlines():
+        line = bline.decode("utf-8").strip()
+        result.append([i.strip() for i in line.split(" ") if i])
+    if result:
+        result[0].insert(0, '')
+    return result
+
+
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        try:
-            lines = get_managepy_processes()
+        lines = get_managepy_processes()
+        logger.info(
+            " ".join([
+                f'Found {len(lines)} running management commands',
+            ])
+        )
+        if len(lines) > THRESHOLD:
             logger.info(
                 " ".join([
-                    f'Found {len(lines)} running management commands',
+                    f'Threshold {THRESHOLD} breached, with {[i[0] for i in lines]}',
+                    'Sending email'
                 ])
             )
-            if len(lines) > THRESHOLD:
-                logger.info(
-                    " ".join([
-                        f'Threshold {THRESHOLD} breached, with {[i[0] for i in lines]}',
-                        'Sending email'
-                    ])
-                )
 
-                memory_proc = subprocess.Popen(['free', '-h'], stdout=subprocess.PIPE)
-                memory_status = "".join(memory_proc.stdout.readlines())
-
-                send_email(lines, memory_status)
-        except Exception:
-            raise_alarm()
+            memory_status = get_memory()
+            send_email(lines, memory_status)

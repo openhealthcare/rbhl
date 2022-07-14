@@ -1,8 +1,18 @@
 <html>
 <body>
   <h1>{{ title }}</h1>
-  <pre>{{ memory }}</pre>
-  <table table width="580" cellpadding="0" cellspacing="0">
+  <table width="580" cellpadding="0" cellspacing="0">
+    {% for row in memory %}
+    <tr>
+    {% if forloop.first %}
+      {% for column in row %}<th align="left">{{ column }}</th>{% endfor %}
+    {% else %}
+      {% for column in row %}<td align="left">{{ column }}</td>{% endfor %}
+    {% endif %}
+    </tr>
+  {% endfor %}
+  </table>
+  <table width="580" cellpadding="0" cellspacing="0">
     <th align="left">Command</th><th align="right">Start datetime</th>
     {% for command, start in lines %}
     <tr>
