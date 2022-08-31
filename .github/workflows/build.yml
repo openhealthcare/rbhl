@@ -35,6 +35,8 @@ jobs:
         run: npm install jasmine-core@2.3.4 karma@1.5 karma-coverage@1.1.1 karma-jasmine@0.3.8 karma-firefox-launcher@2.1.0 karma-coveralls@1.1.2
       - name: Install requirements
         run: pip install -r requirements.txt
+      - name: Install opal with workflows
+        run: pip install -e git+https://github.com/openhealthcare/opal@work-flows#egg=opal
       - run: gem install coveralls-lcov
       - run: gem install rake
       - name: run tests
