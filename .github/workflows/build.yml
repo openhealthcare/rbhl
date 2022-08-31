@@ -36,7 +36,6 @@ jobs:
       - name: Install requirements
         run: pip install -r requirements.txt
       - run: gem install coveralls-lcov
-      - run: gem install rake
       - name: run tests
         run: opal test --coverage
       - name: flake8
