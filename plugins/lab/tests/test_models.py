@@ -51,7 +51,6 @@ class BloodsTestCase(OpalTestCase):
             "consistency_token": "",
             "created": None,
             "created_by_id": None,
-            'date_dna_extracted': None,
             'exposure': '',
             'freezer': None,
             "id": bloods.id ,
