@@ -1,5 +1,6 @@
 # cryptography is required for heroku deployment
-coverage==3.6
+coverage==6.2
+coveralls==3.3.1
 django==2.2.16
 dj-database-url==0.2.1
 gunicorn==19.5.0
@@ -14,7 +15,7 @@ flake8==3.8.4
 boto3==1.9.178
 celery==5.0.2
 django-celery-results==2.0.0
-opal==0.22.1
+opal==0.22.2
 python-dateutil==2.8.1
 holidays==0.10.5.2
 more-itertools==8.7.0
