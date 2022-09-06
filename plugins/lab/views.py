@@ -561,7 +561,7 @@ class LabMonthActivity(AbstractLabStatsPage):
                 row[f"Precipitin {idx}"] = result.precipitin
                 row[f"IgG {idx}"] = result.igg
                 row[f"IgG Class {idx}"] = result.iggclass
-                rows.append(row)
+            rows.append(row)
         return rows
 
     def pad_rows(self, list_of_dicts):
