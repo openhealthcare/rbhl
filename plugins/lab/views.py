@@ -195,15 +195,32 @@ class LabReport(DetailView):
 
 class AbstractLabStatsPage(TemplateView):
     def menu_dates(self):
+        """
+        Called from templates, returns a list of dates
+        rendered as menu items in the lab stats page.
+
+        If we are on the overview page, start today.
+        If on a month page start the month after
+        the one we're currently viewing. This allows
+        historical scroll.
+        """
         result = []
-        today = datetime.date.today()
-        if today.day == 1:
+        if self.kwargs.get('month'):
+            start = datetime.date(
+                int(self.kwargs.get('year')),
+                int(self.kwargs.get('month'))+2,
+                1
+            )
+        else:
+            start = datetime.date.today()
+
+        if start.day == 1:
             date_range = range(1, 7)
         else:
             date_range = range(6)
 
         for i in reversed(date_range):
-            result.append(today - relativedelta(months=i))
+            result.append(start - relativedelta(months=i))
         return result
 
 
