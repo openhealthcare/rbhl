@@ -183,6 +183,7 @@ class Bloods(RbhlSubrecord, models.PatientSubrecord):
     shelf              = fields.TextField(blank=True, null=True)
     tray               = fields.TextField(blank=True, null=True)
     vials              = fields.TextField(blank=True, null=True)
+    sample_destroyed   = fields.NullBooleanField()
 
     @classmethod
     def _get_fieldnames_to_serialize(cls):
