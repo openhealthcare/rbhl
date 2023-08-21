@@ -208,9 +208,10 @@ class AbstractLabStatsPage(TemplateView):
         if self.kwargs.get('month'):
             start = datetime.date(
                 int(self.kwargs.get('year')),
-                int(self.kwargs.get('month'))+2,
+                int(self.kwargs.get('month')),
                 1
             )
+            start = start + relativedelta(months=2)
         else:
             start = datetime.date.today()
 
