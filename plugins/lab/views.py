@@ -488,6 +488,12 @@ class LabMonthActivity(AbstractLabStatsPage):
             return
         if len(some_list) == 1:
             return [some_list[0]]
+
+        # Extremely unlikely, but it could be that all the things
+        # are the same value, bail here istead of stacktrace later
+        if len(set(some_list)) == 1:
+            return [some_list[0]]
+
         result = defaultdict(int)
         for some_val in some_list:
             result[some_val] += 1
