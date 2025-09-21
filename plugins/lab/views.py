@@ -190,6 +190,7 @@ class LabReport(DetailView):
         results = self.object.bloodresult_set.all()
         ctx["has_kul"] = any(i for i in results if i.kul)
         ctx["has_rast"] = any(i for i in results if i.rast)
+        ctx["has_rast_score"] = any(i for i in results if i.rast_score)
         return ctx
 
 
