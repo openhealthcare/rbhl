@@ -131,7 +131,11 @@ class Bloods(RbhlSubrecord, models.PatientSubrecord):
         "ImmunoCAP",
         "RAST",
         "RAST Score",
-        "Precipitins"
+        "Precipitins",
+        "ImmunoCAP & RAST",
+        "ImmunoCAP & RAST Score",
+        "ImmunoCAP, RAST & RAST Score",
+        "RAST & RAST Score"
     )
 
     blood_date         = fields.DateField(
