@@ -28,6 +28,7 @@
       </div>
       <div class="col-md-7 edit-item-padding">
         [[ item.referrer_name ]]
+        <span ng-show="item.referrer_email">[[ item.referrer_email ]]</span>
         <span ng-show="item.reference_number && item.referrer_name">([[ item.reference_number ]])</span>
         <span ng-show="!item.referrer_name">[[ item.reference_number ]]</span>
         <i class="fa fa-pencil edit pointer edit-item" ng-click="episode.recordEditor.editItem('referral', item)"></i>

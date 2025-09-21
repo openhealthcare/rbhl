@@ -182,6 +182,9 @@ class Referral(RBHLSubrecord, models.EpisodeSubrecord):
     referrer_name = fields.CharField(
         blank=True, null=True, max_length=100, verbose_name="Referrer name"
     )
+    referrer_email = fields.CharField(
+        blank=True, null=True, max_length=250, verbose_name="Referrer email"
+    )
     reference_number = fields.CharField(
         blank=True, null=True, max_length=200, verbose_name="Their reference number"
     )
