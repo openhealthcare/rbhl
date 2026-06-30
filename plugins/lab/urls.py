@@ -36,7 +36,7 @@ urlpatterns = [
         name="lab-month-activity"
     ),
     url(
-        r'^blood/(?P<num>[\d`w]+)/$',
+        r'^blood/(?P<num>[\d\w]+)/$',
         views.BloodView.as_view(),
         name="blood"
     ),
