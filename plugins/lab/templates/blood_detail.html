@@ -1,10 +1,24 @@
 {% extends 'static_base.html' %}
 {% load rbhl_panels %}
 
-
+{% block title %}Blood Detail: {{ blood.blood_number }}{% endblock %}
 
 {% block page_content %}
 <div>
-  {{ blood.blood_number }} {{ blood.freezer }} {{ blood.shelf }}  {{ blood.tray }} Destroyed : {{ blood.sample_destroyed }}
+  <p>
+    {{ blood.blood_number }} MRN: {{ blood.patient.demographics.hospital_number }}
+  </p>
+  <p>
+    Freezer: {{ blood.freezer }}
+  </p>
+  <p>
+    Shelf: {{ blood.shelf }}
+  </p>
+  <p>
+    Tray:   {{ blood.tray }}
+  </p>
+  <p>
+    Destroyed : {{ blood.sample_destroyed }}
+  </p>
  </div>
 {% endblock %}
