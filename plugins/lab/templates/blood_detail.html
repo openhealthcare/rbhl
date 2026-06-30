@@ -6,7 +6,10 @@
 {% block page_content %}
 <div>
   <p>
-    {{ blood.blood_number }} MRN: {{ blood.patient.demographics.hospital_number }}
+    {{ blood.blood_number }}
+    <a href="/lab-report/{{ blood.id }}/">
+      Lab Report
+    </a>
   </p>
   <p>
     Freezer: {{ blood.freezer }}
