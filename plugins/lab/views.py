@@ -194,6 +194,17 @@ class LabReport(DetailView):
         return ctx
 
 
+class BloodView(TemplateView):
+
+    template_name = 'blood_detail.html'
+
+    def get_context_data(self, *args, **kwargs):
+        ctx = super().get_context_data(*args, **kwargs)
+        blood = Bloods.objects.get(blood_number=kwargs['num'])
+        ctx['blood'] = blood
+        return ctx
+
+
 class AbstractLabStatsPage(TemplateView):
     def menu_dates(self):
         """

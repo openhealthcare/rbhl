@@ -1,5 +1,14 @@
 """
 Models for lab
+
+Please note, any assay is not 100% accurate.
+If clinical suspicion of allergy is high, or symptoms are present,
+please refer the patient to our service for additional investigation
+
+As the RAST is a bespoke assay, positive controls for the allergen
+are not available such that any negative result should be treated
+with this in mind."
+
 """
 from rbhl.models import RBHLSubrecord as RbhlSubrecord
 from django.db import models as fields

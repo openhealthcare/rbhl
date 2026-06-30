@@ -34,5 +34,11 @@ urlpatterns = [
         r'^lab-month-activity/(?P<year>\d+)/(?P<month>\d+)$',
         views.LabMonthActivity.as_view(),
         name="lab-month-activity"
-    )
+    ),
+    url(
+        r'^blood/(?P<num>[\d`w]+)/$',
+        views.BloodView.as_view(),
+        name="blood"
+    ),
+
 ]

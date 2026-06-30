@@ -1,0 +1,10 @@
+{% extends 'static_base.html' %}
+{% load rbhl_panels %}
+
+
+
+{% block page_content %}
+<div>
+  {{ blood.blood_number }} {{ blood.freezer }} {{ blood.shelf }}  {{ blood.tray }}
+ </div>
+{% endblock %}
